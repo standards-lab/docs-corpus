@@ -1,10 +1,40 @@
 #!/usr/bin/env bash
-# Checks the corpus against MANIFEST.json once it is present, validates the coverage data, and
-# runs lint-context and lint-references. Reads no network and writes nothing.
+# Checks the tools/coverage Go module, then the corpus against MANIFEST.json once it is present
+# and the coverage data, and runs lint-context and lint-references. Writes nothing but Go's caches.
 # See docs/coverage.md
+# See architecture/standards/go-elemental/principles/release-and-ci.md
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
+
+go_modules=(tools/coverage)
+
+for tool in go gofmt golangci-lint; do
+  if ! command -v "$tool" >/dev/null; then
+    echo "FAIL: $tool is not on PATH; run mise install" >&2
+    exit 1
+  fi
+done
+
+for module in "${go_modules[@]}"; do
+  echo "check: $module"
+  (
+    cd "$module"
+    export GOWORK=off
+    go build ./...
+    go vet ./...
+    unformatted=$(gofmt -l .)
+    if [ -n "$unformatted" ]; then
+      echo "FAIL: $module: gofmt would reformat:" >&2
+      echo "$unformatted" >&2
+      exit 1
+    fi
+    go fix -diff ./...
+    go mod tidy -diff
+    go test -race ./...
+    golangci-lint run ./...
+  )
+done
 
 fail=0
 err() {

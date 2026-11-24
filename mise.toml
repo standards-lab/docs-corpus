@@ -7,6 +7,7 @@ task.run_auto_install = false
 "github:standards-lab/claude-plugins" = { version = "0.24.0", version_prefix = "marathon/v" }
 jq = "1.8.2"
 go = "1.27.4"
+golangci-lint = "2.15.0"
 "conda:poppler" = "26.11.0"
 "conda:qpdf" = "12.4.2"
 "conda:ffmpeg" = "9.1.0"
@@ -15,7 +16,7 @@ go = "1.27.4"
 "conda:libarchive" = "3.8.11"
 
 [tasks.check]
-description = "Run scripts/check.sh: the manifest, the coverage data, lint-context, and lint-references; reads no network, writes nothing"
+description = "Run scripts/check.sh: build, vet, format, fix, tidy, test, and lint the tools/coverage module, then check the manifest and the coverage data, and run lint-context and lint-references; writes nothing but Go's caches"
 run = "scripts/check.sh"
 
 [tasks.place-traits]
