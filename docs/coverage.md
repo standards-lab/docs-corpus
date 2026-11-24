@@ -58,8 +58,8 @@ one disposition in `.samples`, its `disposition` field:
 - **replace**: the sample can't be adopted, and a gap entry takes over its scenarios. `gap` names
   that gap.
 
-A sample stays only while it exercises a scenario no other sample covers. So a sample is trimmed
-when one adopted sample's covers contain all of its covers, whatever that sample's format. No two
+Following [`STANDARDS.md`](../STANDARDS.md), a sample is trimmed when one adopted sample's covers
+contain all of its covers, whatever that sample's format. No two
 adopted samples share a covers set, and so none share a format and a covers set. Where several
 samples could stay, the one that stays, and the one a trim names, is chosen by these tie-breaks,
 in order:
@@ -187,7 +187,7 @@ Each gap names one candidate, its `candidate` object, of one of three kinds, its
   `license_url` of the license as read at the source, `license_read`, the date it was read, and
   `license_status: "verified"`.
 - **generated**: a file a recorded command makes. It records the exact `command`, run from the
-  corpus root, its `inputs`, the `generator` that runs, with its version, and the
+  repository root, its `inputs`, the `generator` that runs, with its version, and the
   `generator_license`. The inputs are adopted samples only, and a command may read its own
   earlier output, so nothing in a candidate is typed by hand. The candidate's own license
   follows from its inputs': an archive of adopted samples carries their licenses.
@@ -196,8 +196,8 @@ Each gap names one candidate, its `candidate` object, of one of three kinds, its
   structure only a live mail server makes. Curate leaves such a gap open: the corpus doesn't
   exercise its scenarios until a candidate turns up.
 
-Each sourced or generated candidate also has a `fit` line: its quality, and how it exercises the
-gap's covers.
+Each sourced or generated candidate also has a `fit` line: a rating, Good or Fair, then its
+quality and how it exercises the gap's covers.
 
 A suspicious scenario, such as an archive bomb, a path traversal, an executable, or a polyglot, has
 a harmless candidate: a parser fixture from an established test suite, or a file built by a
@@ -251,9 +251,9 @@ variable names. It fails when:
 - a truth or doc file in the manifest is linked by no sample and isn't in `.docs_without_sample`.
 
 The last five compare against `${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json`, and run only when
-that file exists; a `DOCS_REFERENCE` that names no manifest fails the check. `~/docs` is removed
-when the corpus is done, so the check doesn't need it. Without `~/docs`, the check still verifies
-every disposition from the facts each entry records. Each failure message names its fix.
+that file exists; a `DOCS_REFERENCE` that names no manifest fails the check. `~/docs` is planned
+to be removed once the corpus is final, so the check doesn't depend on it: without `~/docs`, it
+still verifies every disposition from the facts each entry records. Each failure message names its fix.
 
 To fix an unknown ID, use an ID the vocabulary defines. If the scenario is new, define it in the
 vocabulary, with its link or rule.

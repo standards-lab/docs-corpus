@@ -11,14 +11,14 @@ versioned corpus in this repository, public from v1 ([README.md](../README.md)).
   `MANIFEST.json`, with `version` naming the corpus version, and the layout by format directory.
 - **Scenario index** (planned): each sample's `covers` tags in the coverage vocabulary, with no
   two samples sharing a format and scenario set.
-- **Coverage page** (planned): the scenario vocabulary, each `~/docs` sample's disposition, and
+- **Coverage page** (built): the scenario vocabulary, each `~/docs` sample's disposition, and
   each gap's candidate ([docs/coverage.md](../docs/coverage.md)).
 - **Distribution** (planned): the payload as release assets on each version tag, and the fetch
   step that verifies it against the manifest ([README.md](../README.md)).
 - **Baseline** (planned): docproc's and docinfer's run over each version, the reference timings
   capstone.data-intelligence measures against.
 - **Check** (built): the manifest and scenario checks once `MANIFEST.json` is present, the
-  coverage checks, and `lint-context` and `lint-references`
+  [coverage checks](../docs/coverage.md#the-check), and `lint-context` and `lint-references`
   ([scripts/check.sh](../scripts/check.sh)), with the tools pinned in [mise.toml](../mise.toml). No
   CI runs it.
 
