@@ -76,6 +76,14 @@ if [ -f MANIFEST.json ]; then
     | group_by(.key)[] | select(length > 1) | map(.path) | join(", ")' MANIFEST.json)
 fi
 
+stop_if_failed() {
+  if [ "$fail" -ne 0 ]; then
+    exit 1
+  fi
+}
+
+stop_if_failed
+
 report() {
   local problem
   while read -r problem; do
@@ -293,6 +301,8 @@ else
   fi
 fi
 
+stop_if_failed
+
 run_lint() {
   if ! command -v "$1" >/dev/null; then
     echo "FAIL: $1 is not on PATH; run mise install" >&2
@@ -304,7 +314,5 @@ run_lint() {
 run_lint lint-context || fail=1
 run_lint lint-references || fail=1
 
-if [ "$fail" -ne 0 ]; then
-  exit 1
-fi
+stop_if_failed
 echo "All checks passed."
