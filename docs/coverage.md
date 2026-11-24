@@ -77,16 +77,17 @@ a trim without `~/docs`: `truth` (it has truth when the list isn't empty), `lice
 Only a redistributable sample that isn't sensitive is adopted. Any other sample is trimmed when an
 adopted sample covers all of its scenarios, and replaced otherwise.
 
-dispose, a command of [`tools/coverage`](../tools/coverage/cmd/dispose/doc.go), derives every
-disposition by these rules, and the covers of each gap a replace names, as [Gaps](#gaps) states.
-To rerun it and compare its output with the data, run this from the repository root:
+The [`dispose`](../tools/coverage/cmd/dispose/doc.go) command of the Go module `tools/coverage`
+derives every disposition by these rules, and the covers of each gap a replace names, as
+[Gaps](#gaps) states. To rerun it and compare its output with the data, run this from the
+repository root:
 
 ```sh
 mise run dispose | cmp - docs/coverage.json
 ```
 
-`mise run place-traits > "$tmp"` followed by `mise run dispose --placement "$tmp"` re-derives the
-placements and the dispositions together.
+To re-derive the placements and the dispositions together, run `mise run place-traits > "$tmp"`,
+then `mise run dispose --placement "$tmp"`, where `$tmp` names a temporary file.
 
 ### Truth and doc files
 
@@ -140,9 +141,9 @@ The script reads the run from `${RUNS:-$HOME/runs/docproc/final/runs}` and the m
 
 Each entry's `traits` and `features` are the trait and feature IDs the sample exercises, placed by
 reading the file and its manifest entry, never from the manifest's `covers` tags. Each value's
-rule in the vocabulary is the test. place-traits, a command of the Go module
-[`tools/coverage`](../tools/coverage), probes every sample and applies the rules it can decide from
-the file or from what docproc's kept run recorded for it:
+rule in the vocabulary is the test. The [`place-traits`](../tools/coverage/cmd/place-traits/doc.go)
+command of the Go module `tools/coverage` probes every sample and applies the rules it can decide
+from the file or from what docproc's kept run recorded for it:
 
 - PDF text layers from the run's page outputs, OCR layers from invisible text over page images,
   page counts, forms, signature fields, and portfolios, read with pdfinfo, pdfimages, pdffonts, and
@@ -151,19 +152,19 @@ the file or from what docproc's kept run recorded for it:
 - image frames, alpha, and stored orientation, read with ImageMagick's identify;
 - OOXML structures read from the package's parts, with legacy and RTF documents converted to OOXML
   by LibreOffice first, as docproc converts them;
-- message structure, parsed from each `.eml` and `.mbox` with Go's standard library, as
-  [stdmail](../tools/coverage/stdmail/doc.go) states, and taken from the run's records for `.msg`
-  and `.pst` files;
+- message structure, parsed from each `.eml` and `.mbox` with Go's standard library, as the
+  [`stdmail`](../tools/coverage/stdmail/doc.go) package documents, and taken from the run's
+  records for `.msg` and `.pst` files;
 - OneNote structures from the run's page records;
 - charsets from byte order marks, UTF-8 validity, and uchardet;
 - scripts by counting each script's letters in the file's text, or in the text the run extracted.
-  A letter counts toward the script its Unicode character name starts with, Han's being CJK and
-  kana's Hiragana or Katakana, so modifier letters, fullwidth and halfwidth forms, and letterlike
-  symbols such as the Kelvin sign count toward none.
+  A letter counts toward the script its Unicode character name starts with: CJK for Han, and
+  Hiragana or Katakana for kana. Modifier letters, fullwidth and halfwidth forms, and letterlike
+  symbols such as the Kelvin sign have names that start with no script, so they count toward none.
 
 Where a value takes judgement, such as handwriting, a degraded or simulated scan, spontaneous or
 noisy speech, or a layout in columns, the entry's `judged` object holds the ID and the evidence
-for it: what was seen in the rendered file, or what its truth or source record shows. The program
+for it: what was seen in the rendered file, or what its truth or source record shows. The command
 adds those IDs to what it probes. To rerun it and compare its output with the data, run this from
 the repository root:
 
@@ -175,11 +176,11 @@ It reads the same run and manifest as `scripts/place-library.sh`, and writes onl
 directory. With `--facts`, as in `mise run place-traits --facts`, it also prints each sample's
 probe findings.
 
-[`mise.toml`](../mise.toml) pins Go and every probe the program calls except LibreOffice's
+[`mise.toml`](../mise.toml) pins Go and every probe `place-traits` calls except LibreOffice's
 `soffice`, the one unpinned host requirement: it is in neither mise's registry nor conda-forge, so
-the program and ImageMagick's EMF and WMF delegate use the host's. The program stops at its start,
-naming the tool and the fix, when a probe is not on `PATH` or is older than the version its
-[adapter](../tools/coverage/probe/doc.go) accepts.
+`place-traits` and ImageMagick's EMF and WMF delegate use the host's. `place-traits` stops at
+startup, naming the tool and the fix, when a probe is not on `PATH` or is older than the version
+its [adapter](../tools/coverage/probe/doc.go) in the `probe` package accepts.
 
 ## Gaps
 
@@ -187,7 +188,7 @@ Each scenario lists the adopted samples that exercise it. A scenario that no ado
 exercises is a gap in `.gaps`. Each gap has an `id`, the `covers` a candidate must exercise, and
 a `candidate`. A replaced sample names the gap whose covers contain its own. Replaced samples that
 need the same covers, or covers inside another replaced sample's, share one gap; where several
-replaced samples' covers contain a sample's, it shares the gap of the one the tie-break prefers.
+replaced samples' covers contain a sample's, it shares the gap of the one the tie-breaks prefer.
 A gap for scenarios no sample exercised groups the IDs one candidate file can exercise together.
 
 The data stores no list of samples per scenario: it follows from the placements. To print each
