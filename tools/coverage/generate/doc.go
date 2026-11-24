@@ -3,8 +3,6 @@
 //
 // Its exported identifiers:
 //
-//   - [RightsManaged] makes a rights-managed message: an rpmsg.message Content-Class header and a
-//     message.rpmsg attachment added to a multipart/mixed message.
-//   - [Mbox] makes an mbox of 1,000 messages.
-//   - [Run] makes one candidate from command-line arguments, reading and writing its files.
+//   - [RightsManaged] makes a rights-managed message from a multipart/mixed one.
+//   - [Mbox] makes an mbox from messages.
 package generate

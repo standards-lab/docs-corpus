@@ -14,8 +14,8 @@ The judgement calls the standards-reviewer applies, beyond what `scripts/check.s
 - `architecture/principles/comments.md`: the comments in every script, Go source, and
   configuration file.
 - `architecture/standards/go-elemental/principles/topology-and-naming.md`: `tools/coverage` is a
-  nested module of its own, its `cmd/*` initialization only, and its packages split by role or
-  dependency weight.
+  nested module of its own, its `cmd/*` initialization only, each one call into its composition
+  root, `internal/app`, and its packages split by growth or dependency weight.
 - `architecture/standards/go-elemental/principles/system-tools.md`: every probe runs through a
   `tools/coverage/probe` adapter that finds its tool and checks its version at startup, and runs
   it under the caller's context.

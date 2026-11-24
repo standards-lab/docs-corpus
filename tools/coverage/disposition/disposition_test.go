@@ -2,8 +2,6 @@ package disposition_test
 
 import (
 	"bytes"
-	"os"
-	"path/filepath"
 	"slices"
 	"strconv"
 	"strings"
@@ -170,35 +168,6 @@ func TestPlaceRefusesAMismatchedPlacement(t *testing.T) {
 		if err := disposition.Place(coverage, v.([]any)); err == nil {
 			t.Errorf("%s: Place = nil, want an error", name)
 		}
-	}
-}
-
-func TestRunWritesTheDisposedData(t *testing.T) {
-	dir := t.TempDir()
-	if err := os.Mkdir(filepath.Join(dir, "docs"), 0o755); err != nil {
-		t.Fatal(err)
-	}
-	data := `{"samples": [` + entry("a", []string{"kind:x"}, 1, true, "") + `], "gaps": [{"id": "spent", "covers": ["kind:x"], "candidate": null}]}`
-	if err := os.WriteFile(filepath.Join(dir, "docs", "coverage.json"), []byte(data), 0o644); err != nil {
-		t.Fatal(err)
-	}
-	placement := filepath.Join(dir, "placement.json")
-	if err := os.WriteFile(placement, []byte(`[{"path": "a", "traits": [], "features": ["feature:f"]}]`), 0o644); err != nil {
-		t.Fatal(err)
-	}
-	t.Chdir(dir)
-	var stdout, stderr bytes.Buffer
-	if err := disposition.Run([]string{"--placement", placement}, &stdout, &stderr); err != nil {
-		t.Fatal(err)
-	}
-	if !strings.Contains(stdout.String(), `"feature:f"`) || !strings.HasSuffix(stdout.String(), "}\n") || !strings.Contains(stdout.String(), `"disposition": "adopt"`) {
-		t.Errorf("stdout = %s", stdout.String())
-	}
-	if !strings.Contains(stderr.String(), "gap spent") {
-		t.Errorf("stderr = %q, want gap spent named", stderr.String())
-	}
-	if err := disposition.Run([]string{"extra"}, &stdout, &stderr); err == nil {
-		t.Error("Run with an argument = nil, want its usage")
 	}
 }
 

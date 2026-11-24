@@ -3,7 +3,6 @@ package generate_test
 import (
 	"bytes"
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -77,39 +76,6 @@ func TestMboxRepeatsTheMessagesToAThousand(t *testing.T) {
 	}
 	if !strings.Contains(out, "\n>From here\n") || !strings.Contains(out, "no newline\n\n") {
 		t.Errorf("the mbox doesn't escape From or end each message with a blank line: %.300q", out)
-	}
-}
-
-func TestRunWritesTheCandidate(t *testing.T) {
-	dir := t.TempDir()
-	in := filepath.Join(dir, "a.eml")
-	payload := filepath.Join(dir, "p.txt")
-	out := filepath.Join(dir, "out.eml")
-	for path, data := range map[string]string{in: mixed, payload: "abc"} {
-		if err := os.WriteFile(path, []byte(data), 0o644); err != nil {
-			t.Fatal(err)
-		}
-	}
-	if err := generate.Run([]string{"rights-managed", in, payload, out}, time.Now()); err != nil {
-		t.Fatal(err)
-	}
-	if data, err := os.ReadFile(out); err != nil || !bytes.Contains(data, []byte("YWJj")) {
-		t.Errorf("out.eml = %q, %v", data, err)
-	}
-	mbox := filepath.Join(dir, "out.mbox")
-	if err := generate.Run([]string{"mbox", mbox, in}, time.Now()); err != nil {
-		t.Fatal(err)
-	}
-	if _, err := os.Stat(mbox); err != nil {
-		t.Error(err)
-	}
-}
-
-func TestRunRefusesBadArguments(t *testing.T) {
-	for _, args := range [][]string{nil, {"rights-managed", "a"}, {"mbox", "out"}, {"zip"}} {
-		if err := generate.Run(args, time.Now()); err == nil {
-			t.Errorf("Run(%q) succeeded", args)
-		}
 	}
 }
 
