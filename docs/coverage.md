@@ -18,9 +18,8 @@ on three axes:
   names the identifier and links to its definition, pinned to a commit. A capability's entry also
   has `fed_by`: the routes whose outputs docinfer sends to that capability, with links to the
   docproc stages that emit those outputs and the docinfer lines that take them.
-- **Trait** (`.vocabulary.trait`): how a sample's content departs from the plain case. The traits
-  are script, text layer, scan, charset, audio, and scale. Each value has a one-line `rule` saying
-  when a sample exhibits it.
+- **Trait** (`.vocabulary.trait`): how a sample's content departs from the plain case, such as its
+  script or its text layer. Each value has a one-line `rule` saying when a sample exhibits it.
 - **Feature** (`.vocabulary.feature`): a content structure that docproc's readers handle
   separately or list under their known limits, such as a table, a tracked change, or a message
   attachment. Each one has a one-line `rule`.
