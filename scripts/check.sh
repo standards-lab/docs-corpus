@@ -8,11 +8,15 @@
 # one disposition: a trim names an adopted sample whose covers contain its own and that the
 # tie-break prefers, a replace names a gap whose covers contain its own, no adopted sample is
 # non-redistributable or sensitive, and no adopted sample's covers equal, with its format, or lie
-# inside another's. When ${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json exists, every sample in it
-# appears in the coverage once, by path and sha256, with the manifest's format, bytes,
-# license_status, redistributable, and sensitivity, the coverage lists no other, and every truth
-# and doc file in it is linked. Then runs lint-context and lint-references, and fails if any part
-# fails. Reads no network.
+# inside another's. Every gap has a candidate with a fit line: a sourced one with its https url,
+# a ref that a GitHub url carries as its commit, its license, the license URL read, the date read,
+# and a verified license status; or a generated one with its command, generator, generator
+# license, and inputs that are adopted samples. Every vocabulary ID is exercised by an adopted
+# sample or is in a gap's covers. When ${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json exists, every
+# sample in it appears in the coverage once, by path and sha256, with the manifest's format,
+# bytes, license_status, redistributable, and sensitivity, the coverage lists no other, and every
+# truth and doc file in it is linked. Then runs lint-context and lint-references, and fails if any
+# part fails. Reads no network.
 # See docs/coverage.md
 set -euo pipefail
 
@@ -170,6 +174,65 @@ if [ -f "$coverage" ]; then
     done <<<"$problems"
   else
     err "$coverage: jq could not check its dispositions; each sample needs library, traits, features, and disposition fields"
+  fi
+
+  if problems=$(jq -r '
+    def text: type == "string" and . != "";
+    def github: test("^https://([a-z]+[.])?github(usercontent)?[.]com/");
+    ((.samples // []) | map(select(.disposition == "adopt") | .path)) as $adopted
+    | ((.gaps // []) | map(.covers // []) | add // []) as $gapped
+    | ((.samples // []) | map(select(.disposition == "adopt") | (.library + (.traits // []) + (.features // []))[]) | unique) as $exercised
+    | ((.gaps // []) | group_by(.id)[] | select(length > 1)
+        | "gaps: \(.[0].id) appears \(length) times; give each gap its own id"),
+      ((.gaps // [])[] | .id as $id | .candidate as $c
+        | if ($c | type) != "object" then
+            "gaps.\($id): has no candidate; name a sourced one (url, ref, license, license_url, license_read, license_status \"verified\") or a generated one (command, inputs, generator, generator_license)"
+          else
+            (select(($c.fit | text) | not)
+              | "gaps.\($id).candidate: needs a fit line; say its quality and how it exercises the gap\u0027s covers"),
+            (if $c.kind == "sourced" then
+              (select(($c.url | text) and ($c.url | startswith("https://")) | not)
+                | "gaps.\($id).candidate: needs its https url; record where the file is fetched"),
+              (select(($c.ref | text) | not)
+                | "gaps.\($id).candidate: needs its ref; record the commit or revision the url is pinned to"),
+              (select(($c.url | text) and ($c.url | github) and ((($c.ref // "") | test("^[0-9a-f]{40}$")) and ($c.url | contains($c.ref)) | not))
+                | "gaps.\($id).candidate: a GitHub url must be pinned to a commit; put the 40-hex commit in the url and in ref"),
+              (select(($c.license | text) | not)
+                | "gaps.\($id).candidate: needs its license; record the license read at its source"),
+              (select(($c.license_url | text) and ($c.license_url | startswith("https://")) | not)
+                | "gaps.\($id).candidate: needs its license_url; record the https URL of the license you read"),
+              (select(($c.license_read // "") | test("^[0-9]{4}-[0-9]{2}-[0-9]{2}$") | not)
+                | "gaps.\($id).candidate: needs license_read; record the date you read the license as YYYY-MM-DD"),
+              (select($c.license_status != "verified")
+                | "gaps.\($id).candidate: license_status is \($c.license_status | tojson); read the license at its source and set \"verified\", or name another candidate")
+            elif $c.kind == "generated" then
+              (select(($c.command | text) | not)
+                | "gaps.\($id).candidate: has no command; record the exact command that makes it"),
+              (select(($c.generator | text) | not)
+                | "gaps.\($id).candidate: needs its generator; record the tool and its version"),
+              (select(($c.generator_license | text) | not)
+                | "gaps.\($id).candidate: needs its generator_license; record the generator\u0027s license"),
+              (if ($c.inputs | type) != "array" or $c.inputs == [] then
+                "gaps.\($id).candidate: needs its inputs; list the adopted samples the command reads"
+              else
+                $c.inputs[] | select(IN($adopted[]) | not)
+                | "gaps.\($id).candidate.inputs: \(.) is not an adopted sample; generate only from adopted samples"
+              end)
+            else
+              "gaps.\($id).candidate: kind is \($c.kind | tojson); set kind to \"sourced\" or \"generated\""
+            end)
+          end),
+      ([.vocabulary.library, .vocabulary.trait, .vocabulary.feature] | map(keys) | add[]
+        | select(IN($exercised[]) | not) | select(IN($gapped[]) | not)
+        | "vocabulary: \(.) is exercised by no adopted sample and is in no gap\u0027s covers; adopt a sample that exercises it, or add it to a gap\u0027s covers")
+  ' "$coverage"); then
+    while read -r problem; do
+      if [ -n "$problem" ]; then
+        err "$coverage: $problem"
+      fi
+    done <<<"$problems"
+  else
+    err "$coverage: jq could not check its gaps; each gap needs an id, covers, and a candidate"
   fi
 
   reference=${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json

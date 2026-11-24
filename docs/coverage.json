@@ -11561,7 +11561,18 @@
         "trait:script.cyrillic",
         "trait:script.mixed"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "generated",
+        "command": "bsdtar --format=7zip -cf archive/mixed-bundle.7z office/realworld/docx/word-with-attachments.docx pdf/edge/forms/isartor-interactive-form.pdf email/generated/msg/04-attachment-cyrillic.msg",
+        "inputs": [
+          "office/realworld/docx/word-with-attachments.docx",
+          "pdf/edge/forms/isartor-interactive-form.pdf",
+          "email/generated/msg/04-attachment-cyrillic.msg"
+        ],
+        "generator": "bsdtar 3.8.10 (libarchive 3.8.10)",
+        "generator_license": "BSD-2-Clause",
+        "fit": "Good: a 7z of three adopted samples, a docx (kind:zip, with an OLE2 embedding, a PNG, and Cyrillic beside Latin), a PDF with an OpenAction, and a msg whose text attachment is Cyrillic, so its members reach the archive, office, document, nested, text, and vision routes. It also carries the members' own IDs, such as check:ole-object."
+      }
     },
     {
       "id": "archive-2",
@@ -11585,7 +11596,18 @@
         "trait:script.cyrillic",
         "trait:script.mixed"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "generated",
+        "command": "bsdtar -czf archive/mixed-bundle.tar.gz office/realworld/docx/word-with-attachments.docx pdf/edge/forms/isartor-interactive-form.pdf email/generated/msg/04-attachment-cyrillic.msg",
+        "inputs": [
+          "office/realworld/docx/word-with-attachments.docx",
+          "pdf/edge/forms/isartor-interactive-form.pdf",
+          "email/generated/msg/04-attachment-cyrillic.msg"
+        ],
+        "generator": "bsdtar 3.8.10 (libarchive 3.8.10)",
+        "generator_license": "BSD-2-Clause",
+        "fit": "Good: the archive-1 members as a gzip-compressed ustar archive, so the gzip stream yields a tar, and the tar the same three adopted samples and their routes."
+      }
     },
     {
       "id": "archive-3",
@@ -11609,7 +11631,18 @@
         "trait:script.cyrillic",
         "trait:script.mixed"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "generated",
+        "command": "bsdtar --zstd -cf archive/mixed-bundle.tar.zst office/realworld/docx/word-with-attachments.docx pdf/edge/forms/isartor-interactive-form.pdf email/generated/msg/04-attachment-cyrillic.msg",
+        "inputs": [
+          "office/realworld/docx/word-with-attachments.docx",
+          "pdf/edge/forms/isartor-interactive-form.pdf",
+          "email/generated/msg/04-attachment-cyrillic.msg"
+        ],
+        "generator": "bsdtar 3.8.10 (libarchive 3.8.10), with libzstd 1.5.7",
+        "generator_license": "BSD-2-Clause (libarchive); BSD-3-Clause (zstd)",
+        "fit": "Good: the archive-1 members as a zstd-compressed ustar archive, so the zstd stream yields a tar, and the tar the same three adopted samples and their routes."
+      }
     },
     {
       "id": "archive-4",
@@ -11618,7 +11651,16 @@
         "kind:zip",
         "route:archive"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-pkg-module/src/test/resources/test-documents/testZipEncrypted.zip",
+        "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
+        "license": "Apache-2.0",
+        "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Tika's 391-byte fixture holds encrypted.txt, flagged encrypted in its headers, and unencrypted.txt in the clear, so one entry is an unread encrypted child and the other reaches the text route."
+      }
     },
     {
       "id": "archive-5",
@@ -11641,7 +11683,18 @@
         "trait:script.cyrillic",
         "trait:script.mixed"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "generated",
+        "command": "d=$(mktemp -d) && bsdtar --format=zip -cf \"$d/mixed-bundle.zip\" office/realworld/docx/word-with-attachments.docx pdf/edge/forms/isartor-interactive-form.pdf email/generated/msg/04-attachment-cyrillic.msg && bsdtar --format=zip -cf archive/zip-in-zip.zip -C \"$d\" mixed-bundle.zip",
+        "inputs": [
+          "office/realworld/docx/word-with-attachments.docx",
+          "pdf/edge/forms/isartor-interactive-form.pdf",
+          "email/generated/msg/04-attachment-cyrillic.msg"
+        ],
+        "generator": "bsdtar 3.8.10 (libarchive 3.8.10)",
+        "generator_license": "BSD-2-Clause",
+        "fit": "Good: a ZIP holding one ZIP, the inner one bsdtar's own output over the archive-1 members, so the nested archive yields the same three adopted samples and their routes."
+      }
     },
     {
       "id": "audio-1",
@@ -11656,7 +11709,16 @@
         "trait:audio.spontaneous",
         "trait:scale.long-media"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "generated",
+        "command": "ffmpeg -i video/ami-es2002d/ami-es2002d-mix-headset.wav -c:a libmp3lame -b:a 64k audio/long/ami-es2002d-mix-headset.mp3",
+        "inputs": [
+          "video/ami-es2002d/ami-es2002d-mix-headset.wav"
+        ],
+        "generator": "FFmpeg n9.0.2 with libmp3lame",
+        "generator_license": "GPL-3.0-or-later (this FFmpeg build); LGPL-2.0-or-later (LAME)",
+        "fit": "Good: the adopted AMI ES2002d headset mix, a recorded meeting of four speakers over 30 minutes, re-encoded as MP3; the speech is unchanged, so it stays spontaneous, multi-speaker, and long, and AMI's CC-BY-4.0 carries over."
+      }
     },
     {
       "id": "email-1",
@@ -11671,7 +11733,16 @@
         "route:unrouted",
         "trait:charset.declared"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/jstedfast/MimeKit/33fc900de9a5eeaa8a99ec5317c414f076b4f3df/UnitTests/TestData/mbox/jwz.mbox.txt",
+        "ref": "33fc900de9a5eeaa8a99ec5317c414f076b4f3df",
+        "license": "MIT",
+        "license_url": "https://raw.githubusercontent.com/jstedfast/MimeKit/33fc900de9a5eeaa8a99ec5317c414f076b4f3df/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: jwz's MIME test mailbox, 152 messages from 1991 to 1995 behind From separators, with 15 In-Reply-To or References links between its own messages, attachments, non-UTF-8 charsets, and URLs in bodies. Name it .mbox, since docproc routes an mbox only without a text extension."
+      }
     },
     {
       "id": "image-1",
@@ -11683,7 +11754,16 @@
         "kind:gif",
         "route:vision"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/python-pillow/Pillow/af804a54817a1214e3c0b36110a947e2059311f2/Tests/images/dispose_bgnd.gif",
+        "ref": "af804a54817a1214e3c0b36110a947e2059311f2",
+        "license": "MIT-CMU",
+        "license_url": "https://raw.githubusercontent.com/python-pillow/Pillow/af804a54817a1214e3c0b36110a947e2059311f2/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Pillow's 1,450-byte disposal test, a GIF89a of five frames, so it is animated."
+      }
     },
     {
       "id": "image-2",
@@ -11695,7 +11775,16 @@
         "kind:jpeg",
         "route:vision"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/python-pillow/Pillow/af804a54817a1214e3c0b36110a947e2059311f2/Tests/images/hopper_orientation_6.jpg",
+        "ref": "af804a54817a1214e3c0b36110a947e2059311f2",
+        "license": "MIT-CMU",
+        "license_url": "https://raw.githubusercontent.com/python-pillow/Pillow/af804a54817a1214e3c0b36110a947e2059311f2/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Pillow's exif_transpose fixture, a JPEG whose EXIF Orientation is 6 (RightTop), so it shows upright only once rotated 90 degrees."
+      }
     },
     {
       "id": "image-3",
@@ -11708,7 +11797,16 @@
         "route:vision-converted",
         "trait:scan.printed"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "generated",
+        "command": "magick -density 150 'pdf/scanned/real/stella-maberly-1896-ia-scan.pdf[10-12]' -colorspace gray -compress LZW image/formats/tiff/stella-maberly-3page.tif",
+        "inputs": [
+          "pdf/scanned/real/stella-maberly-1896-ia-scan.pdf"
+        ],
+        "generator": "ImageMagick 7.1.2-34, with Ghostscript 10.08.0 as its PDF delegate",
+        "generator_license": "ImageMagick License; AGPL-3.0-or-later (Ghostscript)",
+        "fit": "Good: pages 11 to 13, printed text, of the adopted 1896 Internet Archive scan, rasterized at 150 dpi into one LZW TIFF of three pages; the text is scanned print, and the scan's public domain status carries over."
+      }
     },
     {
       "id": "image-4",
@@ -11719,7 +11817,16 @@
         "kind:webp",
         "route:vision-converted"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-image-module/src/test/resources/test-documents/testWEBP.webp",
+        "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
+        "license": "Apache-2.0",
+        "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Tika's 3,442-byte lossy VP8 WebP of 150x150, a plain still WebP."
+      }
     },
     {
       "id": "office-1",
@@ -11736,7 +11843,17 @@
         "trait:script.kana",
         "trait:script.mixed"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "generated",
+        "command": "{ cat text/csv/tab-separated.tsv; iconv -f UTF-16 -t UTF-8 text/encodings/utf16le-bom.txt; } | pandoc -f tsv -t docx -o office/multilang/multilang-table.docx",
+        "inputs": [
+          "text/csv/tab-separated.tsv",
+          "text/encodings/utf16le-bom.txt"
+        ],
+        "generator": "pandoc 3.11; glibc 2.44 iconv",
+        "generator_license": "GPL-2.0-or-later (pandoc); LGPL-2.1-or-later (glibc)",
+        "fit": "Good: one table whose cells are the adopted TSV's Greek, Cyrillic, and Arabic rows and the adopted UTF-16 file's Hebrew and Japanese lines, so the docx holds every script the replaced sample did, in a table."
+      }
     },
     {
       "id": "office-2",
@@ -11752,7 +11869,17 @@
         "trait:script.kana",
         "trait:script.mixed"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "generated",
+        "command": "{ cat text/csv/tab-separated.tsv; iconv -f UTF-16 -t UTF-8 text/encodings/utf16le-bom.txt; } | pandoc -f tsv -t odt -o office/multilang/multilang-table.odt",
+        "inputs": [
+          "text/csv/tab-separated.tsv",
+          "text/encodings/utf16le-bom.txt"
+        ],
+        "generator": "pandoc 3.11; glibc 2.44 iconv",
+        "generator_license": "GPL-2.0-or-later (pandoc); LGPL-2.1-or-later (glibc)",
+        "fit": "Good: the office-1 table written as ODF text, so the odt holds Arabic, Hebrew, Cyrillic, Han, and kana beside Latin."
+      }
     },
     {
       "id": "office-3",
@@ -11764,7 +11891,16 @@
         "kind:rtf",
         "route:office"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "generated",
+        "command": "soffice --headless --convert-to rtf --outdir office/rtf office/realworld/docx/form-footnotes.docx",
+        "inputs": [
+          "office/realworld/docx/form-footnotes.docx"
+        ],
+        "generator": "LibreOffice 26.8.1.1",
+        "generator_license": "MPL-2.0",
+        "fit": "Good: the adopted form docx converted to RTF; its six tables come through with 56 horizontally merged cells, which survive a conversion back to docx."
+      }
     },
     {
       "id": "pdf-1",
@@ -11781,7 +11917,17 @@
         "trait:script.kana",
         "trait:script.mixed"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "generated",
+        "command": "d=$(mktemp -d) && { cat text/csv/tab-separated.tsv; iconv -f UTF-16 -t UTF-8 text/encodings/utf16le-bom.txt; } | pandoc -f tsv -t docx -o \"$d/multilang-table.docx\" && soffice --headless --convert-to pdf --outdir pdf/multilang \"$d/multilang-table.docx\"",
+        "inputs": [
+          "text/csv/tab-separated.tsv",
+          "text/encodings/utf16le-bom.txt"
+        ],
+        "generator": "pandoc 3.11; LibreOffice 26.8.1.1; glibc 2.44 iconv",
+        "generator_license": "GPL-2.0-or-later (pandoc); MPL-2.0 (LibreOffice); LGPL-2.1-or-later (glibc)",
+        "fit": "Good: the office-1 table printed to a born-digital PDF by LibreOffice, so its text layer holds Arabic and Hebrew right to left, Cyrillic, Han, and kana."
+      }
     },
     {
       "id": "pdf-2",
@@ -11796,6 +11942,744 @@
         "trait:scan.degraded",
         "trait:scan.printed",
         "trait:text-layer.none"
+      ],
+      "candidate": {
+        "kind": "generated",
+        "command": "d=$(mktemp -d) && gs -q -o \"$d/tables-image.pdf\" -sDEVICE=pdfimage8 -r200 pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf && qpdf --empty --pages pdf/scanned/olmocr-bench/old_scans-69.pdf \"$d/tables-image.pdf\" -- pdf/scanned/scanned-tables.pdf",
+        "inputs": [
+          "pdf/scanned/olmocr-bench/old_scans-69.pdf",
+          "pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf"
+        ],
+        "generator": "Ghostscript 10.08.0; qpdf 12.4.2",
+        "generator_license": "AGPL-3.0-or-later (Ghostscript); Apache-2.0 (qpdf)",
+        "fit": "Good: the adopted degraded two-column scan followed by the adopted scanned table page re-rendered as an image only, so neither page has a text layer and the PDF holds printed, degraded, multi-column, and tabular scans."
+      }
+    },
+    {
+      "id": "archive-6",
+      "covers": [
+        "check:archive-absolute-path",
+        "check:archive-traversal",
+        "check:double-extension",
+        "check:executable-extension",
+        "kind:tar",
+        "route:archive",
+        "route:unrouted"
+      ],
+      "candidate": {
+        "kind": "generated",
+        "command": "bsdtar -c -P -f archive/edge/entry-names.tar -s ',^text/encodings/windows-1252.txt$,../windows-1252.txt,' -s ',^text/encodings/koi8-r.txt$,/tmp/koi8-r.txt,' -s ',^text/encodings/euc-jp.txt$,invoice.pdf.exe,' text/encodings/windows-1252.txt text/encodings/koi8-r.txt text/encodings/euc-jp.txt",
+        "inputs": [
+          "text/encodings/windows-1252.txt",
+          "text/encodings/koi8-r.txt",
+          "text/encodings/euc-jp.txt"
+        ],
+        "generator": "bsdtar 3.8.10 (libarchive 3.8.10)",
+        "generator_license": "BSD-2-Clause",
+        "fit": "Good: a ustar archive of three adopted text files whose entry names bsdtar rewrites, with -P keeping them as written: ../windows-1252.txt, /tmp/koi8-r.txt, and invoice.pdf.exe, a text file under an executable's double extension. Nothing in it executes."
+      }
+    },
+    {
+      "id": "archive-7",
+      "covers": [
+        "check:archive-device",
+        "check:archive-hardlink",
+        "check:archive-symlink",
+        "kind:tar",
+        "route:archive"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/python/cpython/d3d0fddc01ce5076e0f33008cbef6faf2ffccd14/Lib/test/archivetestdata/testtar.tar",
+        "ref": "d3d0fddc01ce5076e0f33008cbef6faf2ffccd14",
+        "license": "PSF-2.0",
+        "license_url": "https://raw.githubusercontent.com/python/cpython/d3d0fddc01ce5076e0f33008cbef6faf2ffccd14/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: CPython's tarfile fixture, 43 entries with ustar magic, among them four hard links, three symbolic links, a character and a block device, and a FIFO, all empty nodes."
+      }
+    },
+    {
+      "id": "archive-8",
+      "covers": [
+        "check:archive-bomb",
+        "kind:zip",
+        "route:archive"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testZIP_corrupted_oom.zip",
+        "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
+        "license": "Apache-2.0",
+        "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Tika's 181-byte fixture whose one entry declares a compressed size of 4,294,967,295 bytes, past the ZIP's own size, which docproc's bomb rule flags whatever its size and ratio; Go's archive/zip reads its central directory."
+      }
+    },
+    {
+      "id": "archive-9",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "check:zip-unreadable",
+        "kind:zip",
+        "route:office"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testWORD_truncated.docx",
+        "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
+        "license": "Apache-2.0",
+        "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Tika's 763-byte truncated docx, which begins with a ZIP local header but whose central directory Go's archive/zip can't find."
+      }
+    },
+    {
+      "id": "archive-10",
+      "covers": [
+        "check:tar-unreadable",
+        "kind:tar",
+        "route:archive"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/golang/go/a70bd87dd2301443d9a2184391c5c728cc27295a/src/archive/tar/testdata/issue11169.tar",
+        "ref": "a70bd87dd2301443d9a2184391c5c728cc27295a",
+        "license": "BSD-3-Clause",
+        "license_url": "https://raw.githubusercontent.com/golang/go/a70bd87dd2301443d9a2184391c5c728cc27295a/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Go's 602-byte fixture, a header with ustar magic that archive/tar refuses with ErrHeader, as its reader test expects."
+      }
+    },
+    {
+      "id": "archive-11",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:archive",
+        "route:text",
+        "trait:scale.many-entries"
+      ],
+      "candidate": {
+        "kind": "generated",
+        "command": "d=$(mktemp -d) && split -n 1000 -a 4 -d --additional-suffix=.txt text/csv/tab-separated.tsv \"$d/part-\" && bsdtar --format=zip -cf archive/many-entries.zip -C \"$d\" .",
+        "inputs": [
+          "text/csv/tab-separated.tsv"
+        ],
+        "generator": "GNU coreutils 9.12 split; bsdtar 3.8.10 (libarchive 3.8.10)",
+        "generator_license": "GPL-3.0-or-later (coreutils); BSD-2-Clause",
+        "fit": "Fair: 1,000 text entries of about four bytes each, split from one adopted TSV, plus the directory entry, in a ZIP of about 180 KiB; it tests the entry count, not their content."
+      }
+    },
+    {
+      "id": "exec-1",
+      "covers": [
+        "check:executable",
+        "check:executable-extension",
+        "kind:pe",
+        "route:unrouted"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-code-module/src/test/resources/test-documents/testWindows-x86-32.exe",
+        "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
+        "license": "Apache-2.0",
+        "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Tika's 11,723-byte PE32 console program for i386, a parser fixture named .exe."
+      }
+    },
+    {
+      "id": "exec-2",
+      "covers": [
+        "check:executable",
+        "kind:elf",
+        "route:unrouted"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-code-module/src/test/resources/test-documents/testLinux-x86-64",
+        "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
+        "license": "Apache-2.0",
+        "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Tika's 8,377-byte ELF 64-bit x86-64 executable, a parser fixture."
+      }
+    },
+    {
+      "id": "exec-3",
+      "covers": [
+        "check:executable",
+        "kind:mach-o",
+        "route:unrouted"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-code-module/src/test/resources/test-documents/testMacOS-x86_64",
+        "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
+        "license": "Apache-2.0",
+        "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Tika's 8,448-byte Mach-O 64-bit x86_64 executable, a parser fixture."
+      }
+    },
+    {
+      "id": "exec-4",
+      "covers": [
+        "check:executable",
+        "check:polyglot",
+        "kind:shebang",
+        "route:unrouted"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/python/cpython/d3d0fddc01ce5076e0f33008cbef6faf2ffccd14/Lib/test/archivetestdata/exe_with_zip",
+        "ref": "d3d0fddc01ce5076e0f33008cbef6faf2ffccd14",
+        "license": "PSF-2.0",
+        "license_url": "https://raw.githubusercontent.com/python/cpython/d3d0fddc01ce5076e0f33008cbef6faf2ffccd14/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: CPython's zipfile fixture, header.sh's #!/bin/bash script with a stored ZIP appended, as its README records, so a shebang file carries a ZIP end record."
+      }
+    },
+    {
+      "id": "pdf-3",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-launch",
+        "kind:pdf",
+        "route:document"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/veraPDF/veraPDF-corpus/bb75f4f0073d9350dfd058c0162a367e6fadf25e/PDF_A-2b/6.5%20Action/6.5.1%20General/veraPDF%20test%20suite%206-5-1-t01-fail-a.pdf",
+        "ref": "bb75f4f0073d9350dfd058c0162a367e6fadf25e",
+        "license": "CC-BY-4.0",
+        "license_url": "https://raw.githubusercontent.com/veraPDF/veraPDF-corpus/bb75f4f0073d9350dfd058c0162a367e6fadf25e/README.md",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: veraPDF's 3,670-byte PDF/A-2b failure case whose one action is /S /Launch, outside any object stream, so pdfid's count sees it."
+      }
+    },
+    {
+      "id": "pdf-4",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-richmedia",
+        "kind:pdf",
+        "route:document"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/veraPDF/veraPDF-corpus/bb75f4f0073d9350dfd058c0162a367e6fadf25e/PDF_A-2b/6.3%20Annotations/6.3.1%20Annotation%20types/veraPDF%20test%20suite%206-3-1-t01-fail-a.pdf",
+        "ref": "bb75f4f0073d9350dfd058c0162a367e6fadf25e",
+        "license": "CC-BY-4.0",
+        "license_url": "https://raw.githubusercontent.com/veraPDF/veraPDF-corpus/bb75f4f0073d9350dfd058c0162a367e6fadf25e/README.md",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: veraPDF's 4,331-byte PDF/A-2b failure case with an annotation of /Subtype /RichMedia, outside any object stream."
+      }
+    },
+    {
+      "id": "pdf-5",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-xfa",
+        "kind:pdf",
+        "route:document"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/veraPDF/veraPDF-corpus/bb75f4f0073d9350dfd058c0162a367e6fadf25e/PDF_A-2b/6.4%20Interactive%20forms/6.4.2%20XFA%20forms/veraPDF%20test%20suite%206-4-2-t01-fail-a.pdf",
+        "ref": "bb75f4f0073d9350dfd058c0162a367e6fadf25e",
+        "license": "CC-BY-4.0",
+        "license_url": "https://raw.githubusercontent.com/veraPDF/veraPDF-corpus/bb75f4f0073d9350dfd058c0162a367e6fadf25e/README.md",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: veraPDF's 78,644-byte PDF/A-2b failure case whose AcroForm has an /XFA entry, outside any object stream."
+      }
+    },
+    {
+      "id": "pdf-6",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document",
+        "trait:text-layer.unmapped"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/veraPDF/veraPDF-corpus/bb75f4f0073d9350dfd058c0162a367e6fadf25e/PDF_A-1a/6.3%20Fonts/6.3.8%20Unicode%20character%20maps/veraPDF%20test%20suite%206-3-8-t01-fail-c.pdf",
+        "ref": "bb75f4f0073d9350dfd058c0162a367e6fadf25e",
+        "license": "CC-BY-4.0",
+        "license_url": "https://raw.githubusercontent.com/veraPDF/veraPDF-corpus/bb75f4f0073d9350dfd058c0162a367e6fadf25e/README.md",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: veraPDF's 15,859-byte failure case whose embedded LiberationSans subset is Identity-H with no ToUnicode map; the page shows Font and pdftotext reads )RQW."
+      }
+    },
+    {
+      "id": "pdf-7",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document",
+        "trait:scale.oversized-page"
+      ],
+      "candidate": {
+        "kind": "generated",
+        "command": "gs -q -o pdf/large/oversized-page.pdf -sDEVICE=pdfwrite -dDEVICEWIDTHPOINTS=14400 -dDEVICEHEIGHTPOINTS=14400 -dFIXEDMEDIA -dPDFFitPage pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf",
+        "inputs": [
+          "pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf"
+        ],
+        "generator": "Ghostscript 10.08.0",
+        "generator_license": "AGPL-3.0-or-later",
+        "fit": "Good: the adopted table scan scaled onto one 200-inch-square page, the largest PDF page, 30,000 pixels a side at docproc's 150 dpi, past its 64,000,000-pixel bound; its OCR text layer comes through."
+      }
+    },
+    {
+      "id": "office-4",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "check:activex",
+        "kind:zip",
+        "route:office"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/apache/poi/4793c3e741c2858bf29e728f13f617ee784243f4/test-data/spreadsheet/45540_form_Footer.xlsx",
+        "ref": "4793c3e741c2858bf29e728f13f617ee784243f4",
+        "license": "Apache-2.0",
+        "license_url": "https://raw.githubusercontent.com/apache/poi/4793c3e741c2858bf29e728f13f617ee784243f4/legal/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: POI's bug 45540 workbook, 57 KiB with form controls stored as xl/activeX parts, and no VBA project."
+      }
+    },
+    {
+      "id": "office-5",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "check:relationships-unreadable",
+        "kind:zip",
+        "route:office"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/apache/poi/4793c3e741c2858bf29e728f13f617ee784243f4/test-data/spreadsheet/clusterfuzz-testcase-minimized-POIXSSFFuzzer-5265527465181184.xlsx",
+        "ref": "4793c3e741c2858bf29e728f13f617ee784243f4",
+        "license": "Apache-2.0",
+        "license_url": "https://raw.githubusercontent.com/apache/poi/4793c3e741c2858bf29e728f13f617ee784243f4/legal/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: POI's 10,483-byte fuzzing case whose central directory reads, but whose _rels/.rels part fails its CRC-32, so reading the part ends with Go's zip checksum error."
+      }
+    },
+    {
+      "id": "office-6",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "feature:cell-notes",
+        "kind:zip",
+        "route:office"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testComment.xlsx",
+        "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
+        "license": "Apache-2.0",
+        "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Tika's 9,692-byte workbook with a cell note in xl/comments1.xml."
+      }
+    },
+    {
+      "id": "office-7",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "feature:smartart",
+        "kind:zip",
+        "route:office"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/apache/poi/4793c3e741c2858bf29e728f13f617ee784243f4/test-data/slideshow/smartart-simple.pptx",
+        "ref": "4793c3e741c2858bf29e728f13f617ee784243f4",
+        "license": "Apache-2.0",
+        "license_url": "https://raw.githubusercontent.com/apache/poi/4793c3e741c2858bf29e728f13f617ee784243f4/legal/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: POI's SmartArt fixture, a pptx whose diagram is in ppt/diagrams, its data, layout, colors, style, and drawing parts."
+      }
+    },
+    {
+      "id": "office-8",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office",
+        "trait:scale.large-sheet"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testRecordSizeExceeded.xlsx",
+        "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
+        "license": "Apache-2.0",
+        "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Fair: Tika's 12 MB workbook, one sheet of 200,000 rows by 15 columns of inline strings, 328 MB of sheet XML, so its Markdown passes 256 KiB many times over; heavy to process."
+      }
+    },
+    {
+      "id": "image-5",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:svg-foreign-object",
+        "kind:svg",
+        "route:vision-converted"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/web-platform-tests/wpt/de3c5d09c7b01a10b5d60cfdeac7fd37d929d579/svg/struct/reftests/requiredextensions-xhtml.tentative.svg",
+        "ref": "de3c5d09c7b01a10b5d60cfdeac7fd37d929d579",
+        "license": "BSD-3-Clause",
+        "license_url": "https://raw.githubusercontent.com/web-platform-tests/wpt/de3c5d09c7b01a10b5d60cfdeac7fd37d929d579/LICENSE.md",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: a 572-byte web-platform-tests reftest whose switch holds a foreignObject of XHTML; no script, though its h:link href also names a file."
+      }
+    },
+    {
+      "id": "image-6",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:svg-unreadable",
+        "kind:svg",
+        "route:vision-converted"
+      ],
+      "candidate": {
+        "kind": "generated",
+        "command": "head -c 600 image/vector/script-bearing.svg > image/vector/truncated.svg",
+        "inputs": [
+          "image/vector/script-bearing.svg"
+        ],
+        "generator": "GNU coreutils 9.12 head",
+        "generator_license": "GPL-3.0-or-later",
+        "fit": "Fair: the adopted SVG cut inside its text element's attributes, so the root element is found but the markup ends in an unclosed token; it keeps the script and handler the scan meets before it ends."
+      }
+    },
+    {
+      "id": "image-7",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "route:vision",
+        "trait:scan.camera",
+        "trait:scan.printed"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Grocery_Store_Receipt_in_Vienna.jpg",
+        "ref": "Commons file revision 1285421937, sha1 3cd5576d193d1efb8abbae07a5564a688765cfed",
+        "license": "CC0-1.0 (photo); public domain (document)",
+        "license_url": "https://commons.wikimedia.org/wiki/File:Grocery_Store_Receipt_in_Vienna.jpg",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: a 3120x4160 phone photo (moto g pure) of a crumpled printed receipt on a dark table, with folds, perspective, and uneven light; the card number is masked on the receipt itself."
+      }
+    },
+    {
+      "id": "text-1",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:utf-32 bom",
+        "route:text",
+        "trait:script.cyrillic",
+        "trait:script.han",
+        "trait:script.kana",
+        "trait:script.mixed"
+      ],
+      "candidate": {
+        "kind": "generated",
+        "command": "tail -c +4 text/encodings/utf8-bom.txt | iconv -f UTF-8 -t UTF-32 > text/encodings/utf32-bom.txt",
+        "inputs": [
+          "text/encodings/utf8-bom.txt"
+        ],
+        "generator": "GNU coreutils 9.12 tail; glibc 2.44 iconv",
+        "generator_license": "GPL-3.0-or-later (coreutils); LGPL-2.1-or-later (glibc)",
+        "fit": "Good: the adopted UTF-8 sample less its byte order mark, re-encoded as UTF-32, to which iconv adds the FF FE 00 00 mark; the text keeps its Cyrillic, Han, and kana."
+      }
+    },
+    {
+      "id": "text-2",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text",
+        "trait:script.devanagari"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/simonw/udhr-markdown/39b53ca7b0158c783f612ea8411e355b99819c88/declarations/hin.md",
+        "ref": "39b53ca7b0158c783f612ea8411e355b99819c88",
+        "license": "MIT",
+        "license_url": "https://raw.githubusercontent.com/simonw/udhr-markdown/39b53ca7b0158c783f612ea8411e355b99819c88/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: the Universal Declaration of Human Rights in Hindi, 28,807 bytes of Markdown, 30 articles of Devanagari sentences under YAML front matter; the README traces the text to the udhr npm package, MIT, from the Unicode UDHR corpus."
+      }
+    },
+    {
+      "id": "email-2",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "feature:attachments",
+        "feature:tnef-part",
+        "route:nested",
+        "trait:charset.declared"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/jstedfast/MimeKit/33fc900de9a5eeaa8a99ec5317c414f076b4f3df/UnitTests/TestData/tnef/ukr.eml",
+        "ref": "33fc900de9a5eeaa8a99ec5317c414f076b4f3df",
+        "license": "MIT",
+        "license_url": "https://raw.githubusercontent.com/jstedfast/MimeKit/33fc900de9a5eeaa8a99ec5317c414f076b4f3df/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: MimeKit's 14,370-byte test message, a koi8-r text part and an application/ms-tnef attachment named winmail.dat, under From and Date headers."
+      }
+    },
+    {
+      "id": "email-3",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "feature:smime-opaque",
+        "route:nested"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/mozilla/releases-comm-central/39236b1504283dded4e2acc5f886dfce59f5deee/mailnews/test/data/smime/alice.sig.SHA256.opaque.eml",
+        "ref": "39236b1504283dded4e2acc5f886dfce59f5deee",
+        "license": "MPL-2.0",
+        "license_url": "https://www.mozilla.org/en-US/MPL/license-policy/",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Thunderbird's S/MIME test message from the NSS test suite, its whole body one application/pkcs7-mime part of smime-type signed-data, under Date and From headers. The file has no header of its own; Mozilla's license policy puts such test code under MPL-2.0 unless it is public domain."
+      }
+    },
+    {
+      "id": "email-4",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "feature:smime-signed",
+        "route:nested"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/pyca/cryptography/dc9bc13ec1229323ad4ba113b024f695bbeb3cc4/vectors/cryptography_vectors/x509/PKITS_data/smime/SignedAllCertificatesNoPoliciesTest2.eml",
+        "ref": "dc9bc13ec1229323ad4ba113b024f695bbeb3cc4",
+        "license": "Apache-2.0 OR BSD-3-Clause",
+        "license_url": "https://raw.githubusercontent.com/pyca/cryptography/dc9bc13ec1229323ad4ba113b024f695bbeb3cc4/vectors/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: NIST PKITS's S/MIME test message as pyca's vectors carry it, a multipart/signed with an application/pkcs7-signature part over a text part, from a test domain."
+      }
+    },
+    {
+      "id": "email-5",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:mbox",
+        "route:nested",
+        "trait:scale.many-messages"
+      ],
+      "candidate": {
+        "kind": "generated",
+        "command": "python3 -I -c 'import mailbox, sys; box = mailbox.mbox(sys.argv[1]); msgs = [open(p, \"rb\").read() for p in sys.argv[2:]]; [box.add(msgs[i % len(msgs)]) for i in range(1000)]; box.flush()' email/mbox/many-messages.mbox email/eml/cpython/msg_07.eml email/eml/cpython/msg_15.eml email/eml/cpython/msg_16.eml email/eml/cpython/msg_22.eml",
+        "inputs": [
+          "email/eml/cpython/msg_07.eml",
+          "email/eml/cpython/msg_15.eml",
+          "email/eml/cpython/msg_16.eml",
+          "email/eml/cpython/msg_22.eml"
+        ],
+        "generator": "CPython 3.14.8 mailbox",
+        "generator_license": "PSF-2.0",
+        "fit": "Fair: exactly 1,000 messages, the four adopted CPython test messages repeated in turn, about 3.4 MB; it tests the count, and its From lines carry the time it was made."
+      }
+    },
+    {
+      "id": "email-6",
+      "covers": [
+        "kind:ost",
+        "route:unrouted"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://media.githubusercontent.com/media/rjohnsondev/java-libpst/f158a64acf2a0e46ac3bd699bc7a5a8da6c40d26/src/test/resources/example-2013.ost",
+        "ref": "f158a64acf2a0e46ac3bd699bc7a5a8da6c40d26",
+        "license": "Apache-2.0 (java-libpst is LGPL or Apache-2.0; taken under Apache-2.0)",
+        "license_url": "https://raw.githubusercontent.com/rjohnsondev/java-libpst/f158a64acf2a0e46ac3bd699bc7a5a8da6c40d26/README.txt",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: java-libpst's 16.8 MB Outlook 2013 offline store, !BDN magic with the SO client magic, which docproc identifies as an ost and mail refuses."
+      }
+    },
+    {
+      "id": "onenote-1",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "feature:section-groups",
+        "kind:mscf",
+        "route:onenote"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/laurent22/joplin/aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6/packages/app-cli/tests/support/onenote/test.onepkg",
+        "ref": "aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6",
+        "license": "AGPL-3.0-or-later",
+        "license_url": "https://raw.githubusercontent.com/laurent22/joplin/aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Joplin's 11,066-byte OneNote package, a cabinet of a notebook whose Section group folder holds two sections and its own table of contents, beside three root sections. Copyleft: it redistributes under the AGPL."
+      }
+    },
+    {
+      "id": "onenote-2",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "feature:image-ocr",
+        "kind:onestore",
+        "route:onenote"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/laurent22/joplin/aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6/packages/onenote-converter/test-data/Printout.one",
+        "ref": "aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6",
+        "license": "MPL-2.0",
+        "license_url": "https://raw.githubusercontent.com/laurent22/joplin/aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6/packages/onenote-converter/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Fair: Joplin's converter fixture, a 39,960-byte section whose page holds a printout of test4.pdf as a page image, beside UTF-16 text (Test! maln) that reads as OneNote's recognition of it; that the text is the image's own was read from strings, not parsed."
+      }
+    },
+    {
+      "id": "onenote-3",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "feature:page-revisions",
+        "kind:onestore",
+        "route:onenote"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/laurent22/joplin/aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6/packages/onenote-converter/test-data/Page%20versions.one",
+        "ref": "aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6",
+        "license": "MPL-2.0",
+        "license_url": "https://raw.githubusercontent.com/laurent22/joplin/aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6/packages/onenote-converter/LICENSE",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Fair: Joplin's converter fixture for page versions, a 25,128-byte section of one page, Test!, of math content; its earlier revisions are known from the fixture's name and the converter test it serves, not parsed."
+      }
+    },
+    {
+      "id": "audio-2",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "feature:attached-picture",
+        "kind:flac",
+        "route:audio"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-audiovideo-module/src/test/resources/test-documents/testFLAC_commentAndNativePicture.flac",
+        "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
+        "license": "Apache-2.0",
+        "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
+        "license_status": "verified",
+        "license_read": "2026-11-24",
+        "fit": "Good: Tika's 10,833-byte FLAC with two attached pictures, a JPEG and a PNG, as ffprobe lists them; the audio is 960 samples, not speech."
+      }
+    },
+    {
+      "id": "video-1",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "feature:multiple-streams",
+        "kind:mkv",
+        "route:video"
+      ],
+      "candidate": {
+        "kind": "generated",
+        "command": "ffmpeg -i video/prelinger-duck-and-cover/duck-and-cover-divx.avi -t 60 -map 0:v -map 0:a -map 0:a -c copy video/prelinger-duck-and-cover/duck-and-cover-two-audio.mkv",
+        "inputs": [
+          "video/prelinger-duck-and-cover/duck-and-cover-divx.avi"
+        ],
+        "generator": "FFmpeg n9.0.2",
+        "generator_license": "GPL-3.0-or-later (this FFmpeg build)",
+        "fit": "Fair: the first minute of the adopted public-domain Prelinger film, its streams copied unchanged into Matroska with the audio stream mapped twice, so it has two audio streams; the two are identical."
+      }
+    },
+    {
+      "id": "email-7",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "feature:attachment-by-reference",
+        "route:nested"
+      ],
+      "candidate": null
+    },
+    {
+      "id": "email-8",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "feature:rights-managed",
+        "route:nested"
       ],
       "candidate": null
     }

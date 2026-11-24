@@ -163,15 +163,44 @@ directory. With `--facts`, it also prints each sample's probe findings.
 Each scenario lists the adopted samples that exercise it. A scenario that no adopted sample
 exercises is a gap in `.gaps`. Each gap has an `id`, the `covers` a candidate must exercise, and
 a `candidate`. A replaced sample names the gap whose covers contain its own. Replaced samples that
-need the same covers, or covers inside another replaced sample's, share one gap. Each gap names
-one candidate:
+need the same covers, or covers inside another replaced sample's, share one gap. A gap for
+scenarios no sample exercised groups the IDs one candidate file can exercise together.
 
-- **sourced**: the candidate's URL, pinned to a commit where one exists, and its license, read
-  at the source and recorded as verified.
-- **generated**: the command that makes the candidate, the generator, and the generator's license.
+The data stores no list of samples per scenario: it follows from the placements. To print each
+scenario with the adopted samples that exercise it, or with the gaps that cover it, run:
 
-Each candidate also gets one line on its quality and fit. None is hand-built. A gap whose
-`candidate` is `null` has none yet.
+```sh
+jq -r '[.samples[] | select(.disposition == "adopt")] as $adopted | .gaps as $gaps
+  | [.vocabulary.library, .vocabulary.trait, .vocabulary.feature] | map(keys[]) | .[] as $id
+  | [$adopted[] | select(any(.library[], .traits[], .features[]; . == $id)) | .path] as $paths
+  | if $paths != [] then "\($id)\t\($paths | join(" "))"
+    else "\($id)\tgap \([$gaps[] | select(any(.covers[]; . == $id)) | .id] | join(" "))" end' \
+  docs/coverage.json
+```
+
+### Candidates
+
+Each gap names one candidate, its `candidate` object, of one of two kinds, its `kind`:
+
+- **sourced**: a file fetched from a well-known test suite or an openly licensed collection. It
+  records the `url` it is fetched from and its `ref`, the commit or revision the URL is pinned
+  to; a GitHub URL carries its commit, so it can't drift. It records its `license`, the
+  `license_url` of the license as read at the source, `license_read`, the date it was read, and
+  `license_status: "verified"`.
+- **generated**: a file a recorded command makes. It records the exact `command`, run from the
+  corpus root, its `inputs`, the `generator` that runs, with its version, and the
+  `generator_license`. The inputs are adopted samples only, and a command may read its own
+  earlier output, so nothing in a candidate is typed by hand. The candidate's own license
+  follows from its inputs': an archive of adopted samples carries their licenses.
+
+Each candidate also has a `fit` line: its quality, and how it exercises the gap's covers.
+
+A suspicious scenario, such as an archive bomb, a path traversal, an executable, or a polyglot, has
+a harmless candidate: a parser fixture from an established test suite, or a file built by a
+recorded command from benign inputs.
+
+A candidate is a proposal. Fetching or generating it into the corpus, and confirming it with
+docproc, is the next step. A gap whose `candidate` is `null` has none yet, and fails the check.
 
 To count the dispositions and gaps, run:
 
@@ -196,6 +225,14 @@ environment variable points it at another copy. It fails when:
 - a trim names a sample that isn't adopted, one whose covers don't contain its own, or one another
   adopted sample beats on the tie-breaks;
 - a replace names a gap that doesn't exist, or one whose covers don't contain its own;
+- two gaps share an id, or a gap has no candidate;
+- a candidate lacks its fit line, or its kind is neither sourced nor generated;
+- a sourced candidate lacks its https URL, its ref, its license, its https license URL, or the
+  date its license was read, its license status isn't verified, or its GitHub URL isn't pinned
+  to the 40-hex commit its ref names;
+- a generated candidate lacks its command, its generator, or the generator's license, or lists
+  no inputs, or an input that isn't an adopted sample;
+- a vocabulary ID is exercised by no adopted sample and is in no gap's covers;
 - an adopted sample isn't redistributable or is sensitive;
 - two adopted samples share a format and a covers set, or one adopted sample's covers lie inside
   another's or equal another's that wins the tie-breaks;
