@@ -215,9 +215,10 @@ jq '(.samples | group_by(.disposition) | map({(.[0].disposition): length}) | add
 
 ## The check
 
-`scripts/check.sh` validates the data whenever `docs/coverage.json` exists. The `COVERAGE`
-environment variable points it at another copy. It fails when:
+`scripts/check.sh` validates `docs/coverage.json`, or the copy the `COVERAGE` environment
+variable names. It fails when:
 
+- the file is missing, or its `.samples` or `.gaps` isn't an array;
 - a vocabulary entry doesn't have its axis's ID shape;
 - a library entry lacks its identifier or its pinned link;
 - a trait or feature entry lacks its rule;
@@ -247,12 +248,13 @@ environment variable points it at another copy. It fails when:
 - an entry in `.samples` isn't a `~/docs` sample;
 - an entry's format, bytes, license status, redistributability, or sensitivity differs from the
   manifest's;
+- an entry links a truth or doc file that isn't in the manifest;
 - a truth or doc file in the manifest is linked by no sample and isn't in `.docs_without_sample`.
 
-The last four compare against `${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json`, and run only when
-that file exists. `~/docs` is removed when the corpus is done, so the check doesn't need it. Without
-`~/docs`, the check still verifies every disposition from the facts each entry records. Each
-failure message names its fix.
+The last five compare against `${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json`, and run only when
+that file exists; a `DOCS_REFERENCE` that names no manifest fails the check. `~/docs` is removed
+when the corpus is done, so the check doesn't need it. Without `~/docs`, the check still verifies
+every disposition from the facts each entry records. Each failure message names its fix.
 
 To fix an unknown ID, use an ID the vocabulary defines. If the scenario is new, define it in the
 vocabulary, with its link or rule.

@@ -46,13 +46,28 @@ if [ -f MANIFEST.json ]; then
     | group_by(.key)[] | select(length > 1) | map(.path) | join(", ")' MANIFEST.json)
 fi
 
+report() {
+  local problem
+  while read -r problem; do
+    if [ -n "$problem" ]; then
+      err "$coverage: $problem"
+    fi
+  done <<<"$1"
+}
+
 coverage=${COVERAGE:-docs/coverage.json}
-if [ -f "$coverage" ]; then
+if [ ! -f "$coverage" ]; then
+  err "$coverage: missing; restore docs/coverage.json from git, or point COVERAGE at the coverage data"
+else
   if problems=$(jq -r '
     def where: map(if type == "number" then "[\(.)]" else ".\(.)" end) | join("");
     .vocabulary as $v
     | ([$v.library, $v.trait, $v.feature] | map(keys) | add) as $ids
-    | ($v.library | to_entries[]
+    | (select((.samples | type) != "array")
+        | "samples: is not an array; list every ~/docs sample there, as scripts/place-library.sh prints them"),
+      (select((.gaps | type) != "array")
+        | "gaps: is not an array; list the gaps there, or [] when there are none"),
+      ($v.library | to_entries[]
         | select((.key | test("^(kind|route|check|capability):.")) | not)
         | "vocabulary.library: \(.key) is not kind:, route:, check:, or capability: and a value"),
       ($v.library | to_entries[]
@@ -94,11 +109,7 @@ if [ -f "$coverage" ]; then
         | select(IN($ids[]) | not)
         | "samples[\($i)].judged: \(.) is not in the vocabulary; judge an ID the vocabulary defines")
   ' "$coverage"); then
-    while read -r problem; do
-      if [ -n "$problem" ]; then
-        err "$coverage: $problem"
-      fi
-    done <<<"$problems"
+    report "$problems"
   else
     err "$coverage: jq could not read it; it must be JSON with a vocabulary of library, trait, and feature objects"
   fi
@@ -151,11 +162,7 @@ if [ -f "$coverage" ]; then
         | select(.path != $a.path and .format != $a.format and covers == ($a | covers) and rank > ($a | rank))
         | "\(.path): its covers equal \($a.path)\u0027s, which wins the tie-break; trim it for \($a.path)")
   ' "$coverage"); then
-    while read -r problem; do
-      if [ -n "$problem" ]; then
-        err "$coverage: $problem"
-      fi
-    done <<<"$problems"
+    report "$problems"
   else
     err "$coverage: jq could not check its dispositions; each sample needs library, traits, features, and disposition fields"
   fi
@@ -215,17 +222,15 @@ if [ -f "$coverage" ]; then
         | select(IN($exercised[]) | not) | select(IN($gapped[]) | not)
         | "vocabulary: \(.) is exercised by no adopted sample and is in no gap\u0027s covers; adopt a sample that exercises it, or add it to a gap\u0027s covers")
   ' "$coverage"); then
-    while read -r problem; do
-      if [ -n "$problem" ]; then
-        err "$coverage: $problem"
-      fi
-    done <<<"$problems"
+    report "$problems"
   else
     err "$coverage: jq could not check its gaps; each gap needs an id, covers, and a candidate"
   fi
 
   reference=${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json
-  if [ -f "$reference" ]; then
+  if [ -n "${DOCS_REFERENCE:-}" ] && [ ! -f "$reference" ]; then
+    err "$reference: missing; point DOCS_REFERENCE at a directory with MANIFEST.json, or unset it"
+  elif [ -f "$reference" ]; then
     if problems=$(jq -r --slurpfile reference "$reference" '
       (.samples // [] | map({key: .path, value: .sha256}) | from_entries) as $listed
       | ($reference[0].files | map(select(.role == "sample") | {key: .path, value: .sha256}) | from_entries) as $expected
@@ -251,11 +256,7 @@ if [ -f "$coverage" ]; then
           | select(IN($linked[]) | not)
           | "\(.): a \($ref) truth or doc file no sample links; add it to its sample\u0027s truth or docs, or to docs_without_sample with its handling")
     ' --arg ref "$reference" "$coverage"); then
-      while read -r problem; do
-        if [ -n "$problem" ]; then
-          err "$coverage: $problem"
-        fi
-      done <<<"$problems"
+      report "$problems"
     else
       err "$coverage: jq could not compare it with $reference; both must be JSON, the reference with a files array"
     fi
