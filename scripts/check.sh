@@ -8,12 +8,13 @@
 # one disposition: a trim names an adopted sample whose covers contain its own and that the
 # tie-break prefers, a replace names a gap whose covers contain its own, no adopted sample is
 # non-redistributable or sensitive, and no adopted sample's covers equal, with its format, or lie
-# inside another's. Every gap has a candidate with a fit line: a sourced one with its https url,
-# a ref that a GitHub url carries as its commit, its license, the license URL read, the date read,
-# and a verified license status; or a generated one with its command, generator, generator
-# license, and inputs that are adopted samples. Every vocabulary ID is exercised by an adopted
-# sample or is in a gap's covers. When ${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json exists, every
-# sample in it appears in the coverage once, by path and sha256, with the manifest's format,
+# inside another's. Every gap has a candidate: a sourced one with its https url, a ref that a
+# GitHub url carries as its commit, its license, the license URL read, the date read, and a
+# verified license status; a generated one with its command, generator, generator license, and
+# inputs that are adopted samples; each of those with a fit line; or an unavailable one that
+# records what was searched and the reason none exists. Every vocabulary ID is exercised by an
+# adopted sample or is in a gap's covers. When ${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json exists,
+# every sample in it appears in the coverage once, by path and sha256, with the manifest's format,
 # bytes, license_status, redistributable, and sensitivity, the coverage lists no other, and every
 # truth and doc file in it is linked. Then runs lint-context and lint-references, and fails if any
 # part fails. Reads no network.
@@ -186,9 +187,9 @@ if [ -f "$coverage" ]; then
         | "gaps: \(.[0].id) appears \(length) times; give each gap its own id"),
       ((.gaps // [])[] | .id as $id | .candidate as $c
         | if ($c | type) != "object" then
-            "gaps.\($id): has no candidate; name a sourced one (url, ref, license, license_url, license_read, license_status \"verified\") or a generated one (command, inputs, generator, generator_license)"
+            "gaps.\($id): has no candidate; name a sourced one (url, ref, license, license_url, license_read, license_status \"verified\") or a generated one (command, inputs, generator, generator_license), or record it unavailable (searched, reason)"
           else
-            (select(($c.fit | text) | not)
+            (select(($c.kind == "sourced" or $c.kind == "generated") and (($c.fit | text) | not))
               | "gaps.\($id).candidate: needs a fit line; say its quality and how it exercises the gap\u0027s covers"),
             (if $c.kind == "sourced" then
               (select(($c.url | text) and ($c.url | startswith("https://")) | not)
@@ -218,8 +219,13 @@ if [ -f "$coverage" ]; then
                 $c.inputs[] | select(IN($adopted[]) | not)
                 | "gaps.\($id).candidate.inputs: \(.) is not an adopted sample; generate only from adopted samples"
               end)
+            elif $c.kind == "unavailable" then
+              (select(($c.searched | text) | not)
+                | "gaps.\($id).candidate: an unavailable candidate needs searched; record the suites, files, and searches you tried"),
+              (select(($c.reason | text) | not)
+                | "gaps.\($id).candidate: an unavailable candidate needs reason; say why no sourced or generated file can exercise the covers")
             else
-              "gaps.\($id).candidate: kind is \($c.kind | tojson); set kind to \"sourced\" or \"generated\""
+              "gaps.\($id).candidate: kind is \($c.kind | tojson); set kind to \"sourced\", \"generated\", or \"unavailable\""
             end)
           end),
       ([.vocabulary.library, .vocabulary.trait, .vocabulary.feature] | map(keys) | add[]

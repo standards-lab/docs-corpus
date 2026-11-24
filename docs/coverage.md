@@ -180,7 +180,7 @@ jq -r '[.samples[] | select(.disposition == "adopt")] as $adopted | .gaps as $ga
 
 ### Candidates
 
-Each gap names one candidate, its `candidate` object, of one of two kinds, its `kind`:
+Each gap names one candidate, its `candidate` object, of one of three kinds, its `kind`:
 
 - **sourced**: a file fetched from a well-known test suite or an openly licensed collection. It
   records the `url` it is fetched from and its `ref`, the commit or revision the URL is pinned
@@ -192,8 +192,13 @@ Each gap names one candidate, its `candidate` object, of one of two kinds, its `
   `generator_license`. The inputs are adopted samples only, and a command may read its own
   earlier output, so nothing in a candidate is typed by hand. The candidate's own license
   follows from its inputs': an archive of adopted samples carries their licenses.
+- **unavailable**: no file can be sourced or generated for the gap's covers. It records
+  `searched`, the suites, files, and searches tried, and `reason`, why none exists, such as a
+  structure only a live mail server makes. Curate leaves such a gap open: the corpus doesn't
+  exercise its scenarios until a candidate turns up.
 
-Each candidate also has a `fit` line: its quality, and how it exercises the gap's covers.
+Each sourced or generated candidate also has a `fit` line: its quality, and how it exercises the
+gap's covers.
 
 A suspicious scenario, such as an archive bomb, a path traversal, an executable, or a polyglot, has
 a harmless candidate: a parser fixture from an established test suite, or a file built by a
@@ -226,12 +231,14 @@ environment variable points it at another copy. It fails when:
   adopted sample beats on the tie-breaks;
 - a replace names a gap that doesn't exist, or one whose covers don't contain its own;
 - two gaps share an id, or a gap has no candidate;
-- a candidate lacks its fit line, or its kind is neither sourced nor generated;
+- a candidate's kind is not sourced, generated, or unavailable, or a sourced or generated
+  candidate lacks its fit line;
 - a sourced candidate lacks its https URL, its ref, its license, its https license URL, or the
   date its license was read, its license status isn't verified, or its GitHub URL isn't pinned
   to the 40-hex commit its ref names;
 - a generated candidate lacks its command, its generator, or the generator's license, or lists
   no inputs, or an input that isn't an adopted sample;
+- an unavailable candidate lacks what was searched or the reason;
 - a vocabulary ID is exercised by no adopted sample and is in no gap's covers;
 - an adopted sample isn't redistributable or is sensitive;
 - two adopted samples share a format and a covers set, or one adopted sample's covers lie inside

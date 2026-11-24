@@ -12671,17 +12671,35 @@
         "feature:attachment-by-reference",
         "route:nested"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "unavailable",
+        "searched": "156 .msg and .eml fixtures scanned for PidTagAttachMethod 2, 4, or 7 and for message.rpmsg: Apache POI test-data/hsmf, Apache Tika test-documents, MSGReader SampleFiles, TeamMsgExtractor/msg-extractor, hfig/mapi, mvz/email-outlook-message-perl, ctabin/jotlmsg, and Aspose.Email's .NET and Java examples; GitHub code search for ATTACH_BY_REFERENCE and attach-by-reference test messages, which found only library code and docs; web searches for cloud or by-reference attachment fixtures. The one public message found by these searches was a real phishing sample (rf-peixoto/phishing_pot), rejected.",
+        "reason": "No public, licensed fixture holds an attachment stored by reference: one is made only by Outlook against an Exchange or SharePoint store attaching by reference or as a cloud link. docproc's own tests build such a message in code, which would count as hand-built."
+      }
     },
     {
       "id": "email-8",
       "covers": [
         "capability:embeddings",
         "capability:extraction",
+        "feature:attachments",
+        "feature:embedded-messages",
         "feature:rights-managed",
-        "route:nested"
+        "route:nested",
+        "route:text",
+        "route:unrouted"
       ],
-      "candidate": null
+      "candidate": {
+        "kind": "generated",
+        "command": "python3 -I -c 'import email, email.policy, sys; m = email.message_from_bytes(open(sys.argv[1], \"rb\").read(), policy=email.policy.default); m[\"Content-Class\"] = \"rpmsg.message\"; m.add_attachment(open(sys.argv[2], \"rb\").read(), maintype=\"application\", subtype=\"x-microsoft-rpmsg-message\", filename=\"message.rpmsg\"); open(sys.argv[3], \"wb\").write(m.as_bytes())' email/eml/cpython/msg_36.eml text/encodings/windows-1252.txt email/eml/rights-managed.eml",
+        "inputs": [
+          "email/eml/cpython/msg_36.eml",
+          "text/encodings/windows-1252.txt"
+        ],
+        "generator": "CPython 3.14.8 email",
+        "generator_license": "PSF-2.0",
+        "fit": "Fair: the adopted msg_36.eml, its body and attachments unchanged, with a Content-Class: rpmsg.message header and the adopted windows-1252.txt attached as message.rpmsg; docproc detects a rights-managed .eml by that header and that attachment name (docproc tools/mail/README.md:190-193, src/mapping.rs:33-36). The payload is not real rights-management encryption, which docproc doesn't read anyway."
+      }
     }
   ],
   "docs_without_sample": [
