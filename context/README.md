@@ -17,7 +17,8 @@ versioned corpus in this repository, public from v1 ([README.md](../README.md)).
   step that verifies it against the manifest ([README.md](../README.md)).
 - **Baseline** (planned): docproc's and docinfer's run over each version, the reference timings
   capstone.data-intelligence measures against.
-- **Check** (built): the manifest and scenario checks once `MANIFEST.json` is present, the
+- **Check** (built): the Go gates for [tools/coverage](../tools/coverage), from build to
+  golangci-lint, the manifest and scenario checks once `MANIFEST.json` is present, the
   [coverage checks](../docs/coverage.md#the-check), and `lint-context` and `lint-references`
   ([scripts/check.sh](../scripts/check.sh)), with the tools pinned in [mise.toml](../mise.toml). No
   CI runs it.
