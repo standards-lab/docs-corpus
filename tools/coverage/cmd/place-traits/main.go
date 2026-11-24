@@ -12,7 +12,7 @@ import (
 
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	err := app.PlaceTraits(ctx, os.Args[1:], os.Stdout)
+	err := app.PlaceTraits(ctx, os.Args[1:], os.Stdout, os.Stderr)
 	stop()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "place-traits:", err)

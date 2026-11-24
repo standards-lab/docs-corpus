@@ -2,6 +2,7 @@ package app_test
 
 import (
 	"bytes"
+	"context"
 	"os"
 	"path/filepath"
 	"strings"
@@ -45,6 +46,32 @@ func TestDisposeWritesTheDisposedData(t *testing.T) {
 	}
 	if stdout.Len() != 0 {
 		t.Errorf("Dispose wrote %q despite its error", stdout.String())
+	}
+}
+
+func TestPlaceTraitsRefusesOtherArguments(t *testing.T) {
+	ctx, cancel := context.WithCancel(t.Context())
+	cancel()
+	var stdout, stderr bytes.Buffer
+	if err := app.PlaceTraits(ctx, []string{"--bogus"}, &stdout, &stderr); err == nil || !strings.Contains(stderr.String(), "-bogus") {
+		t.Errorf("PlaceTraits(--bogus) = %v with stderr %q, want the flag refused", err, stderr.String())
+	}
+	stderr.Reset()
+	if err := app.PlaceTraits(ctx, []string{"extra"}, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "usage: place-traits") {
+		t.Errorf("PlaceTraits(extra) = %v, want its usage", err)
+	}
+	if stdout.Len() != 0 {
+		t.Errorf("PlaceTraits wrote %q despite its error", stdout.String())
+	}
+}
+
+func TestPlaceTraitsAcceptsFacts(t *testing.T) {
+	ctx, cancel := context.WithCancel(t.Context())
+	cancel()
+	var stdout, stderr bytes.Buffer
+	err := app.PlaceTraits(ctx, []string{"--facts"}, &stdout, &stderr)
+	if stderr.Len() != 0 || err != nil && strings.Contains(err.Error(), "usage") {
+		t.Errorf("PlaceTraits(--facts) = %v with stderr %q, want --facts accepted", err, stderr.String())
 	}
 }
 
