@@ -18,6 +18,7 @@ import (
 	"golang.org/x/text/encoding/ianaindex"
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/mail"
+	"github.com/standards-lab/docs-corpus/tools/coverage/text"
 )
 
 // Parser parses messages with Go's standard library. Its zero value is ready to use.
@@ -222,8 +223,7 @@ func (p *part) Text() string {
 }
 
 func lookup(charset string) encoding.Encoding {
-	switch charset {
-	case "", "utf-8", "utf8", "us-ascii", "ascii":
+	if text.UTF8Name(charset) {
 		return nil
 	}
 	if e, err := ianaindex.MIME.Encoding(charset); err == nil && e != nil {
