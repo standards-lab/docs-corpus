@@ -1,3 +1,7 @@
+// From CPython (v3.14.8), PSF-2.0: the codec aliases of Lib/encodings/aliases.py and normalize_encoding of Lib/encodings/__init__.py, ported to Go and reduced to the codecs golang.org/x/text provides.
+//
+// Copyright (c) 2001 Python Software Foundation; All Rights Reserved
+
 package main
 
 import (
@@ -118,10 +122,6 @@ func scriptsIn(text string) (map[string]bool, []scriptCount) {
 
 func isPySpace(r rune) bool {
 	return unicode.IsSpace(r) || (r >= 0x1C && r <= 0x1F)
-}
-
-func isPyPrintable(r rune) bool {
-	return unicode.IsPrint(r)
 }
 
 func pyNormalizeEncoding(name string) string {
@@ -347,7 +347,7 @@ func charsetOf(data []byte) (string, string) {
 			}
 			printable := 0
 			for _, r := range decoded {
-				if isPyPrintable(r) || isPySpace(r) {
+				if unicode.IsPrint(r) || isPySpace(r) {
 					printable++
 				}
 			}
