@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"regexp"
@@ -33,10 +34,6 @@ func isDigits(s string) bool {
 		}
 	}
 	return true
-}
-
-func pyLines(b []byte) []string {
-	return pySplitLines(string(b))
 }
 
 func pdf(path, rel string, rec *runRecord) (set, set, *object) {
@@ -75,11 +72,10 @@ func pdf(path, rel string, rec *runRecord) (set, set, *object) {
 		rendered = pages
 	}
 	slices.SortFunc(dpiValues, comparePy)
-	dpiList := append([]any{}, dpiValues...)
 	facts.set("pages", pages)
 	facts.set("rendered_pages", imagePages)
 	facts.set("text_pages", len(textPages))
-	facts.set("dpis", dpiList)
+	facts.set("dpis", dpiValues)
 	if rendered > 0 {
 		if len(textPages) == 0 {
 			traits.add("trait:text-layer.none")
@@ -93,7 +89,7 @@ func pdf(path, rel string, rec *runRecord) (set, set, *object) {
 	if max(pages, rendered) >= 100 {
 		traits.add("trait:scale.many-pages")
 	}
-	images := pyLines(run([]string{"pdfimages", "-list", path}, nil, probeTimeout))
+	images := pySplitLines(string(run([]string{"pdfimages", "-list", path}, nil, probeTimeout)))
 	if len(images) > 2 {
 		images = images[2:]
 	} else {
@@ -125,11 +121,8 @@ func pdf(path, rel string, rec *runRecord) (set, set, *object) {
 	if len(ppis) > 3 {
 		ppis = ppis[:3]
 	}
-	if ppis == nil {
-		ppis = []int{}
-	}
 	facts.set("large_image_ppi", ppis)
-	fonts := pyLines(run([]string{"pdffonts", path}, nil, probeTimeout))
+	fonts := pySplitLines(string(run([]string{"pdffonts", path}, nil, probeTimeout)))
 	if len(fonts) > 2 {
 		fonts = fonts[2:]
 	} else {
@@ -186,7 +179,7 @@ func audioVideo(path string) (set, set, *object) {
 			Duration any `json:"duration"`
 		} `json:"format"`
 	}
-	dec := json.NewDecoder(strings.NewReader(string(data)))
+	dec := json.NewDecoder(bytes.NewReader(data))
 	dec.UseNumber()
 	if err := dec.Decode(&probe); err != nil {
 		probe.Streams = nil
@@ -237,9 +230,6 @@ func audioVideo(path string) (set, set, *object) {
 		channels = append(channels, c)
 	}
 	slices.Sort(channels)
-	if rates == nil {
-		rates = []int{}
-	}
 	rounded, _ := strconv.ParseFloat(strconv.FormatFloat(duration, 'f', 1, 64), 64)
 	facts := newObject()
 	facts.set("duration", pyFloat(rounded))

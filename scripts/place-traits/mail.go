@@ -13,6 +13,12 @@ import (
 
 type set map[string]bool
 
+func newSet(ids ...string) set {
+	s := set{}
+	s.add(ids...)
+	return s
+}
+
 func (s set) add(ids ...string) {
 	for _, id := range ids {
 		s[id] = true
@@ -169,7 +175,7 @@ func mailRecords(rows []record) (set, set, *object) {
 	top := 0
 	for _, rec := range rows {
 		r := rec.row
-		if !strings.HasPrefix(rec.name, "message") || !(r.has("subject") || r.has("sender") || r.has("transport_headers")) {
+		if !strings.HasPrefix(rec.name, "message") || !r.has("subject") && !r.has("sender") && !r.has("transport_headers") {
 			continue
 		}
 		messages++
@@ -185,7 +191,7 @@ func mailRecords(rows []record) (set, set, *object) {
 			cls = "IPM.Note"
 		}
 		upper := strings.ToUpper(cls)
-		if !(strings.HasPrefix(upper, "IPM.NOTE") || strings.HasPrefix(upper, "REPORT.IPM.NOTE")) || strings.HasPrefix(upper, "IPM.NOTE.RULES") {
+		if !strings.HasPrefix(upper, "IPM.NOTE") && !strings.HasPrefix(upper, "REPORT.IPM.NOTE") || strings.HasPrefix(upper, "IPM.NOTE.RULES") {
 			if nonNoteItem.MatchString(cls) {
 				features.add("feature:non-note-items")
 			}
@@ -271,7 +277,7 @@ func msgBodies(path string) ([]string, error) {
 		var id []byte
 		for k := 0; k < 4; k++ {
 			c := rest[2*k]
-			if rest[2*k+1] != 0 || !(c >= '0' && c <= '9' || c >= 'A' && c <= 'F') {
+			if rest[2*k+1] != 0 || (c < '0' || c > '9') && (c < 'A' || c > 'F') {
 				id = nil
 				break
 			}

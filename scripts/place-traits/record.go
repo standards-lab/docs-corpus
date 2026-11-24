@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 	"strings"
@@ -37,7 +38,7 @@ type runRecord struct {
 	events  map[string][]runEvent
 }
 
-func loadRun(runs, id string) (*runRecord, error) {
+func loadRun(runs, id string) (_ *runRecord, err error) {
 	r := &runRecord{content: filepath.Join(filepath.Dir(runs), "content"), events: map[string][]runEvent{}}
 	data, err := os.ReadFile(filepath.Join(runs, id, "manifest.json"))
 	if err != nil {
@@ -54,7 +55,7 @@ func loadRun(runs, id string) (*runRecord, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	defer func() { err = errors.Join(err, f.Close()) }()
 	scanner := bufio.NewScanner(f)
 	scanner.Buffer(nil, 1<<30)
 	for scanner.Scan() {

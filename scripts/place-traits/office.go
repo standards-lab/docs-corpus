@@ -16,13 +16,16 @@ type zipEntry struct {
 	data []byte
 }
 
-func zipTexts(path string) []zipEntry {
+func zipTexts(path string) (entries []zipEntry) {
 	z, err := zip.OpenReader(path)
 	if err != nil && !errors.Is(err, zip.ErrInsecurePath) {
 		return nil
 	}
-	defer z.Close()
-	var entries []zipEntry
+	defer func() {
+		if z.Close() != nil {
+			entries = nil
+		}
+	}()
 	index := map[string]int{}
 	for _, f := range z.File {
 		rc, err := f.Open()
@@ -30,8 +33,7 @@ func zipTexts(path string) []zipEntry {
 			return nil
 		}
 		data, err := io.ReadAll(rc)
-		rc.Close()
-		if err != nil {
+		if errors.Join(err, rc.Close()) != nil {
 			return nil
 		}
 		if i, ok := index[f.Name]; ok {
@@ -389,11 +391,7 @@ func slideOffpage(parts []xmlPart, byName map[string]string) bool {
 
 var legacyTarget = map[string]string{".doc": "docx", ".rtf": "docx", ".wpd": "docx", ".xls": "xlsx", ".ppt": "pptx"}
 
-var ooxmlKinds = set{}
-
-func init() {
-	ooxmlKinds.add("docx", "xlsx", "pptx", "docm", "dotm", "xlsm", "xltm", "pptm", "dotx", "xltx", "potx", "ppsx")
-}
+var ooxmlKinds = newSet("docx", "xlsx", "pptx", "docm", "dotm", "xlsm", "xltm", "pptm", "dotx", "xltx", "potx", "ppsx")
 
 func converted(path, tmp string, n int) string {
 	target, ok := legacyTarget[strings.ToLower(filepath.Ext(path))]

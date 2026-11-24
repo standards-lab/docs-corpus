@@ -2,7 +2,7 @@
 // the repository root.
 //
 //	go run ./scripts/generate rights-managed <message.eml> <payload> <out.eml>
-//	go run ./scripts/generate mbox <out.mbox> <message.eml>...
+//	go run ./scripts/generate mbox <out.mbox> <message.eml> [<message.eml> ...]
 //
 // rights-managed adds a Content-Class: rpmsg.message header to a multipart/mixed message and
 // attaches the payload as message.rpmsg. mbox writes 1,000 messages, the given ones in turn.
@@ -111,7 +111,7 @@ func mbox(messages [][]byte, now time.Time) []byte {
 
 func generate(args []string) error {
 	if len(args) == 0 {
-		return errors.New("usage: generate rights-managed <message.eml> <payload> <out.eml> | mbox <out.mbox> <message.eml>...")
+		return errors.New("usage: generate rights-managed <message.eml> <payload> <out.eml> | mbox <out.mbox> <message.eml> [<message.eml> ...]")
 	}
 	switch args[0] {
 	case "rights-managed":
@@ -133,7 +133,7 @@ func generate(args []string) error {
 		return os.WriteFile(args[3], out, 0o644)
 	case "mbox":
 		if len(args) < 3 {
-			return errors.New("usage: generate mbox <out.mbox> <message.eml>...")
+			return errors.New("usage: generate mbox <out.mbox> <message.eml> [<message.eml> ...]")
 		}
 		var messages [][]byte
 		for _, path := range args[2:] {

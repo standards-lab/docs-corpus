@@ -13,6 +13,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -28,6 +29,17 @@ const (
 	convertTimeout = 300 * time.Second
 )
 
+var probeTools = []string{"pdfinfo", "pdfimages", "pdffonts", "qpdf", "ffprobe", "magick", "uchardet", "bsdtar", "soffice"}
+
+func requireProbeTools() error {
+	for _, tool := range probeTools {
+		if _, err := exec.LookPath(tool); err != nil {
+			return fmt.Errorf("%s is not on PATH; install it", tool)
+		}
+	}
+	return nil
+}
+
 func run(args []string, input []byte, timeout time.Duration) []byte {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
@@ -39,10 +51,6 @@ func run(args []string, input []byte, timeout time.Duration) []byte {
 	cmd.Stdout = &out
 	cmd.WaitDelay = 10 * time.Second
 	err := cmd.Run()
-	if errors.Is(err, exec.ErrNotFound) {
-		fmt.Fprintf(os.Stderr, "place-traits: %s is not on PATH; install it\n", args[0])
-		os.Exit(1)
-	}
 	if ctx.Err() != nil {
 		return nil
 	}
@@ -52,6 +60,20 @@ func run(args []string, input []byte, timeout time.Duration) []byte {
 		return nil
 	}
 	return out.Bytes()
+}
+
+func readHead(path string, size int) (head []byte, err error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer func() { err = errors.Join(err, f.Close()) }()
+	head = make([]byte, size)
+	n, err := io.ReadFull(f, head)
+	if errors.Is(err, io.EOF) || errors.Is(err, io.ErrUnexpectedEOF) {
+		err = nil
+	}
+	return head[:n], err
 }
 
 func pyExt(path string) string {
@@ -74,20 +96,13 @@ type manifestEntry struct {
 }
 
 var (
-	audioVideoExts = set{}
-	imageExts      = set{}
-	textExts       = set{}
-	archiveExts    = set{}
+	audioVideoExts = newSet(".wav", ".mp3", ".m4a", ".m4b", ".ogg", ".opus", ".flac", ".mp4", ".mkv", ".webm", ".avi", ".mpeg", ".ogv")
+	imageExts      = newSet(".emf", ".wmf", ".tif", ".heic", ".avif", ".webp", ".svg")
+	textExts       = newSet(".txt", ".csv", ".tsv", ".md", ".json", ".ndjson", ".xml", ".srt", ".html")
+	archiveExts    = newSet(".zip", ".7z", ".gz", ".zst")
 	nestedArchive  = regexp.MustCompile(`(?i)\.(zip|7z|tar|gz|tgz|zst|rar)$`)
 	xmlDeclaration = regexp.MustCompile(`<\?xml[^>]*encoding=["']([\w.-]+)`)
 )
-
-func init() {
-	audioVideoExts.add(".wav", ".mp3", ".m4a", ".m4b", ".ogg", ".opus", ".flac", ".mp4", ".mkv", ".webm", ".avi", ".mpeg", ".ogv")
-	imageExts.add(".emf", ".wmf", ".tif", ".heic", ".avif", ".webp", ".svg")
-	textExts.add(".txt", ".csv", ".tsv", ".md", ".json", ".ndjson", ".xml", ".srt", ".html")
-	archiveExts.add(".zip", ".7z", ".gz", ".zst")
-}
 
 type prober struct {
 	docs string
@@ -99,8 +114,7 @@ type prober struct {
 func (p *prober) probe(s sample, entry manifestEntry) (set, set, *object, error) {
 	rel := s.Path
 	path := filepath.Join(p.docs, rel)
-	library := set{}
-	library.add(s.Library...)
+	library := newSet(s.Library...)
 	ext := pyExt(rel)
 	traits, features := set{}, set{}
 	facts := newObject()
@@ -118,14 +132,10 @@ func (p *prober) probe(s sample, entry manifestEntry) (set, set, *object, error)
 	if info.Size() >= 100*mib {
 		traits.add("trait:scale.large-file")
 	}
-	head := make([]byte, 8)
-	f, err := os.Open(path)
+	head, err := readHead(path, 8)
 	if err != nil {
 		return nil, nil, nil, err
 	}
-	n, _ := f.Read(head)
-	f.Close()
-	head = head[:n]
 	switch {
 	case bytes.HasPrefix(head, []byte("%PDF")) || ext == ".pdf":
 		merge(pdf(path, rel, p.rec))
@@ -252,7 +262,10 @@ func envOr(name, fallback string) string {
 	return fallback
 }
 
-func placeTraits(withFacts bool) error {
+func placeTraits(withFacts bool) (err error) {
+	if err := requireProbeTools(); err != nil {
+		return err
+	}
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return err
@@ -297,7 +310,7 @@ func placeTraits(withFacts bool) error {
 	if err != nil {
 		return err
 	}
-	defer os.RemoveAll(tmp)
+	defer func() { err = errors.Join(err, os.RemoveAll(tmp)) }()
 	p := &prober{docs: docs, rec: rec, tmp: tmp}
 	slices.SortFunc(coverage.Samples, func(a, b sample) int { return strings.Compare(a.Path, b.Path) })
 	out := []any{}

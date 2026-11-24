@@ -163,9 +163,10 @@ It reads the same run and manifest as `scripts/place-library.sh`, and writes onl
 directory. With `--facts`, as in `mise run place-traits --facts`, it also prints each sample's
 probe findings.
 
-[`mise.toml`](../mise.toml) pins Go and every probe the program calls. LibreOffice's `soffice` is
-the one host requirement: no mise backend provides it, since it is in neither mise's registry nor
-conda-forge, so the program and ImageMagick's EMF and WMF delegate use the host's.
+[`mise.toml`](../mise.toml) pins Go and every probe the program calls except LibreOffice's
+`soffice`, the one unpinned host requirement: it is in neither mise's registry nor conda-forge, so
+the program and ImageMagick's EMF and WMF delegate use the host's. The program stops at its start,
+naming the tool, when a probe is not on `PATH`.
 
 ## Gaps
 
