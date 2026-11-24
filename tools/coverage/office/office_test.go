@@ -1,7 +1,9 @@
 package office_test
 
 import (
+	"archive/zip"
 	"context"
+	"errors"
 	"maps"
 	"os"
 	"path/filepath"
@@ -60,9 +62,30 @@ func TestRealOOXMLPlacesItsRecordedFeatures(t *testing.T) {
 }
 
 func TestODFTextIsTheContentWithoutMarkup(t *testing.T) {
-	got := office.ODFText(docstest.Path(t, "office/odf/writer-odf13.odt"))
-	if strings.TrimSpace(got) == "" || strings.ContainsAny(got, "<>") {
-		t.Errorf("ODFText = %.200q, want text with no markup", got)
+	path := filepath.Join(t.TempDir(), "a.odt")
+	f, err := os.Create(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	z := zip.NewWriter(f)
+	for name, data := range map[string]string{
+		"mimetype":    "application/vnd.oasis.opendocument.text",
+		"styles.xml":  "<office:document-styles><style:style/></office:document-styles>",
+		"content.xml": "<office:document-content><text:p>Hello <text:span>world</text:span></text:p></office:document-content>",
+	} {
+		w, err := z.Create(name)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := w.Write([]byte(data)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := errors.Join(z.Close(), f.Close()); err != nil {
+		t.Fatal(err)
+	}
+	if got := office.ODFText(path); got != "  Hello  world   " {
+		t.Errorf("ODFText = %q, want content.xml's text with each element a space", got)
 	}
 	if got := office.ODFText(filepath.Join(t.TempDir(), "missing.odt")); got != "" {
 		t.Errorf("ODFText of a missing file = %q", got)
