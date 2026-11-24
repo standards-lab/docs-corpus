@@ -103,7 +103,7 @@ else
         | .[0] as $field | .[1] as $axis
         | ($s[$field] // [])[]
         | select($v[$axis][.] == null)
-        | "samples[\($i)].\($field): \(.) is not a \($axis) ID in the vocabulary; rerun scripts/place-traits.py, or define the ID there with its rule"),
+        | "samples[\($i)].\($field): \(.) is not a \($axis) ID in the vocabulary; run mise run place-traits again, or define the ID there with its rule"),
       (.samples // [] | to_entries[] | .key as $i
         | (.value.judged // {}) | keys[]
         | select(IN($ids[]) | not)

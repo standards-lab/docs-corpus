@@ -129,33 +129,43 @@ The script reads the run from `${RUNS:-$HOME/runs/docproc/final/runs}` and the m
 
 Each entry's `traits` and `features` are the trait and feature IDs the sample exercises, placed by
 reading the file and its manifest entry, never from the manifest's `covers` tags. Each value's
-rule in the vocabulary is the test. `scripts/place-traits.py` probes every sample and applies the
-rules it can decide from the file or from what docproc's kept run recorded for it:
+rule in the vocabulary is the test. [`scripts/place-traits`](../scripts/place-traits), a Go program,
+probes every sample and applies the rules it can decide from the file or from what docproc's kept
+run recorded for it:
 
 - PDF text layers from the run's page outputs, OCR layers from invisible text over page images,
-  page counts, forms, signature fields, and portfolios, read with pdfinfo, pdfimages, and qpdf;
+  page counts, forms, signature fields, and portfolios, read with pdfinfo, pdfimages, pdffonts, and
+  qpdf;
 - audio and video streams, duration, and sample rate, read with ffprobe;
 - image frames, alpha, and stored orientation, read with ImageMagick's identify;
 - OOXML structures read from the package's parts, with legacy and RTF documents converted to OOXML
   by LibreOffice first, as docproc converts them;
-- message structure, parsed from each `.eml` and `.mbox` and taken from the run's records for
-  `.msg` and `.pst` files;
+- message structure, parsed from each `.eml` and `.mbox` as CPython's `email` package parses it,
+  and taken from the run's records for `.msg` and `.pst` files;
 - OneNote structures from the run's page records;
 - charsets from byte order marks, UTF-8 validity, and uchardet;
 - scripts by counting each script's letters in the file's text, or in the text the run extracted.
+  A letter counts toward the script its Unicode character name starts with, Han's being CJK and
+  kana's Hiragana or Katakana, so modifier letters, fullwidth and halfwidth forms, and letterlike
+  symbols such as the Kelvin sign count toward none.
 
 Where a value takes judgement, such as handwriting, a degraded or simulated scan, spontaneous or
 noisy speech, or a layout in columns, the entry's `judged` object holds the ID and the evidence
-for it: what was seen in the rendered file, or what its truth or source record shows. The script
+for it: what was seen in the rendered file, or what its truth or source record shows. The program
 adds those IDs to what it probes. To rerun it and compare its output with the data, run this from
 the repository root:
 
 ```sh
-scripts/place-traits.py | cmp - <(jq '.samples | map({path, traits, features})' docs/coverage.json)
+mise run place-traits | cmp - <(jq '.samples | map({path, traits, features})' docs/coverage.json)
 ```
 
 It reads the same run and manifest as `scripts/place-library.sh`, and writes only to a temporary
-directory. With `--facts`, it also prints each sample's probe findings.
+directory. With `--facts`, as in `mise run place-traits --facts`, it also prints each sample's
+probe findings.
+
+[`mise.toml`](../mise.toml) pins Go and every probe the program calls. LibreOffice's `soffice` is
+the one host requirement: no mise backend provides it, since it is in neither mise's registry nor
+conda-forge, so the program and ImageMagick's EMF and WMF delegate use the host's.
 
 ## Gaps
 

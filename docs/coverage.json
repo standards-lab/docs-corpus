@@ -12531,15 +12531,15 @@
       ],
       "candidate": {
         "kind": "generated",
-        "command": "python3 -I -c 'import mailbox, sys; box = mailbox.mbox(sys.argv[1]); msgs = [open(p, \"rb\").read() for p in sys.argv[2:]]; [box.add(msgs[i % len(msgs)]) for i in range(1000)]; box.flush()' email/mbox/many-messages.mbox email/eml/cpython/msg_07.eml email/eml/cpython/msg_15.eml email/eml/cpython/msg_16.eml email/eml/cpython/msg_22.eml",
+        "command": "go run ./scripts/generate mbox email/mbox/many-messages.mbox email/eml/cpython/msg_07.eml email/eml/cpython/msg_15.eml email/eml/cpython/msg_16.eml email/eml/cpython/msg_22.eml",
         "inputs": [
           "email/eml/cpython/msg_07.eml",
           "email/eml/cpython/msg_15.eml",
           "email/eml/cpython/msg_16.eml",
           "email/eml/cpython/msg_22.eml"
         ],
-        "generator": "CPython 3.14.8 mailbox",
-        "generator_license": "PSF-2.0",
+        "generator": "Go 1.27.4: scripts/generate",
+        "generator_license": "BSD-3-Clause",
         "fit": "Fair: exactly 1,000 messages, the four adopted CPython test messages repeated in turn, about 3.4 MB; it tests the count, and its From lines carry the time it was made."
       }
     },
@@ -12691,13 +12691,13 @@
       ],
       "candidate": {
         "kind": "generated",
-        "command": "python3 -I -c 'import email, email.policy, sys; m = email.message_from_bytes(open(sys.argv[1], \"rb\").read(), policy=email.policy.default); m[\"Content-Class\"] = \"rpmsg.message\"; m.add_attachment(open(sys.argv[2], \"rb\").read(), maintype=\"application\", subtype=\"x-microsoft-rpmsg-message\", filename=\"message.rpmsg\"); open(sys.argv[3], \"wb\").write(m.as_bytes())' email/eml/cpython/msg_36.eml text/encodings/windows-1252.txt email/eml/rights-managed.eml",
+        "command": "go run ./scripts/generate rights-managed email/eml/cpython/msg_36.eml text/encodings/windows-1252.txt email/eml/rights-managed.eml",
         "inputs": [
           "email/eml/cpython/msg_36.eml",
           "text/encodings/windows-1252.txt"
         ],
-        "generator": "CPython 3.14.8 email",
-        "generator_license": "PSF-2.0",
+        "generator": "Go 1.27.4: scripts/generate",
+        "generator_license": "BSD-3-Clause",
         "fit": "Fair: the adopted msg_36.eml, its body and attachments unchanged, with a Content-Class: rpmsg.message header and the adopted windows-1252.txt attached as message.rpmsg; docproc detects a rights-managed .eml by that header and that attachment name (docproc tools/mail/README.md:190-193, src/mapping.rs:33-36). The payload is not real rights-management encryption, which docproc doesn't read anyway."
       }
     }
