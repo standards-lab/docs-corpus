@@ -7,5 +7,5 @@ task.run_auto_install = false
 jq = "1.8.2"
 
 [tasks.check]
-description = "Verify every file against MANIFEST.json, flag duplicate scenarios, validate docs/coverage.json's vocabulary, covers IDs, samples, dispositions, and gaps, and run lint-context and lint-references; reads no network, writes nothing"
+description = "Run scripts/check.sh: the manifest, the coverage data, lint-context, and lint-references; reads no network, writes nothing"
 run = "scripts/check.sh"

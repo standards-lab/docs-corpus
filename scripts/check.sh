@@ -1,23 +1,6 @@
 #!/usr/bin/env bash
-# Checks the corpus once MANIFEST.json is present: every manifest entry names a file of its size
-# and sha256, every corpus file has an entry, and no two samples share a format and a `covers`
-# set. Checks the coverage data once it is present, at $COVERAGE or docs/coverage.json: its
-# vocabulary's IDs and entries have their axis's shape, every `covers`, trait, feature, and judged
-# ID in it is in the vocabulary, every capability's fed_by route and every sample's library ID is a
-# library ID, and no sample path appears twice. Every sample has its tie-break facts and exactly
-# one disposition: a trim names an adopted sample whose covers contain its own and that the
-# tie-break prefers, a replace names a gap whose covers contain its own, no adopted sample is
-# non-redistributable or sensitive, and no adopted sample's covers equal, with its format, or lie
-# inside another's. Every gap has a candidate: a sourced one with its https url, a ref that a
-# GitHub url carries as its commit, its license, the license URL read, the date read, and a
-# verified license status; a generated one with its command, generator, generator license, and
-# inputs that are adopted samples; each of those with a fit line; or an unavailable one that
-# records what was searched and the reason none exists. Every vocabulary ID is exercised by an
-# adopted sample or is in a gap's covers. When ${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json exists,
-# every sample in it appears in the coverage once, by path and sha256, with the manifest's format,
-# bytes, license_status, redistributable, and sensitivity, the coverage lists no other, and every
-# truth and doc file in it is linked. Then runs lint-context and lint-references, and fails if any
-# part fails. Reads no network.
+# Checks the corpus against MANIFEST.json once it is present, validates the coverage data, and
+# runs lint-context and lint-references. Reads no network and writes nothing.
 # See docs/coverage.md
 set -euo pipefail
 

@@ -1,15 +1,9 @@
 #!/usr/bin/env -S python3 -I
 """Prints the trait and feature placement of every ~/docs sample as a JSON array, sorted by path.
 
-Each element is a sample's path, `traits`, its sorted trait: IDs, and `features`, its sorted
-feature: IDs. They are what probing the file finds by the vocabulary rules in docs/coverage.json,
-plus the IDs in each sample's `judged` object, where a value took judgement, each with its reason.
-The probes read the file in ${DOCS_REFERENCE:-$HOME/docs} with pdfinfo, pdffonts, pdfimages, qpdf,
-ffprobe, identify, uchardet, bsdtar, and soffice (legacy and RTF documents are converted to OOXML in a temporary
-directory, as docproc converts them), and read what docproc's kept run, .library_placement.run,
-recorded for the file in ${RUNS:-$HOME/runs/docproc/final/runs}: its page outputs and the text,
-Markdown, and records it extracted. With --facts, each element also has `facts`, the probes'
-findings. Writes nothing outside its temporary directory.
+With --facts, each element also has the probes' findings. Writes nothing outside a temporary
+directory.
+
 See docs/coverage.md
 """
 

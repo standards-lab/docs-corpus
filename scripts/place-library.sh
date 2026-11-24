@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
-# Prints the library placement of every ~/docs sample as a JSON array, sorted by path: each
-# sample's path and sha256 from ${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json, and `library`, the
-# sorted kind:, route:, check:, and capability: IDs that docproc's kept run observed for the file
-# and every part found inside it. The run is .library_placement.run in docs/coverage.json, read
-# from ${RUNS:-$HOME/runs/docproc/final/runs}/<run>/; a capability is placed wherever a route in
-# its vocabulary entry's fed_by.routes is. A sample the run never reached gets an empty library.
-# Reads the run, the manifest, and docs/coverage.json; writes nothing.
+# Prints the library placement of every ~/docs sample as a JSON array, sorted by path. Writes
+# nothing.
 # See docs/coverage.md
 set -euo pipefail
 
