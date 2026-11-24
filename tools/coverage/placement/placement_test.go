@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/standards-lab/docs-corpus/tools/coverage/compat32"
 	"github.com/standards-lab/docs-corpus/tools/coverage/placement"
+	"github.com/standards-lab/docs-corpus/tools/coverage/stdmail"
 )
 
 type guesser string
@@ -57,7 +57,7 @@ func placer(t *testing.T, samples string) placement.Placer {
 		Coverage: coverage,
 		Charset:  guesser("WINDOWS-1252\n"),
 		Soffice:  soffice{},
-		Parser:   compat32.Parser{},
+		Parser:   stdmail.Parser{},
 	}
 }
 

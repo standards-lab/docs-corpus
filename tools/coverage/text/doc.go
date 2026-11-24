@@ -6,8 +6,7 @@
 //
 // Its exported identifiers:
 //
-//   - [Decode] decodes bytes with a Python codec name, and [DecodeOrUTF8] falls back to the
-//     bytes as they are.
+//   - [DecodeOrUTF8] decodes bytes with a Python codec name, or keeps them as they are.
 //   - [Guesser] guesses a charset, as uchardet does.
 //   - [Charset] places a text file's trait:charset ID and names its charset.
 //   - [DecodeText] decodes a text file by its BOM or Charset's guess.

@@ -8,12 +8,12 @@ import (
 	"testing"
 	"unicode/utf16"
 
-	"github.com/standards-lab/docs-corpus/tools/coverage/compat32"
 	"github.com/standards-lab/docs-corpus/tools/coverage/idset"
 	"github.com/standards-lab/docs-corpus/tools/coverage/internal/docstest"
 	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 	"github.com/standards-lab/docs-corpus/tools/coverage/mail"
 	"github.com/standards-lab/docs-corpus/tools/coverage/run"
+	"github.com/standards-lab/docs-corpus/tools/coverage/stdmail"
 )
 
 type part struct {
@@ -24,12 +24,12 @@ type part struct {
 	payload  string
 }
 
-func (p part) Header(name string) (string, bool)    { v, ok := p.headers[name]; return v, ok }
-func (p part) RawHeader(name string) (string, bool) { return p.Header(name) }
-func (p part) ContentType() string                  { return p.ctype }
-func (p part) Charset() string                      { return "" }
-func (p part) Filename() string                     { return p.filename }
-func (p part) Payload() []byte                      { return []byte(p.payload) }
+func (p part) Header(name string) (string, bool) { v, ok := p.headers[name]; return v, ok }
+func (p part) ContentType() string               { return p.ctype }
+func (p part) Charset() string                   { return "" }
+func (p part) Filename() string                  { return p.filename }
+func (p part) Payload() []byte                   { return []byte(p.payload) }
+func (p part) Text() string                      { return p.payload }
 func (p part) Param(header, name string) (string, bool) {
 	v, ok := p.params[header+";"+name]
 	return v, ok
@@ -72,7 +72,7 @@ func TestMessageReadsOnlyThroughItsParser(t *testing.T) {
 }
 
 func TestMessagePlacesWhatItsPartsShow(t *testing.T) {
-	traits, features, body, _ := mail.Message(compat32.Parser{}, message(
+	traits, features, body, _ := mail.Message(stdmail.Parser{}, message(
 		"Subject: =?iso-8859-1?q?caf=E9?=",
 		"Content-Type: multipart/related; boundary=b",
 		"",
@@ -106,7 +106,7 @@ func TestMessagePlacesWhatItsPartsShow(t *testing.T) {
 }
 
 func TestMboxFindsThreadsAcrossMessages(t *testing.T) {
-	_, features, body, facts := mail.Mbox(compat32.Parser{}, message(
+	_, features, body, facts := mail.Mbox(stdmail.Parser{}, message(
 		"From a@example.org Mon Jan  1 00:00:00 2024",
 		"Message-ID: <1@example.org>",
 		"Subject: first",
@@ -196,9 +196,9 @@ func TestRealMessagesPlaceTheirRecordedFeatures(t *testing.T) {
 		}
 		var features idset.Set
 		if ext == ".eml" {
-			_, features, _, _ = mail.Message(compat32.Parser{}, data)
+			_, features, _, _ = mail.Message(stdmail.Parser{}, data)
 		} else {
-			_, features, _, _ = mail.Mbox(compat32.Parser{}, data)
+			_, features, _, _ = mail.Mbox(stdmail.Parser{}, data)
 		}
 		if got, want := sorted(features), s.Probed(); !slices.Equal(got, want) {
 			t.Errorf("%s: features = %v, want %v", s.Path, got, want)

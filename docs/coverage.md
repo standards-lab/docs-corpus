@@ -154,8 +154,9 @@ the file or from what docproc's kept run recorded for it:
 - image frames, alpha, and stored orientation, read with ImageMagick's identify;
 - OOXML structures read from the package's parts, with legacy and RTF documents converted to OOXML
   by LibreOffice first, as docproc converts them;
-- message structure, parsed from each `.eml` and `.mbox` as CPython's `email` package parses it,
-  and taken from the run's records for `.msg` and `.pst` files;
+- message structure, parsed from each `.eml` and `.mbox` with Go's standard library, as
+  [stdmail](../tools/coverage/stdmail/doc.go) states, and taken from the run's records for `.msg`
+  and `.pst` files;
 - OneNote structures from the run's page records;
 - charsets from byte order marks, UTF-8 validity, and uchardet;
 - scripts by counting each script's letters in the file's text, or in the text the run extracted.

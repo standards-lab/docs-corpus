@@ -143,10 +143,7 @@ func lookupCodec(name string) (string, bool) {
 	return "", false
 }
 
-// Decode decodes data with the codec Python's codecs.lookup finds for name, replacing what the
-// codec cannot decode, and reports whether it found one. ASCII replaces each byte above 0x7F with
-// U+FFFD, and UTF-8 keeps data's bytes as they are.
-func Decode(data []byte, name string) (string, bool) {
+func decode(data []byte, name string) (string, bool) {
 	codec, ok := lookupCodec(name)
 	if !ok {
 		return "", false
@@ -172,9 +169,11 @@ func Decode(data []byte, name string) (string, bool) {
 	return string(out), true
 }
 
-// DecodeOrUTF8 decodes data as Decode does, and returns data as it is when name names no codec.
+// DecodeOrUTF8 decodes data with the codec Python's codecs.lookup finds for name, replacing what
+// the codec cannot decode, and returns data as it is when name names no codec. ASCII replaces each
+// byte above 0x7F with U+FFFD, and UTF-8 keeps data's bytes as they are.
 func DecodeOrUTF8(data []byte, name string) string {
-	if s, ok := Decode(data, name); ok {
+	if s, ok := decode(data, name); ok {
 		return s
 	}
 	return string(data)

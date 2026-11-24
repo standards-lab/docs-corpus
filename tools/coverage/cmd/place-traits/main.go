@@ -9,10 +9,10 @@ import (
 	"slices"
 	"syscall"
 
-	"github.com/standards-lab/docs-corpus/tools/coverage/compat32"
 	"github.com/standards-lab/docs-corpus/tools/coverage/media"
 	"github.com/standards-lab/docs-corpus/tools/coverage/placement"
 	"github.com/standards-lab/docs-corpus/tools/coverage/probe"
+	"github.com/standards-lab/docs-corpus/tools/coverage/stdmail"
 )
 
 func main() {
@@ -49,7 +49,7 @@ func placeTraits(ctx context.Context, args []string) error {
 		},
 		Charset: tools.Uchardet,
 		Soffice: tools.Soffice,
-		Parser:  compat32.Parser{},
+		Parser:  stdmail.Parser{},
 		Facts:   slices.Contains(args, "--facts"),
 	}.Run(ctx, os.Stdout)
 }

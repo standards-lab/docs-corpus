@@ -12,10 +12,8 @@ type Parser interface {
 // Part is one part of a parsed message, or the message itself.
 type Part interface {
 	// Header returns the value of the part's first header field named name, case-insensitively,
-	// as the parser presents it, and whether the part has one.
+	// unfolded, and whether the part has one.
 	Header(name string) (string, bool)
-	// RawHeader returns the same field's value as the message has it.
-	RawHeader(name string) (string, bool)
 	// ContentType returns the part's media type, lower-cased.
 	ContentType() string
 	// Charset returns the Content-Type's charset parameter, lower-cased, or "".
@@ -26,6 +24,8 @@ type Part interface {
 	// Filename returns the part's file name, from its Content-Disposition or Content-Type, or "".
 	Filename() string
 	// Payload returns the part's body decoded from its Content-Transfer-Encoding, or nil for a
-	// multipart part.
+	// part that holds others.
 	Payload() []byte
+	// Text returns the payload decoded from its charset.
+	Text() string
 }

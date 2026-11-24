@@ -55,7 +55,7 @@ func TestWhitespaceIncludesPythonsSeparators(t *testing.T) {
 	}
 }
 
-func TestDecodeFindsCodecsByPythonsAliases(t *testing.T) {
+func TestDecodeOrUTF8FindsCodecsByPythonsAliases(t *testing.T) {
 	for _, c := range []struct {
 		data       string
 		name, want string
@@ -68,13 +68,9 @@ func TestDecodeFindsCodecsByPythonsAliases(t *testing.T) {
 		{"a\xe9", "us-ascii", "a�"},
 		{"\x00h\x00i", "utf-16-be", "hi"},
 	} {
-		got, ok := text.Decode([]byte(c.data), c.name)
-		if !ok || got != c.want {
-			t.Errorf("Decode(%q, %q) = %q, %v; want %q", c.data, c.name, got, ok, c.want)
+		if got := text.DecodeOrUTF8([]byte(c.data), c.name); got != c.want {
+			t.Errorf("DecodeOrUTF8(%q, %q) = %q; want %q", c.data, c.name, got, c.want)
 		}
-	}
-	if _, ok := text.Decode([]byte("x"), "no-such-codec"); ok {
-		t.Error("Decode found a codec for no-such-codec")
 	}
 	if got := text.DecodeOrUTF8([]byte("caf\xe9"), "no-such-codec"); got != "caf\xe9" {
 		t.Errorf("DecodeOrUTF8 with an unknown codec = %q, want the bytes as they are", got)

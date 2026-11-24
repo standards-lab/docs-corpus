@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/standards-lab/docs-corpus/tools/coverage/compat32"
 	"github.com/standards-lab/docs-corpus/tools/coverage/generate"
 	"github.com/standards-lab/docs-corpus/tools/coverage/internal/docstest"
 	"github.com/standards-lab/docs-corpus/tools/coverage/mail"
+	"github.com/standards-lab/docs-corpus/tools/coverage/stdmail"
 )
 
 const mixed = "MIME-Version: 1.0\nContent-Type: multipart/mixed; boundary=\"b\"\n\n--b\nContent-Type: text/plain\n\nhi\n--b--\n"
@@ -126,11 +126,11 @@ func TestTheRightsManagedCandidatePlacesItsFeature(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, features, _, _ := mail.Message(compat32.Parser{}, out)
+	_, features, _, _ := mail.Message(stdmail.Parser{}, out)
 	if !features["feature:rights-managed"] {
 		t.Errorf("the candidate's features = %v, want rights-managed", features.Sorted(""))
 	}
-	if _, before, _, _ := mail.Message(compat32.Parser{}, message); before["feature:rights-managed"] {
+	if _, before, _, _ := mail.Message(stdmail.Parser{}, message); before["feature:rights-managed"] {
 		t.Error("msg_36.eml is rights-managed before the generator runs")
 	}
 }

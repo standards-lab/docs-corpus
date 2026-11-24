@@ -82,11 +82,7 @@ func Message(parser Parser, data []byte) (traits, features idset.Set, body strin
 		}
 		if (ctype == "text/plain" || ctype == "text/html") && !strings.Contains(disp, "attachment") {
 			bodies.Add(ctype)
-			name := cs
-			if name == "" {
-				name = "utf-8"
-			}
-			decoded := text.DecodeOrUTF8(p.Payload(), name)
+			decoded := p.Text()
 			texts = append(texts, decoded)
 			if ctype == "text/html" {
 				if htmlInline.MatchString(decoded) {
@@ -103,7 +99,7 @@ func Message(parser Parser, data []byte) (traits, features idset.Set, body strin
 	if len(bodies) == 1 && bodies["text/html"] {
 		features.Add("feature:html-body")
 	}
-	if subject, ok := all[0].RawHeader("Subject"); ok && subject != "" {
+	if subject, ok := all[0].Header("Subject"); ok && subject != "" {
 		texts = append(texts, parser.DecodeHeader(subject))
 	}
 	facts = jsonvalue.NewObject()
