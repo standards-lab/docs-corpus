@@ -55,25 +55,43 @@ func TestWhitespaceIncludesPythonsSeparators(t *testing.T) {
 	}
 }
 
-func TestDecodeOrUTF8FindsCodecsByPythonsAliases(t *testing.T) {
+func TestDecodeOrUTF8FindsEncodingsByIANAAndWHATWGNames(t *testing.T) {
 	for _, c := range []struct {
 		data       string
 		name, want string
 	}{
-		{"caf\xe9", "latin-1", "café"},
 		{"caf\xe9", "ISO_8859-1:1987", "café"},
 		{"\x93q\x94", "Windows-1252", "“q”"},
-		{"\xc1", "koi8_r", "а"},
-		{"caf\xc3\xa9", "UTF8", "café"},
-		{"a\xe9", "us-ascii", "a�"},
-		{"\x00h\x00i", "utf-16-be", "hi"},
+		{"\xc1", "KOI8-R", "а"},
+		{"\xe0", "x-cp1251", "а"},
+		{"a\xe9", "csASCII", "a\ufffd"},
+		{"a\xe9", "utf-8", "a\xe9"},
+		{"a\xe9", "utf8", "a\xe9"},
 	} {
 		if got := text.DecodeOrUTF8([]byte(c.data), c.name); got != c.want {
 			t.Errorf("DecodeOrUTF8(%q, %q) = %q; want %q", c.data, c.name, got, c.want)
 		}
 	}
-	if got := text.DecodeOrUTF8([]byte("caf\xe9"), "no-such-codec"); got != "caf\xe9" {
-		t.Errorf("DecodeOrUTF8 with an unknown codec = %q, want the bytes as they are", got)
+	if got := text.DecodeOrUTF8([]byte("caf\xe9"), "no-such-charset"); got != "caf\xe9" {
+		t.Errorf("DecodeOrUTF8 with an unknown charset = %q, want the bytes as they are", got)
+	}
+	if e := text.Encoding("no-such-charset"); e != nil {
+		t.Errorf("Encoding(\"no-such-charset\") = %v, want nil", e)
+	}
+}
+
+func TestDecodeOrUTF8ReadsUTF16ByItsInternalNames(t *testing.T) {
+	for _, c := range []struct {
+		data, name string
+	}{
+		{"h\x00i\x00", "utf-16"},
+		{"\xfe\xff\x00h\x00i", "utf-16"},
+		{"h\x00i\x00", "utf-16-le"},
+		{"\x00h\x00i", "utf-16-be"},
+	} {
+		if got := text.DecodeOrUTF8([]byte(c.data), c.name); got != "hi" {
+			t.Errorf("DecodeOrUTF8(%q, %q) = %q; want \"hi\"", c.data, c.name, got)
+		}
 	}
 }
 

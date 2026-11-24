@@ -27,7 +27,7 @@ func load(t *testing.T) *run.Record {
 	write(t, filepath.Join(runs, "r1", "manifest.json"), `{"inputs": ["/in"]}`)
 	write(t, filepath.Join(runs, "r1", "record.jsonl"), strings.Join([]string{
 		`{"event": "start", "input": "/in/a.pdf"}`,
-		`{"event": "output", "input": "/in/a.pdf", "output": {"kind": "text", "name": "page 1", "sha256": "ab01", "media_type": "text/plain", "meta": {"page": 1, "encoding": "latin-1"}}}`,
+		`{"event": "output", "input": "/in/a.pdf", "output": {"kind": "text", "name": "page 1", "sha256": "ab01", "media_type": "text/plain", "meta": {"page": 1, "encoding": "ISO-8859-1"}}}`,
 		`{"event": "output", "input": "/in/a.pdf", "part": {"depth": 1}, "output": {"kind": "image", "name": "page 1", "sha256": "ab02", "media_type": "image/png"}}`,
 		`{"event": "output", "input": "/in/m.pst", "output": {"kind": "record", "name": "message 1", "sha256": "cd01", "media_type": "application/x-docproc-mail+jsonl"}}`,
 		`{"event": "output", "input": "/elsewhere/a.pdf", "output": {"kind": "text", "name": "page 1", "sha256": "ab01"}}`,
@@ -76,7 +76,7 @@ func TestOutputMetaRawIsTheValuesJSON(t *testing.T) {
 func TestTextDecodesOutputsAndReadsRecordStrings(t *testing.T) {
 	rec := load(t)
 	if got := rec.Text("a.pdf"); got != "café" {
-		t.Errorf("Text(a.pdf) = %q, want the latin-1 text decoded", got)
+		t.Errorf("Text(a.pdf) = %q, want the ISO-8859-1 text decoded", got)
 	}
 	if got := rec.Text("m.pst"); got != "Hi\nT\nZ" {
 		t.Errorf("Text(m.pst) = %q, want the record's subject, text, and title", got)

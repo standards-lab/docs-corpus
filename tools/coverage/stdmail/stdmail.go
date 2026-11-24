@@ -14,8 +14,6 @@ import (
 	"strings"
 
 	"golang.org/x/text/encoding"
-	"golang.org/x/text/encoding/htmlindex"
-	"golang.org/x/text/encoding/ianaindex"
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/mail"
 	"github.com/standards-lab/docs-corpus/tools/coverage/text"
@@ -226,13 +224,7 @@ func lookup(charset string) encoding.Encoding {
 	if text.UTF8Name(charset) {
 		return nil
 	}
-	if e, err := ianaindex.MIME.Encoding(charset); err == nil && e != nil {
-		return e
-	}
-	if e, err := htmlindex.Get(charset); err == nil {
-		return e
-	}
-	return nil
+	return text.Encoding(charset)
 }
 
 func charsetReader(charset string, input io.Reader) (io.Reader, error) {
