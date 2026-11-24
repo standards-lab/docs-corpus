@@ -1,4 +1,4 @@
-# marathon configuration for corpus-docs.
+# marathon configuration for docs-corpus, the public corpus whose payload is release assets.
 # See CLAUDE.md
 
 [project]
