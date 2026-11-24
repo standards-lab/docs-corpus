@@ -69,13 +69,17 @@ every gap. docs-corpus is public, so only redistributable samples can be adopted
    - no two adopted samples are duplicates.
 
    lint-context and lint-references pass.
+9. The repository describes itself as docs-corpus: public at v1, payload as release assets on
+   each version tag, no Git LFS. Its README, CLAUDE.md, STANDARDS.md, context README and
+   configuration comment say so, and no LFS attributes remain.
 
 **Test seams**
 - The coverage data file, which the check reads with jq. Every behavior is tested through it.
 
 **Slices**
 1. Vocabulary: the three axes and their definitions in the data file and the page, the check
-   rejecting an unknown ID, and the context README's capability map linking the page.
+   rejecting an unknown ID, the context README's capability map linking the page, and the
+   repository's self-description (behavior 9).
 2. Library placement: every ~/docs sample placed by Kind, Route, Check and Capability from run
    `01a208e5`, with the recorded command, and the check confirming every sample appears exactly
    once.
@@ -124,6 +128,7 @@ disposition or candidate can be revised before curate.
   each sha256 against the manifest. No Git LFS. `MANIFEST.json` carries `version`, and acceptance
   runs cite it.
 - plan: curate first and publish one v1.
+- plan: docs-corpus stays private until snapshot publishes v1; snapshot makes it public.
 - plan: once docs-corpus v1 is final, the baseline task reruns docproc and docinfer over it,
   repoints the acceptance citations, and removes ~/docs.
 - plan: a sample stays when it exercises a library scenario no other sample covers; gaps are
