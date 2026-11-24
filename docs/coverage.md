@@ -79,17 +79,14 @@ adopted sample covers all of its scenarios, and replaced otherwise.
 
 dispose, a command of [`tools/coverage`](../tools/coverage/cmd/dispose/doc.go), derives every
 disposition by these rules, and the covers of each gap a replace names, as [Gaps](#gaps) states.
-It keeps every gap's candidate as it is and adds no gap. To rerun it and compare its output with
-the data, run this from the repository root:
+To rerun it and compare its output with the data, run this from the repository root:
 
 ```sh
 mise run dispose | cmp - docs/coverage.json
 ```
 
-It writes nothing but its output, and names on standard error each gap that may be dropped. With
-`--placement <file>`, it first takes each sample's traits and features from that output of
-place-traits, so `mise run place-traits > "$tmp"` followed by `mise run dispose --placement "$tmp"`
-re-derives the placements and the dispositions together.
+`mise run place-traits > "$tmp"` followed by `mise run dispose --placement "$tmp"` re-derives the
+placements and the dispositions together.
 
 ### Truth and doc files
 
@@ -190,8 +187,8 @@ Each scenario lists the adopted samples that exercise it. A scenario that no ado
 exercises is a gap in `.gaps`. Each gap has an `id`, the `covers` a candidate must exercise, and
 a `candidate`. A replaced sample names the gap whose covers contain its own. Replaced samples that
 need the same covers, or covers inside another replaced sample's, share one gap; where several
-replaced samples' covers contain a sample's, it shares the gap of the one the tie-break prefers. A gap for
-scenarios no sample exercised groups the IDs one candidate file can exercise together.
+replaced samples' covers contain a sample's, it shares the gap of the one the tie-break prefers.
+A gap for scenarios no sample exercised groups the IDs one candidate file can exercise together.
 
 The data stores no list of samples per scenario: it follows from the placements. To print each
 scenario with the adopted samples that exercise it, or with the gaps that cover it, run:
