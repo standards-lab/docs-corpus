@@ -1,7 +1,6 @@
 // Package mail places the traits and features of mail samples: an .eml message and an mbox,
 // read through a Parser, the mail docproc's run recorded for a .msg or .pst file, and the body
-// properties an Outlook .msg names. It reads a message only through the Parser and Part
-// interfaces and imports no parser; the caller chooses one, such as stdmail's.
+// properties an Outlook .msg names.
 //
 // Its exported identifiers:
 //

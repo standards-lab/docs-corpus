@@ -1,8 +1,7 @@
-// Package text reads text as the Python scripts the coverage tools replaced read it: Python's
-// codecs and their aliases over golang.org/x/text, its whitespace and line splitting, a text
-// file's charset from its byte order mark, UTF-8 validity, UTF-16 without a BOM, or a Guesser,
-// and the scripts a text's letters are written in. It carries the module's one sourced
-// dependency, golang.org/x/text.
+// Package text reads text as Python reads it: Python's codecs and their aliases over
+// golang.org/x/text, its whitespace and line splitting, a text file's charset from its byte order
+// mark, UTF-8 validity, UTF-16 without a BOM, or a Guesser, and the scripts a text's letters are
+// written in.
 //
 // Its exported identifiers:
 //

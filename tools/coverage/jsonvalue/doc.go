@@ -1,6 +1,5 @@
-// Package jsonvalue reads and writes JSON as Python's json module does, so the coverage tools'
-// output stays byte-identical to the Python scripts it replaced: objects keep their key order,
-// numbers keep their text, and floats are written in Python's repr.
+// Package jsonvalue reads and writes JSON as Python's json module does: objects keep their key
+// order, numbers keep their text, and floats are written in Python's repr.
 //
 // Its exported identifiers:
 //

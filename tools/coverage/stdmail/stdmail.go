@@ -36,6 +36,14 @@ type part struct {
 // field nor a field's continuation. A message/rfc822 or message/global part holds the message
 // its body carries, and a multipart part the parts its boundary delimits; a multipart part with
 // no boundary, or whose boundary its body never has, holds none and keeps its body.
+//
+// A part without a Content-Type has the type RFC 2045 and 2046 give it, text/plain, or
+// message/rfc822 in a multipart/digest, and one whose Content-Type is not a valid media type is
+// text/plain, as RFC 2045 recommends. Its parameters are RFC 2231 decoded, and its file name is
+// the Content-Disposition's filename, or else the Content-Type's name, trimmed of white space. Its
+// payload is decoded from quoted-printable or base64 as far as it decodes, and its text from its
+// charset with golang.org/x/text, kept as it is when the charset is UTF-8, US-ASCII, absent, or
+// one golang.org/x/text does not know.
 func (Parser) Parse(data []byte) []mail.Part {
 	var parts []mail.Part
 	parseMessage(data, "text/plain").walk(func(p *part) { parts = append(parts, p) })
@@ -130,8 +138,6 @@ func parseEntity(header textproto.MIMEHeader, body []byte, defaultType string) *
 	return p
 }
 
-// Header returns the value of the part's first header field named name, case-insensitively, its
-// folded lines unfolded, and whether the part has one.
 func (p *part) Header(name string) (string, bool) {
 	values := p.header.Values(name)
 	if len(values) == 0 {
@@ -152,9 +158,6 @@ func (p *part) params(header string) (string, map[string]string) {
 	return mediatype, params
 }
 
-// ContentType returns the part's media type, lower-cased. Without a Content-Type it is the
-// default RFC 2045 and 2046 give, text/plain, or message/rfc822 in a multipart/digest; with one
-// that is not a valid media type it is text/plain, as RFC 2045 recommends.
 func (p *part) ContentType() string {
 	if _, ok := p.Header("Content-Type"); !ok {
 		return p.defaultType
@@ -166,22 +169,17 @@ func (p *part) ContentType() string {
 	return mediatype
 }
 
-// Param returns the parameter name of the header field named header, RFC 2231 decoded, and
-// whether the field has it.
 func (p *part) Param(header, name string) (string, bool) {
 	_, params := p.params(header)
 	v, ok := params[strings.ToLower(name)]
 	return v, ok
 }
 
-// Charset returns the Content-Type's charset parameter, lower-cased, or "".
 func (p *part) Charset() string {
 	cs, _ := p.Param("Content-Type", "charset")
 	return strings.ToLower(cs)
 }
 
-// Filename returns the Content-Disposition's filename, or else the Content-Type's name, trimmed
-// of white space, or "".
 func (p *part) Filename() string {
 	name, ok := p.Param("Content-Disposition", "filename")
 	if !ok {
@@ -190,8 +188,6 @@ func (p *part) Filename() string {
 	return strings.TrimSpace(name)
 }
 
-// Payload returns the part's body decoded from its Content-Transfer-Encoding, quoted-printable or
-// base64, as far as it decodes, or nil for a part that holds others.
 func (p *part) Payload() []byte {
 	if len(p.parts) > 0 {
 		return nil
@@ -215,8 +211,6 @@ func (p *part) Payload() []byte {
 	return p.body
 }
 
-// Text returns the part's payload decoded from its charset, as it is when the charset is
-// UTF-8, US-ASCII, absent, or one golang.org/x/text does not know.
 func (p *part) Text() string {
 	payload := p.Payload()
 	if e := lookup(p.Charset()); e != nil {
