@@ -49,7 +49,7 @@
 // agrees to be bound by the terms and conditions of this License
 // Agreement.
 
-package main
+package compat32
 
 import (
 	"regexp"
@@ -57,6 +57,8 @@ import (
 	"strconv"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/standards-lab/docs-corpus/tools/coverage/text"
 )
 
 type header struct {
@@ -95,7 +97,9 @@ func sanitizeHeader(v string) string {
 	return b.String()
 }
 
-func (p *part) rawGet(name string) (string, bool) {
+// RawHeader returns the value of the part's first header field named name, case-insensitively,
+// as the message has it, and whether the part has one.
+func (p *part) RawHeader(name string) (string, bool) {
 	for _, h := range p.headers {
 		if strings.EqualFold(h.name, name) {
 			return h.value, true
@@ -104,22 +108,22 @@ func (p *part) rawGet(name string) (string, bool) {
 	return "", false
 }
 
-func (p *part) get(name string) (string, bool) {
-	v, ok := p.rawGet(name)
+// Header returns the value of the part's first header field named name, as compat32 presents
+// it: each byte above 0x7F replaced with U+FFFD.
+func (p *part) Header(name string) (string, bool) {
+	v, ok := p.RawHeader(name)
 	return sanitizeHeader(v), ok
 }
 
-func pyStrip(s string) string {
-	return strings.TrimFunc(s, isPySpace)
-}
-
-func (p *part) contentType() string {
-	v, ok := p.get("content-type")
+// ContentType returns the part's media type, lower-cased, its default when it has no
+// Content-Type, and text/plain when its Content-Type is malformed.
+func (p *part) ContentType() string {
+	v, ok := p.Header("content-type")
 	if !ok {
 		return p.defaultType
 	}
 	ctype, _, _ := strings.Cut(v, ";")
-	ctype = strings.ToLower(pyStrip(ctype))
+	ctype = strings.ToLower(text.Strip(ctype))
 	if strings.Count(ctype, "/") != 1 {
 		return "text/plain"
 	}
@@ -127,7 +131,7 @@ func (p *part) contentType() string {
 }
 
 func (p *part) mainType() string {
-	t, _, _ := strings.Cut(p.contentType(), "/")
+	t, _, _ := strings.Cut(p.ContentType(), "/")
 	return t
 }
 
@@ -150,9 +154,9 @@ func parseParamList(s string) []string {
 		}
 		f := s[:end]
 		if i := strings.Index(f, "="); i >= 0 {
-			f = strings.ToLower(pyStrip(f[:i])) + "=" + pyStrip(f[i+1:])
+			f = strings.ToLower(text.Strip(f[:i])) + "=" + text.Strip(f[i+1:])
 		}
-		plist = append(plist, pyStrip(f))
+		plist = append(plist, text.Strip(f))
 		s = s[end:]
 	}
 	return plist
@@ -204,7 +208,7 @@ func percentDecodeLatin1(s string) string {
 }
 
 func (p *part) params(headerName string) ([]param, bool) {
-	v, ok := p.get(headerName)
+	v, ok := p.Header(headerName)
 	if !ok {
 		return nil, false
 	}
@@ -212,9 +216,9 @@ func (p *part) params(headerName string) ([]param, bool) {
 	for _, item := range parseParamList(v) {
 		name, val, found := strings.Cut(item, "=")
 		if !found {
-			raw = append(raw, [2]string{pyStrip(item), ""})
+			raw = append(raw, [2]string{text.Strip(item), ""})
 		} else {
-			raw = append(raw, [2]string{pyStrip(name), pyStrip(val)})
+			raw = append(raw, [2]string{text.Strip(name), text.Strip(val)})
 		}
 	}
 	out := []param{{raw[0][0], paramValue{text: raw[0][1]}}}
@@ -276,6 +280,13 @@ func (p *part) params(headerName string) ([]param, bool) {
 	return out, true
 }
 
+// Param returns the parameter name of the header field named header, unquoted, and whether the
+// field has it.
+func (p *part) Param(header, name string) (string, bool) {
+	v, ok := p.param(name, header)
+	return v.text, ok
+}
+
 func (p *part) param(name, headerName string) (paramValue, bool) {
 	params, ok := p.params(headerName)
 	if !ok {
@@ -307,7 +318,7 @@ func collapseRFC2231(v paramValue) string {
 	if !v.hasCharset {
 		charset = "us-ascii"
 	}
-	if s, ok := decodeLossy(latin1Bytes(v.text), charset); ok {
+	if s, ok := text.Decode(latin1Bytes(v.text), charset); ok {
 		return s
 	}
 	return unquote(v.text)
@@ -322,7 +333,9 @@ func isASCII(s string) bool {
 	return true
 }
 
-func (p *part) contentCharset() string {
+// Charset returns the Content-Type's charset parameter, lower-cased, or "" when it has none or
+// it is not ASCII.
+func (p *part) Charset() string {
 	v, ok := p.param("charset", "content-type")
 	if !ok {
 		return ""
@@ -333,14 +346,16 @@ func (p *part) contentCharset() string {
 	return strings.ToLower(v.text)
 }
 
-func (p *part) filename() string {
+// Filename returns the Content-Disposition's filename, or else the Content-Type's name, RFC 2231
+// decoded and stripped, or "".
+func (p *part) Filename() string {
 	v, ok := p.param("filename", "content-disposition")
 	if !ok {
 		if v, ok = p.param("name", "content-type"); !ok {
 			return ""
 		}
 	}
-	return pyStrip(collapseRFC2231(v))
+	return text.Strip(collapseRFC2231(v))
 }
 
 func (p *part) boundary() (string, bool) {
@@ -348,7 +363,7 @@ func (p *part) boundary() (string, bool) {
 	if !ok {
 		return "", false
 	}
-	return strings.TrimRightFunc(collapseRFC2231(v), isPySpace), true
+	return strings.TrimRightFunc(collapseRFC2231(v), text.IsSpace), true
 }
 
 func bytesSplitLines(b string) []string {
@@ -373,12 +388,14 @@ func bytesSplitLines(b string) []string {
 	return lines
 }
 
-func (p *part) decodedPayload() []byte {
+// Payload returns the part's body decoded from its Content-Transfer-Encoding, quoted-printable,
+// base64, or uuencode, or nil for a multipart part.
+func (p *part) Payload() []byte {
 	if p.multipart {
 		return nil
 	}
-	v, _ := p.get("content-transfer-encoding")
-	cte := strings.ToLower(pyStrip(v))
+	v, _ := p.Header("content-transfer-encoding")
+	cte := strings.ToLower(text.Strip(v))
 	switch cte {
 	case "quoted-printable":
 		return a2bQP(p.payload)
@@ -633,8 +650,8 @@ func (in *feedInput) readline() string {
 	default:
 		return ""
 	}
-	for i := len(in.eof) - 1; i >= 0; i-- {
-		if in.eof[i](line) {
+	for _, v := range slices.Backward(in.eof) {
+		if v(line) {
 			in.pushback = append(in.pushback, line)
 			return ""
 		}
@@ -677,7 +694,7 @@ type feedParser struct {
 	last  *part
 }
 
-func parseMessage(data string) *part {
+func parse(data string) *part {
 	p := &feedParser{in: &feedInput{lines: splitKeepEnds(data)}}
 	p.parse()
 	return p.stack[0]
@@ -685,7 +702,7 @@ func parseMessage(data string) *part {
 
 func (p *feedParser) newMessage() {
 	msg := &part{defaultType: "text/plain"}
-	if p.cur != nil && p.cur.contentType() == "multipart/digest" {
+	if p.cur != nil && p.cur.ContentType() == "multipart/digest" {
 		msg.defaultType = "message/rfc822"
 	}
 	if len(p.stack) > 0 {
@@ -766,7 +783,7 @@ func (p *feedParser) parse() {
 	}
 	p.parseHeaders(headers)
 	switch {
-	case p.cur.contentType() == "message/delivery-status":
+	case p.cur.ContentType() == "message/delivery-status":
 		for {
 			p.in.eof = append(p.in.eof, startsWithNewline)
 			p.parse()
@@ -866,7 +883,7 @@ var encodedWord = regexp.MustCompile(`=\?([^?]*?)\?([qQbB])\?(.*?)\?=`)
 
 var qHex = regexp.MustCompile(`=[a-fA-F0-9]{2}`)
 
-func headerText(value string) string {
+func decodeHeader(value string) string {
 	if !isASCII(value) {
 		return sanitizeHeader(value)
 	}
@@ -879,7 +896,7 @@ func headerText(value string) string {
 		charset  string
 	}
 	var words []word
-	for _, line := range pySplitLines(value) {
+	for _, line := range text.SplitLines(value) {
 		first := true
 		pos := 0
 		pieces := encodedWord.FindAllStringSubmatchIndex(line, -1)
@@ -890,7 +907,7 @@ func headerText(value string) string {
 			}
 			unencoded := line[pos:end]
 			if first {
-				unencoded = strings.TrimLeftFunc(unencoded, isPySpace)
+				unencoded = strings.TrimLeftFunc(unencoded, text.IsSpace)
 				first = false
 			}
 			if unencoded != "" {
@@ -910,7 +927,7 @@ func headerText(value string) string {
 	var kept []word
 	for n, w := range words {
 		if n+1 < len(words) && n > 0 && words[n+1].encoding != "" && words[n-1].encoding != "" &&
-			w.text != "" && strings.TrimFunc(w.text, isPySpace) == "" {
+			w.text != "" && strings.TrimFunc(w.text, text.IsSpace) == "" {
 			continue
 		}
 		kept = append(kept, w)
@@ -955,7 +972,7 @@ func headerText(value string) string {
 			b.Write(c.data)
 			continue
 		}
-		b.WriteString(decodeOrUTF8(c.data, c.charset))
+		b.WriteString(text.DecodeOrUTF8(c.data, c.charset))
 	}
 	return b.String()
 }

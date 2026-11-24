@@ -1,4 +1,4 @@
-package main
+package jsonvalue
 
 import (
 	"bytes"
@@ -7,43 +7,63 @@ import (
 	"fmt"
 	"io"
 	"math"
+	"slices"
 	"strconv"
 	"strings"
 )
 
-type object struct {
+// Object is a JSON object that keeps its keys in the order they were first set.
+type Object struct {
 	keys   []string
 	values map[string]any
 }
 
-func newObject() *object {
-	return &object{values: map[string]any{}}
+// NewObject returns an empty Object.
+func NewObject() *Object {
+	return &Object{values: map[string]any{}}
 }
 
-func (o *object) set(key string, value any) {
+// Set sets key's value, keeping the key's place when it is already set.
+func (o *Object) Set(key string, value any) {
 	if _, ok := o.values[key]; !ok {
 		o.keys = append(o.keys, key)
 	}
 	o.values[key] = value
 }
 
-func (o *object) get(key string) any {
+// Get returns key's value, or nil when it is not set.
+func (o *Object) Get(key string) any {
 	return o.values[key]
 }
 
-func (o *object) has(key string) bool {
+// Has reports whether key is set.
+func (o *Object) Has(key string) bool {
 	_, ok := o.values[key]
 	return ok
 }
 
-func (o *object) str(key string) string {
-	s, _ := o.values[key].(string)
+// Str returns key's value when it is a string, and "" otherwise.
+func (o *Object) Str(key string) string {
+	return String(o.values[key])
+}
+
+// Keys returns the object's keys in order.
+func (o *Object) Keys() []string {
+	return slices.Clone(o.keys)
+}
+
+// Float is a number Marshal writes as Python's repr writes a float, as in 3.0 or 1e+16.
+type Float float64
+
+// String returns v when it is a string, and "" otherwise.
+func String(v any) string {
+	s, _ := v.(string)
 	return s
 }
 
-type pyFloat float64
-
-func parseJSON(data []byte) (any, error) {
+// Parse parses one JSON value: an object as an *Object, an array as []any, a number as a
+// json.Number, and a string, a bool, or null as Go's own. Data after the value is an error.
+func Parse(data []byte) (any, error) {
 	dec := json.NewDecoder(bytes.NewReader(data))
 	dec.UseNumber()
 	v, err := decodeValue(dec)
@@ -65,7 +85,7 @@ func decodeValue(dec *json.Decoder) (any, error) {
 	case json.Delim:
 		switch t {
 		case '{':
-			o := newObject()
+			o := NewObject()
 			for dec.More() {
 				k, err := dec.Token()
 				if err != nil {
@@ -75,7 +95,7 @@ func decodeValue(dec *json.Decoder) (any, error) {
 				if err != nil {
 					return nil, err
 				}
-				o.set(k.(string), v)
+				o.Set(k.(string), v)
 			}
 			_, err := dec.Token()
 			return o, err
@@ -100,7 +120,9 @@ func decodeValue(dec *json.Decoder) (any, error) {
 	}
 }
 
-func truthy(v any) bool {
+// Truthy reports whether v is true as Python's bool reads it: null, false, "", zero, and an empty
+// array or object are false; a number that does not parse is true.
+func Truthy(v any) bool {
 	switch t := v.(type) {
 	case nil:
 		return false
@@ -113,10 +135,27 @@ func truthy(v any) bool {
 		return err != nil || f != 0
 	case []any:
 		return len(t) > 0
-	case *object:
+	case *Object:
 		return len(t.keys) > 0
 	}
 	return true
+}
+
+// Compare orders two values as Python orders them: strings by their bytes, and json.Numbers by
+// their value.
+func Compare(a, b any) int {
+	if sa, ok := a.(string); ok {
+		return strings.Compare(sa, String(b))
+	}
+	fa, _ := a.(json.Number).Float64()
+	fb, _ := b.(json.Number).Float64()
+	switch {
+	case fa < fb:
+		return -1
+	case fa > fb:
+		return 1
+	}
+	return 0
 }
 
 func pyFloatRepr(f float64) string {
@@ -184,6 +223,15 @@ func writeJSONString(w *bytes.Buffer, s string) {
 	w.WriteByte('"')
 }
 
+// Marshal writes v as Python's json.dumps writes it with an indent of 2 and ensure_ascii off: nil,
+// bool, int, int64, Float, json.Number, string, []string, []int, []any, and *Object. Any other
+// type panics.
+func Marshal(v any) []byte {
+	var buf bytes.Buffer
+	writeJSON(&buf, v, 0)
+	return buf.Bytes()
+}
+
 func writeJSON(w *bytes.Buffer, v any, depth int) {
 	indent := func(d int) {
 		w.WriteByte('\n')
@@ -198,7 +246,7 @@ func writeJSON(w *bytes.Buffer, v any, depth int) {
 		w.WriteString(strconv.Itoa(t))
 	case int64:
 		w.WriteString(strconv.FormatInt(t, 10))
-	case pyFloat:
+	case Float:
 		w.WriteString(pyFloatRepr(float64(t)))
 	case json.Number:
 		w.WriteString(numberRepr(t))
@@ -231,7 +279,7 @@ func writeJSON(w *bytes.Buffer, v any, depth int) {
 		}
 		indent(depth)
 		w.WriteByte(']')
-	case *object:
+	case *Object:
 		if len(t.keys) == 0 {
 			w.WriteString("{}")
 			return
@@ -249,6 +297,6 @@ func writeJSON(w *bytes.Buffer, v any, depth int) {
 		indent(depth)
 		w.WriteByte('}')
 	default:
-		panic(fmt.Sprintf("place-traits: cannot write %T", v))
+		panic(fmt.Sprintf("jsonvalue: cannot write %T", v))
 	}
 }

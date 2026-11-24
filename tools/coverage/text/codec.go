@@ -2,13 +2,11 @@
 //
 // Copyright (c) 2001 Python Software Foundation; All Rights Reserved
 
-package main
+package text
 
 import (
-	"bytes"
 	"strings"
 	"unicode"
-	"unicode/utf16"
 	"unicode/utf8"
 
 	"golang.org/x/text/encoding"
@@ -21,110 +19,7 @@ import (
 	"golang.org/x/text/encoding/unicode/utf32"
 )
 
-var scriptThreshold = map[string]int{"latin": 60, "han": 10, "kana": 10, "hangul": 10}
-
-const sentence = 20
-
-var scriptTables = []struct {
-	name  string
-	table *unicode.RangeTable
-}{
-	{"latin", unicode.Latin}, {"cyrillic", unicode.Cyrillic}, {"greek", unicode.Greek},
-	{"arabic", unicode.Arabic}, {"hebrew", unicode.Hebrew}, {"devanagari", unicode.Devanagari},
-	{"kana", unicode.Hiragana}, {"kana", unicode.Katakana}, {"hangul", unicode.Hangul}, {"han", unicode.Han},
-}
-
-var lettersOutsideTheirScriptName = &unicode.RangeTable{
-	R16: []unicode.Range16{
-		{0x00AA, 0x00BA, 0x10}, {0x02B0, 0x02B8, 1}, {0x02E0, 0x02E4, 1}, {0x1D2C, 0x1D61, 1},
-		{0x1D78, 0x1D78, 1}, {0x1D9B, 0x1DBF, 1}, {0x2071, 0x2071, 1}, {0x207F, 0x207F, 1},
-		{0x2126, 0x2126, 1}, {0x212A, 0x212B, 1}, {0x2132, 0x2132, 1}, {0x214E, 0x214E, 1},
-		{0x2183, 0x2183, 1}, {0x2C7D, 0x2C7D, 1}, {0x3005, 0x3005, 1}, {0x303B, 0x303B, 1},
-		{0xA69C, 0xA69D, 1}, {0xA770, 0xA770, 1}, {0xA7F2, 0xA7F4, 1}, {0xA7F8, 0xA7F9, 1},
-		{0xAB5C, 0xAB5F, 1}, {0xAB69, 0xAB69, 1}, {0xFF21, 0xFF3A, 1}, {0xFF41, 0xFF5A, 1},
-		{0xFF66, 0xFF6F, 1}, {0xFF71, 0xFF9D, 1}, {0xFFA0, 0xFFBE, 1}, {0xFFC2, 0xFFC7, 1},
-		{0xFFCA, 0xFFCF, 1}, {0xFFD2, 0xFFD7, 1}, {0xFFDA, 0xFFDC, 1},
-	},
-	R32: []unicode.Range32{
-		{0x10780, 0x10785, 1}, {0x10787, 0x107B0, 1}, {0x107B2, 0x107BA, 1}, {0x16FE3, 0x16FE3, 1},
-		{0x1B002, 0x1B11E, 1}, {0x1E030, 0x1E050, 1}, {0x1E06B, 0x1E06D, 1},
-	},
-}
-
-var commonLettersNamedForScript = map[rune]string{0x0374: "greek", 0x0640: "arabic", 0x30FC: "kana"}
-
-func scriptOf(r rune) string {
-	if !unicode.IsLetter(r) {
-		return ""
-	}
-	if s, ok := commonLettersNamedForScript[r]; ok {
-		return s
-	}
-	if unicode.Is(lettersOutsideTheirScriptName, r) {
-		return ""
-	}
-	for _, t := range scriptTables {
-		if unicode.Is(t.table, r) {
-			return t.name
-		}
-	}
-	return ""
-}
-
-type scriptCount struct {
-	name  string
-	count int
-}
-
-func scriptsIn(text string) (map[string]bool, []scriptCount) {
-	var counts []scriptCount
-	index := map[string]int{}
-	for _, r := range text {
-		s := scriptOf(r)
-		if s == "" {
-			continue
-		}
-		i, ok := index[s]
-		if !ok {
-			i = len(counts)
-			index[s] = i
-			counts = append(counts, scriptCount{s, 0})
-		}
-		counts[i].count++
-	}
-	found := map[string]bool{}
-	for _, c := range counts {
-		threshold, ok := scriptThreshold[c.name]
-		if !ok {
-			threshold = sentence
-		}
-		if c.count >= threshold {
-			found[c.name] = true
-		}
-	}
-	traits := map[string]bool{}
-	systems := map[string]bool{}
-	for s := range found {
-		if s != "latin" {
-			traits["trait:script."+s] = true
-		}
-		if (s == "han" || s == "kana") && found["kana"] {
-			systems["japanese"] = true
-		} else {
-			systems[s] = true
-		}
-	}
-	if len(systems) >= 2 {
-		traits["trait:script.mixed"] = true
-	}
-	return traits, counts
-}
-
-func isPySpace(r rune) bool {
-	return unicode.IsSpace(r) || (r >= 0x1C && r <= 0x1F)
-}
-
-func pyNormalizeEncoding(name string) string {
+func normalizeEncoding(name string) string {
 	var b strings.Builder
 	punct := false
 	for _, c := range strings.ToLower(name) {
@@ -233,7 +128,7 @@ var pyCodecs = map[string]encoding.Encoding{
 }
 
 func lookupCodec(name string) (string, bool) {
-	norm := pyNormalizeEncoding(name)
+	norm := normalizeEncoding(name)
 	for _, n := range []string{norm, strings.ReplaceAll(norm, ".", "_")} {
 		if c, ok := pyCodecAliases[n]; ok {
 			return c, true
@@ -248,7 +143,10 @@ func lookupCodec(name string) (string, bool) {
 	return "", false
 }
 
-func decodeLossy(data []byte, name string) (string, bool) {
+// Decode decodes data with the codec Python's codecs.lookup finds for name, replacing what the
+// codec cannot decode, and reports whether it found one. ASCII replaces each byte above 0x7F with
+// U+FFFD, and UTF-8 keeps data's bytes as they are.
+func Decode(data []byte, name string) (string, bool) {
 	codec, ok := lookupCodec(name)
 	if !ok {
 		return "", false
@@ -274,113 +172,10 @@ func decodeLossy(data []byte, name string) (string, bool) {
 	return string(out), true
 }
 
-func decodeOrUTF8(data []byte, name string) string {
-	if s, ok := decodeLossy(data, name); ok {
+// DecodeOrUTF8 decodes data as Decode does, and returns data as it is when name names no codec.
+func DecodeOrUTF8(data []byte, name string) string {
+	if s, ok := Decode(data, name); ok {
 		return s
 	}
 	return string(data)
-}
-
-var latinGuesses = map[string]bool{
-	"WINDOWS-1252": true, "WINDOWS-1250": true, "WINDOWS-1254": true, "WINDOWS-1257": true,
-	"ISO-8859-1": true, "ISO-8859-2": true, "ISO-8859-3": true, "ISO-8859-4": true, "ISO-8859-9": true,
-	"ISO-8859-15": true, "ISO-8859-16": true,
-}
-
-var utf8Names = map[string]bool{"utf-8": true, "utf8": true, "us-ascii": true, "ascii": true, "": true}
-
-func hasBOM(data []byte) bool {
-	return bytes.HasPrefix(data, []byte{0xEF, 0xBB, 0xBF}) || bytes.HasPrefix(data, []byte{0xFF, 0xFE}) ||
-		bytes.HasPrefix(data, []byte{0xFE, 0xFF})
-}
-
-func strictUTF16(data []byte, bigEndian bool) ([]rune, bool) {
-	units := make([]uint16, len(data)/2)
-	for i := range units {
-		if bigEndian {
-			units[i] = uint16(data[2*i])<<8 | uint16(data[2*i+1])
-		} else {
-			units[i] = uint16(data[2*i+1])<<8 | uint16(data[2*i])
-		}
-	}
-	var out []rune
-	for i := 0; i < len(units); i++ {
-		u := rune(units[i])
-		switch {
-		case u >= 0xD800 && u < 0xDC00:
-			if i+1 >= len(units) || units[i+1] < 0xDC00 || units[i+1] >= 0xE000 {
-				return nil, false
-			}
-			out = append(out, utf16.DecodeRune(u, rune(units[i+1])))
-			i++
-		case u >= 0xDC00 && u < 0xE000:
-			return nil, false
-		default:
-			out = append(out, u)
-		}
-	}
-	return out, true
-}
-
-func cp1252Strict(data []byte) bool {
-	for _, c := range data {
-		switch c {
-		case 0x81, 0x8D, 0x8F, 0x90, 0x9D:
-			return false
-		}
-	}
-	return true
-}
-
-func charsetOf(data []byte) (string, string) {
-	if hasBOM(data) {
-		return "", "bom"
-	}
-	if utf8.Valid(data) {
-		return "", "utf-8"
-	}
-	for _, enc := range []string{"utf-16-be", "utf-16-le"} {
-		if bytes.IndexByte(data, 0) >= 0 && len(data)%2 == 0 {
-			decoded, ok := strictUTF16(data, enc == "utf-16-be")
-			if !ok {
-				continue
-			}
-			printable := 0
-			for _, r := range decoded {
-				if unicode.IsPrint(r) || isPySpace(r) {
-					printable++
-				}
-			}
-			if float64(printable) >= 0.98*float64(len(decoded)) {
-				return "trait:charset.utf-16-no-bom", strings.ToUpper(enc)
-			}
-		}
-	}
-	guess := strings.ToUpper(strings.TrimFunc(string(run([]string{"uchardet"}, data, probeTimeout)), isPySpace))
-	if strings.HasPrefix(guess, "UTF-16") || strings.HasPrefix(guess, "UTF-32") {
-		return "trait:charset.utf-16-no-bom", guess
-	}
-	if latinGuesses[guess] && cp1252Strict(data) {
-		return "trait:charset.windows-1252", guess
-	}
-	return "trait:charset.legacy-other", guess
-}
-
-func decodeText(data []byte, guess string) string {
-	if bytes.HasPrefix(data, []byte{0xEF, 0xBB, 0xBF}) {
-		return string(data[3:])
-	}
-	if bytes.HasPrefix(data, []byte{0xFF, 0xFE}) || bytes.HasPrefix(data, []byte{0xFE, 0xFF}) {
-		return decodeOrUTF8(data, "utf-16")
-	}
-	if strings.HasPrefix(guess, "UTF-16") {
-		if len(data) > 0 && data[0] == 0 {
-			return decodeOrUTF8(data, "utf-16-be")
-		}
-		return decodeOrUTF8(data, "utf-16-le")
-	}
-	if guess == "utf-8" || guess == "bom" || guess == "" {
-		return string(data)
-	}
-	return decodeOrUTF8(data, guess)
 }

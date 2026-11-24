@@ -1,13 +1,19 @@
-package main
+package media
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"os"
 	"regexp"
 	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/standards-lab/docs-corpus/tools/coverage/idset"
+	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
+	"github.com/standards-lab/docs-corpus/tools/coverage/run"
+	"github.com/standards-lab/docs-corpus/tools/coverage/text"
 )
 
 var (
@@ -19,10 +25,6 @@ var (
 	signatureField = regexp.MustCompile(`/FT[\t\n\v\f\r ]*/Sig`)
 	portfolio      = regexp.MustCompile(`/Collection[\t\n\v\f\r ]*(<<|\d+ 0 R)`)
 )
-
-func pyFields(line string) []string {
-	return strings.FieldsFunc(line, isPySpace)
-}
 
 func isDigits(s string) bool {
 	if s == "" {
@@ -36,32 +38,39 @@ func isDigits(s string) bool {
 	return true
 }
 
-func pdf(path, rel string, rec *runRecord) (set, set, *object) {
-	facts := newObject()
-	traits, features := set{}, set{}
-	info := string(run([]string{"pdfinfo", path}, nil, probeTimeout))
+// PDF places the traits and features of the PDF at path, from pdfinfo, pdfimages, pdffonts, and
+// qpdf, and from outputs, the output events docproc's run recorded for it. It returns its facts:
+// pages, rendered and text pages, DPIs, large images, fonts, and invisible text runs.
+func (pr Prober) PDF(ctx context.Context, path string, outputs []run.Event) (traits, features idset.Set, facts *jsonvalue.Object) {
+	need("PDF", "PDFInfo", pr.PDFInfo)
+	need("PDF", "PDFImages", pr.PDFImages)
+	need("PDF", "PDFFonts", pr.PDFFonts)
+	need("PDF", "QPDF", pr.QPDF)
+	facts = jsonvalue.NewObject()
+	traits, features = idset.Set{}, idset.Set{}
+	info := string(pr.PDFInfo.Output(ctx, path))
 	pages := 0
 	if m := pagesLine.FindStringSubmatch(info); m != nil {
 		pages, _ = strconv.Atoi(m[1])
 	}
-	textPages := set{}
+	textPages := idset.Set{}
 	imagePages := 0
-	dpis := set{}
+	dpis := idset.Set{}
 	var dpiValues []any
-	for _, e := range rec.outputs(rel) {
+	for _, e := range outputs {
 		if e.Part.Depth != nil && *e.Part.Depth != 0 {
 			continue
 		}
 		out := e.Output
 		if out.Kind == "text" && strings.HasPrefix(out.Name, "page ") {
-			textPages.add(metaRaw(out.Meta, "page"))
+			textPages.Add(out.MetaRaw("page"))
 		}
 		if out.Kind == "image" && strings.HasPrefix(out.Name, "page ") {
 			imagePages++
-			raw := metaRaw(out.Meta, "dpi")
+			raw := out.MetaRaw("dpi")
 			if !dpis[raw] {
-				dpis.add(raw)
-				if v, err := parseJSON([]byte(raw)); err == nil && truthy(v) {
+				dpis.Add(raw)
+				if v, err := jsonvalue.Parse([]byte(raw)); err == nil && jsonvalue.Truthy(v) {
 					dpiValues = append(dpiValues, v)
 				}
 			}
@@ -71,38 +80,38 @@ func pdf(path, rel string, rec *runRecord) (set, set, *object) {
 	if rendered == 0 {
 		rendered = pages
 	}
-	slices.SortFunc(dpiValues, comparePy)
-	facts.set("pages", pages)
-	facts.set("rendered_pages", imagePages)
-	facts.set("text_pages", len(textPages))
-	facts.set("dpis", dpiValues)
+	slices.SortFunc(dpiValues, jsonvalue.Compare)
+	facts.Set("pages", pages)
+	facts.Set("rendered_pages", imagePages)
+	facts.Set("text_pages", len(textPages))
+	facts.Set("dpis", dpiValues)
 	if rendered > 0 {
 		if len(textPages) == 0 {
-			traits.add("trait:text-layer.none")
+			traits.Add("trait:text-layer.none")
 		} else if len(textPages) < rendered {
-			traits.add("trait:text-layer.partial")
+			traits.Add("trait:text-layer.partial")
 		}
 	}
 	if len(dpis) > 1 {
-		traits.add("trait:scale.oversized-page")
+		traits.Add("trait:scale.oversized-page")
 	}
 	if max(pages, rendered) >= 100 {
-		traits.add("trait:scale.many-pages")
+		traits.Add("trait:scale.many-pages")
 	}
-	images := pySplitLines(string(run([]string{"pdfimages", "-list", path}, nil, probeTimeout)))
+	images := text.SplitLines(string(pr.PDFImages.Output(ctx, path)))
 	if len(images) > 2 {
 		images = images[2:]
 	} else {
 		images = nil
 	}
-	largeImagePages := set{}
+	largeImagePages := idset.Set{}
 	ppiSet := map[int]bool{}
 	for _, l := range images {
-		f := pyFields(l)
+		f := text.Fields(l)
 		if len(f) > 0 && isDigits(f[0]) {
 			if w, _ := strconv.Atoi(f[3]); w >= 500 {
 				page, _ := strconv.Atoi(f[0])
-				largeImagePages.add(strconv.Itoa(page))
+				largeImagePages.Add(strconv.Itoa(page))
 			}
 		}
 		if len(f) > 12 && isDigits(f[12]) {
@@ -112,7 +121,7 @@ func pdf(path, rel string, rec *runRecord) (set, set, *object) {
 			}
 		}
 	}
-	facts.set("pages_with_large_images", len(largeImagePages))
+	facts.Set("pages_with_large_images", len(largeImagePages))
 	var ppis []int
 	for p := range ppiSet {
 		ppis = append(ppis, p)
@@ -121,38 +130,38 @@ func pdf(path, rel string, rec *runRecord) (set, set, *object) {
 	if len(ppis) > 3 {
 		ppis = ppis[:3]
 	}
-	facts.set("large_image_ppi", ppis)
-	fonts := pySplitLines(string(run([]string{"pdffonts", path}, nil, probeTimeout)))
+	facts.Set("large_image_ppi", ppis)
+	fonts := text.SplitLines(string(pr.PDFFonts.Output(ctx, path)))
 	if len(fonts) > 2 {
 		fonts = fonts[2:]
 	} else {
 		fonts = nil
 	}
-	facts.set("fonts", len(fonts))
+	facts.Set("fonts", len(fonts))
 	withoutUnicode := 0
 	for _, l := range fonts {
 		if fontNoUnicode.MatchString(l) {
 			withoutUnicode++
 		}
 	}
-	facts.set("fonts_without_unicode", withoutUnicode)
-	raw := run([]string{"qpdf", "--qdf", "--object-streams=disable", "--decrypt", path, "-"}, nil, probeTimeout)
+	facts.Set("fonts_without_unicode", withoutUnicode)
+	raw := pr.QPDF.Output(ctx, path)
 	if len(raw) == 0 {
 		raw, _ = os.ReadFile(path)
 	}
 	invisible := len(invisibleText.FindAllIndex(raw, -1))
-	facts.set("invisible_text_runs", invisible)
+	facts.Set("invisible_text_runs", invisible)
 	if len(textPages) > 0 && len(largeImagePages) > 0 && invisible > 0 && len(largeImagePages) >= max(1, len(textPages)/2) {
-		traits.add("trait:text-layer.ocr")
+		traits.Add("trait:text-layer.ocr")
 	}
 	if acroForm.Match(raw) && formField.Match(raw) {
-		features.add("feature:forms")
+		features.Add("feature:forms")
 	}
 	if signatureField.Match(raw) {
-		features.add("feature:signature-fields")
+		features.Add("feature:signature-fields")
 	}
 	if portfolio.Match(raw) {
-		features.add("feature:portfolio")
+		features.Add("feature:portfolio")
 	}
 	return traits, features, facts
 }
@@ -165,11 +174,14 @@ type ffStream struct {
 }
 
 func (s ffStream) attachedPicture() bool {
-	return truthy(s.Disposition["attached_pic"])
+	return jsonvalue.Truthy(s.Disposition["attached_pic"])
 }
 
-func audioVideo(path string) (set, set, *object) {
-	data := run([]string{"ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", path}, nil, probeTimeout)
+// AudioVideo places the traits and features of the audio or video file at path, from ffprobe's
+// streams and format, and returns its facts: duration, streams, sample rates, and channels.
+func (pr Prober) AudioVideo(ctx context.Context, path string) (traits, features idset.Set, facts *jsonvalue.Object) {
+	need("AudioVideo", "FFprobe", pr.FFprobe)
+	data := pr.FFprobe.Output(ctx, path)
 	if len(data) == 0 {
 		data = []byte("{}")
 	}
@@ -202,7 +214,7 @@ func audioVideo(path string) (set, set, *object) {
 		}
 	}
 	duration := 0.0
-	if truthy(probe.Format.Duration) {
+	if jsonvalue.Truthy(probe.Format.Duration) {
 		switch d := probe.Format.Duration.(type) {
 		case string:
 			duration, _ = strconv.ParseFloat(strings.TrimSpace(d), 64)
@@ -231,32 +243,32 @@ func audioVideo(path string) (set, set, *object) {
 	}
 	slices.Sort(channels)
 	rounded, _ := strconv.ParseFloat(strconv.FormatFloat(duration, 'f', 1, 64), 64)
-	facts := newObject()
-	facts.set("duration", pyFloat(rounded))
-	facts.set("audio_streams", len(audio))
-	facts.set("video_streams", len(video))
-	facts.set("attached_pictures", len(pics))
-	facts.set("sample_rates", rates)
-	facts.set("channels", channels)
-	facts.set("subtitle_streams", subtitles)
-	traits, features := set{}, set{}
+	facts = jsonvalue.NewObject()
+	facts.Set("duration", jsonvalue.Float(rounded))
+	facts.Set("audio_streams", len(audio))
+	facts.Set("video_streams", len(video))
+	facts.Set("attached_pictures", len(pics))
+	facts.Set("sample_rates", rates)
+	facts.Set("channels", channels)
+	facts.Set("subtitle_streams", subtitles)
+	traits, features = idset.Set{}, idset.Set{}
 	if len(video) > 0 && len(audio) == 0 {
-		traits.add("trait:audio.none")
+		traits.Add("trait:audio.none")
 	}
 	if len(audio) > 0 && slices.Max(rates) <= 8000 {
-		traits.add("trait:audio.narrowband")
+		traits.Add("trait:audio.narrowband")
 	}
 	if len(audio) > 0 && duration > 30 {
-		traits.add("trait:audio.multi-window")
+		traits.Add("trait:audio.multi-window")
 	}
 	if duration >= 1800 {
-		traits.add("trait:scale.long-media")
+		traits.Add("trait:scale.long-media")
 	}
 	if len(pics) > 0 {
-		features.add("feature:attached-picture")
+		features.Add("feature:attached-picture")
 	}
 	if len(audio) > 1 || len(video) > 1 {
-		features.add("feature:multiple-streams")
+		features.Add("feature:multiple-streams")
 	}
 	return traits, features, facts
 }
@@ -276,17 +288,20 @@ func jsonInt(raw json.RawMessage) int {
 	return 0
 }
 
-func image(path string) (set, set, *object) {
-	out := string(run([]string{"magick", "identify", "-format", "%m|%w|%h|%A|%[orientation]|%[opaque]\n", path}, nil, probeTimeout))
+// Image places the features of the image at path, from magick identify's frames, and returns its
+// facts: frames, and the first frame's format, size, alpha, orientation, and opacity.
+func (pr Prober) Image(ctx context.Context, path string) (traits, features idset.Set, facts *jsonvalue.Object) {
+	need("Image", "Magick", pr.Magick)
+	out := string(pr.Magick.Output(ctx, path))
 	var frames [][]string
-	for _, l := range pySplitLines(out) {
+	for _, l := range text.SplitLines(out) {
 		if strings.Count(l, "|") == 5 {
 			frames = append(frames, strings.Split(l, "|"))
 		}
 	}
-	facts := newObject()
-	facts.set("frames", len(frames))
-	traits, features := set{}, set{}
+	facts = jsonvalue.NewObject()
+	facts.Set("frames", len(frames))
+	traits, features = idset.Set{}, idset.Set{}
 	if len(frames) == 0 {
 		return traits, features, facts
 	}
@@ -294,48 +309,36 @@ func image(path string) (set, set, *object) {
 	format, alpha, orient, opaque := f[0], f[3], f[4], f[5]
 	width, _ := strconv.Atoi(strings.TrimSpace(f[1]))
 	height, _ := strconv.Atoi(strings.TrimSpace(f[2]))
-	facts.set("format", format)
-	facts.set("width", width)
-	facts.set("height", height)
-	facts.set("alpha", alpha)
-	facts.set("orientation", orient)
-	facts.set("opaque", opaque)
+	facts.Set("format", format)
+	facts.Set("width", width)
+	facts.Set("height", height)
+	facts.Set("alpha", alpha)
+	facts.Set("orientation", orient)
+	facts.Set("opaque", opaque)
 	if len(frames) > 1 && format == "TIFF" {
-		features.add("feature:multi-page-image")
+		features.Add("feature:multi-page-image")
 	}
 	if len(frames) > 1 && (format == "GIF" || format == "WEBP" || format == "AVIF") {
-		features.add("feature:animation")
+		features.Add("feature:animation")
 	}
 	if orient != "" && orient != "Undefined" && orient != "TopLeft" {
-		features.add("feature:orientation")
+		features.Add("feature:orientation")
 	}
 	if alpha != "Undefined" && alpha != "False" && alpha != "" && strings.ToLower(opaque) == "false" {
-		features.add("feature:transparency")
+		features.Add("feature:transparency")
 	}
 	return traits, features, facts
 }
 
-func archiveEntries(path string) []string {
+// ArchiveEntries returns the file entries bsdtar lists in the archive at path, directories left
+// out.
+func (pr Prober) ArchiveEntries(ctx context.Context, path string) []string {
+	need("ArchiveEntries", "Bsdtar", pr.Bsdtar)
 	var entries []string
-	for _, l := range pySplitLines(string(run([]string{"bsdtar", "-tf", path}, nil, probeTimeout))) {
+	for _, l := range text.SplitLines(string(pr.Bsdtar.Output(ctx, path))) {
 		if l != "" && !strings.HasSuffix(l, "/") {
 			entries = append(entries, l)
 		}
 	}
 	return entries
-}
-
-func comparePy(a, b any) int {
-	if sa, ok := a.(string); ok {
-		return strings.Compare(sa, str(b))
-	}
-	fa, _ := a.(json.Number).Float64()
-	fb, _ := b.(json.Number).Float64()
-	switch {
-	case fa < fb:
-		return -1
-	case fa > fb:
-		return 1
-	}
-	return 0
 }

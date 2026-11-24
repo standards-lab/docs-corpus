@@ -129,9 +129,9 @@ The script reads the run from `${RUNS:-$HOME/runs/docproc/final/runs}` and the m
 
 Each entry's `traits` and `features` are the trait and feature IDs the sample exercises, placed by
 reading the file and its manifest entry, never from the manifest's `covers` tags. Each value's
-rule in the vocabulary is the test. [`scripts/place-traits`](../scripts/place-traits), a Go program,
-probes every sample and applies the rules it can decide from the file or from what docproc's kept
-run recorded for it:
+rule in the vocabulary is the test. place-traits, a command of the Go module
+[`tools/coverage`](../tools/coverage), probes every sample and applies the rules it can decide from
+the file or from what docproc's kept run recorded for it:
 
 - PDF text layers from the run's page outputs, OCR layers from invisible text over page images,
   page counts, forms, signature fields, and portfolios, read with pdfinfo, pdfimages, pdffonts, and
@@ -166,7 +166,8 @@ probe findings.
 [`mise.toml`](../mise.toml) pins Go and every probe the program calls except LibreOffice's
 `soffice`, the one unpinned host requirement: it is in neither mise's registry nor conda-forge, so
 the program and ImageMagick's EMF and WMF delegate use the host's. The program stops at its start,
-naming the tool, when a probe is not on `PATH`.
+naming the tool and the fix, when a probe is not on `PATH` or is older than the version its
+[adapter](../tools/coverage/probe/doc.go) accepts.
 
 ## Gaps
 

@@ -1,14 +1,4 @@
-// Command generate writes the corpus's generated candidates from adopted samples. Run it from
-// the repository root.
-//
-//	go run ./scripts/generate rights-managed <message.eml> <payload> <out.eml>
-//	go run ./scripts/generate mbox <out.mbox> <message.eml> [<message.eml> ...]
-//
-// rights-managed adds a Content-Class: rpmsg.message header to a multipart/mixed message and
-// attaches the payload as message.rpmsg. mbox writes 1,000 messages, the given ones in turn.
-//
-// See docs/coverage.md
-package main
+package generate
 
 import (
 	"bytes"
@@ -36,7 +26,10 @@ func newlineOf(data []byte) []byte {
 	return []byte("\n")
 }
 
-func rightsManaged(message, payload []byte) ([]byte, error) {
+// RightsManaged returns message, a multipart/mixed message with a boundary, with a
+// Content-Class: rpmsg.message header added at the end of its header and payload attached, base64
+// encoded, as message.rpmsg before its closing delimiter. It keeps the message's line endings.
+func RightsManaged(message, payload []byte) ([]byte, error) {
 	msg, err := mail.ReadMessage(bytes.NewReader(message))
 	if err != nil {
 		return nil, err
@@ -85,7 +78,10 @@ func rightsManaged(message, payload []byte) ([]byte, error) {
 	return out.Bytes(), nil
 }
 
-func mbox(messages [][]byte, now time.Time) []byte {
+// Mbox returns an mbox of 1,000 messages, messages in turn. A message that starts with a From
+// line keeps it; any other gets a From MAILER-DAEMON line with now in UTC. A line in a message
+// body that starts with From is escaped as >From.
+func Mbox(messages [][]byte, now time.Time) []byte {
 	var out bytes.Buffer
 	for i := range mboxMessages {
 		msg := messages[i%len(messages)]
@@ -109,7 +105,10 @@ func mbox(messages [][]byte, now time.Time) []byte {
 	return out.Bytes()
 }
 
-func generate(args []string) error {
+// Run makes one candidate from the command line's arguments, args without the program's name,
+// writing its output file: rights-managed <message.eml> <payload> <out.eml>, or mbox <out.mbox>
+// <message.eml> [<message.eml> ...], made at now. Paths are relative to the working directory.
+func Run(args []string, now time.Time) error {
 	if len(args) == 0 {
 		return errors.New("usage: generate rights-managed <message.eml> <payload> <out.eml> | mbox <out.mbox> <message.eml> [<message.eml> ...]")
 	}
@@ -126,7 +125,7 @@ func generate(args []string) error {
 		if err != nil {
 			return err
 		}
-		out, err := rightsManaged(message, payload)
+		out, err := RightsManaged(message, payload)
 		if err != nil {
 			return fmt.Errorf("%s: %w", args[1], err)
 		}
@@ -143,14 +142,7 @@ func generate(args []string) error {
 			}
 			messages = append(messages, data)
 		}
-		return os.WriteFile(args[1], mbox(messages, time.Now()), 0o644)
+		return os.WriteFile(args[1], Mbox(messages, now), 0o644)
 	}
 	return fmt.Errorf("unknown candidate %q", args[0])
-}
-
-func main() {
-	if err := generate(os.Args[1:]); err != nil {
-		fmt.Fprintln(os.Stderr, "generate:", err)
-		os.Exit(1)
-	}
 }

@@ -1,14 +1,16 @@
-package main
+package office
 
 import (
 	"archive/zip"
 	"errors"
 	"io"
-	"os"
-	"path/filepath"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/standards-lab/docs-corpus/tools/coverage/idset"
+	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 )
 
 type zipEntry struct {
@@ -189,7 +191,9 @@ type xmlPart struct {
 	name, text string
 }
 
-func ooxml(path string) (set, *object) {
+// OOXML places the features of the OOXML package at path, from its XML parts and part names, and
+// returns its facts: its parts, tables, and media. A file that is not a readable zip has none.
+func OOXML(path string) (features idset.Set, facts *jsonvalue.Object) {
 	files := zipTexts(path)
 	var parts []xmlPart
 	byName := map[string]string{}
@@ -218,12 +222,7 @@ func ooxml(path string) (set, *object) {
 	}
 	body, rels := strings.Join(bodyParts, "\n"), strings.Join(relParts, "\n")
 	anyOf := func(texts []string, test func(string) bool) bool {
-		for _, t := range texts {
-			if test(t) {
-				return true
-			}
-		}
-		return false
+		return slices.ContainsFunc(texts, test)
 	}
 	anyName := func(test func(string) bool) bool {
 		for _, f := range files {
@@ -234,16 +233,11 @@ func ooxml(path string) (set, *object) {
 		return false
 	}
 	anyPart := func(test func(xmlPart) bool) bool {
-		for _, p := range parts {
-			if test(p) {
-				return true
-			}
-		}
-		return false
+		return slices.ContainsFunc(parts, test)
 	}
-	features := set{}
-	facts := newObject()
-	facts.set("parts", len(files))
+	features = idset.Set{}
+	facts = jsonvalue.NewObject()
+	facts.Set("parts", len(files))
 	tables := 0
 	for _, v := range word {
 		tables += len(wordTable.FindAllStringIndex(v, -1))
@@ -252,52 +246,52 @@ func ooxml(path string) (set, *object) {
 		tables += len(slideTable.FindAllStringIndex(v, -1))
 	}
 	if tables > 0 {
-		features.add("feature:tables")
+		features.Add("feature:tables")
 	}
 	if anyOf(word, nestedTable) {
-		features.add("feature:nested-tables")
+		features.Add("feature:nested-tables")
 	}
 	if anyOf(word, wordMerge.MatchString) || anyOf(slides, slideMerge.MatchString) ||
 		anyOf(sheets, func(v string) bool { return strings.Contains(v, "<mergeCell ") }) {
-		features.add("feature:merged-cells")
+		features.Add("feature:merged-cells")
 	}
 	if anyName(chartPart.MatchString) {
-		features.add("feature:charts")
+		features.Add("feature:charts")
 	}
 	if anyName(commentPart.MatchString) && commentElement.MatchString(body) {
-		features.add("feature:comments")
+		features.Add("feature:comments")
 	}
 	if anyName(cellNotePart.MatchString) || anyName(threadedPart.MatchString) {
-		features.add("feature:cell-notes")
+		features.Add("feature:cell-notes")
 	}
 	if anyOf(word, revision.MatchString) {
-		features.add("feature:tracked-changes")
+		features.Add("feature:tracked-changes")
 	}
 	if hasFootnote(byName["word/footnotes.xml"] + byName["word/endnotes.xml"]) {
-		features.add("feature:footnotes")
+		features.Add("feature:footnotes")
 	}
 	if anyPart(func(p xmlPart) bool { return notesSlide.MatchString(p.name) && notesText.MatchString(p.text) }) {
-		features.add("feature:speaker-notes")
+		features.Add("feature:speaker-notes")
 	}
 	if wordTextBox.MatchString(body) ||
 		anyOf(slides, func(v string) bool { return shapeWithText(dropPlaceholderShapes(v)) }) ||
 		anyPart(func(p xmlPart) bool { return drawingPart.MatchString(p.name) && drawingWithText(p.text) }) {
-		features.add("feature:text-boxes")
+		features.Add("feature:text-boxes")
 	}
 	if strings.Contains(body, "<m:oMath") {
-		features.add("feature:equations")
+		features.Add("feature:equations")
 	}
 	if anyName(smartArtPart.MatchString) {
-		features.add("feature:smartart")
+		features.Add("feature:smartart")
 	}
 	if anyOf(sheets, formula.MatchString) {
-		features.add("feature:formulas")
+		features.Add("feature:formulas")
 	}
 	if len(sheets) > 0 && xlsxDates(parts, byName) {
-		features.add("feature:dates")
+		features.Add("feature:dates")
 	}
 	if externalLink.MatchString(rels) {
-		features.add("feature:hyperlinks")
+		features.Add("feature:hyperlinks")
 	}
 	media := 0
 	for _, f := range files {
@@ -306,43 +300,43 @@ func ooxml(path string) (set, *object) {
 		}
 	}
 	if media > 0 {
-		features.add("feature:pictures")
+		features.Add("feature:pictures")
 	}
 	if anyPart(func(p xmlPart) bool { return cropped.MatchString(p.text) }) || slideOffpage(parts, byName) {
-		features.add("feature:picture-layout")
+		features.Add("feature:picture-layout")
 	}
 	if anyName(func(n string) bool { return strings.Contains(n, "/embeddings/") }) ||
 		strings.Contains(body, "<o:OLEObject") || strings.Contains(body, "<p:oleObj") {
-		features.add("feature:embedded-objects")
+		features.Add("feature:embedded-objects")
 	}
-	facts.set("tables", tables)
-	facts.set("media", media)
+	facts.Set("tables", tables)
+	facts.Set("media", media)
 	return features, facts
 }
 
 func xlsxDates(parts []xmlPart, byName map[string]string) bool {
 	styles := byName["xl/styles.xml"]
-	dateFormats := set{}
+	dateFormats := idset.Set{}
 	for i := 14; i < 23; i++ {
-		dateFormats.add(strconv.Itoa(i))
+		dateFormats.Add(strconv.Itoa(i))
 	}
 	for i := 45; i < 48; i++ {
-		dateFormats.add(strconv.Itoa(i))
+		dateFormats.Add(strconv.Itoa(i))
 	}
 	for _, m := range numFmt.FindAllStringSubmatch(styles, -1) {
 		code := strings.ToLower(numFmtLiteral.ReplaceAllString(m[2], ""))
 		if dateCode.MatchString(code) {
-			dateFormats.add(m[1])
+			dateFormats.Add(m[1])
 		}
 	}
 	xfs := ""
 	if m := cellXfs.FindStringSubmatch(styles); m != nil {
 		xfs = m[1]
 	}
-	styled := set{}
+	styled := idset.Set{}
 	for i, m := range xfElement.FindAllStringSubmatch(xfs, -1) {
 		if f := numFmtID.FindStringSubmatch(m[1]); f != nil && dateFormats[f[1]] {
-			styled.add(strconv.Itoa(i))
+			styled.Add(strconv.Itoa(i))
 		}
 	}
 	var sheetTexts []string
@@ -387,34 +381,4 @@ func slideOffpage(parts []xmlPart, byName map[string]string) bool {
 		}
 	}
 	return false
-}
-
-var legacyTarget = map[string]string{".doc": "docx", ".rtf": "docx", ".wpd": "docx", ".xls": "xlsx", ".ppt": "pptx"}
-
-var ooxmlKinds = newSet("docx", "xlsx", "pptx", "docm", "dotm", "xlsm", "xltm", "pptm", "dotx", "xltx", "potx", "ppsx")
-
-func converted(path, tmp string, n int) string {
-	target, ok := legacyTarget[strings.ToLower(filepath.Ext(path))]
-	if !ok {
-		return ""
-	}
-	out := filepath.Join(tmp, strconv.Itoa(n))
-	if err := os.MkdirAll(out, 0o755); err != nil {
-		return ""
-	}
-	run([]string{"soffice", "-env:UserInstallation=file://" + tmp + "/profile", "--headless", "--convert-to", target, "--outdir", out, path}, nil, convertTimeout)
-	entries, err := os.ReadDir(out)
-	if err != nil || len(entries) == 0 {
-		return ""
-	}
-	return filepath.Join(out, entries[0].Name())
-}
-
-func odfText(path string) string {
-	for _, f := range zipTexts(path) {
-		if f.name == "content.xml" {
-			return markup.ReplaceAllString(string(f.data), " ")
-		}
-	}
-	return ""
 }

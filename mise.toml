@@ -19,5 +19,5 @@ description = "Run scripts/check.sh: the manifest, the coverage data, lint-conte
 run = "scripts/check.sh"
 
 [tasks.place-traits]
-description = "Print every ~/docs sample's trait and feature placement with scripts/place-traits; --facts adds the probes' findings"
-run = "go run ./scripts/place-traits"
+description = "Print every ~/docs sample's trait and feature placement with tools/coverage's place-traits; --facts adds the probes' findings"
+run = "go run ./tools/coverage/cmd/place-traits"
