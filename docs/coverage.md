@@ -77,6 +77,20 @@ a trim without `~/docs`: `truth` (it has truth when the list isn't empty), `lice
 Only a redistributable sample that isn't sensitive is adopted. Any other sample is trimmed when an
 adopted sample covers all of its scenarios, and replaced otherwise.
 
+dispose, a command of [`tools/coverage`](../tools/coverage/cmd/dispose/doc.go), derives every
+disposition by these rules, and the covers of each gap a replace names, as [Gaps](#gaps) states.
+It keeps every gap's candidate as it is and adds no gap. To rerun it and compare its output with
+the data, run this from the repository root:
+
+```sh
+mise run dispose | cmp - docs/coverage.json
+```
+
+It writes nothing but its output, and names on standard error each gap that may be dropped. With
+`--placement <file>`, it first takes each sample's traits and features from that output of
+place-traits, so `mise run place-traits > "$tmp"` followed by `mise run dispose --placement "$tmp"`
+re-derives the placements and the dispositions together.
+
 ### Truth and doc files
 
 A truth file or doc file follows its sample's disposition: it stays while a sample that lists it
@@ -174,7 +188,8 @@ naming the tool and the fix, when a probe is not on `PATH` or is older than the 
 Each scenario lists the adopted samples that exercise it. A scenario that no adopted sample
 exercises is a gap in `.gaps`. Each gap has an `id`, the `covers` a candidate must exercise, and
 a `candidate`. A replaced sample names the gap whose covers contain its own. Replaced samples that
-need the same covers, or covers inside another replaced sample's, share one gap. A gap for
+need the same covers, or covers inside another replaced sample's, share one gap; where several
+replaced samples' covers contain a sample's, it shares the gap of the one the tie-break prefers. A gap for
 scenarios no sample exercised groups the IDs one candidate file can exercise together.
 
 The data stores no list of samples per scenario: it follows from the placements. To print each

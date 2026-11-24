@@ -58,9 +58,9 @@ func (s Sample) Probed() []string {
 	return out
 }
 
-// Samples returns the samples of the repository's docs/coverage.json, skipping t when the file is
-// absent, as it is outside the repository, and failing it when the file doesn't parse.
-func Samples(t testing.TB) []Sample {
+// Coverage returns the bytes of the repository's docs/coverage.json, skipping t when the file is
+// absent, as it is outside the module.
+func Coverage(t testing.TB) []byte {
 	t.Helper()
 	_, file, _, ok := runtime.Caller(0)
 	if !ok {
@@ -71,11 +71,18 @@ func Samples(t testing.TB) []Sample {
 	if err != nil {
 		t.Skipf("%s is absent: %v", path, err)
 	}
+	return data
+}
+
+// Samples returns the samples of the repository's docs/coverage.json, skipping t when the file is
+// absent, as Coverage does, and failing it when the file doesn't parse.
+func Samples(t testing.TB) []Sample {
+	t.Helper()
 	var coverage struct {
 		Samples []Sample `json:"samples"`
 	}
-	if err := json.Unmarshal(data, &coverage); err != nil {
-		t.Fatalf("%s: %v", path, err)
+	if err := json.Unmarshal(Coverage(t), &coverage); err != nil {
+		t.Fatalf("docs/coverage.json: %v", err)
 	}
 	return coverage.Samples
 }

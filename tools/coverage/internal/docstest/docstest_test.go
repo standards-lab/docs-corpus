@@ -24,3 +24,9 @@ func TestSamplesReadsTheCoverageData(t *testing.T) {
 		t.Errorf("Samples = %d samples, the first %+v", len(samples), samples)
 	}
 }
+
+func TestCoverageReadsTheCoverageData(t *testing.T) {
+	if data := docstest.Coverage(t); !json.Valid(data) {
+		t.Errorf("Coverage = %d bytes that are not JSON", len(data))
+	}
+}

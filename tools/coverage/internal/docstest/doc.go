@@ -8,6 +8,7 @@
 //
 //   - [Dir] returns the reference docs directory.
 //   - [Path] returns a sample's path under it.
+//   - [Coverage] returns the coverage data's bytes.
 //   - [Samples] returns the coverage data's samples; [Sample] is one of them, and
 //     [Sample.Probed] its feature IDs less the judged ones.
 package docstest
