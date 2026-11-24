@@ -355,19 +355,83 @@
       },
       "capability:vision": {
         "identifier": "docinfer.CapabilityVision",
-        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L28"
+        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L28",
+        "fed_by": {
+          "routes": [
+            "route:document",
+            "route:video",
+            "route:vision",
+            "route:vision-converted"
+          ],
+          "links": [
+            "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/run.go#L546",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/document.go#L215",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/video.go#L118",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/vision.go#L45",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/picture.go#L60"
+          ]
+        }
       },
       "capability:transcription": {
         "identifier": "docinfer.CapabilityTranscription",
-        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L29"
+        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L29",
+        "fed_by": {
+          "routes": [
+            "route:audio",
+            "route:video"
+          ],
+          "links": [
+            "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/run.go#L555",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/audio.go#L81",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/video.go#L145"
+          ]
+        }
       },
       "capability:extraction": {
         "identifier": "docinfer.CapabilityExtraction",
-        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L30"
+        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L30",
+        "fed_by": {
+          "routes": [
+            "route:document",
+            "route:nested",
+            "route:office",
+            "route:onenote",
+            "route:text",
+            "route:vision",
+            "route:vision-converted",
+            "route:audio",
+            "route:video"
+          ],
+          "links": [
+            "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/embed.go#L24"
+          ]
+        }
       },
       "capability:embeddings": {
         "identifier": "docinfer.CapabilityEmbeddings",
-        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L31"
+        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L31",
+        "fed_by": {
+          "routes": [
+            "route:document",
+            "route:nested",
+            "route:office",
+            "route:onenote",
+            "route:text",
+            "route:vision",
+            "route:vision-converted",
+            "route:audio",
+            "route:video"
+          ],
+          "links": [
+            "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/run.go#L538",
+            "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/vision.go#L213",
+            "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/transcribe.go#L554",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/document.go#L208",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/adapter.go#L42",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/office.go#L198",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/text.go#L149"
+          ]
+        }
       }
     },
     "trait": {
@@ -618,6 +682,4511 @@
       }
     }
   },
-  "samples": [],
+  "library_placement": {
+    "run": "01a208e5-e581-7b95-b43a-0f91f8d3b40e",
+    "command": "scripts/place-library.sh"
+  },
+  "samples": [
+    {
+      "path": "archive/high-ratio-200mb.zip",
+      "sha256": "b7d16fd7ab6c7a41e2cca0882732a5fe3bb4bead089263112af6c45f3c79a96c",
+      "library": [
+        "kind:zip",
+        "route:archive",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "archive/mixed-bundle.7z",
+      "sha256": "d24517ee4e6becd49a39fa4971da11857e05c7be6796747446d5992952997037",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-openaction",
+        "kind:7z",
+        "kind:ole2",
+        "kind:pdf",
+        "kind:png",
+        "kind:zip",
+        "route:archive",
+        "route:document",
+        "route:nested",
+        "route:office",
+        "route:text",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "archive/mixed-bundle.tar.gz",
+      "sha256": "44ec41251bc78d1898cfde000d5ac57d97f0a23513acf18c8f76fb2d683e11ce",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-openaction",
+        "kind:gzip",
+        "kind:ole2",
+        "kind:pdf",
+        "kind:png",
+        "kind:tar",
+        "kind:zip",
+        "route:archive",
+        "route:document",
+        "route:nested",
+        "route:office",
+        "route:text",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "archive/mixed-bundle.tar.zst",
+      "sha256": "d7fc01f8d400461f0e000ab1d9528557ba2a81c2db7d43ac20d42e9b96ceeaa2",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-openaction",
+        "kind:ole2",
+        "kind:pdf",
+        "kind:png",
+        "kind:tar",
+        "kind:zip",
+        "kind:zstd",
+        "route:archive",
+        "route:document",
+        "route:nested",
+        "route:office",
+        "route:text",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "archive/mixed-bundle.zip",
+      "sha256": "8c69f47a9f36f58b8a7990dd71778570173934ef6538ba53d13ff0a708f8868e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-openaction",
+        "kind:ole2",
+        "kind:pdf",
+        "kind:png",
+        "kind:zip",
+        "route:archive",
+        "route:document",
+        "route:nested",
+        "route:office",
+        "route:text",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "archive/password-protected.zip",
+      "sha256": "d11db60970364d131cf99114bbb96ae7462d7f9f320f6a7fb98c521651c1bda3",
+      "library": [
+        "check:archive-encrypted",
+        "kind:zip",
+        "route:archive"
+      ]
+    },
+    {
+      "path": "archive/unicode-filenames.zip",
+      "sha256": "21114295eae0c31b2d354a94314ac201d4f7314333e15839fa2f806e11114415",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:archive",
+        "route:text"
+      ]
+    },
+    {
+      "path": "archive/zip-in-zip.zip",
+      "sha256": "20dfa891dedbcdb1e3ba10573a7fcbdcc079410bae04919bad2cf72c13e79e4a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-openaction",
+        "kind:ole2",
+        "kind:pdf",
+        "kind:png",
+        "kind:zip",
+        "route:archive",
+        "route:document",
+        "route:nested",
+        "route:office",
+        "route:text",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "audio/long/ami-es2002a-mix-headset.wav",
+      "sha256": "9c76866990fcc8b84006dc32d273ad99df439090b748ebe72103bb78c3216ee7",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/long/earnings21-4330115.mp3",
+      "sha256": "b8bcedbb29f9a04aaac25ff8c611b549cca2a0ab7635f76aee26eb0dfe5b9677",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:mp3",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/long/earnings22-4479944.mp3",
+      "sha256": "a2ca9b63ba333d47d8e1c9ea1f7dabf956932034db21980b266344c634640065",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:mp3",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/long/librivox-stella-maberly.m4b",
+      "sha256": "907005a588b757757980533e3001378c3e243858c1fe1bd319aed1f84c5ffb5a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:m4a",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/codecs/librispeech-2277-149896-0000-stereo-44k.wav",
+      "sha256": "76e6c07b80af760a67b3ee937056521c295db4f181b19f8ea99cdceadc2c5fde",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/codecs/librispeech-2277-149896-0000.m4a",
+      "sha256": "10c054c24060cff5560bf949e8273838999049daa78f2a25c3248c843e3e5695",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:m4a",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/codecs/librispeech-2277-149896-0000.mp3",
+      "sha256": "723989e0caa87ff96079d1142146f24ed9a5016b1064015ea13e0dbafaea4d44",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:mp3",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/codecs/librispeech-2277-149896-0000.ogg",
+      "sha256": "ad2ab4979aa32b39e9f0a43902c7c76f1368ff7327f8611db8e1dfb01b72633c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:ogg",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/codecs/librispeech-2277-149896-0000.opus",
+      "sha256": "9ccc14751fdb03429ee75c985b6f8f25e26a8f820d337efd5e8edaa4374b3a56",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:ogg",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-ar/fleurs-ar-eg-1730.wav",
+      "sha256": "318e95704f15e5050d5f3703172415c5e9d7f83495c3589590e8c4ca8b2628f6",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-ar/fleurs-ar-eg-1993.wav",
+      "sha256": "40d979a6239fc08951f387c671fb5fc46fffdc5df823ed1dbdb809bc75e26620",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-ar/fleurs-ar-eg-1995.wav",
+      "sha256": "cca59df14be2fc8fd0f064dd7ad524878db5e976b03634db7833f0268e18a058",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-hi/fleurs-hi_in-1601.wav",
+      "sha256": "f9910565cad24bb9a7a3129d1e6a171393fd041d339f961c8233ba0bd1276fef",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-hi/fleurs-hi_in-1602.wav",
+      "sha256": "eaf505bbf7f4ce5543af9242678b0a992f11d933a4878685b7bbfd817c4e422d",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-hi/fleurs-hi_in-1608.wav",
+      "sha256": "7fac51e140febb30d0dde7ce76b4ca9852e6eada1c94f7437fd784aa9ed4e012",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-ja/fleurs-ja_jp-1519.wav",
+      "sha256": "9627b8f5d46806e1a433b443d692fdfb24f26a35c1a47eba26291475fc643d7b",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-ja/fleurs-ja_jp-1607.wav",
+      "sha256": "88391f365cdecc51a56ef5f9322c441c0107ab8d0c6f7a3a09f2334ffe8c56ff",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-ja/fleurs-ja_jp-1608.wav",
+      "sha256": "9d3eace69bccc6acd08bc42626d86946cd2b39d037f714aac46f167c142799e1",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-ru/fleurs-ru_ru-1554.wav",
+      "sha256": "363087f90513f5484750d8076da3cf7d029065d6b09f7ea68170bcf10b487d27",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-ru/fleurs-ru_ru-1614.wav",
+      "sha256": "0ebc61463e1e2db72f81f5261b865b5cead812851cbb07a799d5e98cf9df8654",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-ru/fleurs-ru_ru-1634.wav",
+      "sha256": "6322af8001ae8063cce679fa86dde252858f0f5354fb2dca2b8b0614b331fb3b",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-zh/fleurs-cmn_hans_cn-1579.wav",
+      "sha256": "f3e12a114bedbc867e06bfb7aceb2721701aa729685b9e4be39f2b98305b72ab",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-zh/fleurs-cmn_hans_cn-1581.wav",
+      "sha256": "8234c830aba9500be3c32dab1f91e72599b9bb03c36f962ae8b6bfc174ca13f0",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/fleurs-zh/fleurs-cmn_hans_cn-1605.wav",
+      "sha256": "577a635c2261680c61dda5fecbc4f83bff6f37f453665b8d9d1a68f210f57c0a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0000.flac",
+      "sha256": "fead3e0c481f1c637fe6ec8edef42506c7c2d33a3fb7519bfdf5815b31150303",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:flac",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0001.flac",
+      "sha256": "f9c3371b4d1c6e95e7c01298a26215c2be97bee22c5408885d8d29b6e0e4171c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:flac",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0002.flac",
+      "sha256": "ade2caad47934462292358ba49acf7f048ced0595615492b4b20866d118bf901",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:flac",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0003.flac",
+      "sha256": "a99595b53e5d48524c2ba4903071f2498b05c25c509f0a78d60dc15ee46a4836",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:flac",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/minds14-es/minds14-es-ES-0.wav",
+      "sha256": "8a350c47afd69d9fc7f01f6a7bdfa4ccec3515e2d0bdef218e7e2c17468f99b4",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/minds14-es/minds14-es-ES-1.wav",
+      "sha256": "59fae3df6b9164803df0534ac284ded32deb7b09d4f9b83d838ed8941c04ccfc",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/minds14-es/minds14-es-ES-2.wav",
+      "sha256": "3afb9231cc43b9ffd87766c41b1dfb9a33eac7bb93c80ad3db82edad83572626",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/minds14-fr/minds14-fr-FR-0.wav",
+      "sha256": "84defdc828ef59cec10364354fbc284bc2cc683fdd4a5edd5863b7bb2c6123a8",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/minds14-fr/minds14-fr-FR-1.wav",
+      "sha256": "9ec6635922eba21ac6e5a46b4ebb2476e6d7589f855582b6ee83a15fd9a8bf4d",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/minds14-fr/minds14-fr-FR-2.wav",
+      "sha256": "c868f1cee9559c8b0f3e1924a38839d578cbab747f9d8d51eafcf88c33d1dd24",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/minds14-ko/minds14-ko-KR-0.wav",
+      "sha256": "6d9f04da1473d6d2afdacfd22e2fe79ea81a736c042d5a61b3c4b85e410f12e2",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/minds14-ko/minds14-ko-KR-1.wav",
+      "sha256": "3e253fdc5722ab7791c1f605b5fd52c230871762c0c8c0905201fc07add216cc",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/minds14-ko/minds14-ko-KR-2.wav",
+      "sha256": "6af853f1fe7cb85801c6f0c4af700f312ac44f29fffbb28d7160f772dae7320c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/phrase.wav",
+      "sha256": "2130c1c4f2ee00c0d385335e6290197ad16decc436c862933460c2a3d5953b0e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "audio/short/tone.wav",
+      "sha256": "3be5f22b08cfb382561b033961f53b1fb4b40d297e29b2852be03b1e9b24b61f",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_01.eml",
+      "sha256": "c15a3a17f6b65e9c51c58ed3a79d12bc517f867321ed118e5dc7b5c3a1ed7d4b",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_02.eml",
+      "sha256": "05d5e533f5e590d9ee2c7692d26dc87ccbf381f4831cca3362baf596691a55bb",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_03.eml",
+      "sha256": "e34151ed8e0c5f0ea996f1128834b15f41f5e2081a41dca2ba7f2f307c331f49",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_04.eml",
+      "sha256": "a8a24bcd720323185063761b53731cd6dcc5583fc0fd7ffd972137f345b1d738",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested",
+        "route:text"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_05.eml",
+      "sha256": "845bca9a59de1959c1501cbc1f2c90fa9ab73a38653175fe94073c012fa555b1",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_06.eml",
+      "sha256": "0c4e8456a424135a4dda4829050de77b05c7fb56ef716841bdfe1371af2eb695",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_07.eml",
+      "sha256": "8358092b45c8631df6466a2e4dc23278263b2dd2ba5765e99caba47c304dd3b5",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:gif",
+        "route:nested",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_08.eml",
+      "sha256": "357bf940a54f04d5f7b335a0a6697a1e9dda14eb2f1dbc590beb0fe98ed65f02",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_09.eml",
+      "sha256": "3ee9d9ab704a1f7e0ce35bb832fe7189528cb5873d1f30285d3520bc48f66eb8",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_10.eml",
+      "sha256": "31b6aa0a2168c412559b6c9667846d84de86554af573a1a9dfa5dc753de3754a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_11.eml",
+      "sha256": "7ac917c8e4309742c3571b8c3c8d97361ab6b838f7cd5bda498a410d9d6d9fc7",
+      "library": [
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_12.eml",
+      "sha256": "449711060a7ec45e0a4bfbd5d497d069676cbf31f77f3385d3e166795e79deaa",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_12a.eml",
+      "sha256": "defa4275a55f7778d400fcbf0628822dcae95d8239da065ba8e40049daaa32e4",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_13.eml",
+      "sha256": "6538070d2455c077280a8b537f23e3e3a7362074ba2630567d7f951f11fa113d",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:gif",
+        "route:nested",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_14.eml",
+      "sha256": "81a2f5fdaf0a506502fd4cac0ccc0c5e7ccc02330150b75d3d7fd4bde0e3c95e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_15.eml",
+      "sha256": "8f1c4f13d767b8a4d55fe9a377c3ff20cfd7e77b9b9da12e1df9772c1f685f27",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "check:signature-mismatch",
+        "route:nested",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_16.eml",
+      "sha256": "fbb4ae9e31ddd26e43b7c051041bb3d9d6bebd418a858da67268920bc672afb9",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_17.eml",
+      "sha256": "f647152e43fe5e381c71ccd9da9bbd843a854761f8fe60bc6c17b7c0e24e0106",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_18.eml",
+      "sha256": "f5b4867e0b9c0357e14f488bb45585eccdf47f62b7ff914a0fae73f48cc307c8",
+      "library": [
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_19.eml",
+      "sha256": "a5a8f44410fb1085689eaad5a24914e940b0488e0ff2cc3191b972e625522a9e",
+      "library": [
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_20.eml",
+      "sha256": "aa9e77f6297e6007745040e9b6a2c2be3880e25206594582e0cd09ef482ee27a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_21.eml",
+      "sha256": "395794cdc34731bce3ea1ff032b1c8bcbc275779325999641c052b771a28d8f9",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_22.eml",
+      "sha256": "4367f6ef8398e92de819ccd8e4938c819c2b24aa08f06cdcc0266bb0ec37eb08",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "route:nested",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_23.eml",
+      "sha256": "cd0dcfaeb8dc99c4ea418b80bf6c13d4aea912fc699aa3b30ddaf938bdb62e04",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_24.eml",
+      "sha256": "b67ede3fedf08cc4fd20c2cccdea46f2791f95e0ab991d8cf6c7c66ec81e23c3",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_25.eml",
+      "sha256": "b6cbf713954d89eb8389b63343d6b8fd261dc6cb652a0aaf93be5d801ed0b24e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:mbox",
+        "route:nested",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_26.eml",
+      "sha256": "46c391e25d3f2fa622d5781a27553176648270768435295a235a760bf725752f",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:bmp",
+        "route:nested",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_27.eml",
+      "sha256": "3d33f36e79c3406c72aeac084df89c84d522fc9953ec3fbb31e8c90f53f87b21",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_28.eml",
+      "sha256": "c82275d275dc73870a4c8bc4962c1462cb477c6a6323788c591003ab421973d4",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_29.eml",
+      "sha256": "fe19e3503f22da78a9920c4831a4fa121410ff76430dc10fdd81144ddbdddb01",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_30.eml",
+      "sha256": "4398e2153afe488f1d629b4192a2da8a743b10ed55f3e26ed662bd9e2718d789",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_31.eml",
+      "sha256": "c9d406692ba3573699a2e1f58713cc2e5a65792df472217aaaf8402dd0c29356",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_32.eml",
+      "sha256": "b41254e201645eeca3d0c9ca84ba7726c8c21b3796c04cbb9e20d8a2b51ee894",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_33.eml",
+      "sha256": "cc35e6cc84c00eb7d5e2bdf9ceb8977eb94c2bcc1630ea93c6c4b82381406dad",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_34.eml",
+      "sha256": "f1efcd32a4b669ed5eed317926a11646c05922fc49b815568ef2c3858d5bec27",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_35.eml",
+      "sha256": "352627d5f72f49c830f9366bbd071b4095a3f9c98df4a0f425d4c3d6ea969079",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_36.eml",
+      "sha256": "79e4cb253305c42e22d5631bed2d57e795a70d0356d0c04e3ac395ab73051c52",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested",
+        "route:text",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_37.eml",
+      "sha256": "98b9ee99d099269d838a12b6fa3b0af725565418ec1fedd8a522acccc0df88de",
+      "library": [
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_38.eml",
+      "sha256": "0107d3183911047ec758a69bec7e24edba03838c00331c5004208d850bd57747",
+      "library": [
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_39.eml",
+      "sha256": "5b3f5e5eaab13ca96387dd517a8864c25fcbbbc0dffd0f8580f07b30ec8e1dff",
+      "library": [
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_40.eml",
+      "sha256": "d59f6e422b9ad6163924bc1fb70ae8b697a11282d5b32b02708b40cb9a7d82ee",
+      "library": [
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_41.eml",
+      "sha256": "f95478516949ab993d14634219a6f62a4470f46ccbdf434d9a2c5526fb0263e9",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_42.eml",
+      "sha256": "e2305d3cd3097ff4fa587d2c2becfeb700d3d340eef0f3b701ff78b0f0ec898c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_43.eml",
+      "sha256": "045797ff45987136a2a5712f8f8310710e0944e4b4547bab2dc99933edd1bc9a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:mbox",
+        "route:nested",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_44.eml",
+      "sha256": "67f41bd0b0ac605c5431ad8c658c0c8e3c5d766eac8fbb81d51132f9fb818bfc",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested",
+        "route:text"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_45.eml",
+      "sha256": "b98e4e0c90037146f2b5d3cbb9e43cb419f36385cfd7a4567fd509ef00ec53cb",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_46.eml",
+      "sha256": "d92e941be30507b7dd5976f4223f9d01998f1e73262e900e0ed002b0f53dc4b7",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/eml/cpython/msg_47.eml",
+      "sha256": "f43de32a9f3ec07815d8459ad8919b9a770d34122836da36401bbafbbd4acf8e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/generated/eml/01-plain.eml",
+      "sha256": "80da257c69449439eb725769e562d9714bff4d5cc2ed5e97b7150ddae0b707f7",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/generated/eml/02-reply-latin1.eml",
+      "sha256": "64391ec0f9866d2859eff23fed4507350d2a5bfd5443db21ac2d8beb8f0982d6",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/generated/eml/03-html-inline-image.eml",
+      "sha256": "78db74762bc8f90de0fa83ae3b54502d0d80e35eac1dd070c27e4eb751ae759b",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "route:nested",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "email/generated/eml/04-attachment-cyrillic.eml",
+      "sha256": "9535f215889d3c8089eb6fd16c7bf6dce3b866c6d9bd2e530e2ea109ebbc0dd7",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested",
+        "route:text"
+      ]
+    },
+    {
+      "path": "email/generated/eml/05-japanese.eml",
+      "sha256": "591598773d4cc17585e5079eaaf017530ee1814b4ffd4e9e994c2ccc72e2a258",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/generated/eml/06-chinese.eml",
+      "sha256": "b6daa80a54c2c41d8155048840064957ca6609eab58096345a7ebf0c1421dac4",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/generated/eml/07-html-only-bcc.eml",
+      "sha256": "b6eca4cbfb17acf18d49075613ce1a97fd644a2599cbf9758154158977fb0349",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/generated/eml/08-forward-attached-message.eml",
+      "sha256": "0a0fc37a3bb97a9a17d25950aeea7540d2d280ff0cfee7ef2e6f4ffe21adf8b8",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:nested",
+        "route:text"
+      ]
+    },
+    {
+      "path": "email/generated/msg/01-plain.msg",
+      "sha256": "bc2fab033800d2dcde568a646a941be006ba018e7bdbd6d18546e1f57dedf47e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/generated/msg/02-reply-latin1.msg",
+      "sha256": "2174528013a0c6e813485624fcf9fd4f07c390a528781e685c50564cf0e5d1f4",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/generated/msg/03-html-inline-image.msg",
+      "sha256": "79ef3a474d52fdbf69b2f93aa9adfee579a0dd6f0924906b72239954b2057ca8",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:ole2",
+        "kind:png",
+        "route:nested",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "email/generated/msg/04-attachment-cyrillic.msg",
+      "sha256": "bf2f6d69fb57090da2586a4f347417947c4ade501f6794372319306358f80dd2",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:nested",
+        "route:text"
+      ]
+    },
+    {
+      "path": "email/generated/msg/05-japanese.msg",
+      "sha256": "9738db032a72cd0ff26e0628073cc59fde39fb5614c763916aeab996c09b556d",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/generated/msg/06-chinese.msg",
+      "sha256": "ed4d916f718b1c185b86943b6d399cce5dfab17624cc46818892319462d45100",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/generated/msg/07-html-only-bcc.msg",
+      "sha256": "ceedbf6ac52fe4d47144149089024efb9bd7a3920d2366bd222a345842978ab4",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/generated/msg/08-forward-attached-message.msg",
+      "sha256": "a7c1b4ede2080d0a64e894e2c7d2454b82c56578944bba907347024c94da0464",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:nested",
+        "route:text"
+      ]
+    },
+    {
+      "path": "email/generated/pst/mailbox.pst",
+      "sha256": "771e8d0c603c1f4f20785778e5be99b0fc7811d6b80c9fde2609ea87cc5c7fa6",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "kind:pst",
+        "route:nested",
+        "route:text",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "email/mbox/tika-dev-2024-03.mbox",
+      "sha256": "7f67a9ed139b621f1db090afd249943076f5111513522be90c071e0bdf001b66",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:mbox",
+        "route:nested",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "email/msg/poi/ASCII_UTF-8_CP1252_LCID1031_HTML.msg",
+      "sha256": "da9c8731ac16dde690493a8ca0d96323d36ea4300dc7d34614292f18d9b58eb8",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/msg/poi/example_sent_regular.msg",
+      "sha256": "2f3abc72e5a1da955b06256fb0e20078ad517b029d07edf4f4346941700e78af",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:signature-mismatch",
+        "kind:bmp",
+        "kind:ole2",
+        "route:nested",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "email/msg/poi/msgClassAppointment.msg",
+      "sha256": "e0a8fb568bc837c4f835a9e85e70280beb1b604b6223a3fa547b22c4860f3eb9",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/msg/poi/outlook_30_msg.msg",
+      "sha256": "4ca32fdfeba6317ad0c818e4c12948bdbb385465e4665430b10751e13ea2adeb",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/msg/tika/test-outlook2003.msg",
+      "sha256": "ba3c378c3612a1a72a030f3c198ddede9304ffe466f871585956cb87b553d0b3",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "kind:ole2",
+        "route:nested",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "email/msg/tika/testMSG_att_msg.msg",
+      "sha256": "439a1fb117edd4c84b780fcf44bf1d5167166694130ced5743a70132a83c6970",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:ole2",
+        "kind:pdf",
+        "route:document",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/msg/tika/testMSG_chinese.msg",
+      "sha256": "b84c12748155dc57b41de02c6d43aa47e82b879020df070290633e9fd5ce7fdd",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/msg/tika/testMSG_forwarded.msg",
+      "sha256": "9f1d5e911e5fa182054e3034f836cd15adc64e1034fefb7026b80ee19280b599",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/pst/java-libpst/dist-list.pst",
+      "sha256": "c86841da106036b5abe5a2141dc7644cbb2bf8b504873515eb35a2efeb8c28ac",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:pst",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/pst/java-libpst/passworded.pst",
+      "sha256": "e1085e210bc823fcfbdd1220da08b51423f3c39301c563a99dde71895f2af217",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:pst",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/pst/libyal/outlook.pst",
+      "sha256": "df01707f76d0e24ab913cf1ffeffa6eaf9c1d590e02102c7ed26bb3ac51d4e24",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "kind:pst",
+        "route:nested",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "email/pst/tika/testPST.pst",
+      "sha256": "f2a6b1d2cad00f574e3d1c1211c4b1c854d6526caea77213adc3da92b7813ae3",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:pst",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "email/pst/tika/testPST_variousBodyTypes.pst",
+      "sha256": "24c5e6bbb8bf26a817c977283e40e7b69d2661fec0845abbe177f97efcb05fb0",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:pst",
+        "route:nested"
+      ]
+    },
+    {
+      "path": "image/formats/avif/bbb-alpha-inverted.avif",
+      "sha256": "83d68084a93f043a89d10373f0ca26dafc988eec811b8076cabb2ff1580c1817",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:avif",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/avif/example.avif",
+      "sha256": "54a0dc31d02b6f5d9d4b66027d4787861b7af15ffd8fab8eab963d10c5411469",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:avif",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/avif/hdr-cosmos.avif",
+      "sha256": "fd2fdb813d8a0754b12ee098664c0c5dd414dad95b31ee407b7eb79d3cecda78",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:avif",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/avif/monochrome.avif",
+      "sha256": "deeb37c2cf321d3ccacff085a6fed50cc774dd38d7ed271c15517ccd01bd7a4f",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:avif",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/bmp/photo.bmp",
+      "sha256": "7c173900f8df36a4e640237beef91f2bd7515ce8e1c95cdad66607fd9fa23c38",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:bmp",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "image/formats/emf/simple-emf-windows.emf",
+      "sha256": "cec8d939fbb3d327104bcadf8886d1b31be999d01f61eef73ab012ba03d5c6c9",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:emf",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/emf/vector-image.emf",
+      "sha256": "eaa202a7682e9f8db12bf4d6e76e0e1c6c99fbeb9a59577b96b482e1f46a8475",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:emf",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/emf/wrench.emf",
+      "sha256": "3c9e27e68d0322daaff3477a957d46ae5b32b23f058d29e65d3947b6eeafb2cb",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:emf",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/gif/animated-shapes.gif",
+      "sha256": "f282dab2107664c9d653bd13446687162df4360116fba5f5dfe87c75b46a050f",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:gif",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "image/formats/gif/photo.gif",
+      "sha256": "7030b6ab24a576cccc596622ccd7ad1b7368e48c9f672930897221b388ae2ef7",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:gif",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "image/formats/heic/example.heic",
+      "sha256": "7f8b363e4936c0666a25f64f3a92fda10bd8e5453be4592530b65a55dd98f3f2",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:heic",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/jpeg/photo-with-gps-exif.jpg",
+      "sha256": "2c57ca58505bc20d12232055e0e2f8f81f24b59562359d0e0842e80dc917663a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "image/formats/jpeg/rotated-exif-orientation.jpg",
+      "sha256": "c1a6a3cc680e1bbc1c1eff7fd0067574ab868f6bfe7664231fad0969236b47c1",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "image/formats/tiff/old-style-jpeg-compression.tif",
+      "sha256": "058d757030255eb21d4c42bf3ee7b79cb5527f25307cd6c140c0d799c65a817b",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:tiff",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/tiff/photo-deflate.tif",
+      "sha256": "764e971031e5832943a56ff808dab01b1a551bcf897d2ece856b15b9f586c9f2",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:tiff",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/tiff/scanned-3page-g4.tif",
+      "sha256": "2d5ca2cd1647bbde12bf5de05385dac179361f8ec54cfc2b63abb3c59c34115b",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:tiff",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/tiff/scanned-3page-lzw-gray.tif",
+      "sha256": "462299f44a7d25b1b3a15b36d224e1c5bdf5231340262a48813c485ff3e2b172",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:tiff",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/webp/photo.webp",
+      "sha256": "eb34d578d26aedd310d3ead65b198a7b559c905b41cd7a178a4cc0fcbeaed5b4",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:webp",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/webp/text-lossless.webp",
+      "sha256": "9c32c6d92760b8ef254e43edeb00754fca58b5d0212fa42bae4b59fde957747a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:webp",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/wmf/file-45.wmf",
+      "sha256": "7ef6301734a165b69de6374dad6e793bd9b9052db71e7dd0a49d6e7044ec1887",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:wmf",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/wmf/fuzz-minimized.wmf",
+      "sha256": "5a724203194c38814c7d6ddbe00c075eb54fe2811116b3f229cf447f0092c58e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:wmf",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/wmf/poi-61338.wmf",
+      "sha256": "9782419b0b9443f023829f35b18f5cd9f569fc45da4068affd26e62bdda87c49",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:wmf",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/formats/wmf/santa.wmf",
+      "sha256": "fdc312bc0dbea47df16d3e3e98e2777e4aa537d225a703e3cde0177df56a592a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:wmf",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/graphics/logo.jpg",
+      "sha256": "23fb6e1b39787c0a32c321582ab17e713714c85c1a963d6ab45a4ed857d1ed53",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "image/graphics/shapes.png",
+      "sha256": "c5a91802f08297d5af8e7b220d13619e03b8f48d05d07e9d0d27cc657e0957a0",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "image/graphics/speech.png",
+      "sha256": "8c5c239829b80286db812afbdac581cd70397f242200443c23164ee6fe066206",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "image/photo/house-chair-bicycle.jpg",
+      "sha256": "6d518b58666d353fb67ac1b9d1024b7a7358ae080d7657f2cfe7c995582751da",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "image/photo/test.jpg",
+      "sha256": "21b9a9b29b5f7c4dbb6d7c1abce9c15b4cd9ae70c5270285232354ee4975ebb2",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "image/vector/pipeline-diagram.svg",
+      "sha256": "79e830915ea9bc404316ffcb4e5d197a9f04013bda899705798165b1228a1f5d",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:svg",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "image/vector/script-bearing.svg",
+      "sha256": "a44d794e6708452ed62b56b8066b5c886d859feb395e7b97d300724eb7607950",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:svg-event-handler",
+        "check:svg-external-href",
+        "check:svg-script",
+        "kind:svg",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/bullets.libreoffice.ppt",
+      "sha256": "840c17d58028c06181e166431ab789feb26b5e4681e70939f12132f3b864de09",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/cells.libreoffice.xls",
+      "sha256": "5d6c508cc454feab42f809cd480329602e0f3d63f7a589e12d614a642e6aac02",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/charts.libreoffice.doc",
+      "sha256": "b0f7b2cb0bab5336cb719ef25795e1e39e786a1122e959136babe54524f4a5b9",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/comments.libreoffice.doc",
+      "sha256": "0795b55c643f18c064aa31290e1b22adaa6be6be29f9b37e3b1e5c3c0de946da",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/charts.libreoffice.docx",
+      "sha256": "c49582d00fc63052e4c2a0bb04a64d8fd45933c39539a82434f9bbc7e24c0f0d",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/charts.python-docx.docx",
+      "sha256": "adda58a2b466af5c31018928b3e89517575244296f16df9b201d91b549312118",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/comments-plain.libreoffice.docx",
+      "sha256": "c1d1f034522856494c7f9ee99cb3cdfe65011232a8fccde3a276db3b85836ee4",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/comments-plain.python-docx.docx",
+      "sha256": "f2fc1d900935d6882976a7e41506ee4abd339bd58c047902f96e6f8252fe0111",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/comments.libreoffice.docx",
+      "sha256": "e683efab836f1e27e1abd65c58d34df37cdabb52d1214f2fabba28f5a0f5ef43",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/comments.python-docx.docx",
+      "sha256": "afae352365b03bbdd0e90fbe0fb6804c1d2dde0d4d5de416f3fbdd3b33b87bcb",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/headers-even-off.libreoffice.docx",
+      "sha256": "2650103f4ce06530fd1b0e305d3c1ba1a7071633a3019ba0d442a959db5a2c3c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/headers-even-off.python-docx.docx",
+      "sha256": "b1fb197b0b18968bec8b386c6c6c29b29446d7ed952e36a21314c6947ab3fb0c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/headings.libreoffice.docx",
+      "sha256": "63586ce4480810a81c05c9b0109062be4c76dfce9e62a39641d31ddf58f22aa4",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/headings.python-docx.docx",
+      "sha256": "e7ab7a872d563c7ed0d0d51902738643e5ddb705c9dd364b8f5d0aa54f366095",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/lists.libreoffice.docx",
+      "sha256": "261277388b4c59a885f5060a9db58ba96c3c128ea528a6a26dd0747870725ad6",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/lists.python-docx.docx",
+      "sha256": "5d61af165027d3cad297a0dbaf2cc8b51ec2274aee648dd2398d2fdc9367e99b",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/media.libreoffice.docx",
+      "sha256": "07f3a8c5d58d9345fcbbf42b725ee32c92ed722bc9de31d5fad5f84169159af7",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:external-relationship",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/media.python-docx.docx",
+      "sha256": "6cee5bc1fa49db7dbcf277282e3748c55f2f76828bcd846afb4c25eb0765d552",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:external-relationship",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/notes.libreoffice.docx",
+      "sha256": "f9cafb26909d822de42cd4357b6b207719429fbafa301c405dc695f3457f61c6",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/notes.python-docx.docx",
+      "sha256": "12482a309c45f1e871728f6fe9db5744a61dfca146f7ee60ebf0a263a12b397b",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/sections.libreoffice.docx",
+      "sha256": "dbe71997cd80eec4639a4974a9694d4c658f2f11d5165f93ca9ce4c6b909df5b",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/sections.python-docx.docx",
+      "sha256": "ce66fb89cc609a7be34e066d038ded68a2c366242963c6f3d1e49f110b31f4aa",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/tables.libreoffice.docx",
+      "sha256": "01116cf56ffbb4ad1f360272e2fabd8cd6e60d25e8081202f4b2d0aad91b7d2c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/tables.python-docx.docx",
+      "sha256": "4bcc3b658b559c2d5c58a8a518ad5d6578056412218569b000f26aec9e5860b1",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/tracked-changes.libreoffice.docx",
+      "sha256": "9378482803e88c832f61848c56f53b935ef336f3c443977c78800ddfb3bb73a3",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/docx/tracked-changes.python-docx.docx",
+      "sha256": "d0e21769efbb2f8a83db3171e0443e8550023b415464459b9e0ab58672f63084",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/drawings.libreoffice.xls",
+      "sha256": "de2d4c62fbc63f28b952f89e10899eb492b6e744f8ee34cb1e8a0e6e04d70289",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:ole2",
+        "kind:png",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/formulas.libreoffice.xls",
+      "sha256": "8ac61ba5ef1c3e20c45167ec8f40afe24720b7bf606e2eaee248ef158cb15c66",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/lists.libreoffice.doc",
+      "sha256": "85d3ecbf8d1b0b536daa0608ae2e97b89614ea6e887c13cbd7061abde257a875",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/media.libreoffice.doc",
+      "sha256": "9dcbb24a92a5709fd15ea7914811a078f97778ed27a5d4ecfa7b18f9a0418122",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:ole2",
+        "kind:png",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/merges.libreoffice.xls",
+      "sha256": "3925c0294c1754d009c7127b69deb4e266f0bb8d0132bb09a4268d61b38a7ed2",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/notes.libreoffice.doc",
+      "sha256": "02b587075c40e2b02812699246c54345102fbd7bbc206bf7d608288405808f60",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/pptx/bullets.libreoffice.pptx",
+      "sha256": "b90c750a44e99340f0eb422337f85269bbd05ebbae99a38e8d0c48ee62f9af18",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/pptx/bullets.python-pptx.pptx",
+      "sha256": "368cb19ff346a43e5b61440624effb435db23d7986ec160a5eb3d46e0b55f843",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/pptx/groups.libreoffice.pptx",
+      "sha256": "12c2fbb5418348021492f912227f590a70bf8bc0f25f91d6ed716bd12a7db0bb",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/pptx/groups.python-pptx.pptx",
+      "sha256": "7e8b0812be4623916fc2405c30af04f8e7989cc7a19d769b39a2e6ffb0dd5050",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/pptx/slide-objects.libreoffice.pptx",
+      "sha256": "7c0b5e40f22001166b9e4ee6f3b8e68a5c21fc6ea73e8ed77e15caffd4918995",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/pptx/slide-objects.python-pptx.pptx",
+      "sha256": "32514146bd061049ebdbe813375913454a131ad6c6fc714adc60020fabc39717",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/pptx/slides.libreoffice.pptx",
+      "sha256": "956895b6d18ea6609ac03cbb8e723dd639b131beade1b4d2bde17da2ae71736b",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/pptx/slides.python-pptx.pptx",
+      "sha256": "fc9f5f4fb65f618489c0561fa1b6aa4c1395d815fc438535058d86711cbe47f0",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/sections.libreoffice.doc",
+      "sha256": "6e09d78bf1fb829acc3e5445f000499d52a7dcb70ac752e501ea057b390599ee",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:ole2",
+        "kind:png",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/slide-objects.libreoffice.ppt",
+      "sha256": "5806affad1a1cb9596e6dec4b4d64702c46289b8e61aebdaeade50d8dac9097c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:ole2",
+        "kind:png",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/slides.libreoffice.ppt",
+      "sha256": "cfa03e90e744da3205da78379e31ced8b5b1005e0454bf01741e7eab2d8d2979",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/tables.libreoffice.doc",
+      "sha256": "ba9b6d4c33a9db8751dc6334d0661b790b88b8ff279462cfb7e72f4c58eab1a0",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/xlsx/cells.libreoffice.xlsx",
+      "sha256": "86f57558bc76ae5e344560c1db633bdc408782f5f241b5570a14a93429658f54",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/xlsx/cells.openpyxl.xlsx",
+      "sha256": "09a8905b112b0ddec364654a37db011a91c2aeb01eb91dc69ff1af926b55b767",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/xlsx/dates-1904.libreoffice.xlsx",
+      "sha256": "2d7e9b1992ee47476404f0c5d279bcde64013579e31dad9812b5d22f2fdd6a99",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/xlsx/dates-1904.openpyxl.xlsx",
+      "sha256": "1b35da15738c50395bc484dffc0450381121b1204671adaaf8a23c3364e89df2",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/xlsx/drawings.libreoffice.xlsx",
+      "sha256": "9c48b55053519fecff0d4fe116a0c5da62f92fb5760bf5b0ac642229a4d4e923",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/xlsx/drawings.openpyxl.xlsx",
+      "sha256": "cc1d815da48fe887b677eceba421c63b31d6911b9b50f87e526e3f4ef7045100",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/xlsx/formulas.libreoffice.xlsx",
+      "sha256": "00e94e40ef94156339a9d2cdbbf271bb2cd48069c93e534baa6e8aa3402dfd28",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/xlsx/formulas.openpyxl.xlsx",
+      "sha256": "808318c4cbc8e0fdf2c451c665707dd502ba768ff637d638009ce8882cb9a9d9",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/xlsx/merges.libreoffice.xlsx",
+      "sha256": "b5ba5ca9175ab45537835858f737198560888ca45ddc11df2a6022db013288e1",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/xlsx/merges.openpyxl.xlsx",
+      "sha256": "0c4c11659aadc740b1367bb0932d489e894ee7630995b662ef90a98ae45cf3cc",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/xlsx/sheets.libreoffice.xlsx",
+      "sha256": "76aaac745885c3f8273d7b7a42667095138bb0177539473938cd098f42f49338",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/generated/xlsx/sheets.openpyxl.xlsx",
+      "sha256": "4f9ff886b58cb379dce3ae2543ca0ea22db3138a02ba40a4c53ccc8570c02844",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/other/word-perfect-6.wpd",
+      "sha256": "6426ad50113880de454ecfaaf6b8070a0b82b5eda4475a71796e22d325d6fd3a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:wordperfect",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/real/SampleSS.xls",
+      "sha256": "53c9bd7337aa79fedf29cef8d81ec47fff39f80e25da9d74bc354cfdf1c43b73",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/real/basic_test_ppt_file.ppt",
+      "sha256": "e8fd4c38ad72ce3735acbca0b60dd5870fb60f819c169e3947d166f4f1bcc79d",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/legacy/real/simple-table.doc",
+      "sha256": "67d7fe8e0555c16516354498a5935f24eeef90beb5efbf526f93a1d6c734da43",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/bingo-sheet.dotx",
+      "sha256": "8d414d776ab4733ef06df216877ed9cb17a75e9f9a998250d34036735e0ffed3",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/ed-stud-pres.potx",
+      "sha256": "661da54c396a8e6c3c5271e06c3b8a5f206c9a98f97833c630922885a9d6cf1a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/macro-enabled.openxmlsdk.docm",
+      "sha256": "a109aade61605bcb79f96816aaf8bdd8164e51151d762ec1da909167d48d1db5",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/macro-enabled.openxmlsdk.dotm",
+      "sha256": "1e025601a1c8c2936e70684b96a3e9a94b2ff1f41f450f7d027e586edf48444d",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/macro.openxmlsdk.xlsm",
+      "sha256": "6dd35cbb936ce4990c63d5747e43a363e1502a58f17c5f2ab6795849265a5d9f",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "check:vba-project",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/macro.openxmlsdk.xltm",
+      "sha256": "3b32194025aee599a6499fab0137f5186a18bb989974f6c90c937d9661351102",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "check:vba-project",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/protected-passtika.poi.xlsb",
+      "sha256": "316aafa78433238ea38ecd39be718f3b64a81f54f95fa942a1038104ead99c5e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "check:ooxml-encrypted",
+        "kind:ole2",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/simple-invoice.xltx",
+      "sha256": "03ec04960b831b5c486c7c55bd5e50e00fa1d5dc4c41468c94742a9008135af6",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/simple-macro.poi.docm",
+      "sha256": "fd591958fcf5322f72c0a740e9606309c949254bda4c3d9bd966481ddf220563",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "check:vba-project",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/simple-macro.poi.pptm",
+      "sha256": "8a3573c82fd07a301d7f175b8bee646c0b58eb8a945bd0ff408225b6e2b89b15",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "check:vba-project",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/simple-macro.poi.xlsm",
+      "sha256": "f76c986f4ebc25c2cc57c088b2511a1269f4bd61d6223a2ab58db351da348ba6",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "check:vba-project",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/simple.poi.xlsb",
+      "sha256": "41b0c82bfa682f968d69e05e23137232d6c89ea4f24439786f0b779be319929b",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/test-ppt.poi.ppsx",
+      "sha256": "82dcd905dfeb155d8ffea9d4f7e69d03a39895148407c32fa971a1addbea5656",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/macro-template/xlm-macro.poi.xlsm",
+      "sha256": "e9ac8d566a43e3c3b6949e7de538705211b22af3fa1d147762d6ff1383df8092",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "check:macro-sheet",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/multilang/multilang-rtl.docx",
+      "sha256": "def0c3c7f52b30929a8e1fb9ca706b851595d2d36eb97d0889373e30f2013c92",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/multilang/multilang-rtl.odt",
+      "sha256": "ecd74f479e7a9d3393954e2367840ab9a3f85019e1b8f49bb795806082eafc0c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:odf",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/odf/calc-odf13.ods",
+      "sha256": "f75caa9ca8d088f4875b38dfc2f6f6e408e13ee8b3d0d8b7130a99c5a2cb7f84",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:odf",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/odf/draw-odf13.odg",
+      "sha256": "7754c7631ef989d0dcabd3e7445b69f782f96888a079b6e68792ee93f2c9a9d7",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:odf",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/odf/formulas.libreoffice.ods",
+      "sha256": "8bd6241f3320f537c11423351ca58e7434207d00f8f7fab23191d8cda3767eae",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:odf",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/odf/impress-odf13.odp",
+      "sha256": "ecc8129a5b22c77b378504d87774ef26245d9e4146e8b15ec30a2f58fd0ebb93",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:odf",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/odf/slides.libreoffice.odp",
+      "sha256": "d2844933656897a5ee7baa86a4f9faf213ca5f6a39bdac8071b7585dfde17505",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:odf",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/odf/tables.libreoffice.odt",
+      "sha256": "7f4cf37cfc7559e1a8271d50d74984df0f3a76bb3c3fdf3fd73a606b0989906e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:odf",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/odf/writer-odf13.odt",
+      "sha256": "3f0241958a222058664cf981f7cc1565a22dce01a8b6b8102c6aa4ea3352c8c0",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:odf",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/chart-column.docx",
+      "sha256": "9402cb32b06d08f5a41b60ed2dcbe9dcc279a85a61059869fafa6d4d9540ff15",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/chartex-funnel-word.docx",
+      "sha256": "a44ad9f5a4b1e29564465864fd786a0906e48e180c866e97daf068e86456f199",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/chartex-waterfall-word.docx",
+      "sha256": "0a7b7cc6b8d5a07a12f35afcc0cdb651046d52efacf0a5c27a01d38e5b4e11f6",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/chartex.docx",
+      "sha256": "5d7f0ca9aa26d0244eedbc8ff862f08910689ec3848a036c622b17d56a290b57",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/complex-numbered-lists.docx",
+      "sha256": "297a085a7d433af2eeee7661e8db21539452cb585096484774a1e9f5f258b0b6",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/content-control-rows.docx",
+      "sha256": "ab5b32d15d2fd14c633452cc5a8b1cd27cd65038cd208a11ede29d6f8fe24259",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/delins.docx",
+      "sha256": "7ecad102602586be7f1371f117fc567ea47f3ed0ca703b353e003002f1ff8d3f",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/endnotes.docx",
+      "sha256": "6e2e1b2dabb0ae6b9b26ddd613dca446ba0710ecc8b4008722abc4ed592934e3",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/footnote.docx",
+      "sha256": "ae76e87fbdc0e9987b1c62a21b93a49dc7d8687b068aab07008cbebaaa009c3f",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/form-footnotes.docx",
+      "sha256": "a890294bfbdc63f6d03eab61efc1e98cb51d59f0920541150dd7082f9bdf31f1",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/ruby.docx",
+      "sha256": "abda850b3685027eef32a4c583b2b5f7f20f243026d8c453cdb3315348ed6ff0",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/strict-column-charts.docx",
+      "sha256": "12c5c01309a8ddec5215ba21e5e84c4250f400ea51d15041b4b96e00382e2050",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/test-comment.docx",
+      "sha256": "06b63b13f0b78a7179151af52c2282557c1ed204899feee9fcef4ca575344f97",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/unit-test-formatting.docx",
+      "sha256": "23518f8c635264b038b3e1207292f99cb5d40be35dbcd85d56508d3226ad9a11",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/word-tables.docx",
+      "sha256": "0d69a7ef0e1ba2b3142394ed708227b95cf37de037ee71f434853d30e3ca5a55",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/docx/word-with-attachments.docx",
+      "sha256": "90352263823e6d3d39a4ec88212134b74bcb0f86b603bc3b51d712a3ec3df9f2",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:ole-object",
+        "kind:ole2",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:unrouted",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/realworld/pptx/chart-2d.pptx",
+      "sha256": "dad57bde3989dbc48e5c52988773ccf74d1cf56af875e5366e4c92992ce258f3",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/pptx/chartex-slide.pptx",
+      "sha256": "70d0ac69333b86bb6a3c6e489664c9e4298b9cb62440d287d54c5fc7cd79197e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/pptx/layouts.pptx",
+      "sha256": "9c3d53afa3115de2ba72ec77637a616aeed505a6ff3b30a46db871c4edd32be5",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/realworld/pptx/linked-pictures.pptx",
+      "sha256": "36545b1502bc7149de9ec537ae2a7e83e6c8baf24c7f72e9944d863c41072b65",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:external-relationship",
+        "kind:jpeg",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/realworld/pptx/powerpoint-sample.pptx",
+      "sha256": "24191d47fda511e11984e875f8676506da5ae1fbcaefcc63d81be377d3a3950c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/pptx/shapes.pptx",
+      "sha256": "19fde9b87e33dd1a95fdbba0cf6abc2278bf03874f4665c7f8b88b6afe4a2571",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/realworld/xlsx/chart-sheet.xlsx",
+      "sha256": "93e2d8663bc1a6b7d961f2a74440953ecdaadb1a3f171960129b730f7c935d3e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/xlsx/copy-rows.xlsx",
+      "sha256": "85b76d790c3eeb07693ea94293440a9efa2b91e41e2a6bea4b7bbd7ab9edba90",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/xlsx/date-format-tests.xlsx",
+      "sha256": "16445dc0deba00671ee4315015a970d415ce9886da59c974532d946e99276c66",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/xlsx/excel-online-index-space.xlsx",
+      "sha256": "098d7379336832d5c286bf93163c760d6595197b970b7a5c1156209169c0480c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/xlsx/simple-monthly-budget.xlsx",
+      "sha256": "cae00c6894b95743017aeded4186f15a12c2d8382d71760029df490d58197db6",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/xlsx/simple-strict.xlsx",
+      "sha256": "dd6d2142e4c440c5cfaa241aa48883bfc0a76742b4531102dd41aea2f7a4d2ad",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/realworld/xlsx/with-drawing.xlsx",
+      "sha256": "97b1ab359d6aecbe37864f30c85106e386f0a19bea8f290103927362a2701066",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "kind:png",
+        "kind:zip",
+        "route:office",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "office/realworld/xlsx/with-two-charts.xlsx",
+      "sha256": "7d29c92e9f7968a5bc9ec076458785295c24d13916b02b8a467c0a8fd013cddd",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/rtf/lists.libreoffice.rtf",
+      "sha256": "c8122d6ebec78d4fc2ccb1768a5326dd5b19850822e08e7ad942edcc3f6b3579",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:rtf",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/rtf/lorem-ipsum-calibre.rtf",
+      "sha256": "32719734d1f586a3745790da5ddcce01dbd2dc1805adaf79f4dd5e0d4ab17ea2",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:rtf",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/rtf/tables.libreoffice.rtf",
+      "sha256": "334989d7eae7b61a927991d4115e86ccafe4e11f677e37519a040e16e447b827",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:rtf",
+        "route:office"
+      ]
+    },
+    {
+      "path": "office/rtf/test-rtf.rtf",
+      "sha256": "99538d0a6b4583271f5e4d62207940df9c5cd9f6fe17ae73d965193abd662668",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:rtf",
+        "route:office"
+      ]
+    },
+    {
+      "path": "onenote/interop/Resources/AlternativePackaging.one",
+      "sha256": "640cc0fade1984b81457e052aed628a4dab6429977439d4a828a20e9e18f6d76",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/interop/Resources/AlternativePackaging.onetoc2",
+      "sha256": "fe018bb2e8ab6a74eeb52d0c6e61d6e29fd4c916adca6d0fe72b7ff263640977",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/interop/Resources/NoSection.onetoc2",
+      "sha256": "3bcfab4c58f4bab13e6398e4ec2297828f7807ddd3f5b2f2afb29f06ae8b9ec0",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/interop/Resources/Open Notebook.onetoc2",
+      "sha256": "f5bdf70d972973affccf17125894af22d8927f05eeed49f89a0baf071afb51f9",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/interop/SUT/Encryption.one",
+      "sha256": "cfc80d971ddf2ad62d7dbda197ac7966a4387117ec6dff29e9be0626b2888eab",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/interop/SUT/FileSyncWOPI_OneNoteWithODB.one",
+      "sha256": "f98382b4f8984ae999d8e0cffcb315075ebc8c369db81374cef55919536df931",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "kind:onestore",
+        "route:onenote",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "onenote/interop/SUT/InvalidData.one",
+      "sha256": "22dd01a518d896374edad6d95addb5f49bc27716b52a798561154da312b30123",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/interop/SUT/OneWithFileData.one",
+      "sha256": "26ec59da7bb81c48e8f41554d06d381b53f88166727eed231baa665d9833266e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "kind:zip",
+        "route:office",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/interop/SUT/OneWithoutFileData.one",
+      "sha256": "49ba9f8affd45835c84bc8ad740015a7aab57df1b19abbc91cc291c1b7689b0e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/interop/SUT/Open Notebook.onetoc2",
+      "sha256": "c9d96b2319808a7e976b67bf269968769c1a16cb81ebec627b402eab9c65ba4e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/large/Large Desktop.one",
+      "sha256": "0a568f02de8bdc4196dfad97ce2ecac04456efd9376c275ff67af412a4604668",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:signature-mismatch",
+        "kind:onestore",
+        "kind:pdf",
+        "kind:png",
+        "route:document",
+        "route:onenote",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "onenote/large/Large OneDrive.one",
+      "sha256": "713980fd942180f64910b71fc6236cd22f407facc9b8bd25e99b2eeb1ac9651a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:signature-mismatch",
+        "kind:onestore",
+        "kind:pdf",
+        "kind:png",
+        "route:document",
+        "route:onenote",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "onenote/large/LargeData.one",
+      "sha256": "034d91a640d655a522efda1d98de4ec4c952aaa02e5ad59f7c35537ccf9c2ba1",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "kind:zip",
+        "route:office",
+        "route:onenote",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "onenote/onenote-rs/New Section 1.one",
+      "sha256": "e9ec2cc5e234681a3d701145aefcf0c19aea4d2981929da227d103d2dc44aff9",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "kind:onestore",
+        "kind:svg",
+        "route:onenote",
+        "route:vision",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "onenote/onenote-rs/New Section Group/New Section 1.one",
+      "sha256": "75702a8ae420b30c4a349363befb5e86d65f208eff381623d5f17dbc01b33109",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/onenote-rs/New Section Group/New Section 2.one",
+      "sha256": "ab93b8cb1c0d7f45043637cf63b0f06785b8234eb4185acff7cf79b8b122fb0b",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "kind:mp3",
+        "kind:onestore",
+        "kind:png",
+        "route:audio",
+        "route:onenote",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "onenote/onenote-rs/New Section Group/Open Notebook.onetoc2",
+      "sha256": "e39b72dcca6f9f218c28a5cddd021e4ce1338d24211e8288492d75c60ffcf653",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/onenote-rs/OneNote_RecycleBin/OneNote_DeletedPages.one",
+      "sha256": "d98c625fb275c830407985465c8fc336010dac40eb7733cac4a8b95db9d26170",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/onenote-rs/OneNote_RecycleBin/Open Notebook.onetoc2",
+      "sha256": "f6d932f2244a590b88eeccd6531b685332eea5dfcf0b91f137afc306ff215926",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/onenote-rs/Open Notebook.onetoc2",
+      "sha256": "2f9edeaf7f99736027123826ef12605a59b7bb9b15dce7db3e1014b8d57a7202",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/onenote-rs/handwriting_recognition.one",
+      "sha256": "2cff8769ccf0af6209d96d5e0650661077edba2d2bae4e4aa691f06caea35456",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "kind:onestore",
+        "kind:svg",
+        "route:onenote",
+        "route:vision",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "onenote/onenote-rs/non-legacy/New Section 1 2.one",
+      "sha256": "05ade3445a7d7885636e2c592c82f12f8107c1cfbf674a9314367bc27b8bcecf",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "kind:onestore",
+        "kind:svg",
+        "route:onenote",
+        "route:vision",
+        "route:vision-converted"
+      ]
+    },
+    {
+      "path": "onenote/onenote-rs/non-legacy/New Section 2.one",
+      "sha256": "7c9ab7fae8a31b3f765fd2b7b32b884d88fa79fd6ed01f33c7d529dabf6b306d",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/onenote-rs/non-legacy/New Section 3.one",
+      "sha256": "bdeb13e2bd4849774d4f7aa80263925a13219094ca4af6f9d4681b03693d4f03",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/onenote-rs/non-legacy/Open Notebook.onetoc2",
+      "sha256": "d146df35b1cda03075fa9ebfc6c0ab1e28b3efb8832bd5712a30bcf01f2207ec",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "onenote/onenote-rs/object-revision/Open Notebook.onetoc2",
+      "sha256": "f3dafe5ced9f8e3d1e37fbe93f447eece46d93da46ee24b89936038a57bbe94c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:onestore",
+        "route:onenote"
+      ]
+    },
+    {
+      "path": "pdf/born-digital/dodm-5200-01.pdf",
+      "sha256": "05c4e7d5074704194259bc81f54bb9e78dbcd28f522617bea8ec7378cdb1bbc4",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/born-digital/mgrs-field-report.pdf",
+      "sha256": "83d43f959b42248316d7250ce5fe14ddbaf2169cd063c982f8a6ae397f8e8759",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-openaction",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/born-digital/speech.pdf",
+      "sha256": "b3e44fbabf6fa8d37a71dd8d9120e4a75c5fb0c7711797b6d6187d5c01222b2a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/born-digital/text-0.pdf",
+      "sha256": "c5a90b2fcdcae40b0bbb8b178327de9ed301f01df47d95faa1af2cb2db9e8c2f",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/born-digital/vortex-150-mini-manual.pdf",
+      "sha256": "d2306be451b05b4c7201a85d03cce02328f00817c8558dc70717108d6f29c238",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/attachments/embedded-video-avi.pdf",
+      "sha256": "cea0c7fd4e8fdce26faf64298d19529f9c8092088708c8d8750b8c5a7dd56703",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-embeddedfile",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/attachments/file-attachment-annotation.pdf",
+      "sha256": "043340a410c80cc64a75479b2ad64fd1f92df960216ccf1ffaa20c08ac1e811a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-embeddedfile",
+        "kind:pdf",
+        "route:document",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "pdf/edge/attachments/file-attachment.pdf",
+      "sha256": "c7ff5c769c257a7ab0cc3a906e63b15aea91e1605a269b7dcbcb3911ea07681c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-embeddedfile",
+        "check:pdf-javascript",
+        "check:pdf-js",
+        "kind:pdf",
+        "route:document",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "pdf/edge/encrypted/encryption-nocopy.pdf",
+      "sha256": "dd55fec2e48a0f43266146e1d31155480695d31a28d0e4311bbd9472f9d992b3",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-encrypt",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/encrypted/encryption-notextaccess.pdf",
+      "sha256": "1e2404ab35f318eafad82dd57581c4e8fe728473ec858e8044ea665b8f90a313",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-encrypt",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/encrypted/encryption-openpassword.pdf",
+      "sha256": "01973e6b86f06d6b1cbb6c76a661a7859db958b0cc245a8a3350481ae8d92158",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-encrypt",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/encrypted/simple-open-password.pdf",
+      "sha256": "8423d1fb356eb051cd8d0c0a4d29941722d921b1571e7f2e11d82a32ad10ed90",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-encrypt",
+        "check:pdf-openaction",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/encrypted/unicode-password-baseline.pdf",
+      "sha256": "a093870c296eaeb6e88980f0b84a03388fd23e1515dfa7592a33a45e8dab191a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/encrypted/unicode-password-corrigendum5.pdf",
+      "sha256": "70421a50fd5e36cf7facaac763b9eed337f8aefcde9cb04ae7dae8d78a50d31a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-encrypt",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/encrypted/unicode-passwords-corrigendum5.md",
+      "sha256": "fb082826698f67f1a0d907592491a978162257a9e2e82b0785e26bdffdfb30f5",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "pdf/edge/fonts/no-fonts-embedded.pdf",
+      "sha256": "44f7582b024defc788adb8f35c719f72409ccd8c6929b2ece75af5791e5d3119",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/forms/isartor-interactive-form.pdf",
+      "sha256": "a762cfbef95692c8a67d2d40877d3a603d334be62d04827405fd5e23447fde0f",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-openaction",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/forms/pdfa2b-interactive-form-pass.pdf",
+      "sha256": "e6b83a07001c5b2a04de3cec3536733fb8250ffe561aef557bf0bfa820b5dc82",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/malformed/compacted-syntax.pdf",
+      "sha256": "df9ab28a64f63896152934fb13e9ee1322cbd94874206b91107344ffff7aaa6c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-aa",
+        "check:pdf-javascript",
+        "check:pdf-js",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/malformed/corruption-one-byte-missing.pdf",
+      "sha256": "7423451704ef9cb32340618416796a812c47fa2337cf1356aa63c2f414b7798e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/malformed/dialect-dict-is-stream.pdf",
+      "sha256": "a9eb0a3fa943629f29b42471643436d5bca4c55b27ae9aabc8e17e1fc6889008",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/malformed/dual-startxref.pdf",
+      "sha256": "378e1e7967af58f6847a2e6ac56d9384e4ba08071b7ecee1fba5785073409135",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/malformed/header-no-version-info.pdf",
+      "sha256": "0b6872096f8790263d2715ab576d12e7bb699b2dff83e9e35f5da03482fd6b5d",
+      "library": [
+        "check:signature-mismatch",
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "pdf/edge/malformed/javascript.pdf",
+      "sha256": "23f8479a3e56c2a344b371ebc6da219231e87de17750c92314cd06f7b06d8629",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-javascript",
+        "check:pdf-js",
+        "check:pdf-openaction",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/malformed/no-document-catalog.pdf",
+      "sha256": "0b2a68f4b04fe2163ad32b2f5eb730b72d0969f4e19ad3ab4828bd8786d37701",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/malformed/no-page-contents.pdf",
+      "sha256": "3039e924817962a2bdaf51361733702d4a1734a05a3d3708797cd8fb65589fb5",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/malformed/utf16le-test.pdf",
+      "sha256": "04af7aced559ca6b9fbf7a466526a94f3b76cf75ed6af81f4f963892a9bcacfa",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/pdfa/balloon-a1b-jp2k.pdf",
+      "sha256": "7e5f457dbf1ee161e1377a29723c1f03b3c94ba3d2322a7bb972dd1ca0a87b79",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/pdfa/embedded-lucinda-sans-pdfa-1a.pdf",
+      "sha256": "a94f1599aa7987531bd99f431bb1ba7508012eb7db9ffcb8a79f9515556b93ac",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-openaction",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/pdfa/pdfa1b-filters-fail.pdf",
+      "sha256": "491a9a743b98daebd1c8399870bd16e52f11557b77aafe06cfc3eae39d4b12da",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/pdfa/pdfa3b-embedded-files-fail.pdf",
+      "sha256": "f66489091d31baf7919da37b934f8445d0a5948fbc19ac4995b4b47294290000",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "check:pdf-embeddedfile",
+        "kind:pdf",
+        "kind:wav",
+        "route:audio",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/pdfa/pdfa3b-embedded-files-pass.pdf",
+      "sha256": "55c7cf316f78726f83c8a8545ff9a9be7d8628a47867aebec7bf4841d6cdb0dc",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "check:pdf-embeddedfile",
+        "kind:pdf",
+        "kind:wav",
+        "route:audio",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/signed/digitally-signed-3d-portfolio.pdf",
+      "sha256": "8f8131d879037c3ed620331615606e8ba2e2e830578a1373b0648375c73f8324",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-embeddedfile",
+        "check:pdf-javascript",
+        "check:pdf-js",
+        "check:pdf-openaction",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/tagged/pdfua1-annotations-pass.pdf",
+      "sha256": "12b4e06019bb5e1765d0bc371df16c84635a1e5145f2ecb5fba51c17245ebc51",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/edge/tagged/pdfua1-text-pass.pdf",
+      "sha256": "0bbe36b1621179567a5422b848e9d9660b4f3c9b87d03e2c47df1fa549e397fa",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:pdf-openaction",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/large/cfr-2024-title32-vol1.pdf",
+      "sha256": "a1946ff2e79347cc55adf80a0b0618e071d45d36ed367c7ddd979bdb3560e660",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-bg.pdf",
+      "sha256": "55da7e4b42d2a2101f6fca842639dd8aaf8e77555e69dd7d75171b7f3e72e052",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-el.pdf",
+      "sha256": "5d3538dda4dfc7421bec5f26b7c6be48e114d1aa5ebe32971e99e5ff4a9301cf",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-en.pdf",
+      "sha256": "a642f8ff846b15c795a8c0de284790a8bc7aecf59be0dc20c6785d4d52e41361",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-pl.pdf",
+      "sha256": "18cabc9034f7052f8400ce90f96a603955af2fb0bf14bbf2b774c9c4d97cbdf0",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/multilang/multilang-rtl.pdf",
+      "sha256": "cbf2c8a5152055d8baa7583eda8ad1bdef4fef5d7eb272865ea42bb159bd1ac9",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/clean.pdf",
+      "sha256": "d849622ac7cc02d640e15ec590897ccdd6cb1ac514be4f865f659558a5ab16bc",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/degraded.pdf",
+      "sha256": "e544e7ec4db9971cccd5d8ba83bf875d1d02272b5ab354044474d2e2896a2849",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/multi_column-013a3686ef75b4150c07d3ebc510ca2455d6_page_6_pg1.pdf",
+      "sha256": "5975b2bb1a6678df5ef3d05dd3620fef96c25e7dc52c0cfb41300648d0f60dc6",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/multi_column-0925342e1efabb7957efa34203f65d3cbc4d_page_6_pg1.pdf",
+      "sha256": "d8bd74d4d250ebdff6e31e4e121c68e76a3a734ea5ed2bfea19b6cf1293366d0",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/multi_column-09f90a8fad0997f7cf454cbcbe79cab3bc0f_page_1_pg1.pdf",
+      "sha256": "9ef1f05e6512ccfd8e17848a1a38904c5e05f077024b6233c0e1440815c70357",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/multi_column-0a2b678b6c6825364a5a18154dd59064922e_page_8_pg1.pdf",
+      "sha256": "d415be97ec5ed102fb66020e077d813c2c3410bedddc047ed6c29a73e5e8c908",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/multi_column-0b128decb905a38700baf486672b8634c308_page_4_pg1.pdf",
+      "sha256": "fc87bd2e6ae7992d2b5800112ac28873e7941497b9d230f02a51f8f5056fe645",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/multi_column-0e5f0c3447c4f1335b330d58b5e14d6f15b1_page_8_pg1.pdf",
+      "sha256": "087930ce1f3a9f5d71d80321f73a95d0fc9ea9c4b776c512c3cea3d80842143f",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/old_scans-15.pdf",
+      "sha256": "f6211df8f14bb479d40c3217f13f267805fe12e28089b6e42f5ba4cf4f0d7860",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/old_scans-17.pdf",
+      "sha256": "fd4649b54641fa3e1e0157ffce63d3a10576314ac978dbc1abcf5f4824ee2fb1",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/old_scans-30.pdf",
+      "sha256": "e8b3f839879b9de71608f6db7b6042f29e87830a49ec1004a44279091e93fbb8",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/old_scans-31.pdf",
+      "sha256": "e10a3c771646dc3fe3f9762863cfd04be5d6587d2fabd0e36e11d37d158ff001",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/old_scans-4.pdf",
+      "sha256": "e2764f0dfcb91095ae4a36a000edf7e7a7d3409a26db6a49f0d290572d440bd1",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/old_scans-46.pdf",
+      "sha256": "9ec8e7f176d99b6b3ee4c6444180e8c26ae4af59055d8e05caab72b2ccfa0ddc",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/old_scans-5.pdf",
+      "sha256": "8b0f4a084f2ae4c9548a3a158f18cefbf311466b7d5098c0a25008da9fd38724",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/old_scans-63.pdf",
+      "sha256": "64ac9e067732da3c9a8e8ce9fac71cdf0dc6b59e00de2b74b405370429c7dd26",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/old_scans-64.pdf",
+      "sha256": "a3cb5e9cbfb234562b5a1376be5a170eb31c31d095833bab3ea23f88ec54db80",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/old_scans-69.pdf",
+      "sha256": "b58c2f0ba8f1511f8c1e914f36d2246e8f1eb9c30730117915eab6ad79ed7e39",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/old_scans-70.pdf",
+      "sha256": "f81700c42a2ea1fb76edb0ea9bece15764ad30f1956df5355aef06dc69636d26",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/old_scans-71.pdf",
+      "sha256": "b006f56a88a339fc2b3b5b064ea20dc0dbc82ba2c6f89c5f40eae18cccbd91f0",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/tables-033c1efd2c0e15b829f9e9164f0e7bc1fecf_pg5_pg1.pdf",
+      "sha256": "b216c55f0286ffc740a77c5bbc1eec635e77d4d1e022d7e7f38af6f48b26f6fb",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/tables-0953927d7a3f032c46a2e6d0ead837398a0b_pg20.pdf",
+      "sha256": "7d4cf08f9a8a33ec118cbd3f3afc5a811b23a1d61d0ec18bd620a1d10a85447a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf",
+      "sha256": "63fd12737a11aa7b324922ccb76428df54e68503ade309fd552e33fc9c85a9a3",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/tables-4c77cbf4de004721c9da33c7f3843716c9a6_pg4_pg1.pdf",
+      "sha256": "a232484913948488aa39030416451b45bf5b68618b93213c8d495b0649769600",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/tables-c8c858692b4b469c2af1fc55edcf6292f6ed_pg4_pg1.pdf",
+      "sha256": "7af90452b693cfc2293d91923a49bcb6645c183d385705a77a7f571d9ed10ae7",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/olmocr-bench/tables-fa18a15c1dbbfcb71b1f1ea1b8f116e24b8a_pg2_pg1.pdf",
+      "sha256": "663ada5e6a5c21fe5cf275d20ec1530df280ee86311eaa2a1583afe68a36dd8c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/real/stella-maberly-1896-ia-scan.pdf",
+      "sha256": "5c70bc5b2ca3779466d34c079670efbaa49932445024f3b93e4b03e13817241c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "pdf/scanned/scanned.pdf",
+      "sha256": "6eced800de1d92e81f0c5901e2a563e1ae0676ecb883f8f0ba60eff2e17fdfc2",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:pdf",
+        "route:document"
+      ]
+    },
+    {
+      "path": "text/csv/employees.csv",
+      "sha256": "f0e34c9c422361cc7b4b1c764b2d883c7c9766ef2e84c13eba99c5a08907e604",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/csv/large-100k-rows.csv",
+      "sha256": "132dc473410b04b4d4e109300fdc5dc3e5476c3b367b3d62debbc5825c365fa7",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/csv/sample-data.csv",
+      "sha256": "368eed3809a31ec4890aec10a361f00e302344bdf2b04b006394c14c0ddfbca4",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/csv/semicolon-decimal-comma.csv",
+      "sha256": "d87ceb7d7884a8c9931a295a0061bbce5369c86806ea8858481a84b3b33774dd",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/csv/server-inventory.csv",
+      "sha256": "d3c2c3406542f6bfc4dfc49f9c972c3069cd790fa530667d39bfb909c6607775",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/csv/tab-separated.tsv",
+      "sha256": "c09629fb94b19d2dafb1edabd6099aa4e30ab2ea94e0b87476740e5db8c0fb8a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/encodings/crlf-windows-1252.txt",
+      "sha256": "82046db7a86ddd10862db77a615373263ae13a963a0c5e8b1a7c45221aa4fc49",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/encodings/euc-jp.txt",
+      "sha256": "f5d5ac3df36533affa2cce1d618d3495aa60ff3441d2555c005ae21aad3ead8a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/encodings/iso-8859-1.txt",
+      "sha256": "31308029e1b9d69b0b26631e24704568b3908e2721ef4528346c2134c7bb7826",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/encodings/koi8-r.txt",
+      "sha256": "9b22087acbd650642f64f3bfeab3508d5ad12f35ddaf1c7249ef8cb7162cf60c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/encodings/shift-jis.txt",
+      "sha256": "432f0c56feebd3803e7e05e33119ff5271852a72c3fd17a63b023caeb11a513d",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/encodings/utf16be-nobom.txt",
+      "sha256": "fad9506eb1dc94b3e79fc7767c253b0e9812166268a3800330d620a49d814b8a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/encodings/utf16le-bom.txt",
+      "sha256": "1f353885fcbedd284641278c2db5ca5544b9e2fbd4385bb24bcc99b61a684294",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:utf-16 bom",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/encodings/utf8-bom.txt",
+      "sha256": "fceff8c77608fe417d9ac99652570d306f0d727f0622c3c89f1562ccd76774bb",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:utf-8 bom",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/encodings/utf8-nobom.txt",
+      "sha256": "4b3a6f7a000b83dfc038688220a141429270b568f630da34e2853e7f8656eea9",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/encodings/windows-1252.txt",
+      "sha256": "d2a6b86d720bb05cb2a41f8f8d3270ebf7d116f4ee5b627fe3c34634e70e56f9",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/encodings/windows-1256-arabic.txt",
+      "sha256": "6916045c0e650bd416dfb19f1d50d2126c47b7d7d6e9b759f9232ff7d2f5ac6b",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/epub/lorem-ipsum.epub",
+      "sha256": "e559fa369cfc751becfa4f8434cf186790a3ef57bbd2fb2973beb41deff1dd60",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "kind:jpeg",
+        "kind:zip",
+        "route:archive",
+        "route:text",
+        "route:unrouted",
+        "route:vision"
+      ]
+    },
+    {
+      "path": "text/json/config.json",
+      "sha256": "6c112cf10a680d2b07132cf35fb9b69dfae8a5cd6224f169f2a6eba8bca51725",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/json/deeply-nested-64.json",
+      "sha256": "e9005b0518bf085cf30d593ab4c90d1d3fe0d05f4c43b46d5912d9bf54ef34de",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/json/incident-reports.json",
+      "sha256": "83941f54d2b38f1868ec0271666f77947672c460422848dc15d5dc904c61dcf4",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/json/malformed-trailing-comma.json",
+      "sha256": "98692124b0e4ea4b3241f0b52e7073c692d9a2c8a044060fa7520e2578673b69",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/json/records.ndjson",
+      "sha256": "4c182f11cfb9753e52eae989f3ca379a9040aecaafe280863746d7982be1d47a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/json/sample-data.json",
+      "sha256": "0fe16fb5aa80cc44b85af00a45cefaeaa0c48117c44ecb2d36e6f4bccfc5b339",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/markdown/swarm-capstone.md",
+      "sha256": "8c9b1aa2c6349e38086343de075f5d4effc4d1fefd081fac431e5fe8878b7d79",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/txt/entity-extraction.txt",
+      "sha256": "5634dde625fc6e4bfd8b9b5dd3471f67012d20510b0d401903b26744cbb943f5",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/txt/geopoints.txt",
+      "sha256": "24b78b23693c71a50e7873668ac39fb0921b365b4027a00d60f81096dce6691e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/txt/meeting-notes.txt",
+      "sha256": "ba8c4363f2ff8362de620f5733d402a69d5d8714f76eb48872cdb420baece460",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/txt/product-catalog.txt",
+      "sha256": "8cb7a91afc42bbe9d95b2cb0a9aeb02c00aada815c335d4ec89ac6b0911b1d4d",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/txt/ssh-session-log.txt",
+      "sha256": "5523e78e0f916fb408bca896586320399b49ee956a2f973c25ecb381fe02cedd",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:utf-8 bom",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/txt/text-0.txt",
+      "sha256": "d581e9acbe14a971ddc29a6b5f53cfdf707d5f085435f3518b380240d06aa1f8",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/xml/billion-laughs-small.xml",
+      "sha256": "321d201ddb30e67d0fb53c403c752ea590463fda6497b861d7f59dfc6f22be6e",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "text/xml/catalog.xml",
+      "sha256": "857b94fcac163af41e0142e9ffb9ac359d2b323ed89141f7a04af7252696b2bc",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "video/ami-es2002a/ami-es2002a-overhead.avi",
+      "sha256": "b71fa5842c5a8cb3063194e2d2afb048a3977c2181917805015cbf2b449684d9",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "kind:avi",
+        "route:video"
+      ]
+    },
+    {
+      "path": "video/ami-es2002d/ami-es2002d-closeup1.avi",
+      "sha256": "9c353b206a62e2f3f1bc8f7abe66509e1a90aa177a4a06fa2befe9007aeffcee",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "kind:avi",
+        "route:video"
+      ]
+    },
+    {
+      "path": "video/ami-es2002d/ami-es2002d-corner.avi",
+      "sha256": "e78f1160be777ee3afc1417dc85deb53d8d0ee07f7618be30e9b126c8984a731",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "kind:avi",
+        "route:video"
+      ]
+    },
+    {
+      "path": "video/ami-es2002d/ami-es2002d-mix-headset.wav",
+      "sha256": "b8e0c2d0df9fccfcfab8e5d148f399a679bd2d90299c2262194b9db941749374",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:wav",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "video/nasa-epps-interviews/nasa-epps-interviews-640x360.mp4",
+      "sha256": "e5f6cac540bc61f7fafa435a2e0ea4f803ea731a45d6f3bbc5c6bbabf8fb42b7",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "kind:mp4",
+        "route:video"
+      ]
+    },
+    {
+      "path": "video/nasa-iss-inflight-pittsburgh/nasa-iss-inflight-pittsburgh-640x360.mp4",
+      "sha256": "f4da9018bd1ce24fe69bbee41b2e44118b1556c3ec56677e5b2de676ba4c9197",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "kind:mp4",
+        "route:video"
+      ]
+    },
+    {
+      "path": "video/prelinger-duck-and-cover/duck-and-cover-divx.avi",
+      "sha256": "7105c9fec6f4ff0137a44681f23ad3dd6b8b18d2dccdd97e5a6c736e18610dd5",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "kind:avi",
+        "route:video"
+      ]
+    },
+    {
+      "path": "video/prelinger-duck-and-cover/duck-and-cover-mpeg2.mpeg",
+      "sha256": "c7594c18aff204bfeb2c34b8a7c9aa5e619d4a3336f53e16e43ab0e7c5f3791b",
+      "library": [
+        "route:unrouted"
+      ]
+    },
+    {
+      "path": "video/prelinger-duck-and-cover/duck-and-cover-theora.ogv",
+      "sha256": "2a33d6513bf1a478c5585861e88b558dbd614cc2fb62b76de5c011eb95f95258",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:ogg",
+        "route:audio"
+      ]
+    },
+    {
+      "path": "video/prelinger-duck-and-cover/duck-and-cover.asr.srt",
+      "sha256": "5b80f3da58a40d5c1515cf57ca80772607720171cd2e85086aed9652f046d68a",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "video/tears-of-steel/tos-clip-180s-480p-subs.mkv",
+      "sha256": "018079d58ea0bc5d50f986039b8a20d9d855f8530be4f0ac429a3f4003dfc029",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "kind:mkv",
+        "route:video"
+      ]
+    },
+    {
+      "path": "video/tears-of-steel/tos-clip-180s-480p.mp4",
+      "sha256": "b1dba0c6c2ce364b8888566c1687c15c78ca3632864670c76291ea3573a15bd6",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "kind:mp4",
+        "route:video"
+      ]
+    },
+    {
+      "path": "video/tears-of-steel/tos-clip-30s-360p.webm",
+      "sha256": "ede573e73ed3274f49ba5cce98be7e23603dac40cc3cc1a47d943bcb809f2869",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "kind:webm",
+        "route:video"
+      ]
+    },
+    {
+      "path": "video/tears-of-steel/tos-en.srt",
+      "sha256": "ce9578f6fe098a5821045a38884b229160f9e7ba27890448a92f5be330c6e6fe",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "video/tears-of-steel/tos-he.srt",
+      "sha256": "b868e12e032ff5bc379995cad5839c9aa4650bac74ffb1d90504680b54e1ad27",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "video/tears-of-steel/tos-jp.srt",
+      "sha256": "dae49f0d9231c93a3ca02f02ab08023a4e5379aa8dfa9e22f78bc40d8754ad74",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    },
+    {
+      "path": "video/tears-of-steel/tos-ru.srt",
+      "sha256": "3fcb17b4671bcc6f3b92c823eeeab134234e739cd8878ed5a4c1ab56b320829c",
+      "library": [
+        "capability:embeddings",
+        "capability:extraction",
+        "route:text"
+      ]
+    }
+  ],
   "gaps": []
 }

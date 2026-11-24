@@ -5,7 +5,7 @@ each one. It decides which samples the corpus keeps and names a candidate for ev
 sample covers. It has two parts:
 
 - [`coverage.json`](coverage.json): the data. It holds the scenario vocabulary, each sample's
-  disposition, and the gaps. `scripts/check.sh` reads it.
+  library placement and disposition, and the gaps. `scripts/check.sh` reads it.
 - This page, which explains the data and how the check uses it.
 
 ## The vocabulary
@@ -15,7 +15,9 @@ on three axes:
 
 - **Library** (`.vocabulary.library`): an identifier that docproc or docinfer defines. These are
   docproc's file kinds, routes, and inspection checks, and docinfer's capabilities. Each entry
-  names the identifier and links to its definition, pinned to a commit.
+  names the identifier and links to its definition, pinned to a commit. A capability's entry also
+  has `fed_by`: the routes whose outputs docinfer sends to that capability, with links to the
+  docproc stages that emit those outputs and the docinfer lines that take them.
 - **Trait** (`.vocabulary.trait`): how a sample's content departs from the plain case. The traits
   are script, text layer, scan, charset, audio, and scale. Each value has a one-line `rule` saying
   when a sample exhibits it.
@@ -66,8 +68,32 @@ is chosen by these tie-breaks, in order:
 3. It is redistributable.
 4. It is the smallest.
 
-The library placements come from docproc's kept run over `~/docs`. The data records the run ID
-and the jq command that produced them.
+## Library placement
+
+Each entry in `.samples` has the sample's `path` and `sha256`, from `~/docs/MANIFEST.json`, and
+`library`: the library IDs the sample exercises. Every `~/docs` sample has an entry, even one with
+an empty `library`.
+
+The placements come from docproc's kept run over `~/docs`. `.library_placement` in
+[`coverage.json`](coverage.json) records the run's ID and the command that produced them. The
+command is a script that runs one jq program over the run's `record.jsonl`. A sample's library IDs
+are what the run observed for that file:
+
+- Every event of the file's input counts. That includes the parts docproc found inside the file,
+  such as archive members, attachments, and embedded files, so their IDs go to the top-level sample.
+- A part's `content_type.kind` gives a `kind:` ID, its `content_type.route` a `route:` ID, and
+  each of its `flags[].check` a `check:` ID. The empty kind gives none, and an outcome, such as
+  `seen`, gives none.
+- A sample gets a `capability:` ID when one of its routes is in that capability's `fed_by`.
+
+To rerun the command and compare its output with the data, run this from the repository root:
+
+```sh
+scripts/place-library.sh | cmp - <(jq '.samples | map({path, sha256, library})' docs/coverage.json)
+```
+
+The script reads the run from `${RUNS:-$HOME/runs/docproc/final/runs}` and the manifest from
+`${DOCS_REFERENCE:-$HOME/docs}`. It writes nothing.
 
 ## Gaps
 
@@ -88,7 +114,15 @@ environment variable points it at another copy. It fails when:
 - a vocabulary entry doesn't have its axis's ID shape;
 - a library entry lacks its identifier or its pinned link;
 - a trait or feature entry lacks its rule;
-- a `covers` ID anywhere in the file isn't in the vocabulary.
+- a `covers` ID anywhere in the file isn't in the vocabulary;
+- a capability's `fed_by` route, or a sample's `library` ID, isn't a library ID in the vocabulary;
+- a sample lacks its path or sha256, or two entries in `.samples` share a path;
+- a `~/docs` sample is missing from `.samples`, or its entry's sha256 differs from the manifest's;
+- an entry in `.samples` isn't a `~/docs` sample.
+
+The last two compare against `${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json`, and run only when
+that file exists. `~/docs` is removed when the corpus is done, so the check doesn't need it. Without
+`~/docs`, the check still confirms that no path appears twice. Each failure message names its fix.
 
 To fix an unknown ID, use an ID the vocabulary defines. If the scenario is new, define it in the
 vocabulary, with its link or rule.
