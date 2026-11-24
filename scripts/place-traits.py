@@ -9,6 +9,7 @@ See docs/coverage.md
 
 import collections
 import email
+import email.header
 import email.policy
 import json
 import os
@@ -20,7 +21,7 @@ import tempfile
 import unicodedata
 import zipfile
 
-HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.environ.get("DOCS_REFERENCE") or os.path.expanduser("~/docs")
 RUNS = os.environ.get("RUNS") or os.path.expanduser("~/runs/docproc/final/runs")
 
@@ -29,11 +30,16 @@ SENTENCE = 20
 MIB = 1024 * 1024
 OOXML_KINDS = ("docx", "xlsx", "pptx", "docm", "dotm", "xlsm", "xltm", "pptm", "dotx", "xltx", "potx", "ppsx")
 LEGACY_TARGET = {".doc": "docx", ".rtf": "docx", ".wpd": "docx", ".xls": "xlsx", ".ppt": "pptx"}
+LATIN_GUESSES = {"WINDOWS-1252", "WINDOWS-1250", "WINDOWS-1254", "WINDOWS-1257", "ISO-8859-1", "ISO-8859-2",
+                 "ISO-8859-3", "ISO-8859-4", "ISO-8859-9", "ISO-8859-15", "ISO-8859-16"}
+UTF8 = {"utf-8", "utf8", "us-ascii", "ascii", ""}
 
 
 def run(args, data=None, timeout=600):
     try:
         out = subprocess.run(args, input=data, capture_output=True, timeout=timeout)
+    except FileNotFoundError:
+        sys.exit(f"place-traits: {args[0]} is not on PATH; install it")
     except (OSError, subprocess.TimeoutExpired):
         return b""
     return out.stdout
@@ -70,7 +76,6 @@ class Run:
     def __init__(self, run_id):
         self.content = os.path.join(os.path.dirname(RUNS), "content")
         self.events = collections.defaultdict(list)
-        root = None
         with open(os.path.join(RUNS, run_id, "manifest.json")) as f:
             root = json.load(f)["inputs"][0] + "/"
         with open(os.path.join(RUNS, run_id, "record.jsonl")) as f:
@@ -344,7 +349,7 @@ def image(path):
         return traits, features, facts
     fmt, w, h, alpha, orient, opaque = frames[0]
     facts.update(format=fmt, width=int(w), height=int(h), alpha=alpha, orientation=orient, opaque=opaque)
-    if len(frames) > 1 and fmt in ("TIFF",):
+    if len(frames) > 1 and fmt == "TIFF":
         features.add("feature:multi-page-image")
     if len(frames) > 1 and fmt in ("GIF", "WEBP", "AVIF"):
         features.add("feature:animation")
@@ -394,11 +399,6 @@ def decode_text(data, guess):
         return data.decode(guess if guess not in ("utf-8", "bom", "") else "utf-8", errors="replace")
     except LookupError:
         return data.decode("utf-8", errors="replace")
-
-
-LATIN_GUESSES = {"WINDOWS-1252", "WINDOWS-1250", "WINDOWS-1254", "WINDOWS-1257", "ISO-8859-1", "ISO-8859-2",
-                 "ISO-8859-3", "ISO-8859-4", "ISO-8859-9", "ISO-8859-15", "ISO-8859-16"}
-UTF8 = {"utf-8", "utf8", "us-ascii", "ascii", ""}
 
 
 def message(data):
@@ -530,8 +530,6 @@ def mbox(path):
         texts.append(text)
     if any(any(i in r for i in ids) for r in refs):
         features.add("feature:threads")
-    else:
-        features.discard("feature:threads")
     if len(chunks) >= 1000:
         traits.add("trait:scale.many-messages")
     return traits, features, "\n".join(texts), {"messages": len(chunks)}
@@ -591,7 +589,6 @@ def probe(sample, entry, runrec, tmp):
     rel = sample["path"]
     path = os.path.join(DOCS, rel)
     library = set(sample.get("library", []))
-    kinds = {i.split(":", 1)[1] for i in library if i.startswith("kind:")}
     ext = os.path.splitext(rel)[1].lower()
     traits, features, facts = set(), set(), {}
     text = None
@@ -613,7 +610,7 @@ def probe(sample, entry, runrec, tmp):
             t, f_, facts = image(path)
             traits |= t
             features |= f_
-    elif ext in (".eml",):
+    elif ext == ".eml":
         with open(path, "rb") as f:
             t, f_, text, facts = message(f.read())
         traits |= t
@@ -642,11 +639,11 @@ def probe(sample, entry, runrec, tmp):
         facts = {"entries": len(entries)}
         if len(entries) >= 1000:
             traits.add("trait:scale.many-entries")
-        if sum(1 for i in library if i.startswith("kind:") and i in ("kind:zip", "kind:7z", "kind:gzip", "kind:zstd", "kind:tar")) and any(
+        if library & {"kind:zip", "kind:7z", "kind:gzip", "kind:zstd", "kind:tar"} and any(
             re.search(r"\.(zip|7z|tar|gz|tgz|zst|rar)$", e, re.I) for e in entries
         ):
             features.add("feature:nested-archives")
-    if ext[1:] in OOXML_KINDS or ext in (".xlsb",) or ext in LEGACY_TARGET:
+    if ext[1:] in OOXML_KINDS or ext in LEGACY_TARGET:
         target = path if ext[1:] in OOXML_KINDS else converted(path, tmp) if ext in LEGACY_TARGET else None
         if target:
             f_, ofacts = ooxml(target)
@@ -674,7 +671,7 @@ def probe(sample, entry, runrec, tmp):
 
 
 def main():
-    with open(os.path.join(HERE, "docs/coverage.json")) as f:
+    with open(os.path.join(ROOT, "docs/coverage.json")) as f:
         coverage = json.load(f)
     with open(os.path.join(DOCS, "MANIFEST.json")) as f:
         manifest = {e["path"]: e for e in json.load(f)["files"]}
