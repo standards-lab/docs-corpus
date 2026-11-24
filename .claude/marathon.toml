@@ -1,0 +1,11 @@
+# marathon configuration for corpus-docs.
+# See CLAUDE.md
+
+[project]
+kind = "context"
+check = "scripts/check.sh"
+
+[remote]
+platform = "github"
+publish = "gh pr create"
+merge = "gh pr merge --merge --delete-branch"
