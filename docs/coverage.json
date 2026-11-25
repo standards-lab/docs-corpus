@@ -690,7 +690,7 @@
     "command": "scripts/place-library.sh"
   },
   "corpus_placement": {
-    "run": "01a21386-f572-713b-bb0d-7646e4669441",
+    "run": "01a21395-b7af-757b-a26b-ff420b19fe23",
     "docproc": "docproc v0.5.0 (5a5926c711e3e2ba70e4a137c4aae74378734729), cmd/docproc v0.2.3",
     "docproc_command": "docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/curate",
     "command": "mise run place-traits --corpus"
@@ -12367,9 +12367,9 @@
         "capability:embeddings",
         "capability:extraction",
         "kind:zip",
-        "route:office"
+        "route:office",
+        "trait:scale.large-sheet"
       ],
-      "covered_by": "office/realworld/xlsx/copy-rows.xlsx",
       "candidate": {
         "kind": "sourced",
         "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testRecordSizeExceeded.xlsx",
@@ -12379,18 +12379,6 @@
         "license_status": "verified",
         "license_read": "2026-11-24",
         "fit": "Fair: Tika's 12 MB workbook, one sheet of 200,000 rows by 15 columns of inline strings, 328 MB of sheet XML, so its Markdown passes 256 KiB many times over; heavy to process."
-      }
-    },
-    {
-      "id": "office-8-open",
-      "covers": [
-        "trait:scale.large-sheet"
-      ],
-      "split_from": "office-8",
-      "candidate": {
-        "kind": "unavailable",
-        "searched": "office-8's candidate, office/tika/testRecordSizeExceeded.xlsx, placed from docproc run 01a2134c-19c5-7599-9ce6-16216b4d69a1, which wrote its sheet/1 record output as 1,988 rows lines, 328,577,613 bytes",
-        "reason": "place-traits has no probe for trait:scale.large-sheet, which is placed by judgement, and no judgement is recorded for the file"
       }
     },
     {

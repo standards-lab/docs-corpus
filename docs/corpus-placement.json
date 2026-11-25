@@ -1159,6 +1159,16 @@
     ]
   },
   {
+    "path": "office/tika/testRecordSizeExceeded.xlsx",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "kind:zip",
+      "route:office",
+      "trait:scale.large-sheet"
+    ]
+  },
+  {
     "path": "onenote/interop/SUT/Encryption.one",
     "covers": [
       "capability:embeddings",

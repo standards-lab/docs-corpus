@@ -3085,6 +3085,32 @@
       "gap": "office-6"
     },
     {
+      "path": "office/tika/testRecordSizeExceeded.xlsx",
+      "role": "sample",
+      "sha256": "d0b6d457f7e1bb6fd48fb725fdc192ad91233f87b9db195cdf2fa8ef2963ccff",
+      "bytes": 12364136,
+      "format": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "kind:zip",
+        "route:office",
+        "trait:scale.large-sheet"
+      ],
+      "truth": [],
+      "truth_note": "a sourced candidate, which inherits no truth",
+      "docs": [],
+      "source": "tika",
+      "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testRecordSizeExceeded.xlsx",
+      "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
+      "license": "Apache-2.0",
+      "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
+      "license_read": "2026-11-24",
+      "license_status": "verified",
+      "redistributable": true,
+      "gap": "office-8"
+    },
+    {
       "path": "onenote/content.json",
       "role": "truth",
       "sha256": "c2858e411e9eaae2c65371b2202453a027093e154824f9215fcd8be0eaa0d857",
