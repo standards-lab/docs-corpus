@@ -6,6 +6,7 @@
 //   - [PlaceTraits] runs place-traits.
 //   - [Dispose] runs dispose.
 //   - [Generate] runs generate.
+//   - [Manifest] runs manifest.
 //
 // See architecture/standards/go-elemental/principles/topology-and-naming.md
 package app

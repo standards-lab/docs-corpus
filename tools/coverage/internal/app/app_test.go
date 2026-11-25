@@ -191,3 +191,71 @@ func TestGenerateRefusesBadArguments(t *testing.T) {
 		}
 	}
 }
+
+func TestManifestWritesTheInventoryAndCopiesItsFiles(t *testing.T) {
+	dir, docs := t.TempDir(), t.TempDir()
+	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [{"path": "a/s.txt", "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+		"library": ["kind:x"], "traits": [], "features": [], "format": "text/plain", "bytes": 3, "license_status": "reported",
+		"redistributable": true, "truth": [], "docs": [], "disposition": "adopt"}], "gaps": []}`)
+	write(t, filepath.Join(dir, "docs", "license-readings.json"), `[{"path": "a/s.txt", "license_url": "https://example.org/l", "license_read": "2026-11-25"}]`)
+	write(t, filepath.Join(docs, "MANIFEST.json"), `{"files": [{"path": "a/s.txt", "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+		"bytes": 3, "format": "text/plain", "source": "s", "source_url": "https://example.org/s?a&b", "license": "CC0-1.0",
+		"license_status": "reported", "redistributable": true, "role": "sample", "truth": "none: a timing input"}]}`)
+	write(t, filepath.Join(docs, "a", "s.txt"), "abc")
+	t.Setenv("DOCS_REFERENCE", docs)
+	t.Chdir(dir)
+	var stdout, stderr bytes.Buffer
+	if err := app.Manifest([]string{"--copy"}, &stdout, &stderr); err != nil {
+		t.Fatal(err)
+	}
+	want := `{
+  "version": 1,
+  "files": [
+    {
+      "path": "a/s.txt",
+      "role": "sample",
+      "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+      "bytes": 3,
+      "format": "text/plain",
+      "covers": [
+        "kind:x"
+      ],
+      "truth": [],
+      "truth_note": "a timing input",
+      "docs": [],
+      "source": "s",
+      "url": "https://example.org/s?a&b",
+      "license": "CC0-1.0",
+      "license_url": "https://example.org/l",
+      "license_read": "2026-11-25",
+      "license_status": "verified",
+      "redistributable": true
+    }
+  ]
+}
+`
+	if got := stdout.String(); got != want {
+		t.Errorf("Manifest wrote\n%s\nwant\n%s", got, want)
+	}
+	if data, err := os.ReadFile(filepath.Join(dir, "a", "s.txt")); err != nil || string(data) != "abc" {
+		t.Errorf("a/s.txt = %q, %v, want it copied", data, err)
+	}
+}
+
+func TestManifestRefusesArgumentsAndAMissingReference(t *testing.T) {
+	dir := t.TempDir()
+	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [], "gaps": []}`)
+	write(t, filepath.Join(dir, "docs", "license-readings.json"), `[]`)
+	t.Setenv("DOCS_REFERENCE", filepath.Join(dir, "absent"))
+	t.Chdir(dir)
+	var stdout, stderr bytes.Buffer
+	if err := app.Manifest([]string{"extra"}, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "usage: manifest") {
+		t.Errorf("Manifest(extra) = %v, want its usage", err)
+	}
+	if err := app.Manifest(nil, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "DOCS_REFERENCE") {
+		t.Errorf("Manifest without a reference = %v, want DOCS_REFERENCE named", err)
+	}
+	if stdout.Len() != 0 {
+		t.Errorf("Manifest wrote %q despite its error", stdout.String())
+	}
+}

@@ -3,7 +3,9 @@
 The judgement calls the standards-reviewer applies, beyond what `scripts/check.sh` enforces.
 
 - A sample stays only while it exercises a scenario in the underlying libraries that no other
-  sample covers.
+  sample covers. A generated sample's recorded inputs are the exception: they stay beside it, as
+  msg_36.eml does beside email-8 and old_scans-69.pdf beside pdf-2, because a generated sample must
+  be rebuildable from v1.
 - A sample is sourced or generated, with its source or generating command recorded; none is
   constructed by hand.
 - A sample is in the repository only when its license, read at its source, lets it be

@@ -49,14 +49,7 @@ func Dispose(args []string, stdout, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
-	var buf bytes.Buffer
-	enc := json.NewEncoder(&buf)
-	enc.SetIndent("", "  ")
-	enc.SetEscapeHTML(false)
-	if err := enc.Encode(coverage); err != nil {
-		return err
-	}
-	if _, err := stdout.Write(buf.Bytes()); err != nil {
+	if err := encode(stdout, coverage); err != nil {
 		return err
 	}
 	for _, id := range droppable {
@@ -65,6 +58,18 @@ func Dispose(args []string, stdout, stderr io.Writer) error {
 		}
 	}
 	return nil
+}
+
+func encode(w io.Writer, v any) error {
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	enc.SetIndent("", "  ")
+	enc.SetEscapeHTML(false)
+	if err := enc.Encode(v); err != nil {
+		return err
+	}
+	_, err := w.Write(buf.Bytes())
+	return err
 }
 
 func decodeStrict(path string, v any) error {

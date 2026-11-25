@@ -1,0 +1,40 @@
+{
+ "dataset": "PolyAI/minds14",
+ "config": "fr-FR",
+ "split": "train",
+ "license": "CC-BY-4.0",
+ "source": "https://huggingface.co/datasets/PolyAI/minds14",
+ "via": "datasets-server rows API (decoded audio assets)",
+ "items": [
+  {
+   "file": "minds14-fr-FR-0.wav",
+   "text": "je souhaite changer mon adresse",
+   "speaker_id": null,
+   "gender": null,
+   "source_row": 0,
+   "english_transcription": "I want to change my address",
+   "intent_class": 1,
+   "path": "fr-FR~ADDRESS/response_4.wav"
+  },
+  {
+   "file": "minds14-fr-FR-1.wav",
+   "text": "Bonjour je voudrais changer d'adresse",
+   "speaker_id": null,
+   "gender": null,
+   "source_row": 1,
+   "english_transcription": "Hello I would like to change my address",
+   "intent_class": 1,
+   "path": "fr-FR~ADDRESS/response_17.wav"
+  },
+  {
+   "file": "minds14-fr-FR-2.wav",
+   "text": "bonjour ok je vais changer d'adresse et je voulais savoir quelles étaient les démarches à faire quelque chose à faire ou pas",
+   "speaker_id": null,
+   "gender": null,
+   "source_row": 2,
+   "english_transcription": "hello ok I'm going to change my address and I wanted to know what the steps were to do something to do or not",
+   "intent_class": 1,
+   "path": "fr-FR~ADDRESS/response_16.wav"
+  }
+ ]
+}

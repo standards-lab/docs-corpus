@@ -238,6 +238,32 @@ To count the dispositions and gaps, run:
 jq '(.samples | group_by(.disposition) | map({(.[0].disposition): length}) | add) + {gaps: (.gaps | length)}' docs/coverage.json
 ```
 
+## The manifest
+
+[`MANIFEST.json`](../MANIFEST.json) lists each adopted sample, with its `covers`: its `library`,
+`traits`, and `features` IDs together, sorted. It also lists the truth and doc files the sample
+links, as [README.md](../README.md#the-manifest) describes. `mise run manifest` builds it from
+this data, so the inventory and the scenario index agree. `scripts/check.sh` checks the manifest
+before the data. It fails when:
+
+- a listed file is missing, or its size or sha256 differs from its entry;
+- a file under a format directory isn't listed;
+- two samples share a format and covers.
+
+After the data passes, it checks the manifest against the data and git. It fails when:
+
+- the manifest's `version` isn't 1, or an entry's role isn't sample, truth, or doc;
+- an entry's `covers` ID isn't in the vocabulary;
+- git tracks a sample file, or doesn't track a truth or doc file;
+- a sample isn't adopted here, or an adopted sample isn't a sample there;
+- an adopted sample's covers differ from its covers here;
+- a sample's covers lie inside another sample's, whatever the format, unless the other sample is
+  generated and lists it in its `inputs`, as [`STANDARDS.md`](../STANDARDS.md) allows;
+- with `~/docs` present, the manifest differs from what `mise run manifest` prints.
+
+The payload must be in place: without it, every sample is a missing file. Each failure message
+names its fix.
+
 ## The check
 
 `scripts/check.sh` validates `docs/coverage.json`, or the copy the `COVERAGE` environment

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Checks the tools/coverage Go module, then the corpus against MANIFEST.json once it is present
-# and the coverage data, and runs lint-context and lint-references. Writes nothing but Go's caches.
+# Checks the tools/coverage Go module, then the corpus files against MANIFEST.json once it is
+# present, the coverage data, and MANIFEST.json against the coverage data and git, and runs
+# lint-context and lint-references. Writes nothing but Go's caches.
 # See docs/coverage.md
 # See architecture/standards/go-elemental/principles/release-and-ci.md
 set -euo pipefail
@@ -47,11 +48,11 @@ areas=(archive audio email image office onenote pdf text video)
 if [ -f MANIFEST.json ]; then
   while IFS=$'\t' read -r path bytes sha; do
     if [ ! -f "$path" ]; then
-      err "$path: in MANIFEST.json but missing"
+      err "$path: in MANIFEST.json but missing; put the payload in place with mise run manifest --copy > MANIFEST.json"
       continue
     fi
-    [ "$(stat -c %s "$path")" = "$bytes" ] || err "$path: size differs from MANIFEST.json"
-    [ "$(sha256sum "$path" | cut -d' ' -f1)" = "$sha" ] || err "$path: sha256 differs from MANIFEST.json"
+    [ "$(stat -c %s "$path")" = "$bytes" ] || err "$path: size differs from MANIFEST.json; restore it with mise run manifest --copy > MANIFEST.json"
+    [ "$(sha256sum "$path" | cut -d' ' -f1)" = "$sha" ] || err "$path: sha256 differs from MANIFEST.json; restore it with mise run manifest --copy > MANIFEST.json"
   done < <(jq -r '.files[] | [.path, (.bytes|tostring), .sha256] | @tsv' MANIFEST.json)
 
   existing_areas=()
@@ -63,13 +64,13 @@ if [ -f MANIFEST.json ]; then
       <(find "${existing_areas[@]}" -type f | sort) \
       <(jq -r '.files[].path' MANIFEST.json | sort) |
       while read -r path; do
-        echo "FAIL: $path: not in MANIFEST.json" >&2
+        echo "FAIL: $path: not in MANIFEST.json; remove it, or adopt it in docs/coverage.json and regenerate with mise run manifest > MANIFEST.json" >&2
         echo x
       done | grep -q x && fail=1
   fi
 
   while read -r duplicate; do
-    err "samples share a format and scenarios: $duplicate"
+    err "samples share a format and scenarios: $duplicate; trim all but one with mise run dispose, then mise run manifest > MANIFEST.json"
   done < <(jq -r '
     [.files[] | select(.role == "sample")
       | {key: ([.format] + ((.covers // []) | sort) | join(" ")), path}]
@@ -298,6 +299,55 @@ else
     else
       err "$coverage: jq could not compare it with $reference; both must be JSON, the reference with a files array"
     fi
+  fi
+fi
+
+stop_if_failed
+
+if [ -f MANIFEST.json ]; then
+  regenerate="regenerate it with mise run manifest > MANIFEST.json"
+  if ! tracked=$(git ls-files -z | jq -Rs 'split("\u0000") | map(select(. != ""))'); then
+    err "git ls-files failed; run the check in a git checkout of docs-corpus"
+  elif problems=$(jq -r --argjson tracked "$tracked" --slurpfile coverage "$coverage" --arg regenerate "$regenerate" '
+    def covers: (.library + (.traits // []) + (.features // [])) | unique;
+    ($coverage[0].vocabulary | [.library, .trait, .feature] | map(keys) | add) as $ids
+    | ($coverage[0].samples | map(select(.disposition == "adopt") | {key: .path, value: covers}) | from_entries) as $adopted
+    | ($tracked | map({key: ., value: true}) | from_entries) as $in_git
+    | [.files[] | select(.role == "sample")] as $samples
+    | (select(.version != 1)
+        | "MANIFEST.json: version is \(.version | tojson), not 1; \($regenerate)"),
+      (.files[] | select(IN(.role; "sample", "truth", "doc") | not)
+        | "\(.path): role is \(.role | tojson); set sample, truth, or doc, and \($regenerate)"),
+      (.files[] | .path as $p | (.covers // [])[] | select(IN($ids[]) | not)
+        | "\($p).covers: \(.) is not in docs/coverage.json\u0027s vocabulary; place the sample with an ID the vocabulary defines, or define it there, then \($regenerate)"),
+      ($samples[] | select($in_git[.path])
+        | "\(.path): a sample file is tracked by git, but samples are release assets; run git rm --cached -- \(.path | @sh)"),
+      (.files[] | select(.role != "sample" and ($in_git[.path] | not))
+        | "\(.path): a \(.role) file is not tracked by git; run git add -f -- \(.path | @sh)"),
+      ($samples[] | select(has("gap") | not) | select($adopted[.path] == null)
+        | "\(.path): a sample that is not adopted in docs/coverage.json; \($regenerate)"),
+      ($samples | map(.path)) as $listed
+      | ($adopted | keys[] | select(IN($listed[]) | not)
+        | "\(.): adopted in docs/coverage.json but not a sample in MANIFEST.json; \($regenerate)"),
+      ($samples[] | select($adopted[.path] != null and ((.covers // []) | unique) != $adopted[.path])
+        | "\(.path): covers differ from docs/coverage.json\u0027s; \($regenerate)"),
+      ($samples[] as $outer | $samples[]
+        | select(.path != $outer.path and (((.covers // []) - ($outer.covers // [])) == [])
+            and ((.format == $outer.format and ((.covers // []) | unique) == (($outer.covers // []) | unique)) | not)
+            and (.path as $p | any($outer.inputs[]?; . == $p) | not))
+        | "\(.path): its covers lie inside \($outer.path)\u0027s; a sample stays only for a scenario no other covers, so trim it for \($outer.path) by mise run dispose, then \($regenerate)")
+  ' MANIFEST.json); then
+    while read -r problem; do
+      if [ -n "$problem" ]; then
+        err "$problem"
+      fi
+    done <<<"$problems"
+  else
+    err "MANIFEST.json: jq could not check it against $coverage; $regenerate"
+  fi
+
+  if [ -f "${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json" ] && ! go run ./tools/coverage/cmd/manifest | cmp -s - MANIFEST.json; then
+    err "MANIFEST.json: differs from what mise run manifest prints, and it is never edited by hand; $regenerate"
   fi
 fi
 

@@ -26,3 +26,7 @@ run = "go run ./tools/coverage/cmd/place-traits"
 [tasks.dispose]
 description = "Print docs/coverage.json with every sample's disposition derived by tools/coverage's dispose; --placement <file> takes the traits and features from a place-traits output first"
 run = "go run ./tools/coverage/cmd/dispose"
+
+[tasks.manifest]
+description = "Print MANIFEST.json from docs/coverage.json, docs/license-readings.json, and ~/docs' manifest with tools/coverage's manifest; --copy first copies every file it lists from ~/docs into place"
+run = "go run ./tools/coverage/cmd/manifest"

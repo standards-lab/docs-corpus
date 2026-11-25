@@ -1,0 +1,72 @@
+{
+  "note": "The onenote area: spike-ai-pipeline-onenote v0.1.0's public fixture sets and expectations, its tests/fixtures at 8ea6b2df4236c23ed1da6d37c73ed8479dd75f82, byte for byte; interop/sources.json and onenote-rs/sources.json list each set's files with their upstream source, pinned commit, licence, and SHA-256. The three large sections in large/ are the timing inputs of onenote's finding (docs/findings/onenote-cli.md, scripts/findings.sh), fetched at the same pins and checked against the SHA-256s those scripts pin; the onenote.rs two are Git LFS objects, fetched through GitHub's LFS media URL. This file lists every file the sets' records don't.",
+  "files": [
+    {
+      "file": "sections.json",
+      "repository": "https://github.com/JaimeStill/spike-ai-pipeline-onenote",
+      "commit": "8ea6b2df4236c23ed1da6d37c73ed8479dd75f82",
+      "path": "tests/fixtures/sections.json",
+      "license": "Apache-2.0; spike-ai-pipeline-onenote's LICENSE",
+      "sha256": "c6a4a391eb26119fb85f6defa5406a930f08a0482c9762f73e8cf1c9c1d04a07"
+    },
+    {
+      "file": "notebooks.json",
+      "repository": "https://github.com/JaimeStill/spike-ai-pipeline-onenote",
+      "commit": "8ea6b2df4236c23ed1da6d37c73ed8479dd75f82",
+      "path": "tests/fixtures/notebooks.json",
+      "license": "Apache-2.0; spike-ai-pipeline-onenote's LICENSE",
+      "sha256": "fef049e34658304c604c95641182d364ab1b288a7dcc33688c448bfa399f9b18"
+    },
+    {
+      "file": "content.json",
+      "repository": "https://github.com/JaimeStill/spike-ai-pipeline-onenote",
+      "commit": "8ea6b2df4236c23ed1da6d37c73ed8479dd75f82",
+      "path": "tests/fixtures/content.json",
+      "license": "Apache-2.0; spike-ai-pipeline-onenote's LICENSE",
+      "sha256": "c2858e411e9eaae2c65371b2202453a027093e154824f9215fcd8be0eaa0d857"
+    },
+    {
+      "file": "interop/sources.json",
+      "repository": "https://github.com/JaimeStill/spike-ai-pipeline-onenote",
+      "commit": "8ea6b2df4236c23ed1da6d37c73ed8479dd75f82",
+      "path": "tests/fixtures/interop/sources.json",
+      "license": "Apache-2.0; spike-ai-pipeline-onenote's LICENSE",
+      "sha256": "6d61acb8bc8833f5bbffa0a13c4c1a061a9c64d777489211b47b6ad620787589"
+    },
+    {
+      "file": "onenote-rs/sources.json",
+      "repository": "https://github.com/JaimeStill/spike-ai-pipeline-onenote",
+      "commit": "8ea6b2df4236c23ed1da6d37c73ed8479dd75f82",
+      "path": "tests/fixtures/onenote-rs/sources.json",
+      "license": "Apache-2.0; spike-ai-pipeline-onenote's LICENSE",
+      "sha256": "cf9813e83bc0bb3c0c366671cb3e250a09ffd3ca93a2634e66eb6f07af6de805"
+    },
+    {
+      "file": "large/LargeData.one",
+      "repository": "https://github.com/OfficeDev/Interop-TestSuites",
+      "commit": "fe87ed3253de01804a2ae6e1d0015943da6023f8",
+      "path": "FileSyncandWOPI/Setup/SUT/LargeData.one",
+      "license": "MIT; interop/LICENSE",
+      "url": "https://raw.githubusercontent.com/OfficeDev/Interop-TestSuites/fe87ed3253de01804a2ae6e1d0015943da6023f8/FileSyncandWOPI/Setup/SUT/LargeData.one",
+      "sha256": "034d91a640d655a522efda1d98de4ec4c952aaa02e5ad59f7c35537ccf9c2ba1"
+    },
+    {
+      "file": "large/Large Desktop.one",
+      "repository": "https://github.com/msiemens/onenote.rs",
+      "commit": "727389a674665dc07e0c31818cd4b54b64b9c684",
+      "path": "crates/parser/tests/samples/Large Desktop.one",
+      "license": "MPL-2.0; onenote-rs/LICENSE",
+      "url": "https://media.githubusercontent.com/media/msiemens/onenote.rs/727389a674665dc07e0c31818cd4b54b64b9c684/crates/parser/tests/samples/Large%20Desktop.one",
+      "sha256": "0a568f02de8bdc4196dfad97ce2ecac04456efd9376c275ff67af412a4604668"
+    },
+    {
+      "file": "large/Large OneDrive.one",
+      "repository": "https://github.com/msiemens/onenote.rs",
+      "commit": "727389a674665dc07e0c31818cd4b54b64b9c684",
+      "path": "crates/parser/tests/samples/Large OneDrive.one",
+      "license": "MPL-2.0; onenote-rs/LICENSE",
+      "url": "https://media.githubusercontent.com/media/msiemens/onenote.rs/727389a674665dc07e0c31818cd4b54b64b9c684/crates/parser/tests/samples/Large%20OneDrive.one",
+      "sha256": "713980fd942180f64910b71fc6236cd22f407facc9b8bd25e99b2eeb1ac9651a"
+    }
+  ]
+}
