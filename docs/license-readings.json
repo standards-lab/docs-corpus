@@ -15,9 +15,111 @@
     "license_read": "2026-11-25"
   },
   {
+    "path": "email/generated/msg/03-html-inline-image.msg",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "email/generated/msg/04-attachment-cyrillic.msg",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "email/generated/msg/05-japanese.msg",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "email/generated/msg/07-html-only-bcc.msg",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "email/generated/msg/08-forward-attached-message.msg",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "email/generated/pst/mailbox.pst",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
     "path": "image/formats/avif/bbb-alpha-inverted.avif",
     "license": "CC-BY-3.0",
     "license_url": "https://github.com/AOMediaCodec/av1-avif/blob/bf4c18d1f3971069b75e87d6ee469790589f4f09/testFiles/Microsoft/ReadMe.md",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "image/vector/script-bearing.svg",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "office/legacy/generated/comments.libreoffice.doc",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "office/legacy/generated/docx/comments.libreoffice.docx",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "office/legacy/generated/docx/media.libreoffice.docx",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "office/legacy/generated/docx/notes.libreoffice.docx",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "office/legacy/generated/formulas.libreoffice.xls",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "office/legacy/generated/media.libreoffice.doc",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "office/legacy/generated/notes.libreoffice.doc",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "office/legacy/generated/pptx/slide-objects.python-pptx.pptx",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "office/legacy/generated/slide-objects.libreoffice.ppt",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "office/legacy/generated/slides.libreoffice.ppt",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
     "license_read": "2026-11-25"
   },
   {
@@ -70,6 +172,54 @@
   {
     "path": "pdf/scanned/real/stella-maberly-1896-ia-scan.pdf",
     "license_url": "https://archive.org/details/statementofstell00anst",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "text/csv/tab-separated.tsv",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "text/encodings/euc-jp.txt",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "text/encodings/koi8-r.txt",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "text/encodings/utf16be-nobom.txt",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "text/encodings/utf16le-bom.txt",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "text/encodings/utf8-bom.txt",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "text/encodings/windows-1252.txt",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "text/encodings/windows-1256-arabic.txt",
+    "license": "Apache-2.0",
+    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
     "license_read": "2026-11-25"
   },
   {
