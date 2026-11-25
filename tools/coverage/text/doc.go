@@ -1,0 +1,16 @@
+// Package text reads text: charsets by their IANA and WHATWG names through golang.org/x/text,
+// Python's whitespace and line splitting, a text file's charset from its byte order mark, UTF-8
+// validity, UTF-16 without a BOM, or a Guesser, and the scripts a text's letters are written in.
+//
+// Its exported identifiers:
+//
+//   - [Encoding] finds the encoding a charset name names.
+//   - [DecodeOrUTF8] decodes bytes with a charset name, or keeps them as they are.
+//   - [Guesser] guesses a charset, as uchardet does.
+//   - [Charset] places a text file's trait:charset ID and names its charset.
+//   - [DecodeText] decodes a text file by its BOM or Charset's guess.
+//   - [UTF8Name] reports whether a declared charset names UTF-8.
+//   - [Scripts] counts a text's letters by script and places its trait:script IDs;
+//     [ScriptCount] is one script's count.
+//   - [IsSpace], [Strip], [Fields], and [SplitLines] are Python's whitespace and line rules.
+package text

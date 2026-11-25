@@ -1,0 +1,28 @@
+# golangci-lint v2 configuration for the tools/coverage module, run by `mise run check`.
+# See docs/coverage.md
+# See architecture/principles/comments.md
+version: "2"
+
+linters:
+  default: standard
+  enable:
+    - depguard
+    - nolintlint
+    - testpackage
+  settings:
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+    testpackage:
+      skip-regexp: export_test\.go
+      allow-packages: [""]
+    depguard:
+      rules:
+        module:
+          list-mode: strict
+          files:
+            - "**/*.go"
+          allow:
+            - $gostd
+            - github.com/standards-lab/docs-corpus/tools/coverage/
+            - golang.org/x/text/
