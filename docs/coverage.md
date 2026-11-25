@@ -75,11 +75,14 @@ a trim without `~/docs`: `truth` (it has truth when the list isn't empty), `lice
 `sensitive: true` for a file the manifest marks `sensitive` or `local_only`.
 
 Only a redistributable sample that isn't sensitive is adopted. Any other sample is trimmed when an
-adopted sample covers all of its scenarios, and replaced otherwise.
+adopted sample covers all of its scenarios, and replaced otherwise. The gap candidates in the
+corpus join the adopted samples for trims, as [Candidates in the corpus](#candidates-in-the-corpus)
+states, so a trim can name a candidate.
 
 The [`dispose`](../tools/coverage/cmd/dispose/doc.go) command of the Go module `tools/coverage`
-derives every disposition by these rules, and the covers of each gap a replace names, as
-[Gaps](#gaps) states. To rerun it and compare its output with the data, run this from the
+derives every disposition by these rules, the covers of each gap a replace names, as
+[Gaps](#gaps) states, and each candidate's place in the corpus, as
+[Candidates in the corpus](#candidates-in-the-corpus) states. To rerun it and compare its output with the data, run this from the
 repository root:
 
 ```sh
@@ -192,7 +195,10 @@ sample `MANIFEST.json` lists, reading its file from the working copy and the run
 `${RUNS:-$HOME/runs/docs-corpus/curate/runs}`. It places its library IDs from that run by the
 rules of [Library placement](#library-placement), adds its trait and feature IDs as
 [`place-traits`](#trait-and-feature-placement) places them, with the `judged` IDs of the sample's
-entry in `.samples`, and prints each sample's `covers`.
+entry in `.samples`, and prints each sample's `covers`. A candidate has no entry in `.samples`:
+its judged IDs are in [`judged.json`](judged.json), keyed by its path, each ID with the evidence
+for it in the same form. [`corpus-placement.json`](corpus-placement.json) is the command's
+output, committed, and the manifest takes each candidate's covers from it.
 
 To make the run, put docproc's tools on `PATH`, as docproc's README states for its release:
 `docproc-ooxml`, `docproc-mail`, and `docproc-onenote` from their release tags, the real `7zz`
@@ -201,14 +207,17 @@ outside the repository and run it from the repository root, with the run directo
 
 ```sh
 GOBIN=<dir> go install github.com/standards-lab/docproc/cmd/docproc@v0.2.3
-<dir>/docproc run audio email image office onenote pdf text video --out ~/runs/docs-corpus/curate
+<dir>/docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/curate
 ```
 
-Record the run's ID, from the summary's last line, in `.corpus_placement`. To place the covers and
-compare them with the manifest, run this from the repository root:
+Record the run's ID, from the summary's last line, in `.corpus_placement`. A run into the same
+run directory replays the parts its index already holds, with outcome `seen` and the first
+outcome under `recorded`; the placement reads the recorded one. To place the covers and compare
+them with the committed placement and the manifest, run this from the repository root:
 
 ```sh
-mise run place-traits --corpus | cmp - <(jq '[.files[] | select(.role == "sample") | {path, covers}] | sort_by(.path)' MANIFEST.json)
+mise run place-traits --corpus | cmp - docs/corpus-placement.json
+cmp docs/corpus-placement.json <(jq '[.files[] | select(.role == "sample") | {path, covers}] | sort_by(.path)' MANIFEST.json)
 ```
 
 ## Gaps
@@ -254,12 +263,50 @@ Each gap names one candidate, its `candidate` object, of one of three kinds, its
 Each sourced or generated candidate also has a `fit` line: a rating, Good or Fair, then its
 quality and how it exercises the gap's covers.
 
+Two fields record what the corpus placement found, both written by `dispose`, as
+[Candidates in the corpus](#candidates-in-the-corpus) states:
+
+- `split_from`: an open gap, id `<gap>-open`, holding the covers its gap's candidate doesn't
+  confirm. Its candidate is unavailable.
+- `covered_by`: the sample whose covers contain the gap's candidate's, which therefore leaves the
+  corpus.
+
 A suspicious scenario, such as an archive bomb, a path traversal, an executable, or a polyglot, has
 a harmless candidate: a parser fixture from an established test suite, or a file built by a
 recorded command from benign inputs.
 
-A candidate is a proposal. Fetching or generating it into the corpus, and confirming it with
-docproc, is the next step. A gap whose `candidate` is `null` has none yet, and fails the check.
+A candidate is a proposal until it is fetched or generated into the corpus and confirmed with
+docproc. A gap whose `candidate` is `null` has none yet, and fails the check.
+
+### Candidates in the corpus
+
+`mise run fetch-candidates` fetches each sourced candidate from its pinned URL and places it at
+`<area>/<source>/<name>`. The area is the gap id's prefix, the source is the GitHub repository's
+name in lower case, or `wikimedia-commons`, and the name is the URL's last segment, decoded. A
+trailing `.txt` is dropped from a name that already has an extension, so `jwz.mbox.txt` becomes
+`jwz.mbox`. [`candidates.json`](candidates.json) records what was fetched for each gap: its
+`path`, `source`, `sha256`, `bytes`, and `format`, as `file -b --mime-type` reports it, with
+`format_by`, the `file` version that ran. A later fetch must match the record, so a pinned
+candidate can't change. The fetch skips a gap whose candidate is `covered_by` another sample.
+
+The manifest gives each candidate its gap's candidate's provenance, its covers from the corpus
+placement, its `gap`, and no truth: a sourced candidate inherits none. `dispose` reads the record
+and the placement, and settles each placed candidate's place:
+
+- **Open gap**: the covers of a gap that its candidate's placed covers lack become its open gap,
+  and the gap keeps the covers they confirm. `dispose` writes the open gap with an unavailable
+  candidate. The record of what was searched and why none is found is written once, as every
+  candidate's research is, and `dispose` never changes it. The open gap goes once a placement
+  confirms its covers.
+- **Trim**: an adopted sample whose covers lie inside a candidate's is trimmed, and
+  `trimmed_for` names the sample the tie-breaks prefer among those that stay, candidate or not.
+  A sample a generated candidate lists in its `inputs` stays, as [`STANDARDS.md`](../STANDARDS.md)
+  allows.
+- **Covered**: a candidate whose covers lie inside another sample's leaves the corpus, and its
+  gap's `covered_by` names that sample.
+
+A candidate the placement doesn't list, as one that left the corpus, keeps its gap's record as it
+stands.
 
 To count the dispositions and gaps, run:
 
@@ -286,8 +333,14 @@ After the data passes, it checks the manifest against the data and git. It fails
 - git tracks a sample file, or doesn't track a truth or doc file;
 - a sample isn't adopted here, or an adopted sample isn't a sample there;
 - an adopted sample's covers differ from its covers here;
-- a sample's covers lie inside another sample's, whatever the format, unless the other sample is
-  generated and lists it in its `inputs`, as [`STANDARDS.md`](../STANDARDS.md) allows;
+- a sample's covers lie inside another sample's, whatever the format, unless a generated
+  candidate lists it in its `inputs`, as [`STANDARDS.md`](../STANDARDS.md) allows;
+- a candidate's gap has no sourced or generated candidate, or is `covered_by` another sample;
+- a candidate's provenance differs from its gap's candidate's;
+- a sourced candidate has truth;
+- a candidate's covers lack some of its gap's covers;
+- a sourced gap that no sample covers has no candidate in the manifest;
+- a path in `judged.json` isn't a sample, or an ID there isn't in the vocabulary;
 - with `~/docs` present, the manifest differs from what `mise run manifest` prints.
 
 The payload must be in place: without it, every sample is a missing file. Each failure message
@@ -323,7 +376,10 @@ variable names. It fails when:
 - a vocabulary ID is exercised by no adopted sample and is in no gap's covers;
 - an adopted sample isn't redistributable or is sensitive;
 - two adopted samples share a format and a covers set, or one adopted sample's covers lie inside
-  another's or equal another's that wins the tie-breaks;
+  another's or equal another's that wins the tie-breaks, the candidates in the corpus counted
+  among the adopted samples, and the inputs of a generated candidate exempt;
+- a gap's `covered_by` names neither an adopted sample nor a candidate in the corpus, or one whose
+  covers lack the gap's;
 - a `~/docs` sample is missing from `.samples`, or its entry's sha256 differs from the manifest's;
 - an entry in `.samples` isn't a `~/docs` sample;
 - an entry's format, bytes, license status, redistributability, or sensitivity differs from the
