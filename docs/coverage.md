@@ -348,6 +348,8 @@ before the data. It fails when:
 After the data passes, it checks the manifest against the data and git. It fails when:
 
 - the manifest's `version` isn't 1, or an entry's role isn't sample, truth, or doc;
+- an adopted sample lacks `license_url` or `license_read`, the reading of its license at its
+  source that [`docs/license-readings.json`](license-readings.json) records;
 - an entry's `covers` ID isn't in the vocabulary;
 - git tracks a sample file, or doesn't track a truth or doc file;
 - a sample isn't adopted here, or an adopted sample isn't a sample there;
