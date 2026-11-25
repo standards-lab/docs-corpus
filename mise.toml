@@ -38,3 +38,7 @@ run = "scripts/pack.sh"
 [tasks.fetch]
 description = "Fetch every format area's <area>.tar from a release URL or a directory mise run pack wrote, with scripts/fetch.sh, and place the sample files at their manifest paths once each matches MANIFEST.json's size and sha256"
 run = "scripts/fetch.sh"
+
+[tasks.fetch-candidates]
+description = "Fetch every sourced gap candidate in docs/coverage.json from its pinned URL to <area>/<source>/<name> with scripts/fetch-candidates.sh, verifying each against docs/candidates.json and recording any it doesn't list yet"
+run = "scripts/fetch-candidates.sh"
