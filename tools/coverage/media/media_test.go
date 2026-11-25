@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"reflect"
 	"slices"
+	"strconv"
 	"strings"
 	"testing"
 
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 	"github.com/standards-lab/docs-corpus/tools/coverage/media"
 	"github.com/standards-lab/docs-corpus/tools/coverage/run"
 )
@@ -33,6 +34,29 @@ func output(kind, name, meta string) run.Event {
 	}}}
 }
 
+func TestPDFPlacesAnOversizedPageOnlyBelowTheRequestDPI(t *testing.T) {
+	pr := media.Prober{PDFInfo: lines("Pages:          2"), PDFImages: lines(), PDFFonts: lines(), QPDF: lines()}
+	cases := map[string]struct {
+		dpis []string
+		want bool
+	}{
+		"one page below":      {[]string{`"40"`}, true},
+		"request and above":   {[]string{`"150"`, `"300"`}, false},
+		"just below":          {[]string{`"150"`, `"149"`}, true},
+		"unreadable dpi only": {[]string{`""`}, false},
+	}
+	for name, c := range cases {
+		var outputs []run.Event
+		for i, dpi := range c.dpis {
+			outputs = append(outputs, output("image", "page "+strconv.Itoa(i+1), "dpi="+dpi))
+		}
+		traits, _, _ := pr.PDF(context.Background(), "/a.pdf", outputs)
+		if got := traits["trait:scale.oversized-page"]; got != c.want {
+			t.Errorf("%s: oversized-page = %v, want %v (request DPI %d)", name, got, c.want, media.RequestDPI)
+		}
+	}
+}
+
 func TestPDFPlacesTextLayersScaleAndForms(t *testing.T) {
 	pr := media.Prober{
 		PDFInfo: lines("Title:          x", "Pages:          120"),
@@ -54,9 +78,10 @@ func TestPDFPlacesTextLayersScaleAndForms(t *testing.T) {
 	outputs := []run.Event{
 		output("text", "page 1", "page=1"),
 		nested,
-		output("image", "page 1", "dpi=150"),
-		output("image", "page 2", "dpi=150"),
-		output("image", "page 3", "dpi=300"),
+		output("image", "page 1", `dpi="150"`),
+		output("image", "page 2", `dpi="150"`),
+		output("image", "page 3", `dpi="40"`),
+		output("image", "page 4", `dpi=""`),
 	}
 	traits, features, facts := pr.PDF(context.Background(), "/a.pdf", outputs)
 	want := []string{"trait:scale.many-pages", "trait:scale.oversized-page", "trait:text-layer.ocr", "trait:text-layer.partial"}
@@ -66,24 +91,19 @@ func TestPDFPlacesTextLayersScaleAndForms(t *testing.T) {
 	if got := features.Sorted(""); !slices.Equal(got, []string{"feature:forms", "feature:signature-fields"}) {
 		t.Errorf("features = %v", got)
 	}
-	wantFacts := `{
-  "pages": 120,
-  "rendered_pages": 3,
-  "text_pages": 1,
-  "dpis": [
-    150,
-    300
-  ],
-  "pages_with_large_images": 1,
-  "large_image_ppi": [
-    300
-  ],
-  "fonts": 2,
-  "fonts_without_unicode": 1,
-  "invisible_text_runs": 1
-}`
-	if got := string(jsonvalue.Marshal(facts)); got != wantFacts {
-		t.Errorf("facts =\n%s\nwant\n%s", got, wantFacts)
+	wantFacts := media.PDFFacts{
+		Pages:                120,
+		RenderedPages:        4,
+		TextPages:            1,
+		DPIs:                 []string{"150", "40"},
+		PagesWithLargeImages: 1,
+		LargeImagePPI:        []int{300},
+		Fonts:                2,
+		FontsWithoutUnicode:  1,
+		InvisibleTextRuns:    1,
+	}
+	if !reflect.DeepEqual(facts, wantFacts) {
+		t.Errorf("facts = %+v, want %+v", facts, wantFacts)
 	}
 }
 
@@ -93,7 +113,10 @@ func TestPDFReadsTheFileWhenQPDFWritesNothing(t *testing.T) {
 		t.Fatal(err)
 	}
 	pr := media.Prober{PDFInfo: tool(""), PDFImages: tool(""), PDFFonts: tool(""), QPDF: tool("")}
-	traits, features, _ := pr.PDF(context.Background(), path, nil)
+	traits, features, facts := pr.PDF(context.Background(), path, nil)
+	if facts.DPIs == nil || facts.LargeImagePPI == nil {
+		t.Errorf("facts = %#v, want empty lists, not nil", facts)
+	}
 	if len(traits) != 0 {
 		t.Errorf("traits = %v, want none for a PDF with no pages", traits.Sorted(""))
 	}
@@ -114,7 +137,7 @@ func TestAudioVideoPlacesStreamsAndDuration(t *testing.T) {
 	for _, c := range []struct {
 		name, probe     string
 		traits, feature []string
-		facts           string
+		facts           media.AudioVideoFacts
 	}{
 		{
 			"narrowband audio with cover art",
@@ -123,7 +146,7 @@ func TestAudioVideoPlacesStreamsAndDuration(t *testing.T) {
 			  "format": {"duration": "1800.04"}}`,
 			[]string{"trait:audio.multi-window", "trait:audio.narrowband", "trait:scale.long-media"},
 			[]string{"feature:attached-picture"},
-			`"duration": 1800.0`,
+			media.AudioVideoFacts{Duration: 1800, AudioStreams: 1, AttachedPictures: 1, SampleRates: []int{8000}, Channels: []int{1}},
 		},
 		{
 			"silent video with two streams",
@@ -131,13 +154,13 @@ func TestAudioVideoPlacesStreamsAndDuration(t *testing.T) {
 			  "format": {"duration": "12.5"}}`,
 			[]string{"trait:audio.none"},
 			[]string{"feature:multiple-streams"},
-			`"subtitle_streams": 1`,
+			media.AudioVideoFacts{Duration: 12.5, VideoStreams: 2, SampleRates: []int{}, Channels: []int{}, SubtitleStreams: 1},
 		},
 		{
 			"nothing ffprobe could read",
 			``,
 			nil, nil,
-			`"sample_rates": [],`,
+			media.AudioVideoFacts{SampleRates: []int{}, Channels: []int{}},
 		},
 	} {
 		traits, features, facts := media.Prober{FFprobe: tool(c.probe)}.AudioVideo(context.Background(), "/a")
@@ -147,8 +170,8 @@ func TestAudioVideoPlacesStreamsAndDuration(t *testing.T) {
 		if got := features.Sorted(""); !slices.Equal(got, c.feature) {
 			t.Errorf("%s: features = %v, want %v", c.name, got, c.feature)
 		}
-		if got := string(jsonvalue.Marshal(facts)); !strings.Contains(got, c.facts) {
-			t.Errorf("%s: facts = %s, want %s in them", c.name, got, c.facts)
+		if !reflect.DeepEqual(facts, c.facts) {
+			t.Errorf("%s: facts = %#v, want %#v", c.name, facts, c.facts)
 		}
 	}
 }
@@ -157,20 +180,24 @@ func TestImagePlacesFramesAlphaAndOrientation(t *testing.T) {
 	for _, c := range []struct {
 		name, identify string
 		want           []string
+		facts          media.ImageFacts
 	}{
 		{"animated GIF with alpha", "GIF|10|20|Blend|Undefined|False\nGIF|10|20|Blend|Undefined|False\n",
-			[]string{"feature:animation", "feature:transparency"}},
+			[]string{"feature:animation", "feature:transparency"},
+			media.ImageFacts{Frames: 2, Format: "GIF", Width: 10, Height: 20, Alpha: "Blend", Orientation: "Undefined", Opaque: "False"}},
 		{"two-page rotated TIFF", "TIFF|10|20|Undefined|RightTop|True\nTIFF|10|20|Undefined|RightTop|True\n",
-			[]string{"feature:multi-page-image", "feature:orientation"}},
-		{"opaque PNG", "PNG|10|20|True|TopLeft|True\n", []string{}},
-		{"no frames", "", []string{}},
+			[]string{"feature:multi-page-image", "feature:orientation"},
+			media.ImageFacts{Frames: 2, Format: "TIFF", Width: 10, Height: 20, Alpha: "Undefined", Orientation: "RightTop", Opaque: "True"}},
+		{"opaque PNG", "PNG|10|20|True|TopLeft|True\n", []string{},
+			media.ImageFacts{Frames: 1, Format: "PNG", Width: 10, Height: 20, Alpha: "True", Orientation: "TopLeft", Opaque: "True"}},
+		{"no frames", "", []string{}, media.ImageFacts{}},
 	} {
 		_, features, facts := media.Prober{Magick: tool(c.identify)}.Image(context.Background(), "/a")
 		if got := features.Sorted(""); !slices.Equal(got, c.want) {
 			t.Errorf("%s: features = %v, want %v", c.name, got, c.want)
 		}
-		if !facts.Has("frames") {
-			t.Errorf("%s: facts have no frames: %s", c.name, jsonvalue.Marshal(facts))
+		if facts != c.facts {
+			t.Errorf("%s: facts = %+v, want %+v", c.name, facts, c.facts)
 		}
 	}
 }

@@ -1,7 +1,6 @@
 package media
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"os"
@@ -11,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/idset"
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 	"github.com/standards-lab/docs-corpus/tools/coverage/run"
 	"github.com/standards-lab/docs-corpus/tools/coverage/text"
 )
@@ -26,6 +24,10 @@ var (
 	portfolio      = regexp.MustCompile(`/Collection[\t\n\v\f\r ]*(<<|\d+ 0 R)`)
 )
 
+// RequestDPI is the DPI docproc's run requests a PDF's pages at, cmd/docproc's document request;
+// a page rendered below it passed the request's MaxPixels.
+const RequestDPI = 150
+
 func isDigits(s string) bool {
 	if s == "" {
 		return false
@@ -38,15 +40,35 @@ func isDigits(s string) bool {
 	return true
 }
 
+// PDFFacts is what PDF found in a PDF.
+type PDFFacts struct {
+	// Pages is the page count pdfinfo prints.
+	Pages int
+	// RenderedPages is the number of page images the run rendered.
+	RenderedPages int
+	// TextPages is the number of pages the run extracted text from.
+	TextPages int
+	// DPIs are the DPIs the run's page images name in their meta, sorted, never nil.
+	DPIs []string
+	// PagesWithLargeImages is the number of pages with an image at least 500 pixels wide.
+	PagesWithLargeImages int
+	// LargeImagePPI are the lowest three resolutions of those images, ascending, never nil.
+	LargeImagePPI []int
+	// Fonts is the number of fonts pdffonts lists.
+	Fonts int
+	// FontsWithoutUnicode is the number of those fonts with no Unicode map.
+	FontsWithoutUnicode int
+	// InvisibleTextRuns is the number of text runs in render mode 3, invisible.
+	InvisibleTextRuns int
+}
+
 // PDF places the traits and features of the PDF at path, from pdfinfo, pdfimages, pdffonts, and
-// qpdf, and from outputs, the output events docproc's run recorded for it. It returns its facts:
-// pages, rendered and text pages, DPIs, large images, fonts, and invisible text runs.
-func (pr Prober) PDF(ctx context.Context, path string, outputs []run.Event) (traits, features idset.Set, facts *jsonvalue.Object) {
+// qpdf, and from outputs, the output events docproc's run recorded for it. It returns its facts.
+func (pr Prober) PDF(ctx context.Context, path string, outputs []run.Event) (traits, features idset.Set, facts PDFFacts) {
 	need("PDF", "PDFInfo", pr.PDFInfo)
 	need("PDF", "PDFImages", pr.PDFImages)
 	need("PDF", "PDFFonts", pr.PDFFonts)
 	need("PDF", "QPDF", pr.QPDF)
-	facts = jsonvalue.NewObject()
 	traits, features = idset.Set{}, idset.Set{}
 	info := string(pr.PDFInfo.Output(ctx, path))
 	pages := 0
@@ -56,7 +78,7 @@ func (pr Prober) PDF(ctx context.Context, path string, outputs []run.Event) (tra
 	textPages := idset.Set{}
 	imagePages := 0
 	dpis := idset.Set{}
-	var dpiValues []any
+	dpiValues := []string{}
 	for _, e := range outputs {
 		if e.Part.Depth != nil && *e.Part.Depth != 0 {
 			continue
@@ -70,8 +92,9 @@ func (pr Prober) PDF(ctx context.Context, path string, outputs []run.Event) (tra
 			raw := out.MetaRaw("dpi")
 			if !dpis[raw] {
 				dpis.Add(raw)
-				if v, err := jsonvalue.Parse([]byte(raw)); err == nil && jsonvalue.Truthy(v) {
-					dpiValues = append(dpiValues, v)
+				var dpi string
+				if json.Unmarshal([]byte(raw), &dpi) == nil && dpi != "" {
+					dpiValues = append(dpiValues, dpi)
 				}
 			}
 		}
@@ -80,11 +103,11 @@ func (pr Prober) PDF(ctx context.Context, path string, outputs []run.Event) (tra
 	if rendered == 0 {
 		rendered = pages
 	}
-	slices.SortFunc(dpiValues, jsonvalue.Compare)
-	facts.Set("pages", pages)
-	facts.Set("rendered_pages", imagePages)
-	facts.Set("text_pages", len(textPages))
-	facts.Set("dpis", dpiValues)
+	slices.Sort(dpiValues)
+	facts.Pages = pages
+	facts.RenderedPages = imagePages
+	facts.TextPages = len(textPages)
+	facts.DPIs = dpiValues
 	if rendered > 0 {
 		if len(textPages) == 0 {
 			traits.Add("trait:text-layer.none")
@@ -92,7 +115,10 @@ func (pr Prober) PDF(ctx context.Context, path string, outputs []run.Event) (tra
 			traits.Add("trait:text-layer.partial")
 		}
 	}
-	if len(dpis) > 1 {
+	if slices.ContainsFunc(dpiValues, func(dpi string) bool {
+		n, err := strconv.ParseFloat(dpi, 64)
+		return err == nil && n < RequestDPI
+	}) {
 		traits.Add("trait:scale.oversized-page")
 	}
 	if max(pages, rendered) >= 100 {
@@ -121,8 +147,8 @@ func (pr Prober) PDF(ctx context.Context, path string, outputs []run.Event) (tra
 			}
 		}
 	}
-	facts.Set("pages_with_large_images", len(largeImagePages))
-	var ppis []int
+	facts.PagesWithLargeImages = len(largeImagePages)
+	ppis := []int{}
 	for p := range ppiSet {
 		ppis = append(ppis, p)
 	}
@@ -130,27 +156,27 @@ func (pr Prober) PDF(ctx context.Context, path string, outputs []run.Event) (tra
 	if len(ppis) > 3 {
 		ppis = ppis[:3]
 	}
-	facts.Set("large_image_ppi", ppis)
+	facts.LargeImagePPI = ppis
 	fonts := text.SplitLines(string(pr.PDFFonts.Output(ctx, path)))
 	if len(fonts) > 2 {
 		fonts = fonts[2:]
 	} else {
 		fonts = nil
 	}
-	facts.Set("fonts", len(fonts))
+	facts.Fonts = len(fonts)
 	withoutUnicode := 0
 	for _, l := range fonts {
 		if fontNoUnicode.MatchString(l) {
 			withoutUnicode++
 		}
 	}
-	facts.Set("fonts_without_unicode", withoutUnicode)
+	facts.FontsWithoutUnicode = withoutUnicode
 	raw := pr.QPDF.Output(ctx, path)
 	if len(raw) == 0 {
 		raw, _ = os.ReadFile(path)
 	}
 	invisible := len(invisibleText.FindAllIndex(raw, -1))
-	facts.Set("invisible_text_runs", invisible)
+	facts.InvisibleTextRuns = invisible
 	if len(textPages) > 0 && len(largeImagePages) > 0 && invisible > 0 && len(largeImagePages) >= max(1, len(textPages)/2) {
 		traits.Add("trait:text-layer.ocr")
 	}
@@ -170,16 +196,36 @@ type ffStream struct {
 	CodecType   string          `json:"codec_type"`
 	SampleRate  json.RawMessage `json:"sample_rate"`
 	Channels    json.RawMessage `json:"channels"`
-	Disposition map[string]any  `json:"disposition"`
+	Disposition struct {
+		AttachedPic int `json:"attached_pic"`
+	} `json:"disposition"`
 }
 
 func (s ffStream) attachedPicture() bool {
-	return jsonvalue.Truthy(s.Disposition["attached_pic"])
+	return s.Disposition.AttachedPic != 0
+}
+
+// AudioVideoFacts is what AudioVideo found in an audio or video file.
+type AudioVideoFacts struct {
+	// Duration is its duration in seconds, rounded to a tenth.
+	Duration float64
+	// AudioStreams is the number of its audio streams.
+	AudioStreams int
+	// VideoStreams is the number of its video streams that are not attached pictures.
+	VideoStreams int
+	// AttachedPictures is the number of its attached pictures, such as cover art.
+	AttachedPictures int
+	// SampleRates are its audio streams' sample rates, ascending, never nil.
+	SampleRates []int
+	// Channels are its audio streams' nonzero channel counts, ascending, never nil.
+	Channels []int
+	// SubtitleStreams is the number of its subtitle streams.
+	SubtitleStreams int
 }
 
 // AudioVideo places the traits and features of the audio or video file at path, from ffprobe's
-// streams and format, and returns its facts: duration, streams, sample rates, and channels.
-func (pr Prober) AudioVideo(ctx context.Context, path string) (traits, features idset.Set, facts *jsonvalue.Object) {
+// streams and format, and returns its facts.
+func (pr Prober) AudioVideo(ctx context.Context, path string) (traits, features idset.Set, facts AudioVideoFacts) {
 	need("AudioVideo", "FFprobe", pr.FFprobe)
 	data := pr.FFprobe.Output(ctx, path)
 	if len(data) == 0 {
@@ -188,12 +234,10 @@ func (pr Prober) AudioVideo(ctx context.Context, path string) (traits, features 
 	var probe struct {
 		Streams []ffStream `json:"streams"`
 		Format  struct {
-			Duration any `json:"duration"`
+			Duration json.RawMessage `json:"duration"`
 		} `json:"format"`
 	}
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.UseNumber()
-	if err := dec.Decode(&probe); err != nil {
+	if err := json.Unmarshal(data, &probe); err != nil {
 		probe.Streams = nil
 		probe.Format.Duration = nil
 	}
@@ -214,19 +258,17 @@ func (pr Prober) AudioVideo(ctx context.Context, path string) (traits, features 
 		}
 	}
 	duration := 0.0
-	if jsonvalue.Truthy(probe.Format.Duration) {
-		switch d := probe.Format.Duration.(type) {
-		case string:
-			duration, _ = strconv.ParseFloat(strings.TrimSpace(d), 64)
-		case json.Number:
-			duration, _ = d.Float64()
-		}
+	var durationText string
+	if json.Unmarshal(probe.Format.Duration, &durationText) == nil {
+		duration, _ = strconv.ParseFloat(strings.TrimSpace(durationText), 64)
+	} else {
+		_ = json.Unmarshal(probe.Format.Duration, &duration)
 	}
 	rateSet := map[int]bool{}
 	for _, s := range audio {
 		rateSet[jsonInt(s.SampleRate)] = true
 	}
-	var rates []int
+	rates := []int{}
 	for r := range rateSet {
 		rates = append(rates, r)
 	}
@@ -243,14 +285,15 @@ func (pr Prober) AudioVideo(ctx context.Context, path string) (traits, features 
 	}
 	slices.Sort(channels)
 	rounded, _ := strconv.ParseFloat(strconv.FormatFloat(duration, 'f', 1, 64), 64)
-	facts = jsonvalue.NewObject()
-	facts.Set("duration", jsonvalue.Float(rounded))
-	facts.Set("audio_streams", len(audio))
-	facts.Set("video_streams", len(video))
-	facts.Set("attached_pictures", len(pics))
-	facts.Set("sample_rates", rates)
-	facts.Set("channels", channels)
-	facts.Set("subtitle_streams", subtitles)
+	facts = AudioVideoFacts{
+		Duration:         rounded,
+		AudioStreams:     len(audio),
+		VideoStreams:     len(video),
+		AttachedPictures: len(pics),
+		SampleRates:      rates,
+		Channels:         channels,
+		SubtitleStreams:  subtitles,
+	}
 	traits, features = idset.Set{}, idset.Set{}
 	if len(video) > 0 && len(audio) == 0 {
 		traits.Add("trait:audio.none")
@@ -288,9 +331,28 @@ func jsonInt(raw json.RawMessage) int {
 	return 0
 }
 
+// ImageFacts is what Image found in an image: its frames, and its first frame's properties as
+// magick identify prints them, all zero when it has no frame.
+type ImageFacts struct {
+	// Frames is the number of its frames.
+	Frames int
+	// Format is the first frame's format, such as PNG.
+	Format string
+	// Width is the first frame's width in pixels.
+	Width int
+	// Height is the first frame's height in pixels.
+	Height int
+	// Alpha is the first frame's alpha channel, such as Blend or Undefined.
+	Alpha string
+	// Orientation is the first frame's orientation, such as TopLeft.
+	Orientation string
+	// Opaque is whether the first frame is opaque, True or False.
+	Opaque string
+}
+
 // Image places the features of the image at path, from magick identify's frames, and returns its
-// facts: frames, and the first frame's format, size, alpha, orientation, and opacity.
-func (pr Prober) Image(ctx context.Context, path string) (traits, features idset.Set, facts *jsonvalue.Object) {
+// facts.
+func (pr Prober) Image(ctx context.Context, path string) (traits, features idset.Set, facts ImageFacts) {
 	need("Image", "Magick", pr.Magick)
 	out := string(pr.Magick.Output(ctx, path))
 	var frames [][]string
@@ -299,8 +361,7 @@ func (pr Prober) Image(ctx context.Context, path string) (traits, features idset
 			frames = append(frames, strings.Split(l, "|"))
 		}
 	}
-	facts = jsonvalue.NewObject()
-	facts.Set("frames", len(frames))
+	facts.Frames = len(frames)
 	traits, features = idset.Set{}, idset.Set{}
 	if len(frames) == 0 {
 		return traits, features, facts
@@ -309,12 +370,8 @@ func (pr Prober) Image(ctx context.Context, path string) (traits, features idset
 	format, alpha, orient, opaque := f[0], f[3], f[4], f[5]
 	width, _ := strconv.Atoi(strings.TrimSpace(f[1]))
 	height, _ := strconv.Atoi(strings.TrimSpace(f[2]))
-	facts.Set("format", format)
-	facts.Set("width", width)
-	facts.Set("height", height)
-	facts.Set("alpha", alpha)
-	facts.Set("orientation", orient)
-	facts.Set("opaque", opaque)
+	facts.Format, facts.Width, facts.Height = format, width, height
+	facts.Alpha, facts.Orientation, facts.Opaque = alpha, orient, opaque
 	if len(frames) > 1 && format == "TIFF" {
 		features.Add("feature:multi-page-image")
 	}

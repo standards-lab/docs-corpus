@@ -1,2 +1,13 @@
 .claude/plans/
 .claude/briefs/
+/archive/
+/audio/
+/email/
+/exec/
+/image/
+/office/
+/onenote/
+/pdf/
+/text/
+/video/
+/.fetch.*/

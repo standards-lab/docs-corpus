@@ -2,13 +2,16 @@ package run
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 	"github.com/standards-lab/docs-corpus/tools/coverage/text"
 )
 
@@ -29,29 +32,42 @@ func (o *Output) MetaRaw(key string) string {
 	return "null"
 }
 
-func (o *Output) metaString(key string) string {
-	var s string
-	if raw, ok := o.Meta[key]; ok {
-		_ = json.Unmarshal(raw, &s)
-	}
-	return s
-}
-
-// Event is one line of a run's record.jsonl.
+// Event is one line of a run's record.jsonl. For a part the run replayed from its run
+// directory's index, whose outcome is seen, Load sets Outcome to Recorded, the outcome the part
+// first had.
 type Event struct {
-	Event   string          `json:"event"`
-	Input   string          `json:"input"`
-	Outcome json.RawMessage `json:"outcome"`
-	Part    struct {
-		Depth *float64 `json:"depth"`
-	} `json:"part"`
-	Output *Output `json:"output"`
+	Event    string          `json:"event"`
+	Input    string          `json:"input"`
+	Outcome  json.RawMessage `json:"outcome"`
+	Recorded json.RawMessage `json:"recorded"`
+	Part     Part            `json:"part"`
+	Output   *Output         `json:"output"`
 }
 
-// Row is one line of a record output: the output's name and the line's object.
+// Part is the part of an input an event is about: its depth, the input at 0, its content type,
+// and the flags docproc's checks raised on it.
+type Part struct {
+	Depth       *float64    `json:"depth"`
+	ContentType ContentType `json:"content_type"`
+	Flags       []Flag      `json:"flags"`
+}
+
+// ContentType is a part's kind and the route docproc dispatched it on; Route is nil when the
+// record has none.
+type ContentType struct {
+	Kind  string  `json:"kind"`
+	Route *string `json:"route"`
+}
+
+// Flag is one flag a docproc check raised on a part.
+type Flag struct {
+	Check string `json:"check"`
+}
+
+// Row is one line of a record output: the output's name and the line's JSON object.
 type Row struct {
 	Name   string
-	Fields *jsonvalue.Object
+	Fields json.RawMessage
 }
 
 // Record is a docproc run's events, by input path relative to the run's input, and the content
@@ -61,10 +77,19 @@ type Record struct {
 	events  map[string][]Event
 }
 
-// Load reads the run id under runs: its manifest's first input, the root the events' input paths
-// are taken relative to, and its record.jsonl. The content store is runs' sibling, content.
+const schema = "2"
+
+// Load reads the run id under runs: its manifest's inputs, whose deepest common directory is the
+// root the events' input paths are taken relative to, the one input itself when there is one, and
+// its record.jsonl, a replayed part's event taking its recorded outcome. The run directory is
+// runs' parent: Load refuses one whose rundir.json is missing or names a schema other than "2",
+// and its content store is runs' sibling, content.
 func Load(runs, id string) (_ *Record, err error) {
-	r := &Record{content: filepath.Join(filepath.Dir(runs), "content"), events: map[string][]Event{}}
+	dir := filepath.Dir(runs)
+	if err := checkSchema(dir); err != nil {
+		return nil, err
+	}
+	r := &Record{content: filepath.Join(dir, "content"), events: map[string][]Event{}}
 	data, err := os.ReadFile(filepath.Join(runs, id, "manifest.json"))
 	if err != nil {
 		return nil, err
@@ -78,7 +103,7 @@ func Load(runs, id string) (_ *Record, err error) {
 	if len(manifest.Inputs) == 0 {
 		return nil, errors.New("run: " + id + ": its manifest names no input")
 	}
-	root := manifest.Inputs[0] + "/"
+	root := strings.TrimSuffix(commonRoot(manifest.Inputs), "/") + "/"
 	f, err := os.Open(filepath.Join(runs, id, "record.jsonl"))
 	if err != nil {
 		return nil, err
@@ -91,11 +116,46 @@ func Load(runs, id string) (_ *Record, err error) {
 		if err := json.Unmarshal(scanner.Bytes(), &e); err != nil {
 			return nil, err
 		}
+		if len(e.Recorded) > 0 {
+			e.Outcome = e.Recorded
+		}
 		if rel, ok := strings.CutPrefix(e.Input, root); ok {
 			r.events[rel] = append(r.events[rel], e)
 		}
 	}
 	return r, scanner.Err()
+}
+
+func commonRoot(inputs []string) string {
+	root := inputs[0]
+	for _, in := range inputs[1:] {
+		for root != in && !strings.HasPrefix(in, strings.TrimSuffix(root, "/")+"/") && root != filepath.Dir(root) {
+			root = filepath.Dir(root)
+		}
+	}
+	return root
+}
+
+func checkSchema(dir string) error {
+	path := filepath.Join(dir, "rundir.json")
+	data, err := os.ReadFile(path)
+	if errors.Is(err, fs.ErrNotExist) {
+		return fmt.Errorf("run: %s holds no rundir.json, so it is no schema %q run directory; run docproc v0.5.0 or later again to write one: %w",
+			dir, schema, err)
+	}
+	if err != nil {
+		return err
+	}
+	var f struct {
+		Schema string `json:"schema"`
+	}
+	if err := json.Unmarshal(data, &f); err != nil {
+		return fmt.Errorf("run: %s: %w", path, err)
+	}
+	if f.Schema != schema {
+		return fmt.Errorf("run: %s is schema %q; run reads schema %q", dir, f.Schema, schema)
+	}
+	return nil
 }
 
 // Events returns the events of the input at path, in the record's order.
@@ -123,8 +183,9 @@ func (r *Record) Outputs(path string) []Event {
 }
 
 // Text returns the text the run extracted from the input at path, joined by newlines: each text
-// and markdown output decoded by its meta encoding, UTF-8 when it names none, and the markdown,
-// subject, text, and title strings of each record output's lines.
+// and markdown output read as UTF-8, as docproc writes them whatever their encoding and
+// encoding_by meta say of the source, and the markdown, subject, text, and title strings of each
+// record output's lines.
 func (r *Record) Text(path string) string {
 	var parts []string
 	for _, e := range r.Outputs(path) {
@@ -132,16 +193,11 @@ func (r *Record) Text(path string) string {
 		if out.Kind != "text" && out.Kind != "markdown" && out.Kind != "record" {
 			continue
 		}
-		data := r.blob(out.Sha256)
-		enc := out.metaString("encoding")
-		if enc == "" {
-			enc = "utf-8"
-		}
-		body := text.DecodeOrUTF8(data, enc)
+		body := string(r.blob(out.Sha256))
 		if out.Kind == "record" {
 			for _, line := range text.SplitLines(body) {
-				if v, err := jsonvalue.Parse([]byte(line)); err == nil {
-					parts = append(parts, stringsUnder(v, recordTextKeys)...)
+				if found, err := stringsUnder([]byte(line), recordTextKeys); err == nil {
+					parts = append(parts, found...)
 				}
 			}
 		} else {
@@ -163,33 +219,53 @@ func (r *Record) Rows(path, media string) []Row {
 			continue
 		}
 		for _, line := range text.SplitLines(string(r.blob(out.Sha256))) {
-			v, err := jsonvalue.Parse([]byte(line))
-			if err != nil {
-				continue
-			}
-			if o, ok := v.(*jsonvalue.Object); ok {
-				rows = append(rows, Row{out.Name, o})
+			fields := bytes.TrimSpace([]byte(line))
+			if bytes.HasPrefix(fields, []byte("{")) && json.Valid(fields) {
+				rows = append(rows, Row{out.Name, fields})
 			}
 		}
 	}
 	return rows
 }
 
-func stringsUnder(v any, keys map[string]bool) []string {
+func stringsUnder(line []byte, keys map[string]bool) ([]string, error) {
+	dec := json.NewDecoder(bytes.NewReader(line))
 	var out []string
-	switch t := v.(type) {
-	case *jsonvalue.Object:
-		for _, k := range t.Keys() {
-			if s, ok := t.Get(k).(string); ok && keys[k] {
-				out = append(out, s)
-			} else {
-				out = append(out, stringsUnder(t.Get(k), keys)...)
+	if err := walk(dec, "", keys, &out); err != nil {
+		return nil, err
+	}
+	if _, err := dec.Token(); !errors.Is(err, io.EOF) {
+		return nil, errors.New("run: data after a record line's value")
+	}
+	return out, nil
+}
+
+func walk(dec *json.Decoder, key string, keys map[string]bool, out *[]string) error {
+	tok, err := dec.Token()
+	if err != nil {
+		return err
+	}
+	switch t := tok.(type) {
+	case json.Delim:
+		for dec.More() {
+			child := ""
+			if t == '{' {
+				k, err := dec.Token()
+				if err != nil {
+					return err
+				}
+				child, _ = k.(string)
+			}
+			if err := walk(dec, child, keys, out); err != nil {
+				return err
 			}
 		}
-	case []any:
-		for _, item := range t {
-			out = append(out, stringsUnder(item, keys)...)
+		_, err := dec.Token()
+		return err
+	case string:
+		if keys[key] {
+			*out = append(*out, t)
 		}
 	}
-	return out
+	return nil
 }

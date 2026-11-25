@@ -1,12 +1,12 @@
 package office
 
 import (
+	"encoding/json"
 	"regexp"
 	"strings"
 	"unicode/utf8"
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/idset"
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 	"github.com/standards-lab/docs-corpus/tools/coverage/run"
 	"github.com/standards-lab/docs-corpus/tools/coverage/text"
 )
@@ -37,31 +37,58 @@ func hasNoteTag(md string) bool {
 	return noteTag.MatchString(md)
 }
 
+type onenoteRow struct {
+	Path            json.RawMessage   `json:"path"`
+	Markdown        string            `json:"markdown"`
+	InkAlternatives []json.RawMessage `json:"ink_alternatives"`
+	Revisions       []json.RawMessage `json:"revisions"`
+	Media           []struct {
+		Kind string `json:"kind"`
+		OCR  string `json:"ocr"`
+		Text string `json:"text"`
+	} `json:"media"`
+}
+
+func inGroup(path json.RawMessage) bool {
+	var list []json.RawMessage
+	if json.Unmarshal(path, &list) == nil {
+		return len(list) > 1
+	}
+	var name string
+	return json.Unmarshal(path, &name) == nil && utf8.RuneCountInString(name) > 1
+}
+
+// OneNoteFacts is what OneNote found in the records.
+type OneNoteFacts struct {
+	// Sections is the number of section records.
+	Sections int
+	// Pages is the number of page records.
+	Pages int
+}
+
 // OneNote places the traits and features of the OneNote section or notebook docproc's run
 // recorded, from its record rows and the run's outcomes for it, each as its JSON text, such as
-// "encrypted" quoted. It returns its facts: the sections and pages recorded.
-func OneNote(rows []run.Row, outcomes idset.Set) (traits, features idset.Set, facts *jsonvalue.Object) {
+// "encrypted" quoted. It returns its facts. A row field of another JSON type than OneNote's
+// records give it reads as absent.
+func OneNote(rows []run.Row, outcomes idset.Set) (traits, features idset.Set, facts OneNoteFacts) {
 	traits, features = idset.Set{}, idset.Set{}
-	facts = jsonvalue.NewObject()
-	sections, pages := 0, 0
 	if outcomes[`"encrypted"`] {
 		features.Add("feature:protected-section")
 	}
 	for _, rec := range rows {
-		r := rec.Fields
+		var r onenoteRow
+		_ = json.Unmarshal(rec.Fields, &r)
 		if strings.HasPrefix(rec.Name, "section") {
-			sections++
-			facts.Set("sections", sections)
-			if path := r.Get("path"); len(asList(path)) > 1 || utf8.RuneCountInString(jsonvalue.String(path)) > 1 {
+			facts.Sections++
+			if inGroup(r.Path) {
 				features.Add("feature:section-groups")
 			}
 		}
 		if !strings.HasPrefix(rec.Name, "page") {
 			continue
 		}
-		pages++
-		facts.Set("pages", pages)
-		md := r.Str("markdown")
+		facts.Pages++
+		md := r.Markdown
 		if hasTableRow(md) {
 			features.Add("feature:tables")
 		}
@@ -74,19 +101,14 @@ func OneNote(rows []run.Row, outcomes idset.Set) (traits, features idset.Set, fa
 		if equation.MatchString(md) {
 			features.Add("feature:equations")
 		}
-		if jsonvalue.Truthy(r.Get("ink_alternatives")) {
+		if len(r.InkAlternatives) > 0 {
 			traits.Add("trait:scan.handwriting")
 		}
-		if jsonvalue.Truthy(r.Get("revisions")) {
+		if len(r.Revisions) > 0 {
 			features.Add("feature:page-revisions")
 		}
-		media, _ := r.Get("media").([]any)
-		for _, item := range media {
-			m, ok := item.(*jsonvalue.Object)
-			if !ok {
-				continue
-			}
-			switch m.Str("kind") {
+		for _, m := range r.Media {
+			switch m.Kind {
 			case "image":
 				features.Add("feature:pictures")
 			case "ink":
@@ -94,15 +116,10 @@ func OneNote(rows []run.Row, outcomes idset.Set) (traits, features idset.Set, fa
 			case "embedded_file":
 				features.Add("feature:embedded-objects")
 			}
-			if jsonvalue.Truthy(m.Get("ocr")) || jsonvalue.Truthy(m.Get("text")) {
+			if m.OCR != "" || m.Text != "" {
 				features.Add("feature:image-ocr")
 			}
 		}
 	}
 	return traits, features, facts
-}
-
-func asList(v any) []any {
-	list, _ := v.([]any)
-	return list
 }

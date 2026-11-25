@@ -58,18 +58,29 @@ func (s Sample) Probed() []string {
 	return out
 }
 
-// Coverage returns the bytes of the repository's docs/coverage.json, skipping t when the file is
-// absent, as it is outside the module.
-func Coverage(t testing.TB) []byte {
+// Root returns the repository's root, the directory docs/coverage.json is in, skipping t when
+// that file is absent, as it is outside the module.
+func Root(t testing.TB) string {
 	t.Helper()
 	_, file, _, ok := runtime.Caller(0)
 	if !ok {
 		t.Skip("docstest: no source path to find docs/coverage.json from")
 	}
-	path := filepath.Join(filepath.Dir(file), "..", "..", "..", "..", "docs", "coverage.json")
+	root := filepath.Join(filepath.Dir(file), "..", "..", "..", "..")
+	if _, err := os.Stat(filepath.Join(root, "docs", "coverage.json")); err != nil {
+		t.Skipf("%s is absent: %v", filepath.Join(root, "docs", "coverage.json"), err)
+	}
+	return root
+}
+
+// Coverage returns the bytes of the repository's docs/coverage.json, skipping t when the file is
+// absent, as Root does.
+func Coverage(t testing.TB) []byte {
+	t.Helper()
+	path := filepath.Join(Root(t), "docs", "coverage.json")
 	data, err := os.ReadFile(path)
 	if err != nil {
-		t.Skipf("%s is absent: %v", path, err)
+		t.Fatalf("%s: %v", path, err)
 	}
 	return data
 }

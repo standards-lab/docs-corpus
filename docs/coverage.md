@@ -75,12 +75,15 @@ a trim without `~/docs`: `truth` (it has truth when the list isn't empty), `lice
 `sensitive: true` for a file the manifest marks `sensitive` or `local_only`.
 
 Only a redistributable sample that isn't sensitive is adopted. Any other sample is trimmed when an
-adopted sample covers all of its scenarios, and replaced otherwise.
+adopted sample covers all of its scenarios, and replaced otherwise. The gap candidates in the
+corpus count as adopted samples for trims, so a trim can name a candidate, as
+[Candidates in the corpus](#candidates-in-the-corpus) states.
 
 The [`dispose`](../tools/coverage/cmd/dispose/doc.go) command of the Go module `tools/coverage`
-derives every disposition by these rules, and the covers of each gap a replace names, as
-[Gaps](#gaps) states. To rerun it and compare its output with the data, run this from the
-repository root:
+derives every disposition by these rules, the covers of each gap a replace names, as
+[Gaps](#gaps) states, and each candidate's place in the corpus, as
+[Candidates in the corpus](#candidates-in-the-corpus) states. To rerun it and compare its output
+with the data, run this from the repository root:
 
 ```sh
 mise run dispose | cmp - docs/coverage.json
@@ -147,7 +150,8 @@ from the file or from what docproc's kept run recorded for it:
 
 - PDF text layers from the run's page outputs, OCR layers from invisible text over page images,
   page counts, forms, signature fields, and portfolios, read with pdfinfo, pdfimages, pdffonts, and
-  qpdf;
+  qpdf, and an oversized page from a page image the run rendered below the 150 dpi that
+  cmd/docproc requests;
 - audio and video streams, duration, and sample rate, read with ffprobe;
 - image frames, alpha, and stored orientation, read with ImageMagick's identify;
 - OOXML structures read from the package's parts, with legacy and RTF documents converted to OOXML
@@ -180,7 +184,47 @@ probe findings.
 `soffice`, the one unpinned host requirement: it is in neither mise's registry nor conda-forge, so
 `place-traits` and ImageMagick's EMF and WMF delegate use the host's. `place-traits` stops at
 startup, naming the tool and the fix, when a probe is not on `PATH` or is older than the version
-its [adapter](../tools/coverage/probe/doc.go) in the `probe` package accepts.
+its [adapter](../tools/coverage/probe/doc.go) in the `probe` package accepts. Each adapter accepts
+nothing older than the version `mise.toml` pins, so on a host whose `PATH` puts older system tools
+ahead of mise's installs, run `place-traits` with mise's tool paths first on `PATH`.
+
+## Corpus placement
+
+The manifest's covers are placed from a docproc run over the corpus itself: the format
+directories of a working copy whose sample files are in place. `.corpus_placement` records that
+run's ID, the docproc release that made it, the `docproc_command` that ran it from the repository
+root, and the `command` that places the covers.
+
+`mise run place-traits --corpus` places every sample `MANIFEST.json` lists, reading its file from
+the working copy and the run from `${RUNS:-$HOME/runs/docs-corpus/curate/runs}`. For each sample,
+it takes the library IDs from that run by the rules of [Library placement](#library-placement),
+adds the trait and feature IDs [`place-traits`](#trait-and-feature-placement) probes and the
+`judged` IDs of the sample's entry in `.samples`, and prints the sample's `covers`. A candidate
+has no entry in `.samples`, so its judged IDs, each with its evidence, are in
+[`judged.json`](judged.json), keyed by its path. The command's output is committed as
+[`corpus-placement.json`](corpus-placement.json), and the manifest takes each candidate's covers
+from it.
+
+To make the run, put docproc's tools on `PATH`, as docproc's README states for its release:
+`docproc-ooxml`, `docproc-mail`, and `docproc-onenote` from their release tags, the real `7zz`
+binary rather than mise's shim, and docker for `soffice`'s pinned image. Then install
+`cmd/docproc` v0.2.3, the command of docproc v0.5.0, outside the repository, and run it from the
+repository root with the run directory outside it:
+
+```sh
+GOBIN=<dir> go install github.com/standards-lab/docproc/cmd/docproc@v0.2.3
+<dir>/docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/curate
+```
+
+Record the run's ID, from the summary's last line, in `.corpus_placement`. A run into the same
+run directory replays the parts its index already holds, with outcome `seen` and the first
+outcome under `recorded`; the placement reads the recorded one. To place the covers and compare
+them with the committed placement and the manifest, run this from the repository root:
+
+```sh
+mise run place-traits --corpus | cmp - docs/corpus-placement.json
+cmp docs/corpus-placement.json <(jq '[.files[] | select(.role == "sample") | {path, covers}] | sort_by(.path)' MANIFEST.json)
+```
 
 ## Gaps
 
@@ -190,6 +234,10 @@ a `candidate`. A replaced sample names the gap whose covers contain its own. Rep
 need the same covers, or covers inside another replaced sample's, share one gap; where several
 replaced samples' covers contain a sample's, it shares the gap of the one the tie-breaks prefer.
 A gap for scenarios no sample exercised groups the IDs one candidate file can exercise together.
+A gap also holds the covers of an adopted sample that breaks [`STANDARDS.md`](../STANDARDS.md),
+such as one constructed by hand, so that its candidate takes them over. For example, image-8's
+gap holds the covers of the hand-written `image/vector/script-bearing.svg`, and once image-8's
+sourced SVG is in the corpus, `dispose` trims the hand-written file.
 
 The data stores no list of samples per scenario: it follows from the placements. To print each
 scenario with the adopted samples that exercise it, or with the gaps that cover it, run:
@@ -214,29 +262,126 @@ Each gap names one candidate, its `candidate` object, of one of three kinds, its
   `license_status: "verified"`.
 - **generated**: a file a recorded command makes. It records the exact `command`, run from the
   repository root, its `inputs`, the `generator` that runs, with its version, and the
-  `generator_license`. The inputs are adopted samples only, and a command may read its own
-  earlier output, so nothing in a candidate is typed by hand. The candidate's own license
-  follows from its inputs': an archive of adopted samples carries their licenses.
+  `generator_license`. The inputs are adopted samples or sourced candidates in the corpus, and
+  a command may read its own earlier output, so nothing in a candidate is typed by hand. The
+  candidate's own license follows from its inputs': an archive of adopted samples carries their
+  licenses.
 - **unavailable**: no file can be sourced or generated for the gap's covers. It records
   `searched`, the suites, files, and searches tried, and `reason`, why none exists, such as a
-  structure only a live mail server makes. Curate leaves such a gap open: the corpus doesn't
-  exercise its scenarios until a candidate turns up.
+  structure only a live mail server makes. Such a gap stays open: the corpus doesn't exercise its
+  scenarios until a candidate turns up.
 
 Each sourced or generated candidate also has a `fit` line: a rating, Good or Fair, then its
 quality and how it exercises the gap's covers.
+
+`dispose` writes two fields to record what the corpus placement found, as
+[Candidates in the corpus](#candidates-in-the-corpus) states:
+
+- `split_from` marks an open gap, id `<gap>-open`, and names the gap it splits from. The open gap
+  holds the covers that gap's candidate doesn't confirm, and its own candidate is unavailable.
+- `covered_by` names the sample whose covers contain the gap's candidate's covers. That candidate
+  leaves the corpus.
 
 A suspicious scenario, such as an archive bomb, a path traversal, an executable, or a polyglot, has
 a harmless candidate: a parser fixture from an established test suite, or a file built by a
 recorded command from benign inputs.
 
-A candidate is a proposal. Fetching or generating it into the corpus, and confirming it with
-docproc, is the next step. A gap whose `candidate` is `null` has none yet, and fails the check.
+A candidate is a proposal until it is fetched or generated into the corpus and confirmed with
+docproc. A gap whose `candidate` is `null` has none yet, and fails the check.
+
+### Candidates in the corpus
+
+`mise run fetch-candidates` fetches each sourced candidate from its pinned URL and places it at
+`<area>/<source>/<name>`. The area is the gap id's prefix, the source is the GitHub repository's
+name in lower case, or `wikimedia-commons`, and the name is the URL's last segment, decoded. A
+trailing `.txt` is dropped from a name that already has an extension, so `jwz.mbox.txt` becomes
+`jwz.mbox`. [`candidates.json`](candidates.json) records what was fetched for each gap: its
+`path`, `source`, `sha256`, `bytes`, and `format`, as `file -b --mime-type` reports it, with
+`format_by`, the `file` version that ran. A later fetch must match the record, so a pinned
+candidate can't change. The fetch skips a gap whose candidate is `covered_by` another sample.
+
+`mise run generate-candidates` makes each generated candidate the record doesn't list yet, once,
+by running its recorded command from the repository root. It records the candidate with `source:
+"generated"`, at the path the command writes. Before a command runs, each of its inputs must match
+`MANIFEST.json`, and the script creates the directories of the corpus paths the command names.
+The command must write exactly one new file, and if any command fails, nothing is recorded.
+Nothing regenerates a recorded candidate, and its bytes are never edited, so the record and the
+manifest's sha256 pin what was made. Generation is not byte-reproducible: archives and the mbox
+carry the time they were made.
+
+Run it with mise's pinned tools first on `PATH`, since the host's may be older: bsdtar from
+`conda:libarchive`, ffmpeg from `conda:ffmpeg`, magick from ImageMagick, qpdf, and Go, each from
+`mise where <tool>`'s `bin`. pandoc, Ghostscript, LibreOffice, iconv, and coreutils are unpinned
+and run as the host installs them. The candidate's `generator` in `.gaps` records the versions
+that ran, and the manifest carries it.
+
+The manifest gives each candidate its gap's candidate's provenance, its covers from the corpus
+placement, and its `gap`. A sourced candidate has no truth. A generated candidate has the truth of
+the input its record's `truth_from` names, unchanged, set only where the command leaves that
+input's content as it was, as audio-1's MP3 keeps the AMI headset mix's speech; otherwise it has
+none. Its license is its inputs' distinct licenses, joined by `; `. Its license is verified only
+when every input's is, and it is redistributable only when every input is.
+
+`dispose` reads the record and the placement, and settles each placed candidate's place:
+
+- **Open gap**: the covers of a gap that its candidate's placed covers lack become its open gap,
+  and the gap keeps the covers they confirm. `dispose` writes the open gap with an unavailable
+  candidate. The record of what was searched and why none is found is written once, as every
+  candidate's research is, and `dispose` never changes it. `dispose` removes the open gap once a
+  placement confirms its covers.
+- **Trim**: an adopted sample whose covers lie inside a candidate's is trimmed, and
+  `trimmed_for` names the sample the tie-breaks prefer among those that stay, candidate or not.
+  A sample or sourced candidate a generated candidate lists in its `inputs` stays, as
+  [`STANDARDS.md`](../STANDARDS.md) allows.
+- **Covered**: a candidate whose covers lie inside another sample's leaves the corpus, and its
+  gap's `covered_by` names that sample.
+
+A candidate the placement doesn't list, as one that left the corpus, keeps its gap's record as it
+stands.
 
 To count the dispositions and gaps, run:
 
 ```sh
 jq '(.samples | group_by(.disposition) | map({(.[0].disposition): length}) | add) + {gaps: (.gaps | length)}' docs/coverage.json
 ```
+
+## The manifest
+
+[`MANIFEST.json`](../MANIFEST.json) lists each adopted sample and each candidate in the corpus,
+with its `covers`: its `library`, `traits`, and `features` IDs together, sorted. It also lists
+the truth and doc files the samples link, as [README.md](../README.md#the-manifest) describes.
+`mise run manifest` builds it from this data, so the inventory and the scenario index agree.
+`scripts/check.sh` checks the manifest before the data. It fails when:
+
+- a listed file is missing, or its size or sha256 differs from its entry;
+- a file under a format directory isn't listed;
+- two samples share a format and covers.
+
+After the data passes, it checks the manifest against the data and git. It fails when:
+
+- the manifest's `version` isn't 1, or an entry's role isn't sample, truth, or doc;
+- an adopted sample lacks `license_url` or `license_read`, the reading of its license at its
+  source that [`docs/license-readings.json`](license-readings.json) records;
+- an entry's `covers` ID isn't in the vocabulary;
+- git tracks a sample file, or doesn't track a truth or doc file;
+- a manifest sample that isn't a candidate isn't adopted in this data, or an adopted sample here
+  isn't a sample in the manifest;
+- an adopted sample's covers differ from its covers in this data;
+- a sample's covers lie inside another sample's, whatever the format, unless a generated
+  candidate lists it in its `inputs`, as [`STANDARDS.md`](../STANDARDS.md) allows;
+- a candidate's gap has no sourced or generated candidate, or is `covered_by` another sample;
+- a candidate's provenance differs from its gap's candidate's;
+- a sourced candidate has truth, or a generated one has truth that isn't its inputs';
+- a generated candidate's license, license status, or redistributability differs from what its
+  inputs give;
+- a candidate's covers lack some of its gap's covers;
+- a sourced or generated gap that no sample covers has no candidate in the manifest;
+- `corpus-placement.json`'s rows differ from the manifest's samples' paths and covers;
+- a path in `judged.json` isn't a sample, or an ID there isn't in the vocabulary;
+- with `~/docs` present, the manifest differs from what `mise run manifest` prints.
+
+The payload must be in place: without it, every sample is a missing file. Each failure message
+names its fix.
 
 ## The check
 
@@ -268,7 +413,10 @@ variable names. It fails when:
 - a vocabulary ID is exercised by no adopted sample and is in no gap's covers;
 - an adopted sample isn't redistributable or is sensitive;
 - two adopted samples share a format and a covers set, or one adopted sample's covers lie inside
-  another's or equal another's that wins the tie-breaks;
+  another's or equal another's that wins the tie-breaks. The candidates in the corpus count as
+  adopted samples here, and a generated candidate's inputs are exempt;
+- a gap's `covered_by` names neither an adopted sample nor a candidate in the corpus, or one whose
+  covers lack the gap's;
 - a `~/docs` sample is missing from `.samples`, or its entry's sha256 differs from the manifest's;
 - an entry in `.samples` isn't a `~/docs` sample;
 - an entry's format, bytes, license status, redistributability, or sensitivity differs from the

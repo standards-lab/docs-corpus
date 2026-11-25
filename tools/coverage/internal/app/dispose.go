@@ -1,6 +1,8 @@
 package app
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -8,14 +10,17 @@ import (
 	"os"
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/disposition"
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
+	"github.com/standards-lab/docs-corpus/tools/coverage/manifest"
 )
 
 // Dispose reads docs/coverage.json, relative to the working directory, and writes it to stdout
-// with every disposition derived by disposition.Dispose, as jsonvalue.Marshal writes it and a
-// newline. args are the command line's arguments without the program's name: --placement <file>
-// first sets the traits and features from that place-traits output, as disposition.Place does.
-// It names each gap that may be dropped on stderr. An error writes nothing to stdout.
+// with every disposition derived by disposition.Dispose, indented by two spaces, with no HTML
+// escaped, and a newline. The candidates it places are those docs/candidates.json records that
+// docs/corpus-placement.json places, with the covers placed there. A key disposition.Coverage does
+// not define is an error. args are the command line's arguments without the program's name:
+// --placement <file> first sets the traits and features from that place-traits output, as
+// disposition.Place does. It names each gap that may be dropped on stderr. An error writes nothing
+// to stdout.
 func Dispose(args []string, stdout, stderr io.Writer) error {
 	flags := flag.NewFlagSet("dispose", flag.ContinueOnError)
 	flags.SetOutput(stderr)
@@ -26,8 +31,8 @@ func Dispose(args []string, stdout, stderr io.Writer) error {
 	if flags.NArg() > 0 {
 		return errors.New("usage: dispose [--placement <file>]")
 	}
-	coverage, err := readObject("docs/coverage.json")
-	if err != nil {
+	var coverage disposition.Coverage
+	if err := decodeStrict("docs/coverage.json", &coverage); err != nil {
 		return err
 	}
 	if *placementPath != "" {
@@ -35,23 +40,23 @@ func Dispose(args []string, stdout, stderr io.Writer) error {
 		if err != nil {
 			return err
 		}
-		v, err := jsonvalue.Parse(data)
-		if err != nil {
+		var placement []disposition.Placement
+		if err := json.Unmarshal(data, &placement); err != nil {
 			return fmt.Errorf("%s: %w", *placementPath, err)
 		}
-		placement, ok := v.([]any)
-		if !ok {
-			return fmt.Errorf("%s: is not a JSON array", *placementPath)
-		}
-		if err := disposition.Place(coverage, placement); err != nil {
+		if err := disposition.Place(&coverage, placement); err != nil {
 			return fmt.Errorf("%s: %w", *placementPath, err)
 		}
 	}
-	droppable, err := disposition.Dispose(coverage)
+	placed, err := corpusPlaced()
 	if err != nil {
 		return err
 	}
-	if _, err := stdout.Write(append(jsonvalue.Marshal(coverage), '\n')); err != nil {
+	droppable, err := disposition.Dispose(&coverage, placed)
+	if err != nil {
+		return err
+	}
+	if err := encode(stdout, coverage); err != nil {
 		return err
 	}
 	for _, id := range droppable {
@@ -62,18 +67,52 @@ func Dispose(args []string, stdout, stderr io.Writer) error {
 	return nil
 }
 
-func readObject(path string) (*jsonvalue.Object, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
+func corpusPlaced() ([]disposition.Placed, error) {
+	var candidates []manifest.Candidate
+	if err := decodeStrict("docs/candidates.json", &candidates); err != nil {
 		return nil, err
 	}
-	v, err := jsonvalue.Parse(data)
+	var rows []manifest.Placed
+	if err := decodeStrict("docs/corpus-placement.json", &rows); err != nil {
+		return nil, err
+	}
+	covers := map[string][]string{}
+	for _, r := range rows {
+		covers[r.Path] = r.Covers
+	}
+	var placed []disposition.Placed
+	for _, c := range candidates {
+		if ids, ok := covers[c.Path]; ok {
+			placed = append(placed, disposition.Placed{Gap: c.Gap, Path: c.Path, Bytes: c.Bytes, Covers: ids, TruthFrom: c.TruthFrom})
+		}
+	}
+	return placed, nil
+}
+
+func encode(w io.Writer, v any) error {
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	enc.SetIndent("", "  ")
+	enc.SetEscapeHTML(false)
+	if err := enc.Encode(v); err != nil {
+		return err
+	}
+	_, err := w.Write(buf.Bytes())
+	return err
+}
+
+func decodeStrict(path string, v any) error {
+	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", path, err)
+		return err
 	}
-	o, ok := v.(*jsonvalue.Object)
-	if !ok {
-		return nil, fmt.Errorf("%s: is not a JSON object", path)
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(v); err != nil {
+		return fmt.Errorf("%s: %w", path, err)
 	}
-	return o, nil
+	if dec.More() {
+		return fmt.Errorf("%s: data after its JSON value", path)
+	}
+	return nil
 }

@@ -1,0 +1,480 @@
+[
+  {
+    "gap": "archive-7",
+    "path": "archive/cpython/testtar.tar",
+    "source": "cpython",
+    "sha256": "760200dda3cfdff2cd31d8ab6c806794f3770faa465e7eae00a1cb3a2fbcbe3a",
+    "bytes": 435200,
+    "format": "application/x-tar",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "archive-6",
+    "path": "archive/edge/entry-names.tar",
+    "source": "generated",
+    "sha256": "95797bb12416c4ce11127c5812b3dbfefbd901901f8319bc6088563ef50f770b",
+    "bytes": 4096,
+    "format": "application/x-tar",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "archive-10",
+    "path": "archive/go/issue11169.tar",
+    "source": "go",
+    "sha256": "9c80a95a15edc3eef8fd6c506c4a92481f517bebd088d5db0eb260033a77c0f6",
+    "bytes": 602,
+    "format": "application/x-tar",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "archive-11",
+    "path": "archive/many-entries.zip",
+    "source": "generated",
+    "sha256": "af9e4c65cd007209d917a9f2891cf26f9a9d926a589cb4e6a17367b1dd0a8c7d",
+    "bytes": 184358,
+    "format": "application/zip",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "archive-1",
+    "path": "archive/mixed-bundle.7z",
+    "source": "generated",
+    "sha256": "d3f621bf131398e3ca6a577b038193ca68df371ec96b300f23128c227c1b671f",
+    "bytes": 184213,
+    "format": "application/x-7z-compressed",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "archive-2",
+    "path": "archive/mixed-bundle.tar.gz",
+    "source": "generated",
+    "sha256": "560496970aee121a7a375a684b6d8cc8d3d80dc71f1d64d69f085fe4d914a181",
+    "bytes": 185076,
+    "format": "application/gzip",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "archive-3",
+    "path": "archive/mixed-bundle.tar.zst",
+    "source": "generated",
+    "sha256": "b3f391e4e5e83487055193c47f0e80ebc3ce55f3d6ce80ffaa57baeec5db048e",
+    "bytes": 184989,
+    "format": "application/zstd",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "archive-9",
+    "path": "archive/tika/testWORD_truncated.docx",
+    "source": "tika",
+    "sha256": "8bb91125cc08ec4a5a771e86ff20cfd0646998b2c1da4361e0241036816a471f",
+    "bytes": 763,
+    "format": "application/octet-stream",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "archive-8",
+    "path": "archive/tika/testZIP_corrupted_oom.zip",
+    "source": "tika",
+    "sha256": "ce0467bce29e2e97633b26d4d856f3bc127114a27986246e39b56bfe6b85fbb9",
+    "bytes": 181,
+    "format": "application/zip",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "archive-4",
+    "path": "archive/tika/testZipEncrypted.zip",
+    "source": "tika",
+    "sha256": "736014bc1c8d66ed10cd9fe6e96b8e9256bb59779770bd49b154d01c336bbd7c",
+    "bytes": 391,
+    "format": "application/zip",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "archive-5",
+    "path": "archive/zip-in-zip.zip",
+    "source": "generated",
+    "sha256": "09852277c75cbb5bf60f0a439f3e22a8eed78cf60b0a017af969f829e9c56aef",
+    "bytes": 185422,
+    "format": "application/zip",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "audio-1",
+    "path": "audio/long/ami-es2002d-mix-headset.mp3",
+    "source": "generated",
+    "sha256": "4463d4f9c39ffef478fb0707fb114fb6540fa81225f25e4dceb0ab5d33ce237b",
+    "bytes": 20994381,
+    "format": "audio/mpeg",
+    "format_by": "file-5.48",
+    "truth_from": "video/ami-es2002d/ami-es2002d-mix-headset.wav"
+  },
+  {
+    "gap": "audio-2",
+    "path": "audio/tika/testFLAC_commentAndNativePicture.flac",
+    "source": "tika",
+    "sha256": "678aabab81b5fd375837b6c463fb011cbcf5e8158b2316eccf272eda4e464fa2",
+    "bytes": 10833,
+    "format": "audio/flac",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "email-4",
+    "path": "email/cryptography/SignedAllCertificatesNoPoliciesTest2.eml",
+    "source": "cryptography",
+    "sha256": "36529a845c844839ab1860776e3aa3adcbd199382732ba4015faa57b869e0f05",
+    "bytes": 5062,
+    "format": "message/rfc822",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "email-8",
+    "path": "email/eml/rights-managed.eml",
+    "source": "generated",
+    "sha256": "4851d2da141edc55ac3331de566d0eead80815bab558126fc1a76b6bcf6ea3f4",
+    "bytes": 1125,
+    "format": "text/plain",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "email-6",
+    "path": "email/java-libpst/example-2013.ost",
+    "source": "java-libpst",
+    "sha256": "b18ff390d0c22273029ee580ab6025976af69a4f84e276d1b1c01a988650853d",
+    "bytes": 16818176,
+    "format": "application/vnd.ms-outlook",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "email-5",
+    "path": "email/mbox/many-messages.mbox",
+    "source": "generated",
+    "sha256": "56264831602257459e33df1b036bc1548ab2274ae8ada9cce743ff44e8acb51c",
+    "bytes": 3452500,
+    "format": "application/mbox",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "email-1",
+    "path": "email/mimekit/jwz.mbox",
+    "source": "mimekit",
+    "sha256": "e154b9ae81694acdf150bbfe8b067b2761525094167fa0b824ae8ce741aadfcd",
+    "bytes": 10536315,
+    "format": "application/mbox",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "email-2",
+    "path": "email/mimekit/ukr.eml",
+    "source": "mimekit",
+    "sha256": "de9012fe854ede0da7b1e287fac8c22b1b9e7d5898a809ff502beab834d3619d",
+    "bytes": 14370,
+    "format": "text/plain",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "email-3",
+    "path": "email/releases-comm-central/alice.sig.SHA256.opaque.eml",
+    "source": "releases-comm-central",
+    "sha256": "36df45e408dd3603be01fac07b405e3f389205c3f1031a3398f231cd68b6bfb2",
+    "bytes": 2839,
+    "format": "text/plain",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "exec-4",
+    "path": "exec/cpython/exe_with_zip",
+    "source": "cpython",
+    "sha256": "2f27f5c9108936a693fd496565e5c5050b5c62cfbb61d1d5da9d97c89533d637",
+    "bytes": 990,
+    "format": "text/x-shellscript",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "exec-2",
+    "path": "exec/tika/testLinux-x86-64",
+    "source": "tika",
+    "sha256": "7cdb478b426782344cc01eafdea2fb585afb671bc50c65b5d521bf3fb225c179",
+    "bytes": 8377,
+    "format": "application/x-executable",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "exec-3",
+    "path": "exec/tika/testMacOS-x86_64",
+    "source": "tika",
+    "sha256": "a18cbd6af109b25091127aa88f2fcb6948a0a38c2dced182b99dc58d972f0ebb",
+    "bytes": 8448,
+    "format": "application/x-mach-binary",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "exec-1",
+    "path": "exec/tika/testWindows-x86-32.exe",
+    "source": "tika",
+    "sha256": "416c543a7d59cd97812575fbb6d92c7712081f2287f60cc0da60a7d204ff52c8",
+    "bytes": 11723,
+    "format": "application/vnd.microsoft.portable-executable",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "image-3",
+    "path": "image/formats/tiff/stella-maberly-3page.tif",
+    "source": "generated",
+    "sha256": "57a9d19bdc2817b45493ff20c9f919d9298a4af8220aa95f191895f8728c1129",
+    "bytes": 667564,
+    "format": "image/tiff",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "image-1",
+    "path": "image/pillow/dispose_bgnd.gif",
+    "source": "pillow",
+    "sha256": "d6375eddcc9d190c2376bbc091030d9ed0b7236b53e801e3f9500a059603f5e1",
+    "bytes": 1450,
+    "format": "image/gif",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "image-2",
+    "path": "image/pillow/hopper_orientation_6.jpg",
+    "source": "pillow",
+    "sha256": "2e78bb18895fa23eddbb2afa1228950700d97e4ef9d7bfae6935604d01eb1b61",
+    "bytes": 4951,
+    "format": "image/jpeg",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "image-4",
+    "path": "image/tika/testWEBP.webp",
+    "source": "tika",
+    "sha256": "e554463b318059f0ab529b4f23a36106e71a34b8dc490d5b6de00dc3e6268d24",
+    "bytes": 3442,
+    "format": "image/webp",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "image-6",
+    "path": "image/vector/truncated.svg",
+    "source": "generated",
+    "sha256": "017e1c637fb0f5479344d8b250866958d0a30519023c446080567daf4d500b90",
+    "bytes": 600,
+    "format": "image/svg+xml",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "image-7",
+    "path": "image/wikimedia-commons/Grocery_Store_Receipt_in_Vienna.jpg",
+    "source": "wikimedia-commons",
+    "sha256": "24f913c22b2cc62df2020882f2cb944cfcd23b9b2e9f7a533c7e50d140c5618f",
+    "bytes": 3410199,
+    "format": "image/jpeg",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "image-8",
+    "path": "image/wpt/clear-mapped-animation.svg",
+    "source": "wpt",
+    "sha256": "0a5b60013c84f11d42e8500a785deb166466468cfd2b19afff10b5e5333dc32d",
+    "bytes": 735,
+    "format": "image/svg+xml",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "image-5",
+    "path": "image/wpt/requiredextensions-xhtml.tentative.svg",
+    "source": "wpt",
+    "sha256": "65643d3dea7e87a453332a74320992794ebe1a5f8ec644de959c823263503007",
+    "bytes": 572,
+    "format": "image/svg+xml",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "office-1",
+    "path": "office/multilang/multilang-table.docx",
+    "source": "generated",
+    "sha256": "75176c2ab5742e26a52f73e47374ba5d664d0b37deb877ec6d3f7c1ab9bf98a4",
+    "bytes": 13485,
+    "format": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "office-2",
+    "path": "office/multilang/multilang-table.odt",
+    "source": "generated",
+    "sha256": "b44951b3b88fb21ead8333e0c7d32a1dd58529488fb5bf2cb5dc8a58afa9a377",
+    "bytes": 10762,
+    "format": "application/vnd.oasis.opendocument.text",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "office-4",
+    "path": "office/poi/45540_form_Footer.xlsx",
+    "source": "poi",
+    "sha256": "6b462fff66e6228e590cec586077886b5aa81e6908612dfab79218d027ab7989",
+    "bytes": 57465,
+    "format": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "office-5",
+    "path": "office/poi/clusterfuzz-testcase-minimized-POIXSSFFuzzer-5265527465181184.xlsx",
+    "source": "poi",
+    "sha256": "3df2702db5e10050701637415465bad583d97e8126121660c229b331c3e3c439",
+    "bytes": 10483,
+    "format": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "office-7",
+    "path": "office/poi/smartart-simple.pptx",
+    "source": "poi",
+    "sha256": "238ff6433dac00b2722edb9a29d97f56ab4f3c9c37f33a73d6f53baf494916aa",
+    "bytes": 71102,
+    "format": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "office-3",
+    "path": "office/rtf/form-footnotes.rtf",
+    "source": "generated",
+    "sha256": "1dfe66ce97ebb90c95e6c8b8073747e4250d4c4eb3cfc8bf16509f4205659baa",
+    "bytes": 84973,
+    "format": "text/rtf",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "office-6",
+    "path": "office/tika/testComment.xlsx",
+    "source": "tika",
+    "sha256": "9f37032b3666fc72af84edb20cbdc311c31aeb1ca04d5fa0fe7e125c340c6f63",
+    "bytes": 9692,
+    "format": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "office-8",
+    "path": "office/tika/testRecordSizeExceeded.xlsx",
+    "source": "tika",
+    "sha256": "d0b6d457f7e1bb6fd48fb725fdc192ad91233f87b9db195cdf2fa8ef2963ccff",
+    "bytes": 12364136,
+    "format": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "onenote-3",
+    "path": "onenote/joplin/Page versions.one",
+    "source": "joplin",
+    "sha256": "416703e687413ca3d368bd03aaa4de414c6fcf6b2aefe8e7bc7abf99daee7eed",
+    "bytes": 25128,
+    "format": "application/onenote",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "onenote-2",
+    "path": "onenote/joplin/Printout.one",
+    "source": "joplin",
+    "sha256": "f8816eae444a180aea95204323ba303e5e10208754bacce55206862cafbc69ed",
+    "bytes": 39960,
+    "format": "application/onenote",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "onenote-1",
+    "path": "onenote/joplin/test.onepkg",
+    "source": "joplin",
+    "sha256": "83cb622d40f0ab127038b629553b6926be3e2a6ce642f169df0e2614c13e8469",
+    "bytes": 11066,
+    "format": "application/msonenote",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "pdf-7",
+    "path": "pdf/large/oversized-page.pdf",
+    "source": "generated",
+    "sha256": "744fcafce77fefcc8ad2d5c799df4928397ccad61a2dce14148688f8cd96af78",
+    "bytes": 134115,
+    "format": "application/pdf",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "pdf-1",
+    "path": "pdf/multilang/multilang-table.pdf",
+    "source": "generated",
+    "sha256": "2966083af04e7dc9d447c9bbf489c426677e829782716a51f49dbbd09b2f8268",
+    "bytes": 320718,
+    "format": "application/pdf",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "pdf-2",
+    "path": "pdf/scanned/scanned-tables.pdf",
+    "source": "generated",
+    "sha256": "8a77caded9e982300ca22b6a80a2ad7400ff7a63aef69e4d29488b1b6c2ec1d2",
+    "bytes": 1284688,
+    "format": "application/pdf",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "pdf-4",
+    "path": "pdf/verapdf-corpus/veraPDF test suite 6-3-1-t01-fail-a.pdf",
+    "source": "verapdf-corpus",
+    "sha256": "8341bfa05060f273650c1108e176f94392ad30f14a5cab6f7f30b7ac82e94d2f",
+    "bytes": 4331,
+    "format": "application/pdf",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "pdf-6",
+    "path": "pdf/verapdf-corpus/veraPDF test suite 6-3-8-t01-fail-c.pdf",
+    "source": "verapdf-corpus",
+    "sha256": "ed1c3db5dbdd8dd568c7cc243727a6dcf6cd702773284e34e1abd40a08b9adf6",
+    "bytes": 15859,
+    "format": "application/pdf",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "pdf-5",
+    "path": "pdf/verapdf-corpus/veraPDF test suite 6-4-2-t01-fail-a.pdf",
+    "source": "verapdf-corpus",
+    "sha256": "e54c874120938f53de8bf3e82d088d784eaa8f4fab32e7de7ee67ed2bf4f65b6",
+    "bytes": 78644,
+    "format": "application/pdf",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "pdf-3",
+    "path": "pdf/verapdf-corpus/veraPDF test suite 6-5-1-t01-fail-a.pdf",
+    "source": "verapdf-corpus",
+    "sha256": "423e0f7b91108cd7c8c43544a41ddd6c62bff7be804cd101b8dd16b61edd1eb5",
+    "bytes": 3670,
+    "format": "application/pdf",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "text-1",
+    "path": "text/encodings/utf32-bom.txt",
+    "source": "generated",
+    "sha256": "326f8a3158b20846a33c4d8a58e7e1f6344e495a65da7024f0d72349d9a0d5f2",
+    "bytes": 1696,
+    "format": "text/plain",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "text-2",
+    "path": "text/udhr-markdown/hin.md",
+    "source": "udhr-markdown",
+    "sha256": "1892f81968872f04b6163a39fc29a4cffc1b1581f266725a1435de4cf045743d",
+    "bytes": 28807,
+    "format": "text/plain",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "video-1",
+    "path": "video/prelinger-duck-and-cover/duck-and-cover-two-audio.mkv",
+    "source": "generated",
+    "sha256": "186a59042e0fe3d70ca6e391c81ca789dd0edba90058d0d9b5bdd543fabb6f72",
+    "bytes": 3525740,
+    "format": "video/x-matroska",
+    "format_by": "file-5.48"
+  }
+]

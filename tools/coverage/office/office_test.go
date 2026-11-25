@@ -3,6 +3,7 @@ package office_test
 import (
 	"archive/zip"
 	"context"
+	"encoding/json"
 	"errors"
 	"maps"
 	"os"
@@ -13,7 +14,6 @@ import (
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/idset"
 	"github.com/standards-lab/docs-corpus/tools/coverage/internal/docstest"
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 	"github.com/standards-lab/docs-corpus/tools/coverage/office"
 	"github.com/standards-lab/docs-corpus/tools/coverage/run"
 )
@@ -39,8 +39,8 @@ func TestOOXMLOfAFileThatIsNotAZipHasNoFeatures(t *testing.T) {
 	if len(features) != 0 {
 		t.Errorf("features = %v, want none", features.Sorted(""))
 	}
-	if got := string(jsonvalue.Marshal(facts)); got != "{\n  \"parts\": 0,\n  \"tables\": 0,\n  \"media\": 0\n}" {
-		t.Errorf("facts = %s", got)
+	if facts != (office.OOXMLFacts{}) {
+		t.Errorf("facts = %+v, want none", facts)
 	}
 }
 
@@ -148,11 +148,7 @@ func onenoteRows(t *testing.T, rows map[string]string) []run.Row {
 	t.Helper()
 	var out []run.Row
 	for _, name := range slices.Sorted(maps.Keys(rows)) {
-		v, err := jsonvalue.Parse([]byte(rows[name]))
-		if err != nil {
-			t.Fatal(err)
-		}
-		out = append(out, run.Row{Name: name, Fields: v.(*jsonvalue.Object)})
+		out = append(out, run.Row{Name: name, Fields: json.RawMessage(rows[name])})
 	}
 	return out
 }
@@ -172,8 +168,8 @@ func TestOneNotePlacesItsRecordsPages(t *testing.T) {
 	if got := features.Sorted(""); !slices.Equal(got, want) {
 		t.Errorf("features = %v, want %v", got, want)
 	}
-	if got := string(jsonvalue.Marshal(facts)); got != "{\n  \"pages\": 2,\n  \"sections\": 1\n}" {
-		t.Errorf("facts = %s", got)
+	if want := (office.OneNoteFacts{Sections: 1, Pages: 2}); facts != want {
+		t.Errorf("facts = %+v, want %+v", facts, want)
 	}
 }
 

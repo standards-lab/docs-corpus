@@ -2,60 +2,28 @@ package disposition
 
 import (
 	"cmp"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"maps"
 	"slices"
 	"strings"
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/idset"
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 )
 
 type sample struct {
-	obj    *jsonvalue.Object
-	path   string
+	entry  *Sample
 	covers []string
 	set    idset.Set
-	truth  bool
-	verify bool
-	redist bool
-	sens   bool
-	bytes  float64
 	gap    string
 }
 
-func ids(v any) []string {
-	list, _ := v.([]any)
-	out := []string{}
-	for _, item := range list {
-		out = append(out, jsonvalue.String(item))
-	}
-	return out
-}
-
-func readSample(v any) (*sample, error) {
-	o, ok := v.(*jsonvalue.Object)
-	if !ok {
-		return nil, errors.New("samples: an entry is not an object")
-	}
-	s := &sample{obj: o, path: o.Str("path"), gap: o.Str("gap"), set: idset.Set{}}
-	for _, field := range []string{"library", "traits", "features"} {
-		s.set.Add(ids(o.Get(field))...)
-	}
+func readSample(e *Sample) *sample {
+	s := &sample{entry: e, gap: e.Gap, set: idset.Set{}}
+	s.set.Add(e.Library...)
+	s.set.Add(e.Traits...)
+	s.set.Add(e.Features...)
 	s.covers = s.set.Sorted("")
-	truth, _ := o.Get("truth").([]any)
-	s.truth = len(truth) > 0
-	s.verify = o.Str("license_status") == "verified"
-	s.redist = o.Get("redistributable") == true
-	s.sens = o.Get("sensitive") == true
-	n, ok := o.Get("bytes").(json.Number)
-	if !ok {
-		return nil, fmt.Errorf("samples: %s has no bytes", s.path)
-	}
-	s.bytes, _ = n.Float64()
-	return s, nil
+	return s
 }
 
 func lacks(has bool) int {
@@ -66,12 +34,13 @@ func lacks(has bool) int {
 }
 
 func rank(a, b *sample) int {
+	x, y := a.entry, b.entry
 	return cmp.Or(
-		cmp.Compare(lacks(a.truth), lacks(b.truth)),
-		cmp.Compare(lacks(a.verify), lacks(b.verify)),
-		cmp.Compare(lacks(a.redist), lacks(b.redist)),
-		cmp.Compare(a.bytes, b.bytes),
-		strings.Compare(a.path, b.path),
+		cmp.Compare(lacks(len(x.Truth) > 0), lacks(len(y.Truth) > 0)),
+		cmp.Compare(lacks(x.LicenseStatus == "verified"), lacks(y.LicenseStatus == "verified")),
+		cmp.Compare(lacks(x.Redistributable), lacks(y.Redistributable)),
+		cmp.Compare(x.Bytes, y.Bytes),
+		strings.Compare(x.Path, y.Path),
 	)
 }
 
@@ -91,75 +60,77 @@ func best(candidates []*sample) *sample {
 	return slices.MinFunc(candidates, rank)
 }
 
-func set(o *jsonvalue.Object, disposition, field, value string) *jsonvalue.Object {
-	out := jsonvalue.NewObject()
-	for _, k := range o.Keys() {
-		if k != "disposition" && k != "trimmed_for" && k != "gap" {
-			out.Set(k, o.Get(k))
-		}
-	}
-	out.Set("disposition", disposition)
-	if field != "" {
-		out.Set(field, value)
-	}
-	return out
+func (s *sample) dispose(disposition, trimmedFor, gap string) {
+	s.entry.Disposition, s.entry.TrimmedFor, s.entry.Gap = disposition, trimmedFor, gap
 }
 
-// Dispose derives every sample's disposition in coverage, the parsed coverage data, as
-// docs/coverage.md states, and sets it in place with its trimmed_for or gap, and each gap a
-// replace names its covers. A replaced sample takes the gap of the replaced sample whose covers
-// contain its own, the one the tie-break prefers among those no other replaced sample's covers
-// contain, and that gap is the one those samples name in coverage; candidates are left as they
-// are. It returns the gaps no replace names whose covers adopted samples all exercise, which may
-// be dropped. A group of replaced samples that names no gap, or names two, is an error.
-func Dispose(coverage *jsonvalue.Object) ([]string, error) {
-	entries, ok := coverage.Get("samples").([]any)
-	if !ok {
-		return nil, errors.New("samples: is not an array")
+// Dispose derives every sample's disposition in coverage as docs/coverage.md states, and sets it
+// in place with its trimmed_for or gap, and each gap a replace names its covers. A replaced sample
+// takes the gap of the replaced sample whose covers contain its own, the one the tie-break prefers
+// among those no other replaced sample's covers contain, and that gap is the one those samples
+// name in coverage; candidates are left as they are.
+//
+// placed are the gap candidates the corpus placement placed. A sourced candidate's license status
+// is its candidate's; a generated one's inputs are adopted samples or placed sourced candidates,
+// and its license status is verified when every input's is, otherwise the first input's that
+// isn't, and it is redistributable when every input is, with the truth of the input its TruthFrom
+// names. They join the adopted samples: an adopted sample whose covers lie inside
+// one's is trimmed for it, and one whose covers lie inside another sample's leaves the corpus, its
+// gap's covered_by naming that sample. An adopted sample or sourced candidate a generated
+// candidate lists in its inputs stays whatever covers it. A gap whose candidate's covers lack some of its covers keeps the ones
+// they confirm, and the rest become its open gap, id <gap>-open, split_from naming it, whose
+// candidate is unavailable until its searched and reason are recorded; the open gap goes once the
+// candidate confirms them all. A gap whose candidate placed doesn't list keeps its covers,
+// covered_by, and open gap as they are.
+//
+// It returns the gaps no replace names whose covers adopted samples all exercise, which may be
+// dropped. A group of replaced samples that names no gap, or names two, a placed candidate whose
+// gap has no sourced or generated candidate, and an open gap's id taken by another gap are errors.
+func Dispose(coverage *Coverage, placed []Placed) ([]string, error) {
+	samples := make([]*sample, len(coverage.Samples))
+	for i := range coverage.Samples {
+		samples[i] = readSample(&coverage.Samples[i])
 	}
-	gapList, ok := coverage.Get("gaps").([]any)
-	if !ok {
-		return nil, errors.New("gaps: is not an array")
-	}
-	samples := make([]*sample, len(entries))
-	for i, e := range entries {
-		s, err := readSample(e)
-		if err != nil {
-			return nil, err
+	inputs := idset.Set{}
+	for _, g := range coverage.Gaps {
+		if g.Candidate != nil && g.Candidate.Kind == "generated" {
+			inputs.Add(g.Candidate.Inputs...)
 		}
-		samples[i] = s
+	}
+	candidates, err := readCandidates(coverage.Gaps, placed, coverage.Samples)
+	if err != nil {
+		return nil, err
 	}
 
-	var eligible, adopted []*sample
+	var eligible []*sample
 	for _, s := range samples {
-		if s.redist && !s.sens {
+		if s.entry.Redistributable && !s.entry.Sensitive {
 			eligible = append(eligible, s)
 		}
 	}
-	for _, s := range eligible {
-		if !slices.ContainsFunc(eligible, func(t *sample) bool {
-			return t != s && within(s, t) && (len(t.covers) > len(s.covers) || rank(t, s) < 0)
-		}) {
-			adopted = append(adopted, s)
-		}
-	}
+	adopted := kept(eligible, inputs)
+	corpus := kept(slices.Concat(eligible, candidates), inputs)
 	var replaced []*sample
-	for i, s := range samples {
-		holder := best(filter(adopted, func(t *sample) bool { return within(s, t) }))
+	for _, s := range samples {
 		switch {
-		case holder == s:
-			entries[i] = set(s.obj, "adopt", "", "")
-		case holder != nil:
-			entries[i] = set(s.obj, "trim", "trimmed_for", holder.path)
-		default:
+		case !slices.ContainsFunc(adopted, func(t *sample) bool { return within(s, t) }):
 			replaced = append(replaced, s)
+		case slices.Contains(corpus, s):
+			s.dispose("adopt", "", "")
+		default:
+			s.dispose("trim", holder(s, corpus).entry.Path, "")
 		}
 	}
 
-	gaps := map[string]*jsonvalue.Object{}
-	for _, g := range gapList {
-		if o, ok := g.(*jsonvalue.Object); ok {
-			gaps[o.Str("id")] = o
+	gaps := map[string]*Gap{}
+	for i := range coverage.Gaps {
+		gaps[coverage.Gaps[i].ID] = &coverage.Gaps[i]
+	}
+	for _, c := range candidates {
+		g := gaps[c.gap]
+		g.CoveredBy = ""
+		if !slices.Contains(corpus, c) {
+			g.CoveredBy = holder(c, corpus).entry.Path
 		}
 	}
 	outer := filter(replaced, func(s *sample) bool {
@@ -177,19 +148,16 @@ func Dispose(coverage *jsonvalue.Object) ([]string, error) {
 		groupGap[key] = s.gap
 	}
 	named := idset.Set{}
-	for i, s := range samples {
-		if !slices.Contains(replaced, s) {
-			continue
-		}
+	for _, s := range replaced {
 		holder := best(filter(outer, func(t *sample) bool { return within(s, t) }))
 		key := strings.Join(holder.covers, " ")
 		id, ok := groupGap[key]
 		if !ok {
-			return nil, fmt.Errorf("%s: replaced, and no gap holds the covers %s; research a candidate and add the gap", holder.path, key)
+			return nil, fmt.Errorf("%s: replaced, and no gap holds the covers %s; research a candidate and add the gap", holder.entry.Path, key)
 		}
 		named.Add(id)
-		gaps[id].Set("covers", holder.covers)
-		entries[i] = set(s.obj, "replace", "gap", id)
+		gaps[id].Covers = slices.Clone(holder.covers)
+		s.dispose("replace", "", id)
 	}
 
 	exercised := idset.Set{}
@@ -197,16 +165,137 @@ func Dispose(coverage *jsonvalue.Object) ([]string, error) {
 		exercised.Merge(s.set)
 	}
 	var droppable []string
-	for _, g := range gapList {
-		o, ok := g.(*jsonvalue.Object)
-		if !ok || named[o.Str("id")] {
+	for _, g := range coverage.Gaps {
+		if named[g.ID] {
 			continue
 		}
-		if !slices.ContainsFunc(ids(o.Get("covers")), func(id string) bool { return !exercised[id] }) {
-			droppable = append(droppable, o.Str("id"))
+		if !slices.ContainsFunc(g.Covers, func(id string) bool { return !exercised[id] }) {
+			droppable = append(droppable, g.ID)
 		}
 	}
-	return droppable, nil
+	return droppable, split(coverage, candidates)
+}
+
+func inherited(inputs []string, samples map[string]*Sample) (string, bool) {
+	status, redistributable := "verified", len(inputs) > 0
+	for _, path := range inputs {
+		s, ok := samples[path]
+		if !ok {
+			return "", false
+		}
+		if status == "verified" {
+			status = s.LicenseStatus
+		}
+		redistributable = redistributable && s.Redistributable
+	}
+	return status, redistributable
+}
+
+func readCandidates(gaps []Gap, placed []Placed, entries []Sample) ([]*sample, error) {
+	samples := map[string]*Sample{}
+	for i := range entries {
+		samples[entries[i].Path] = &entries[i]
+	}
+	byID := map[string]*Gap{}
+	for i := range gaps {
+		byID[gaps[i].ID] = &gaps[i]
+	}
+	for _, p := range placed {
+		g := byID[p.Gap]
+		if g == nil || g.Candidate == nil || (g.Candidate.Kind != "sourced" && g.Candidate.Kind != "generated") {
+			return nil, fmt.Errorf("%s: placed as gap %s's candidate, but that gap has no sourced or generated candidate", p.Path, p.Gap)
+		}
+	}
+	var out []*sample
+	for _, kind := range []string{"sourced", "generated"} {
+		for _, p := range placed {
+			c := byID[p.Gap].Candidate
+			if c.Kind != kind {
+				continue
+			}
+			e := &Sample{
+				Path: p.Path, Library: p.Covers, Bytes: p.Bytes, Truth: []string{},
+				LicenseStatus: c.LicenseStatus, Redistributable: c.LicenseStatus == "verified",
+			}
+			if kind == "generated" {
+				e.LicenseStatus, e.Redistributable = inherited(c.Inputs, samples)
+				if from, ok := samples[p.TruthFrom]; ok && slices.Contains(c.Inputs, p.TruthFrom) {
+					e.Truth = slices.Clone(from.Truth)
+				}
+			} else {
+				samples[p.Path] = e
+			}
+			s := readSample(e)
+			s.gap = p.Gap
+			out = append(out, s)
+		}
+	}
+	return out, nil
+}
+
+func kept(pool []*sample, inputs idset.Set) []*sample {
+	return filter(pool, func(s *sample) bool {
+		return inputs[s.entry.Path] || !slices.ContainsFunc(pool, func(t *sample) bool {
+			return t != s && within(s, t) && (len(t.covers) > len(s.covers) || rank(t, s) < 0)
+		})
+	})
+}
+
+func holder(s *sample, corpus []*sample) *sample {
+	return best(filter(corpus, func(t *sample) bool { return t != s && within(s, t) }))
+}
+
+func split(coverage *Coverage, candidates []*sample) error {
+	placed := map[string]*sample{}
+	for _, c := range candidates {
+		placed[c.gap] = c
+	}
+	open := map[string]Gap{}
+	ids := idset.Set{}
+	for _, g := range coverage.Gaps {
+		ids.Add(g.ID)
+		if g.SplitFrom != "" {
+			open[g.SplitFrom] = g
+		}
+	}
+	out := make([]Gap, 0, len(coverage.Gaps))
+	for _, g := range coverage.Gaps {
+		c := placed[g.SplitFrom]
+		if g.SplitFrom != "" && c != nil {
+			continue
+		}
+		c = placed[g.ID]
+		if c == nil || g.SplitFrom != "" {
+			out = append(out, g)
+			continue
+		}
+		o, hasOpen := open[g.ID]
+		full := idset.New(g.Covers...)
+		full.Add(o.Covers...)
+		confirmed, unconfirmed := idset.Set{}, idset.Set{}
+		for id := range full {
+			if c.set[id] {
+				confirmed.Add(id)
+			} else {
+				unconfirmed.Add(id)
+			}
+		}
+		g.Covers = confirmed.Sorted("")
+		out = append(out, g)
+		if len(unconfirmed) == 0 {
+			continue
+		}
+		if !hasOpen {
+			o = Gap{ID: g.ID + "-open", SplitFrom: g.ID, Candidate: &Candidate{Kind: "unavailable"}}
+			if ids[o.ID] {
+				return fmt.Errorf("gap %s: its open gap's id %s is another gap's; rename that gap", g.ID, o.ID)
+			}
+		}
+		o.Covers = unconfirmed.Sorted("")
+		out = append(out, o)
+	}
+	coverage.Gaps = out
+	return nil
 }
 
 func filter(samples []*sample, keep func(*sample) bool) []*sample {
@@ -219,33 +308,22 @@ func filter(samples []*sample, keep func(*sample) bool) []*sample {
 	return out
 }
 
-// Place sets each sample's traits and features in coverage to its element in placement, the JSON
-// array place-traits prints. A sample placement lacks, or an element no sample has, is an error.
-func Place(coverage *jsonvalue.Object, placement []any) error {
-	entries, ok := coverage.Get("samples").([]any)
-	if !ok {
-		return errors.New("samples: is not an array")
-	}
-	placed := map[string]*jsonvalue.Object{}
+// Place sets each sample's traits and features in coverage to its element in placement, the
+// elements place-traits prints. A sample placement lacks, or an element no sample has, is an
+// error.
+func Place(coverage *Coverage, placement []Placement) error {
+	placed := map[string]Placement{}
 	for _, p := range placement {
-		o, ok := p.(*jsonvalue.Object)
-		if !ok {
-			return errors.New("placement: an element is not an object")
-		}
-		placed[o.Str("path")] = o
+		placed[p.Path] = p
 	}
-	for _, e := range entries {
-		o, ok := e.(*jsonvalue.Object)
+	for i := range coverage.Samples {
+		s := &coverage.Samples[i]
+		p, ok := placed[s.Path]
 		if !ok {
-			return errors.New("samples: an entry is not an object")
+			return fmt.Errorf("placement: has no element for %s", s.Path)
 		}
-		p, ok := placed[o.Str("path")]
-		if !ok {
-			return fmt.Errorf("placement: has no element for %s", o.Str("path"))
-		}
-		o.Set("traits", p.Get("traits"))
-		o.Set("features", p.Get("features"))
-		delete(placed, o.Str("path"))
+		s.Traits, s.Features = p.Traits, p.Features
+		delete(placed, s.Path)
 	}
 	if extra := slices.Sorted(maps.Keys(placed)); len(extra) > 0 {
 		return fmt.Errorf("placement: %s is not a sample", extra[0])
