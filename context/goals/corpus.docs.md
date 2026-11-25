@@ -107,7 +107,7 @@ scripts that have been deleted.
    readings, and the check's vocabulary, equality, duplicate, and containment rules
    (behaviors 3–5, 12).
 4. Fetch and pack (behavior 6).
-5. The run reader for the docproc release carrying the encoding keys: two-key decoding and the
+5. The run reader for the docproc release carrying the encoding keys: UTF-8 reading and the
    schema check (behavior 7). It needs that release. If the release isn't out when BUILD reaches
    this slice, BUILD escalates and hands off, with slices 1–4 committed on the branch.
 6. Placement over the curated tree with docproc at that release (behavior 8).
@@ -136,12 +136,23 @@ cut it.
 
 ## Progress
 
-slices 4/9 committed · standards — · spec — · editor —
+slices 9/9 committed (slice 9 done within 7 and 8) · standards in progress · spec — · editor —
 - escalation, slice 5: docproc's text output is always UTF-8 and `encoding` names the source's
   encoding, so read text outputs as UTF-8? yes. Still wait for the encoding-keys release? yes, it
-  is almost done.
+  is almost done. It shipped as docproc v0.5.0 (7e116e2), run-directory schema still "2".
 - escalation, slice 3: read the six committed "reported" truth files' licenses at source? yes;
   behavior 5 extends to truth and doc files.
+- escalation, slice 7: email-6's dead URL → use the raw URL at the same commit, yes; judged IDs
+  for candidates → a committed judged file `place-traits --corpus` reads, yes; exec-4's
+  check:polyglot (docproc v0.5.0 doesn't flag it) → raised with archives-and-mpeg-coverage:
+  inspect's containerKinds exempts route.Shebang from the polyglot scan, no release planned, so
+  an open gap, reopened once docproc flags it; containment → apply the rule through dispose
+  (trims, candidate-in-candidate dropped as covered), yes.
+- escalation, slice 8: video-1's recorded ffmpeg command fails at 9.0.2 and 9.1 (Matroska:
+  unknown timestamps); add `-fflags +genpts`? yes.
+- escalation, slice 8: image-3's pinned ImageMagick writes one frame; pdf-7's oversized-page
+  probe; dispose trims the bg and el eurlex PDFs and their truth. → revise image-3's command for
+  the pinned ImageMagick; fix the probe to the vocabulary's rule; accept the trims.
 
 ## Decisions
 
@@ -180,6 +191,10 @@ slices 4/9 committed · standards — · spec — · editor —
   metadata naming the source's encoding.
 - curate: tools/coverage's run reader checks the run directory's schema and refuses one it
   doesn't know; it reads schema "2" and whatever the encoding-keys release writes.
+- curate: the corpus placement pins docproc v0.5.0. docproc v0.6.0 (RAR, xz, bzip2, MPEG-PS and
+  Ogg-video kinds; `.ogv` moves from kind ogg to the Ogg-video kind) and docproc-coverage's "text
+  as the last resort" release (#! scripts route to text, polyglot scanned for them, so exec-4's
+  check:polyglot can reopen) will move placements; adopting them is a later task's.
 - curate: the vocabulary's links stay pinned to docproc `48216e1`; IDs a newer run adds link to
   the release.
 - review: once curate writes `MANIFEST.json`, the check validates its `covers` against the
