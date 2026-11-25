@@ -2,13 +2,14 @@ package run
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"errors"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 	"github.com/standards-lab/docs-corpus/tools/coverage/text"
 )
 
@@ -48,10 +49,10 @@ type Event struct {
 	Output *Output `json:"output"`
 }
 
-// Row is one line of a record output: the output's name and the line's object.
+// Row is one line of a record output: the output's name and the line's JSON object.
 type Row struct {
 	Name   string
-	Fields *jsonvalue.Object
+	Fields json.RawMessage
 }
 
 // Record is a docproc run's events, by input path relative to the run's input, and the content
@@ -140,8 +141,8 @@ func (r *Record) Text(path string) string {
 		body := text.DecodeOrUTF8(data, enc)
 		if out.Kind == "record" {
 			for _, line := range text.SplitLines(body) {
-				if v, err := jsonvalue.Parse([]byte(line)); err == nil {
-					parts = append(parts, stringsUnder(v, recordTextKeys)...)
+				if found, err := stringsUnder([]byte(line), recordTextKeys); err == nil {
+					parts = append(parts, found...)
 				}
 			}
 		} else {
@@ -163,33 +164,53 @@ func (r *Record) Rows(path, media string) []Row {
 			continue
 		}
 		for _, line := range text.SplitLines(string(r.blob(out.Sha256))) {
-			v, err := jsonvalue.Parse([]byte(line))
-			if err != nil {
-				continue
-			}
-			if o, ok := v.(*jsonvalue.Object); ok {
-				rows = append(rows, Row{out.Name, o})
+			fields := bytes.TrimSpace([]byte(line))
+			if bytes.HasPrefix(fields, []byte("{")) && json.Valid(fields) {
+				rows = append(rows, Row{out.Name, fields})
 			}
 		}
 	}
 	return rows
 }
 
-func stringsUnder(v any, keys map[string]bool) []string {
+func stringsUnder(line []byte, keys map[string]bool) ([]string, error) {
+	dec := json.NewDecoder(bytes.NewReader(line))
 	var out []string
-	switch t := v.(type) {
-	case *jsonvalue.Object:
-		for _, k := range t.Keys() {
-			if s, ok := t.Get(k).(string); ok && keys[k] {
-				out = append(out, s)
-			} else {
-				out = append(out, stringsUnder(t.Get(k), keys)...)
+	if err := walk(dec, "", keys, &out); err != nil {
+		return nil, err
+	}
+	if _, err := dec.Token(); !errors.Is(err, io.EOF) {
+		return nil, errors.New("run: data after a record line's value")
+	}
+	return out, nil
+}
+
+func walk(dec *json.Decoder, key string, keys map[string]bool, out *[]string) error {
+	tok, err := dec.Token()
+	if err != nil {
+		return err
+	}
+	switch t := tok.(type) {
+	case json.Delim:
+		for dec.More() {
+			child := ""
+			if t == '{' {
+				k, err := dec.Token()
+				if err != nil {
+					return err
+				}
+				child, _ = k.(string)
+			}
+			if err := walk(dec, child, keys, out); err != nil {
+				return err
 			}
 		}
-	case []any:
-		for _, item := range t {
-			out = append(out, stringsUnder(item, keys)...)
+		_, err := dec.Token()
+		return err
+	case string:
+		if keys[key] {
+			*out = append(*out, t)
 		}
 	}
-	return out
+	return nil
 }

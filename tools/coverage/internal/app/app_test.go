@@ -49,6 +49,91 @@ func TestDisposeWritesTheDisposedData(t *testing.T) {
 	}
 }
 
+func TestDisposeWritesSortedIDsEmptyListsAndUnescapedText(t *testing.T) {
+	dir := t.TempDir()
+	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"vocabulary": {
+		"library": {"kind:z": {"identifier": "Z", "link": "l"}, "kind:a": {"identifier": "A", "link": "l"}},
+		"trait": {}, "feature": {"feature:b": {"rule": "x"}, "feature:a": {"rule": "Q&A > 1"}}},
+		"library_placement": {"run": "r", "command": "c"},
+		"samples": [{"path": "a", "sha256": "s", "library": ["kind:a"], "traits": [], "features": [],
+			"judged": {"feature:b": "seen", "feature:a": "Q&A <b>"}, "format": "f", "bytes": 1,
+			"license_status": "n/a", "redistributable": true, "truth": [], "docs": [], "disposition": "trim", "trimmed_for": "z"}],
+		"gaps": [], "docs_without_sample": []}`)
+	t.Chdir(dir)
+	var stdout, stderr bytes.Buffer
+	if err := app.Dispose(nil, &stdout, &stderr); err != nil {
+		t.Fatal(err)
+	}
+	want := `{
+  "vocabulary": {
+    "library": {
+      "kind:a": {
+        "identifier": "A",
+        "link": "l"
+      },
+      "kind:z": {
+        "identifier": "Z",
+        "link": "l"
+      }
+    },
+    "trait": {},
+    "feature": {
+      "feature:a": {
+        "rule": "Q&A > 1"
+      },
+      "feature:b": {
+        "rule": "x"
+      }
+    }
+  },
+  "library_placement": {
+    "run": "r",
+    "command": "c"
+  },
+  "samples": [
+    {
+      "path": "a",
+      "sha256": "s",
+      "library": [
+        "kind:a"
+      ],
+      "traits": [],
+      "features": [],
+      "judged": {
+        "feature:a": "Q&A <b>",
+        "feature:b": "seen"
+      },
+      "format": "f",
+      "bytes": 1,
+      "license_status": "n/a",
+      "redistributable": true,
+      "truth": [],
+      "docs": [],
+      "disposition": "adopt"
+    }
+  ],
+  "gaps": [],
+  "docs_without_sample": []
+}
+`
+	if got := stdout.String(); got != want {
+		t.Errorf("Dispose wrote\n%s\nwant\n%s", got, want)
+	}
+}
+
+func TestDisposeRefusesAKeyItDoesNotKnow(t *testing.T) {
+	dir := t.TempDir()
+	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [], "gaps": [], "extra": 1}`)
+	t.Chdir(dir)
+	var stdout, stderr bytes.Buffer
+	if err := app.Dispose(nil, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "extra") {
+		t.Errorf("Dispose = %v, want an error naming the unknown key", err)
+	}
+	if stdout.Len() != 0 {
+		t.Errorf("Dispose wrote %q despite its error", stdout.String())
+	}
+}
+
 func TestPlaceTraitsRefusesOtherArguments(t *testing.T) {
 	ctx, cancel := context.WithCancel(t.Context())
 	cancel()

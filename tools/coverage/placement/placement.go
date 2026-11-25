@@ -1,6 +1,7 @@
 package placement
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -12,7 +13,6 @@ import (
 	"strings"
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/idset"
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 	"github.com/standards-lab/docs-corpus/tools/coverage/mail"
 	"github.com/standards-lab/docs-corpus/tools/coverage/media"
 	"github.com/standards-lab/docs-corpus/tools/coverage/office"
@@ -44,8 +44,7 @@ type Placer struct {
 
 // Run writes one JSON element per sample to w, sorted by path, with its path and its traits and
 // features, the IDs probed and judged, each sorted; with Facts, its facts and probed IDs too.
-// The output is an array written as Python's json.dumps writes it with an indent of 2, and a
-// newline. It writes nothing outside a temporary directory, which it removes. A sample missing
+// The output is an array indented by two spaces, with no HTML escaped, and a newline. It writes nothing outside a temporary directory, which it removes. A sample missing
 // from the manifest, a file it cannot read, and a context that ends are errors, and an error
 // writes nothing to w.
 func (p Placer) Run(ctx context.Context, w io.Writer) (err error) {
@@ -91,7 +90,7 @@ func (p Placer) Run(ctx context.Context, w io.Writer) (err error) {
 	defer func() { err = errors.Join(err, os.RemoveAll(tmp)) }()
 	pr := &prober{Placer: p, rec: rec, conversions: &office.Conversions{Soffice: p.Soffice, Dir: tmp}}
 	slices.SortFunc(coverage.Samples, func(a, b sample) int { return strings.Compare(a.Path, b.Path) })
-	out := []any{}
+	out := []row{}
 	for _, s := range coverage.Samples {
 		if err := ctx.Err(); err != nil {
 			return err
@@ -100,7 +99,7 @@ func (p Placer) Run(ctx context.Context, w io.Writer) (err error) {
 		if !ok {
 			return fmt.Errorf("%s: not in %s/MANIFEST.json", s.Path, p.Docs)
 		}
-		traits, features, facts, err := pr.probe(ctx, s, entry)
+		traits, features, found, err := pr.probe(ctx, s, entry)
 		if err != nil {
 			return err
 		}
@@ -110,24 +109,36 @@ func (p Placer) Run(ctx context.Context, w io.Writer) (err error) {
 		for id := range s.Judged {
 			placed.Add(id)
 		}
-		row := jsonvalue.NewObject()
-		row.Set("path", s.Path)
-		row.Set("traits", placed.Sorted("trait:"))
-		row.Set("features", placed.Sorted("feature:"))
+		r := row{Path: s.Path, Traits: placed.Sorted("trait:"), Features: placed.Sorted("feature:")}
 		if p.Facts {
 			probed := idset.Set{}
 			probed.Merge(traits)
 			probed.Merge(features)
-			row.Set("facts", facts)
-			row.Set("probed", probed.Sorted(""))
+			r.Facts = found
+			r.Probed = probed.Sorted("")
 		}
-		out = append(out, row)
+		out = append(out, r)
 	}
 	if err := ctx.Err(); err != nil {
 		return err
 	}
-	_, err = w.Write(append(jsonvalue.Marshal(out), '\n'))
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	enc.SetIndent("", "  ")
+	enc.SetEscapeHTML(false)
+	if err := enc.Encode(out); err != nil {
+		return err
+	}
+	_, err = w.Write(buf.Bytes())
 	return err
+}
+
+type row struct {
+	Path     string   `json:"path"`
+	Traits   []string `json:"traits"`
+	Features []string `json:"features"`
+	Facts    *facts   `json:"facts,omitempty"`
+	Probed   []string `json:"probed,omitzero"`
 }
 
 func (p Placer) require() {

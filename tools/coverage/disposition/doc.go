@@ -3,6 +3,10 @@
 //
 // Its exported identifiers:
 //
-//   - [Dispose] derives the dispositions in the parsed coverage data.
-//   - [Place] sets the data's traits and features from place-traits' output.
+//   - [Coverage] is the coverage data, with its [Vocabulary] of [Library] and [Rule] entries,
+//     [LibraryPlacement], [Sample]s, [Gap]s and their [Candidate]s, and [DocWithoutSample]s;
+//     [FedBy] is a capability's routes.
+//   - [Dispose] derives the dispositions in the coverage data.
+//   - [Placement] is one element of place-traits' output, and [Place] sets the data's traits and
+//     features from it.
 package disposition

@@ -13,8 +13,8 @@ import (
 	"strings"
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/idset"
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 	"github.com/standards-lab/docs-corpus/tools/coverage/mail"
+	"github.com/standards-lab/docs-corpus/tools/coverage/media"
 	"github.com/standards-lab/docs-corpus/tools/coverage/office"
 	"github.com/standards-lab/docs-corpus/tools/coverage/run"
 	"github.com/standards-lab/docs-corpus/tools/coverage/text"
@@ -30,6 +30,79 @@ type sample struct {
 
 type manifestEntry struct {
 	Format string `json:"format"`
+}
+
+type facts struct {
+	Pages                *int           `json:"pages,omitempty"`
+	RenderedPages        *int           `json:"rendered_pages,omitempty"`
+	TextPages            *int           `json:"text_pages,omitempty"`
+	DPIs                 []string       `json:"dpis,omitzero"`
+	PagesWithLargeImages *int           `json:"pages_with_large_images,omitempty"`
+	LargeImagePPI        []int          `json:"large_image_ppi,omitzero"`
+	Fonts                *int           `json:"fonts,omitempty"`
+	FontsWithoutUnicode  *int           `json:"fonts_without_unicode,omitempty"`
+	InvisibleTextRuns    *int           `json:"invisible_text_runs,omitempty"`
+	Duration             *float64       `json:"duration,omitempty"`
+	AudioStreams         *int           `json:"audio_streams,omitempty"`
+	VideoStreams         *int           `json:"video_streams,omitempty"`
+	AttachedPictures     *int           `json:"attached_pictures,omitempty"`
+	SampleRates          []int          `json:"sample_rates,omitzero"`
+	Channels             []int          `json:"channels,omitzero"`
+	SubtitleStreams      *int           `json:"subtitle_streams,omitempty"`
+	Frames               *int           `json:"frames,omitempty"`
+	Format               *string        `json:"format,omitempty"`
+	Width                *int           `json:"width,omitempty"`
+	Height               *int           `json:"height,omitempty"`
+	Alpha                *string        `json:"alpha,omitempty"`
+	Orientation          *string        `json:"orientation,omitempty"`
+	Opaque               *string        `json:"opaque,omitempty"`
+	Parts                *int           `json:"parts,omitempty"`
+	Messages             *int           `json:"messages,omitempty"`
+	FoldersWithMessages  *int           `json:"folders_with_messages,omitempty"`
+	BodyProperties       []string       `json:"body_properties,omitzero"`
+	Sections             *int           `json:"sections,omitempty"`
+	Entries              *int           `json:"entries,omitempty"`
+	Tables               *int           `json:"tables,omitempty"`
+	Media                *int           `json:"media,omitempty"`
+	Converted            *bool          `json:"converted,omitempty"`
+	Charset              *string        `json:"charset,omitempty"`
+	Scripts              map[string]int `json:"scripts"`
+}
+
+func (f *facts) pdf(p media.PDFFacts) {
+	f.Pages, f.RenderedPages, f.TextPages = new(p.Pages), new(p.RenderedPages), new(p.TextPages)
+	f.DPIs, f.PagesWithLargeImages, f.LargeImagePPI = p.DPIs, new(p.PagesWithLargeImages), p.LargeImagePPI
+	f.Fonts, f.FontsWithoutUnicode, f.InvisibleTextRuns = new(p.Fonts), new(p.FontsWithoutUnicode), new(p.InvisibleTextRuns)
+}
+
+func (f *facts) audioVideo(a media.AudioVideoFacts) {
+	f.Duration, f.AudioStreams, f.VideoStreams = new(a.Duration), new(a.AudioStreams), new(a.VideoStreams)
+	f.AttachedPictures, f.SampleRates, f.Channels = new(a.AttachedPictures), a.SampleRates, a.Channels
+	f.SubtitleStreams = new(a.SubtitleStreams)
+}
+
+func (f *facts) image(i media.ImageFacts) {
+	f.Frames = new(i.Frames)
+	if i.Frames > 0 {
+		f.Format, f.Width, f.Height = new(i.Format), new(i.Width), new(i.Height)
+		f.Alpha, f.Orientation, f.Opaque = new(i.Alpha), new(i.Orientation), new(i.Opaque)
+	}
+}
+
+func (f *facts) records(r mail.RecordsFacts) {
+	if r.Messages > 0 {
+		f.Messages = new(r.Messages)
+	}
+	f.FoldersWithMessages = new(r.FoldersWithMessages)
+}
+
+func (f *facts) onenote(o office.OneNoteFacts) {
+	if o.Sections > 0 {
+		f.Sections = new(o.Sections)
+	}
+	if o.Pages > 0 {
+		f.Pages = new(o.Pages)
+	}
 }
 
 var (
@@ -70,19 +143,18 @@ type prober struct {
 	conversions *office.Conversions
 }
 
-func (p *prober) probe(ctx context.Context, s sample, entry manifestEntry) (idset.Set, idset.Set, *jsonvalue.Object, error) {
+func (p *prober) probe(ctx context.Context, s sample, entry manifestEntry) (idset.Set, idset.Set, *facts, error) {
 	rel := s.Path
 	path := filepath.Join(p.Docs, rel)
 	library := idset.New(s.Library...)
 	ext := pyExt(rel)
 	traits, features := idset.Set{}, idset.Set{}
-	facts := jsonvalue.NewObject()
+	found := &facts{}
 	var body *string
 	setText := func(t string) { body = &t }
-	merge := func(t, f idset.Set, fs *jsonvalue.Object) {
+	merge := func(t, f idset.Set) {
 		traits.Merge(t)
 		features.Merge(f)
-		facts = fs
 	}
 	info, err := os.Stat(path)
 	if err != nil {
@@ -97,12 +169,18 @@ func (p *prober) probe(ctx context.Context, s sample, entry manifestEntry) (idse
 	}
 	switch {
 	case bytes.HasPrefix(head, []byte("%PDF")) || ext == ".pdf":
-		merge(p.Media.PDF(ctx, path, p.rec.Outputs(rel)))
+		t, fe, fs := p.Media.PDF(ctx, path, p.rec.Outputs(rel))
+		merge(t, fe)
+		found.pdf(fs)
 	case audioVideoExts[ext]:
-		merge(p.Media.AudioVideo(ctx, path))
+		t, fe, fs := p.Media.AudioVideo(ctx, path)
+		merge(t, fe)
+		found.audioVideo(fs)
 	case strings.HasPrefix(entry.Format, "image/") || imageExts[ext]:
 		if ext != ".svg" {
-			merge(p.Media.Image(ctx, path))
+			t, fe, fs := p.Media.Image(ctx, path)
+			merge(t, fe)
+			found.image(fs)
 		}
 	case ext == ".eml":
 		data, err := os.ReadFile(path)
@@ -110,7 +188,8 @@ func (p *prober) probe(ctx context.Context, s sample, entry manifestEntry) (idse
 			return nil, nil, nil, err
 		}
 		t, fe, b, fs := mail.Message(p.Parser, data)
-		merge(t, fe, fs)
+		merge(t, fe)
+		found.Parts = new(fs.Parts)
 		setText(b)
 	case ext == ".mbox":
 		data, err := os.ReadFile(path)
@@ -118,17 +197,20 @@ func (p *prober) probe(ctx context.Context, s sample, entry manifestEntry) (idse
 			return nil, nil, nil, err
 		}
 		t, fe, b, fs := mail.Mbox(p.Parser, data)
-		merge(t, fe, fs)
+		merge(t, fe)
+		found.Messages = new(fs.Messages)
 		setText(b)
 	case ext == ".msg" || ext == ".pst":
-		merge(mail.Records(p.rec.Rows(rel, "mail")))
+		t, fe, fs := mail.Records(p.rec.Rows(rel, "mail"))
+		merge(t, fe)
+		found.records(fs)
 		if ext == ".msg" {
 			data, err := os.ReadFile(path)
 			if err != nil {
 				return nil, nil, nil, err
 			}
 			bodies := mail.MSGBodies(data)
-			facts.Set("body_properties", bodies)
+			found.BodyProperties = bodies
 			if slices.Equal(bodies, []string{"1013"}) {
 				features.Add("feature:html-body")
 			}
@@ -138,12 +220,14 @@ func (p *prober) probe(ctx context.Context, s sample, entry manifestEntry) (idse
 		for _, e := range p.rec.Events(rel) {
 			outcomes.Add(string(e.Outcome))
 		}
-		merge(office.OneNote(p.rec.Rows(rel, "onenote"), outcomes))
+		t, fe, fs := office.OneNote(p.rec.Rows(rel, "onenote"), outcomes)
+		merge(t, fe)
+		found.onenote(fs)
 	case ext == ".odt" || ext == ".ods" || ext == ".odp" || ext == ".odg":
 		setText(office.ODFText(path))
 	case archiveExts[ext]:
 		entries := p.Media.ArchiveEntries(ctx, path)
-		facts.Set("entries", len(entries))
+		found.Entries = new(len(entries))
 		if len(entries) >= 1000 {
 			traits.Add("trait:scale.many-entries")
 		}
@@ -159,12 +243,10 @@ func (p *prober) probe(ctx context.Context, s sample, entry manifestEntry) (idse
 			target = p.conversions.Convert(ctx, path)
 		}
 		if target != "" {
-			f, ofacts := office.OOXML(target)
+			f, fs := office.OOXML(target)
 			features.Merge(f)
-			for _, k := range ofacts.Keys() {
-				facts.Set(k, ofacts.Get(k))
-			}
-			facts.Set("converted", target != path)
+			found.Parts, found.Tables, found.Media = new(fs.Parts), new(fs.Tables), new(fs.Media)
+			found.Converted = new(target != path)
 		}
 	}
 	if textExts[ext] {
@@ -176,7 +258,7 @@ func (p *prober) probe(ctx context.Context, s sample, entry manifestEntry) (idse
 		if trait != "" {
 			traits.Add(trait)
 		}
-		facts.Set("charset", guess)
+		found.Charset = new(guess)
 		if guess != "bom" && guess != "utf-8" {
 			guess = strings.ToLower(guess)
 		}
@@ -193,12 +275,11 @@ func (p *prober) probe(ctx context.Context, s sample, entry manifestEntry) (idse
 	}
 	scripts, counts := text.Scripts(*body)
 	traits.Merge(scripts)
-	found := jsonvalue.NewObject()
+	found.Scripts = map[string]int{}
 	for _, c := range counts {
 		if c.Count >= 5 {
-			found.Set(c.Name, c.Count)
+			found.Scripts[c.Name] = c.Count
 		}
 	}
-	facts.Set("scripts", found)
-	return traits, features, facts, nil
+	return traits, features, found, nil
 }

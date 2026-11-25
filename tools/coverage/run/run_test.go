@@ -6,7 +6,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 	"github.com/standards-lab/docs-corpus/tools/coverage/run"
 )
 
@@ -92,8 +91,8 @@ func TestRowsAreTheRecordOutputsObjectLines(t *testing.T) {
 	if len(rows) != 2 {
 		t.Fatalf("Rows = %d, want the 2 object lines", len(rows))
 	}
-	if rows[0].Name != "message 1" || rows[0].Fields.Str("subject") != "Hi" {
-		t.Errorf("first row = %s %s", rows[0].Name, jsonvalue.Marshal(rows[0].Fields))
+	if got := rows[0].Name + " " + string(rows[0].Fields); got != `message 1 {"subject": "Hi", "body": {"text": "T", "n": 1}}` {
+		t.Errorf("first row = %s", got)
 	}
 	if got := rec.Rows("m.pst", "onenote"); len(got) != 0 {
 		t.Errorf("Rows for another media type = %d, want none", len(got))

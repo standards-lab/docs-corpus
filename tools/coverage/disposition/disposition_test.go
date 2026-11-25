@@ -1,7 +1,8 @@
 package disposition_test
 
 import (
-	"bytes"
+	"encoding/json"
+	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -9,7 +10,6 @@ import (
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/disposition"
 	"github.com/standards-lab/docs-corpus/tools/coverage/internal/docstest"
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 )
 
 func entry(path string, library []string, size int, redistributable bool, extra string) string {
@@ -26,25 +26,24 @@ func entry(path string, library []string, size int, redistributable bool, extra 
 		`, "truth": [], "docs": []` + extra + `}`
 }
 
-func parse(t *testing.T, samples []string, gaps string) *jsonvalue.Object {
+func parse(t *testing.T, samples []string, gaps string) *disposition.Coverage {
 	t.Helper()
-	v, err := jsonvalue.Parse([]byte(`{"samples": [` + strings.Join(samples, ", ") + `], "gaps": ` + gaps + `}`))
-	if err != nil {
+	var coverage disposition.Coverage
+	if err := json.Unmarshal([]byte(`{"samples": [`+strings.Join(samples, ", ")+`], "gaps": `+gaps+`}`), &coverage); err != nil {
 		t.Fatal(err)
 	}
-	return v.(*jsonvalue.Object)
+	return &coverage
 }
 
-func dispositions(coverage *jsonvalue.Object) []string {
+func dispositions(coverage *disposition.Coverage) []string {
 	var out []string
-	for _, s := range coverage.Get("samples").([]any) {
-		o := s.(*jsonvalue.Object)
-		line := o.Str("path") + " " + o.Str("disposition")
-		if o.Has("trimmed_for") {
-			line += " " + o.Str("trimmed_for")
+	for _, s := range coverage.Samples {
+		line := s.Path + " " + s.Disposition
+		if s.TrimmedFor != "" {
+			line += " " + s.TrimmedFor
 		}
-		if o.Has("gap") {
-			line += " " + o.Str("gap")
+		if s.Gap != "" {
+			line += " " + s.Gap
 		}
 		out = append(out, line)
 	}
@@ -68,11 +67,11 @@ func TestDisposeAdoptsTrimsAndReplaces(t *testing.T) {
 	if got := dispositions(coverage); !slices.Equal(got, want) {
 		t.Errorf("dispositions = %q, want %q", got, want)
 	}
-	gap := coverage.Get("gaps").([]any)[0].(*jsonvalue.Object)
-	if got := string(jsonvalue.Marshal(gap.Get("covers"))); got != "[\n  \"kind:w\",\n  \"kind:z\"\n]" {
-		t.Errorf("g1 covers = %s, want kind:w and kind:z", got)
+	gap := coverage.Gaps[0]
+	if !slices.Equal(gap.Covers, []string{"kind:w", "kind:z"}) {
+		t.Errorf("g1 covers = %q, want kind:w and kind:z", gap.Covers)
 	}
-	if gap.Get("candidate") == nil {
+	if gap.Candidate == nil || gap.Candidate.Kind != "unavailable" {
 		t.Error("Dispose dropped g1's candidate")
 	}
 	if len(droppable) != 0 {
@@ -139,33 +138,23 @@ func TestDisposeNeverInventsAGap(t *testing.T) {
 
 func TestPlaceSetsTraitsAndFeatures(t *testing.T) {
 	coverage := parse(t, []string{entry("a", []string{"kind:x"}, 1, true, "")}, `[]`)
-	placement, err := jsonvalue.Parse([]byte(`[{"path": "a", "traits": ["trait:t.v"], "features": ["feature:f"]}]`))
-	if err != nil {
+	placement := []disposition.Placement{{Path: "a", Traits: []string{"trait:t.v"}, Features: []string{"feature:f"}}}
+	if err := disposition.Place(coverage, placement); err != nil {
 		t.Fatal(err)
 	}
-	if err := disposition.Place(coverage, placement.([]any)); err != nil {
-		t.Fatal(err)
-	}
-	a := coverage.Get("samples").([]any)[0].(*jsonvalue.Object)
-	if got := jsonvalue.String(a.Get("traits").([]any)[0]) + " " + jsonvalue.String(a.Get("features").([]any)[0]); got != "trait:t.v feature:f" {
-		t.Errorf("placed = %q", got)
-	}
-	if !slices.Equal(a.Keys()[:5], []string{"path", "library", "traits", "features", "bytes"}) {
-		t.Errorf("keys = %q, want their order kept", a.Keys())
+	a := coverage.Samples[0]
+	if got := strings.Join(slices.Concat(a.Library, a.Traits, a.Features), " "); got != "kind:x trait:t.v feature:f" {
+		t.Errorf("placed = %q, want the library kept and the traits and features set", got)
 	}
 }
 
 func TestPlaceRefusesAMismatchedPlacement(t *testing.T) {
-	for name, placement := range map[string]string{
-		"missing": `[]`,
-		"extra":   `[{"path": "a", "traits": [], "features": []}, {"path": "z", "traits": [], "features": []}]`,
+	for name, placement := range map[string][]disposition.Placement{
+		"missing": {},
+		"extra":   {{Path: "a"}, {Path: "z"}},
 	} {
 		coverage := parse(t, []string{entry("a", []string{"kind:x"}, 1, true, "")}, `[]`)
-		v, err := jsonvalue.Parse([]byte(placement))
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err := disposition.Place(coverage, v.([]any)); err == nil {
+		if err := disposition.Place(coverage, placement); err == nil {
 			t.Errorf("%s: Place = nil, want an error", name)
 		}
 	}
@@ -173,20 +162,20 @@ func TestPlaceRefusesAMismatchedPlacement(t *testing.T) {
 
 func TestDisposeReproducesTheCoverageData(t *testing.T) {
 	data := docstest.Coverage(t)
-	v, err := jsonvalue.Parse(data)
-	if err != nil {
+	var want, coverage disposition.Coverage
+	for _, v := range []*disposition.Coverage{&want, &coverage} {
+		if err := json.Unmarshal(data, v); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for i := range coverage.Samples {
+		coverage.Samples[i].Disposition = "unset"
+		coverage.Samples[i].TrimmedFor = "unset"
+	}
+	if _, err := disposition.Dispose(&coverage); err != nil {
 		t.Fatal(err)
 	}
-	coverage := v.(*jsonvalue.Object)
-	for _, s := range coverage.Get("samples").([]any) {
-		o := s.(*jsonvalue.Object)
-		o.Set("disposition", "unset")
-		o.Set("trimmed_for", "unset")
-	}
-	if _, err := disposition.Dispose(coverage); err != nil {
-		t.Fatal(err)
-	}
-	if got := append(jsonvalue.Marshal(coverage), '\n'); !bytes.Equal(got, data) {
-		t.Error("Dispose does not reproduce docs/coverage.json; run mise run dispose and compare")
+	if !reflect.DeepEqual(coverage, want) {
+		t.Error("Dispose does not reproduce docs/coverage.json's dispositions; run mise run dispose and compare")
 	}
 }

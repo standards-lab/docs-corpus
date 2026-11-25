@@ -8,7 +8,6 @@ import (
 	"unicode/utf8"
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/idset"
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 	"github.com/standards-lab/docs-corpus/tools/coverage/text"
 )
 
@@ -35,10 +34,16 @@ func hasPlainLink(s string) bool {
 	return false
 }
 
+// MessageFacts is what Message found in a message.
+type MessageFacts struct {
+	// Parts is the number of its parts, the message itself counted.
+	Parts int
+}
+
 // Message places an RFC 5322 message's traits and features, parsed by parser, and returns its
 // text, each text/plain and text/html body that is not an attachment and its decoded Subject, and
-// its facts, the number of parts.
-func Message(parser Parser, data []byte) (traits, features idset.Set, body string, facts *jsonvalue.Object) {
+// its facts.
+func Message(parser Parser, data []byte) (traits, features idset.Set, body string, facts MessageFacts) {
 	all := parser.Parse(data)
 	traits, features = idset.Set{}, idset.Set{}
 	var texts []string
@@ -102,9 +107,7 @@ func Message(parser Parser, data []byte) (traits, features idset.Set, body strin
 	if subject, ok := all[0].Header("Subject"); ok && subject != "" {
 		texts = append(texts, parser.DecodeHeader(subject))
 	}
-	facts = jsonvalue.NewObject()
-	facts.Set("parts", parts)
-	return traits, features, strings.Join(texts, "\n"), facts
+	return traits, features, strings.Join(texts, "\n"), MessageFacts{Parts: parts}
 }
 
 func splitMbox(data []byte) [][]byte {
@@ -123,10 +126,15 @@ func splitMbox(data []byte) [][]byte {
 	return append(chunks, data[start:])
 }
 
+// MboxFacts is what Mbox found in an mbox.
+type MboxFacts struct {
+	// Messages is the number of its messages.
+	Messages int
+}
+
 // Mbox places an mbox's traits and features: each message's, as Message places them, and threads
-// and scale across them. It returns the messages' text, joined by newlines, and its facts, the
-// number of messages.
-func Mbox(parser Parser, data []byte) (traits, features idset.Set, body string, facts *jsonvalue.Object) {
+// and scale across them. It returns the messages' text, joined by newlines, and its facts.
+func Mbox(parser Parser, data []byte) (traits, features idset.Set, body string, facts MboxFacts) {
 	chunks := splitMbox(data)
 	var ids []string
 	var refs []string
@@ -153,7 +161,5 @@ func Mbox(parser Parser, data []byte) (traits, features idset.Set, body string, 
 	if len(chunks) >= 1000 {
 		traits.Add("trait:scale.many-messages")
 	}
-	facts = jsonvalue.NewObject()
-	facts.Set("messages", len(chunks))
-	return traits, features, strings.Join(texts, "\n"), facts
+	return traits, features, strings.Join(texts, "\n"), MboxFacts{Messages: len(chunks)}
 }

@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/idset"
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 )
 
 type zipEntry struct {
@@ -191,9 +190,19 @@ type xmlPart struct {
 	name, text string
 }
 
+// OOXMLFacts is what OOXML found in a package.
+type OOXMLFacts struct {
+	// Parts is the number of the package's files.
+	Parts int
+	// Tables is the number of tables in its documents and slides.
+	Tables int
+	// Media is the number of its files under a media directory.
+	Media int
+}
+
 // OOXML places the features of the OOXML package at path, from its XML parts and part names, and
-// returns its facts: its parts, tables, and media. A file that is not a readable zip has none.
-func OOXML(path string) (features idset.Set, facts *jsonvalue.Object) {
+// returns its facts. A file that is not a readable zip has none.
+func OOXML(path string) (features idset.Set, facts OOXMLFacts) {
 	files := zipTexts(path)
 	var parts []xmlPart
 	byName := map[string]string{}
@@ -236,8 +245,6 @@ func OOXML(path string) (features idset.Set, facts *jsonvalue.Object) {
 		return slices.ContainsFunc(parts, test)
 	}
 	features = idset.Set{}
-	facts = jsonvalue.NewObject()
-	facts.Set("parts", len(files))
 	tables := 0
 	for _, v := range word {
 		tables += len(wordTable.FindAllStringIndex(v, -1))
@@ -309,9 +316,7 @@ func OOXML(path string) (features idset.Set, facts *jsonvalue.Object) {
 		strings.Contains(body, "<o:OLEObject") || strings.Contains(body, "<p:oleObj") {
 		features.Add("feature:embedded-objects")
 	}
-	facts.Set("tables", tables)
-	facts.Set("media", media)
-	return features, facts
+	return features, OOXMLFacts{Parts: len(files), Tables: tables, Media: media}
 }
 
 func xlsxDates(parts []xmlPart, byName map[string]string) bool {

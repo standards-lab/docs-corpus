@@ -1,6 +1,7 @@
 package mail_test
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"slices"
@@ -10,7 +11,6 @@ import (
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/idset"
 	"github.com/standards-lab/docs-corpus/tools/coverage/internal/docstest"
-	"github.com/standards-lab/docs-corpus/tools/coverage/jsonvalue"
 	"github.com/standards-lab/docs-corpus/tools/coverage/mail"
 	"github.com/standards-lab/docs-corpus/tools/coverage/run"
 	"github.com/standards-lab/docs-corpus/tools/coverage/stdmail"
@@ -66,8 +66,8 @@ func TestMessageReadsOnlyThroughItsParser(t *testing.T) {
 	if body != "<a href=\"https://example.org\">x</a>\nSIGNED" {
 		t.Errorf("body = %q, want the HTML body and the subject the parser decoded", body)
 	}
-	if got := string(jsonvalue.Marshal(facts)); got != "{\n  \"parts\": 3\n}" {
-		t.Errorf("facts = %s", got)
+	if want := (mail.MessageFacts{Parts: 3}); facts != want {
+		t.Errorf("facts = %+v, want %+v", facts, want)
 	}
 }
 
@@ -123,26 +123,21 @@ func TestMboxFindsThreadsAcrossMessages(t *testing.T) {
 	if body != "hello\nfirst\nreply\n" {
 		t.Errorf("body = %q", body)
 	}
-	if got := string(jsonvalue.Marshal(facts)); got != "{\n  \"messages\": 2\n}" {
-		t.Errorf("facts = %s", got)
+	if want := (mail.MboxFacts{Messages: 2}); facts != want {
+		t.Errorf("facts = %+v, want %+v", facts, want)
 	}
 }
 
-func rows(t *testing.T, lines ...string) []run.Row {
-	t.Helper()
+func rows(lines ...string) []run.Row {
 	var out []run.Row
 	for _, l := range lines {
-		v, err := jsonvalue.Parse([]byte(l))
-		if err != nil {
-			t.Fatal(err)
-		}
-		out = append(out, run.Row{Name: "message 1", Fields: v.(*jsonvalue.Object)})
+		out = append(out, run.Row{Name: "message 1", Fields: json.RawMessage(l)})
 	}
 	return out
 }
 
 func TestRecordsPlaceTheRunsMail(t *testing.T) {
-	traits, features, facts := mail.Records(rows(t,
+	traits, features, facts := mail.Records(rows(
 		`{"id": 1, "subject": "a", "folder": "Inbox", "message_id": "<1@x>", "transport_headers": "Content-Type: text/plain; charset=\"iso-8859-1\""}`,
 		`{"id": 2, "subject": "b", "folder": "Sent", "in_reply_to": "<1@x>", "markdown": "see https://example.org", "transport_headers": "Content-Type: text/plain; charset=utf-8",
 		  "attachments": [{"method": "by_reference_only", "name": "a.pdf"}, {"method": "by_value", "mime_type": "application/ms-tnef"}]}`,
@@ -158,8 +153,8 @@ func TestRecordsPlaceTheRunsMail(t *testing.T) {
 	if got := sorted(features); !slices.Equal(got, want) {
 		t.Errorf("features = %v, want %v", got, want)
 	}
-	if got := string(jsonvalue.Marshal(facts)); got != "{\n  \"messages\": 3,\n  \"folders_with_messages\": 2\n}" {
-		t.Errorf("facts = %s", got)
+	if want := (mail.RecordsFacts{Messages: 3, FoldersWithMessages: 2}); facts != want {
+		t.Errorf("facts = %+v, want %+v", facts, want)
 	}
 }
 

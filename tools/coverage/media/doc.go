@@ -6,5 +6,6 @@
 //
 //   - [Tool] runs one system tool over a file.
 //   - [Prober] holds the tools; [Prober.PDF], [Prober.AudioVideo], and [Prober.Image] place a
-//     file's traits and features, and [Prober.ArchiveEntries] lists an archive's files.
+//     file's traits and features and return what they found as [PDFFacts], [AudioVideoFacts],
+//     and [ImageFacts], and [Prober.ArchiveEntries] lists an archive's files.
 package media
