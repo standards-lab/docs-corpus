@@ -42,3 +42,7 @@ run = "scripts/fetch.sh"
 [tasks.fetch-candidates]
 description = "Fetch every sourced gap candidate in docs/coverage.json from its pinned URL to <area>/<source>/<name> with scripts/fetch-candidates.sh, verifying each against docs/candidates.json and recording any it doesn't list yet"
 run = "scripts/fetch-candidates.sh"
+
+[tasks.generate-candidates]
+description = "Generate every generated gap candidate in docs/coverage.json that docs/candidates.json doesn't record yet by its recorded command, with scripts/generate-candidates.sh, and record each one's path, size, sha256, and format there; nothing regenerates a recorded candidate"
+run = "scripts/generate-candidates.sh"

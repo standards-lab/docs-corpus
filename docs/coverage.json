@@ -690,7 +690,7 @@
     "command": "scripts/place-library.sh"
   },
   "corpus_placement": {
-    "run": "01a2135e-4b68-7343-9ac5-1cc4edb0391c",
+    "run": "01a21386-f572-713b-bb0d-7646e4669441",
     "docproc": "docproc v0.5.0 (7e116e21e628accdc4b79181aeabb75a7df763c8), cmd/docproc v0.2.3",
     "docproc_command": "docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/curate",
     "command": "mise run place-traits --corpus"
@@ -2596,7 +2596,7 @@
         "email/eml/cpython/cpython.LICENSE"
       ],
       "disposition": "trim",
-      "trimmed_for": "email/mimekit/jwz.mbox"
+      "trimmed_for": "email/mbox/many-messages.mbox"
     },
     {
       "path": "email/eml/cpython/msg_26.eml",
@@ -2988,7 +2988,7 @@
         "email/eml/cpython/cpython.LICENSE"
       ],
       "disposition": "trim",
-      "trimmed_for": "email/mimekit/jwz.mbox"
+      "trimmed_for": "email/mbox/many-messages.mbox"
     },
     {
       "path": "email/eml/cpython/msg_44.eml",
@@ -6626,7 +6626,8 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "adopt"
+      "disposition": "trim",
+      "trimmed_for": "office/multilang/multilang-table.odt"
     },
     {
       "path": "office/odf/draw-odf13.odg",
@@ -6646,7 +6647,7 @@
       "truth": [],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "office/odf/calc-odf13.ods"
+      "trimmed_for": "office/multilang/multilang-table.odt"
     },
     {
       "path": "office/odf/formulas.libreoffice.ods",
@@ -6668,7 +6669,7 @@
       ],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "office/odf/calc-odf13.ods"
+      "trimmed_for": "office/multilang/multilang-table.odt"
     },
     {
       "path": "office/odf/impress-odf13.odp",
@@ -6688,7 +6689,7 @@
       "truth": [],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "office/odf/calc-odf13.ods"
+      "trimmed_for": "office/multilang/multilang-table.odt"
     },
     {
       "path": "office/odf/slides.libreoffice.odp",
@@ -6710,7 +6711,7 @@
       ],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "office/odf/calc-odf13.ods"
+      "trimmed_for": "office/multilang/multilang-table.odt"
     },
     {
       "path": "office/odf/tables.libreoffice.odt",
@@ -6732,7 +6733,7 @@
       ],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "office/odf/calc-odf13.ods"
+      "trimmed_for": "office/multilang/multilang-table.odt"
     },
     {
       "path": "office/odf/writer-odf13.odt",
@@ -6752,7 +6753,7 @@
       "truth": [],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "office/odf/calc-odf13.ods"
+      "trimmed_for": "office/multilang/multilang-table.odt"
     },
     {
       "path": "office/realworld/docx/chart-column.docx",
@@ -7674,7 +7675,7 @@
       ],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "office/rtf/test-rtf.rtf"
+      "trimmed_for": "office/rtf/form-footnotes.rtf"
     },
     {
       "path": "office/rtf/lorem-ipsum-calibre.rtf",
@@ -7694,7 +7695,7 @@
       "truth": [],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "office/rtf/test-rtf.rtf"
+      "trimmed_for": "office/rtf/form-footnotes.rtf"
     },
     {
       "path": "office/rtf/tables.libreoffice.rtf",
@@ -7738,7 +7739,8 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "adopt"
+      "disposition": "trim",
+      "trimmed_for": "office/rtf/form-footnotes.rtf"
     },
     {
       "path": "onenote/interop/Resources/AlternativePackaging.one",
@@ -9372,7 +9374,8 @@
         "pdf/multilang/eurlex-32011D0833/decision-2011-833-bg.html"
       ],
       "docs": [],
-      "disposition": "adopt"
+      "disposition": "trim",
+      "trimmed_for": "archive/mixed-bundle.7z"
     },
     {
       "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-el.pdf",
@@ -9396,7 +9399,8 @@
         "pdf/multilang/eurlex-32011D0833/decision-2011-833-el.html"
       ],
       "docs": [],
-      "disposition": "adopt"
+      "disposition": "trim",
+      "trimmed_for": "pdf/multilang/multilang-table.pdf"
     },
     {
       "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-en.pdf",
@@ -11579,7 +11583,7 @@
           "pdf/edge/forms/isartor-interactive-form.pdf",
           "email/generated/msg/04-attachment-cyrillic.msg"
         ],
-        "generator": "bsdtar 3.8.10 (libarchive 3.8.10)",
+        "generator": "bsdtar 3.8.11 (libarchive 3.8.11)",
         "generator_license": "BSD-2-Clause",
         "fit": "Good: a 7z of three adopted samples, a docx (kind:zip, with an OLE2 embedding, a PNG, and Cyrillic beside Latin), a PDF with an OpenAction, and a msg whose text attachment is Cyrillic, so its members reach the archive, office, document, nested, text, and vision routes. It also carries the members' own IDs, such as check:ole-object."
       }
@@ -11614,7 +11618,7 @@
           "pdf/edge/forms/isartor-interactive-form.pdf",
           "email/generated/msg/04-attachment-cyrillic.msg"
         ],
-        "generator": "bsdtar 3.8.10 (libarchive 3.8.10)",
+        "generator": "bsdtar 3.8.11 (libarchive 3.8.11)",
         "generator_license": "BSD-2-Clause",
         "fit": "Good: the archive-1 members as a gzip-compressed ustar archive, so the gzip stream yields a tar, and the tar the same three adopted samples and their routes."
       }
@@ -11649,7 +11653,7 @@
           "pdf/edge/forms/isartor-interactive-form.pdf",
           "email/generated/msg/04-attachment-cyrillic.msg"
         ],
-        "generator": "bsdtar 3.8.10 (libarchive 3.8.10), with libzstd 1.5.7",
+        "generator": "bsdtar 3.8.11 (libarchive 3.8.11), with libzstd 1.5.7",
         "generator_license": "BSD-2-Clause (libarchive); BSD-3-Clause (zstd)",
         "fit": "Good: the archive-1 members as a zstd-compressed ustar archive, so the zstd stream yields a tar, and the tar the same three adopted samples and their routes."
       }
@@ -11701,7 +11705,7 @@
           "pdf/edge/forms/isartor-interactive-form.pdf",
           "email/generated/msg/04-attachment-cyrillic.msg"
         ],
-        "generator": "bsdtar 3.8.10 (libarchive 3.8.10)",
+        "generator": "bsdtar 3.8.11 (libarchive 3.8.11)",
         "generator_license": "BSD-2-Clause",
         "fit": "Good: a ZIP holding one ZIP, the inner one bsdtar's own output over the archive-1 members, so the nested archive yields the same three adopted samples and their routes."
       }
@@ -11725,7 +11729,7 @@
         "inputs": [
           "video/ami-es2002d/ami-es2002d-mix-headset.wav"
         ],
-        "generator": "FFmpeg n9.0.2 with libmp3lame",
+        "generator": "FFmpeg 9.1 with libmp3lame (LAME 4.0)",
         "generator_license": "GPL-3.0-or-later (this FFmpeg build); LGPL-2.0-or-later (LAME)",
         "fit": "Good: the adopted AMI ES2002d headset mix, a recorded meeting of four speakers over 30 minutes, re-encoded as MP3; the speech is unchanged, so it stays spontaneous, multi-speaker, and long, and AMI's CC-BY-4.0 carries over."
       }
@@ -11810,11 +11814,11 @@
       ],
       "candidate": {
         "kind": "generated",
-        "command": "magick -density 150 'pdf/scanned/real/stella-maberly-1896-ia-scan.pdf[10-12]' -colorspace gray -compress LZW image/formats/tiff/stella-maberly-3page.tif",
+        "command": "magick -density 150 'pdf/scanned/real/stella-maberly-1896-ia-scan.pdf[10]' 'pdf/scanned/real/stella-maberly-1896-ia-scan.pdf[11]' 'pdf/scanned/real/stella-maberly-1896-ia-scan.pdf[12]' -colorspace gray -compress LZW image/formats/tiff/stella-maberly-3page.tif",
         "inputs": [
           "pdf/scanned/real/stella-maberly-1896-ia-scan.pdf"
         ],
-        "generator": "ImageMagick 7.1.2-34, with Ghostscript 10.08.0 as its PDF delegate",
+        "generator": "ImageMagick 7.1.2-36, with Ghostscript 10.08.0 as its PDF delegate",
         "generator_license": "ImageMagick License; AGPL-3.0-or-later (Ghostscript)",
         "fit": "Good: pages 11 to 13, printed text, of the adopted 1896 Internet Archive scan, rasterized at 150 dpi into one LZW TIFF of three pages; the text is scanned print, and the scan's public domain status carries over."
       }
@@ -11985,7 +11989,7 @@
           "text/encodings/koi8-r.txt",
           "text/encodings/euc-jp.txt"
         ],
-        "generator": "bsdtar 3.8.10 (libarchive 3.8.10)",
+        "generator": "bsdtar 3.8.11 (libarchive 3.8.11)",
         "generator_license": "BSD-2-Clause",
         "fit": "Good: a ustar archive of three adopted text files whose entry names bsdtar rewrites, with -P keeping them as written: ../windows-1252.txt, /tmp/koi8-r.txt, and invoice.pdf.exe, a text file under an executable's double extension. Nothing in it executes."
       }
@@ -12082,7 +12086,7 @@
         "inputs": [
           "text/csv/tab-separated.tsv"
         ],
-        "generator": "GNU coreutils 9.12 split; bsdtar 3.8.10 (libarchive 3.8.10)",
+        "generator": "GNU coreutils 9.12 split; bsdtar 3.8.11 (libarchive 3.8.11)",
         "generator_license": "GPL-3.0-or-later (coreutils); BSD-2-Clause",
         "fit": "Fair: 1,000 text entries of about four bytes each, split from one adopted TSV, plus the directory entry, in a ZIP of about 180 KiB; it tests the entry count, not their content."
       }
@@ -12714,11 +12718,11 @@
       ],
       "candidate": {
         "kind": "generated",
-        "command": "ffmpeg -i video/prelinger-duck-and-cover/duck-and-cover-divx.avi -t 60 -map 0:v -map 0:a -map 0:a -c copy video/prelinger-duck-and-cover/duck-and-cover-two-audio.mkv",
+        "command": "ffmpeg -fflags +genpts -i video/prelinger-duck-and-cover/duck-and-cover-divx.avi -t 60 -map 0:v -map 0:a -map 0:a -c copy video/prelinger-duck-and-cover/duck-and-cover-two-audio.mkv",
         "inputs": [
           "video/prelinger-duck-and-cover/duck-and-cover-divx.avi"
         ],
-        "generator": "FFmpeg n9.0.2",
+        "generator": "FFmpeg 9.1",
         "generator_license": "GPL-3.0-or-later (this FFmpeg build)",
         "fit": "Fair: the first minute of the adopted public-domain Prelinger film, its streams copied unchanged into Matroska with the audio stream mapped twice, so it has two audio streams; the two are identical."
       }

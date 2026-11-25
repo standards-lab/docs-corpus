@@ -131,7 +131,8 @@ type Reading struct {
 	LicenseRead string `json:"license_read"`
 }
 
-// Candidate is a gap candidate's file as docs/candidates.json records it once fetched.
+// Candidate is a gap candidate's file as docs/candidates.json records it once fetched or
+// generated.
 type Candidate struct {
 	// Gap is the id of the gap it fills.
 	Gap string `json:"gap"`
@@ -147,6 +148,8 @@ type Candidate struct {
 	Format string `json:"format"`
 	// FormatBy is the file version that reported Format.
 	FormatBy string `json:"format_by"`
+	// TruthFrom, for a generated candidate, is the input whose truth it inherits unchanged.
+	TruthFrom string `json:"truth_from,omitempty"`
 }
 
 // Placed is one sample's covers, an element of place-traits --corpus's output.
@@ -159,13 +162,19 @@ type Placed struct {
 
 // Build returns the manifest of coverage's adopted samples and the truth and doc files they link,
 // each with the reference's facts and provenance, a sample's covers, and its reading applied, and
-// of the candidates fetched for coverage's gaps, but for those whose gap is covered_by another
-// sample. A candidate carries its recorded facts, its gap's candidate's provenance, no truth, and
-// its covers in placed, or none when placed lacks it. A file
-// the reference lacks, a sample whose sha256 differs from the reference's, a path that is both a
-// sample and a truth or doc file, a reading for a path that is neither an adopted sample nor a file
-// one links, a sourced candidate with no fetched file, a fetched file for a gap that has no sourced
-// or generated candidate, and a candidate at another file's path are errors.
+// of the candidates recorded for coverage's gaps, but for those whose gap is covered_by another
+// sample. A candidate carries its recorded facts, its gap's candidate's provenance, and its covers
+// in placed, or none when placed lacks it. A sourced candidate has no truth. A generated one has
+// its inputs' distinct licenses, in input order joined by "; ", a license status that is verified
+// when every input's is, otherwise the first input's that isn't, is redistributable when every
+// input is, and has the truth of the input its TruthFrom names, or none.
+//
+// A file the reference lacks, a sample whose sha256 differs from the reference's, a path that is
+// both a sample and a truth or doc file, a reading for a path that is neither an adopted sample nor
+// a file one links, a sourced or generated candidate with no recorded file whose gap isn't
+// covered_by another sample, a recorded file for a gap that has no sourced or generated
+// candidate, a candidate at another file's path, a generated candidate whose input isn't an
+// adopted sample, and a TruthFrom on a sourced candidate or naming no input are errors.
 func Build(coverage disposition.Coverage, reference Reference, readings []Reading, candidates []Candidate, placed []Placed) (Manifest, error) {
 	byPath := make(map[string]ReferenceFile, len(reference.Files))
 	for _, f := range reference.Files {
@@ -264,14 +273,58 @@ func addCandidates(files map[string]File, gaps []disposition.Gap, candidates []C
 			errs = append(errs, fmt.Errorf("%s: gap %s's candidate is at another file's path", c.Path, c.Gap))
 			continue
 		}
-		files[c.Path] = candidateEntry(c, *g.Candidate, covers[c.Path])
+		f := candidateEntry(c, *g.Candidate, covers[c.Path])
+		if g.Candidate.Kind == "generated" {
+			if err := inherit(&f, c.TruthFrom, files); err != nil {
+				errs = append(errs, fmt.Errorf("%s: %w", c.Path, err))
+				continue
+			}
+		} else if c.TruthFrom != "" {
+			errs = append(errs, fmt.Errorf("%s: a sourced candidate inherits no truth, but names truth_from %s", c.Path, c.TruthFrom))
+			continue
+		}
+		files[c.Path] = f
 	}
 	for _, g := range gaps {
-		if g.Candidate != nil && g.Candidate.Kind == "sourced" && !fetched[g.ID] {
+		if g.Candidate == nil || fetched[g.ID] || g.CoveredBy != "" {
+			continue
+		}
+		switch g.Candidate.Kind {
+		case "sourced":
 			errs = append(errs, fmt.Errorf("gap %s: its sourced candidate has no fetched file; run mise run fetch-candidates", g.ID))
+		case "generated":
+			errs = append(errs, fmt.Errorf("gap %s: its generated candidate has no generated file; run mise run generate-candidates", g.ID))
 		}
 	}
 	return errs
+}
+
+func inherit(f *File, truthFrom string, files map[string]File) error {
+	var licenses []string
+	f.LicenseStatus, f.Redistributable = "verified", true
+	for _, path := range f.Inputs {
+		in, ok := files[path]
+		if !ok || in.Role != "sample" || in.Gap != "" {
+			return fmt.Errorf("its input %s is not an adopted sample", path)
+		}
+		if !slices.Contains(licenses, in.License) {
+			licenses = append(licenses, in.License)
+		}
+		if f.LicenseStatus == "verified" {
+			f.LicenseStatus = in.LicenseStatus
+		}
+		f.Redistributable = f.Redistributable && in.Redistributable
+	}
+	f.License = strings.Join(licenses, "; ")
+	if truthFrom == "" {
+		f.TruthNote = "a generated candidate, which inherits no input's truth unchanged"
+		return nil
+	}
+	if !slices.Contains(f.Inputs, truthFrom) {
+		return fmt.Errorf("truth_from %s is not one of its inputs", truthFrom)
+	}
+	f.Truth = slices.Clone(files[truthFrom].Truth)
+	return nil
 }
 
 func candidateEntry(c Candidate, from disposition.Candidate, placed []string) File {

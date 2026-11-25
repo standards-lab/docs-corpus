@@ -83,7 +83,7 @@ func corpusPlaced() ([]disposition.Placed, error) {
 	var placed []disposition.Placed
 	for _, c := range candidates {
 		if ids, ok := covers[c.Path]; ok {
-			placed = append(placed, disposition.Placed{Gap: c.Gap, Path: c.Path, Bytes: c.Bytes, Covers: ids})
+			placed = append(placed, disposition.Placed{Gap: c.Gap, Path: c.Path, Bytes: c.Bytes, Covers: ids, TruthFrom: c.TruthFrom})
 		}
 	}
 	return placed, nil

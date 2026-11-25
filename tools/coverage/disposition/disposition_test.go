@@ -189,6 +189,37 @@ func TestDisposeTrimsForCandidatesAndDropsCandidatesInsideAnother(t *testing.T) 
 	}
 }
 
+func TestDisposeRanksAGeneratedCandidateByItsInputs(t *testing.T) {
+	cases := []struct {
+		name, input, other, truthFrom string
+		want                          []string
+	}{
+		{"verified inputs beat a reported candidate", "verified", "reported", "", []string{"g1 ", "g2 x/gen"}},
+		{"reported inputs lose to a verified candidate", "reported", "verified", "", []string{"g1 x/src", "g2 "}},
+		{"inherited truth beats a verified candidate", "reported", "verified", "a", []string{"g1 ", "g2 x/gen"}},
+	}
+	for _, c := range cases {
+		a := `{"path": "a", "library": ["kind:a"], "traits": [], "features": [], "bytes": 1, "license_status": "` + c.input +
+			`", "redistributable": true, "truth": ["a.truth"], "docs": []}`
+		coverage := parse(t, []string{a}, `[{"id": "g1", "covers": ["kind:z"], "candidate": {"kind": "generated", "inputs": ["a"]}},
+			{"id": "g2", "covers": ["kind:z"], "candidate": {"kind": "sourced", "license_status": "`+c.other+`"}}]`)
+		_, err := disposition.Dispose(coverage, []disposition.Placed{
+			{Gap: "g1", Path: "x/gen", Bytes: 9, Covers: []string{"kind:z"}, TruthFrom: c.truthFrom},
+			{Gap: "g2", Path: "x/src", Bytes: 1, Covers: []string{"kind:z"}},
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		var covered []string
+		for _, g := range coverage.Gaps {
+			covered = append(covered, g.ID+" "+g.CoveredBy)
+		}
+		if !slices.Equal(covered, c.want) {
+			t.Errorf("%s: covered_by = %q, want %q", c.name, covered, c.want)
+		}
+	}
+}
+
 func gapLines(coverage *disposition.Coverage) []string {
 	var out []string
 	for _, g := range coverage.Gaps {

@@ -233,6 +233,84 @@ func TestBuildRefusesInconsistentCandidates(t *testing.T) {
 	}
 }
 
+func generatedCoverage() (disposition.Coverage, []manifest.ReferenceFile) {
+	coverage := disposition.Coverage{
+		Samples: []disposition.Sample{adopted("in/a.wav", []string{"in/a.truth"}, nil), adopted("in/b.txt", nil, nil), adopted("in/c.txt", nil, nil)},
+		Gaps: []disposition.Gap{{ID: "g3", Covers: []string{"kind:a"}, Candidate: &disposition.Candidate{
+			Kind: "generated", Command: "make out/x.mp3", Inputs: []string{"in/a.wav", "in/b.txt", "in/c.txt"},
+			Generator: "tool 1.0", GeneratorLicense: "MIT", Fit: "Good: it fits",
+		}}},
+	}
+	b := ref("in/b.txt", "sample", "none: generated")
+	b.License = "PSF-2.0"
+	c := ref("in/c.txt", "sample", "none: generated")
+	c.Redistributable = false
+	return coverage, []manifest.ReferenceFile{ref("in/a.wav", "sample", "in/a.truth (all of it)"), ref("in/a.truth", "truth", ""), b, c}
+}
+
+func TestBuildDerivesAGeneratedCandidatesLicenseAndTruthFromItsInputs(t *testing.T) {
+	coverage, files := generatedCoverage()
+	readings := []manifest.Reading{{Path: "in/a.wav", LicenseURL: "https://example.org/l", LicenseRead: "2026-11-25"}}
+	generated := []manifest.Candidate{{Gap: "g3", Path: "out/x.mp3", Source: "generated", Sha256: "h", Bytes: 5, Format: "audio/mpeg", FormatBy: "file-5.48", TruthFrom: "in/a.wav"}}
+	m, err := manifest.Build(coverage, manifest.Reference{Files: files}, readings, generated, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := byPath(m)["out/x.mp3"]
+	want := manifest.File{
+		Path: "out/x.mp3", Role: "sample", Sha256: "h", Bytes: 5, Format: "audio/mpeg",
+		Truth: []manifest.Truth{{Path: "in/a.truth", Note: "all of it"}}, Docs: []string{}, Source: "generated",
+		License: "CC0-1.0; PSF-2.0", LicenseStatus: "reported", Redistributable: false,
+		Command: "make out/x.mp3", Inputs: []string{"in/a.wav", "in/b.txt", "in/c.txt"}, Generator: "tool 1.0", GeneratorLicense: "MIT", Gap: "g3",
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("out/x.mp3 = %+v, want %+v", got, want)
+	}
+
+	generated[0].TruthFrom = ""
+	for _, f := range files {
+		readings = append(readings, manifest.Reading{Path: f.Path, LicenseURL: "https://example.org/l", LicenseRead: "2026-11-25"})
+	}
+	files[3].Redistributable = true
+	m, err = manifest.Build(coverage, manifest.Reference{Files: files}, readings, generated, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got = byPath(m)["out/x.mp3"]
+	if len(got.Truth) != 0 || got.TruthNote == "" || got.LicenseStatus != "verified" || !got.Redistributable {
+		t.Errorf("out/x.mp3 = %+v, want no truth with a truth note, verified, and redistributable", got)
+	}
+}
+
+func TestBuildRefusesInconsistentGeneratedCandidates(t *testing.T) {
+	record := manifest.Candidate{Gap: "g3", Path: "out/x.mp3"}
+	cases := []struct {
+		name       string
+		candidates []manifest.Candidate
+		inputs     []string
+		want       string
+	}{
+		{"ungenerated", nil, nil, "gap g3: its generated candidate has no generated file; run mise run generate-candidates"},
+		{"input not adopted", []manifest.Candidate{record}, []string{"in/a.wav", "in/z.txt"}, "out/x.mp3: its input in/z.txt is not an adopted sample"},
+		{"truth from no input", []manifest.Candidate{{Gap: "g3", Path: "out/x.mp3", TruthFrom: "in/z.wav"}}, nil, "out/x.mp3: truth_from in/z.wav is not one of its inputs"},
+	}
+	for _, c := range cases {
+		coverage, files := generatedCoverage()
+		if c.inputs != nil {
+			coverage.Gaps[0].Candidate.Inputs = c.inputs
+		}
+		_, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, c.candidates, nil)
+		if err == nil || !strings.Contains(err.Error(), c.want) {
+			t.Errorf("%s: Build = %v, want an error containing %q", c.name, err, c.want)
+		}
+	}
+	sourced := []manifest.Candidate{{Gap: "g1", Path: "x/c.bin", TruthFrom: "in/a.wav"}}
+	_, err := manifest.Build(candidateCoverage(""), manifest.Reference{}, nil, sourced, nil)
+	if want := "x/c.bin: a sourced candidate inherits no truth, but names truth_from in/a.wav"; err == nil || !strings.Contains(err.Error(), want) {
+		t.Errorf("sourced truth_from: Build = %v, want an error containing %q", err, want)
+	}
+}
+
 func sum(data string) string {
 	h := sha256.Sum256([]byte(data))
 	return hex.EncodeToString(h[:])

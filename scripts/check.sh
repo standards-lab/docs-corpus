@@ -167,11 +167,19 @@ else
     ($placed[0] | map({key: .path, value: .covers}) | from_entries) as $covers
     | ($fetched[0] | map({key: .gap, value: .}) | from_entries) as $files
     | ([(.gaps // [])[] | select(.candidate.kind == "generated") | .candidate.inputs[]?]) as $inputs
-    | ([(.gaps // [])[] | select(IN(.candidate.kind?; "sourced", "generated") and .covered_by == null)
-        | .candidate.license_status as $status | $files[.id] // empty | select($covers[.path] != null)
-        | {path, gap, format, bytes, library: $covers[.path], truth: [], license_status: $status,
-           redistributable: ($status == "verified"), disposition: "adopt"}]) as $candidates
     | (.samples // []) as $samples
+    | ($samples | map({key: .path, value: .}) | from_entries) as $entries
+    | ([(.gaps // [])[] | select(IN(.candidate.kind?; "sourced", "generated") and .covered_by == null)
+        | .candidate as $c | $files[.id] // empty | select($covers[.path] != null)
+        | (if $c.kind == "generated" then
+             [$c.inputs[]? | $entries[.]] as $in
+             | {license_status: (first($in[] | (.license_status? // "") | select(. != "verified")) // "verified"),
+                redistributable: ($in != [] and all($in[]; .redistributable? == true)),
+                truth: (if .truth_from != null and IN(.truth_from; $c.inputs[]?) then ($entries[.truth_from].truth // []) else [] end)}
+           else
+             {license_status: $c.license_status, redistributable: ($c.license_status == "verified"), truth: []}
+           end) as $facts
+        | {path, gap, format, bytes, library: $covers[.path], disposition: "adopt"} + $facts]) as $candidates
     | ($samples | map(select(.disposition == "adopt")) + $candidates) as $adopted
     | ($samples + $candidates | map({key: .path, value: .}) | from_entries) as $by
     | ((.gaps // []) | map({key: .id, value: .}) | from_entries) as $gaps
@@ -337,6 +345,7 @@ if [ -f MANIFEST.json ]; then
     | ([$coverage[0].gaps[] | select(.candidate.kind == "generated") | .candidate.inputs[]?]) as $inputs
     | ($tracked | map({key: ., value: true}) | from_entries) as $in_git
     | [.files[] | select(.role == "sample")] as $samples
+    | (.files | map({key: .path, value: .}) | from_entries) as $by_path
     | (select(.version != 1)
         | "MANIFEST.json: version is \(.version | tojson), not 1; \($regenerate)"),
       (.files[] | select(IN(.role; "sample", "truth", "doc") | not)
@@ -367,17 +376,26 @@ if [ -f MANIFEST.json ]; then
           elif $g.covered_by != null then
             "\(.path): gap \($id) is covered_by \($g.covered_by), so its candidate leaves the corpus; \($regenerate)"
           else
-            (. as $f | ["url", "ref", "license", "license_url", "license_read", "license_status", "command", "inputs", "generator", "generator_license"][]
-              | select(($f[.] // null) != ($g.candidate[.] // null))
+            (. as $f | ["url", "ref", "license_url", "license_read", "command", "inputs", "generator", "generator_license"]
+              + (if $g.candidate.kind == "sourced" then ["license", "license_status"] else [] end)
+              | .[] | select(($f[.] // null) != ($g.candidate[.] // null))
               | "\($f.path).\(.): differs from gap \($id)\u0027s candidate; never edit a candidate\u0027s provenance here, \($regenerate)"),
             (select($g.candidate.kind == "sourced" and .truth != [])
               | "\(.path): a sourced candidate inherits no truth; \($regenerate)"),
+            (select($g.candidate.kind == "generated") | . as $f | [$g.candidate.inputs[]? | $by_path[.] // {}] as $in
+              | ({license: ([$in[].license] | reduce .[] as $l ([]; if any(.[]; . == $l) then . else . + [$l] end) | join("; ")),
+                  license_status: (first($in[] | (.license_status // "") | select(. != "verified")) // "verified"),
+                  redistributable: ($in != [] and all($in[]; .redistributable == true))}
+                | to_entries[] | select($f[.key] != .value)
+                | "\($f.path).\(.key): \($f[.key] | tojson), but its inputs give \(.value | tojson); a generated candidate\u0027s license follows from its inputs\u0027, so \($regenerate)"),
+              (($f.truth // []) - [$in[].truth[]?] | select(. != [])
+                | "\($f.path): its truth \(map(.path) | join(", ")) is not its inputs\u0027 truth; a generated candidate inherits only an input\u0027s truth, unchanged, so fix truth_from in docs/candidates.json and \($regenerate)")),
             (($g.covers - (.covers // [])) as $missing | select($missing != [])
               | "\(.path): its placed covers lack gap \($id)\u0027s \($missing | join(", ")); run docproc over the corpus and mise run place-traits --corpus > docs/corpus-placement.json as docs/coverage.md states, then mise run dispose to split the covers it does not confirm into an open gap, and \($regenerate)")
           end),
       ([$samples[].gap] as $filled | $coverage[0].gaps[]
-        | select(.candidate.kind == "sourced" and .covered_by == null and (IN(.id; $filled[]) | not))
-        | "gaps.\(.id): its sourced candidate is not a sample in MANIFEST.json; run mise run fetch-candidates, then \($regenerate)"),
+        | select(IN(.candidate.kind; "sourced", "generated") and .covered_by == null and (IN(.id; $filled[]) | not))
+        | "gaps.\(.id): its \(.candidate.kind) candidate is not a sample in MANIFEST.json; run mise run \(if .candidate.kind == "sourced" then "fetch-candidates" else "generate-candidates" end), then \($regenerate)"),
       ($judged[0] | to_entries[] | .key as $p
         | if any($samples[]; .path == $p) | not then
             "docs/judged.json: \($p) is not a sample in MANIFEST.json; judge only the corpus\u0027s samples"

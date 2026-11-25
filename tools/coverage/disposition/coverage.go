@@ -174,8 +174,9 @@ type Placement struct {
 	Features []string `json:"features"`
 }
 
-// Placed is a gap candidate as the corpus placement placed it: its gap, path, and size, as
-// docs/candidates.json records them, and its covers, as place-traits --corpus prints them.
+// Placed is a gap candidate as the corpus placement placed it: its gap, path, size, and the input
+// whose truth it inherits, as docs/candidates.json records them, and its covers, as place-traits
+// --corpus prints them.
 type Placed struct {
 	// Gap is the id of the gap it fills.
 	Gap string
@@ -185,4 +186,6 @@ type Placed struct {
 	Bytes int64
 	// Covers are its library, trait, and feature IDs.
 	Covers []string
+	// TruthFrom, for a generated candidate, is the input whose truth it inherits unchanged.
+	TruthFrom string
 }

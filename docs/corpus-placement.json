@@ -12,11 +12,113 @@
     ]
   },
   {
+    "path": "archive/edge/entry-names.tar",
+    "covers": [
+      "check:archive-absolute-path",
+      "check:archive-traversal",
+      "check:double-extension",
+      "check:executable-extension",
+      "check:signature-mismatch",
+      "kind:tar",
+      "route:archive",
+      "route:unrouted"
+    ]
+  },
+  {
     "path": "archive/go/issue11169.tar",
     "covers": [
       "check:tar-unreadable",
       "kind:tar",
       "route:archive"
+    ]
+  },
+  {
+    "path": "archive/many-entries.zip",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "kind:zip",
+      "route:archive",
+      "route:text",
+      "trait:scale.many-entries",
+      "trait:script.arabic",
+      "trait:script.cyrillic",
+      "trait:script.greek",
+      "trait:script.mixed"
+    ]
+  },
+  {
+    "path": "archive/mixed-bundle.7z",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:ole-object",
+      "check:pdf-openaction",
+      "kind:7z",
+      "kind:ole2",
+      "kind:pdf",
+      "kind:png",
+      "kind:zip",
+      "route:archive",
+      "route:document",
+      "route:nested",
+      "route:office",
+      "route:text",
+      "route:unrouted",
+      "route:vision",
+      "trait:script.cyrillic",
+      "trait:script.mixed"
+    ]
+  },
+  {
+    "path": "archive/mixed-bundle.tar.gz",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:ole-object",
+      "check:pdf-openaction",
+      "kind:gzip",
+      "kind:ole2",
+      "kind:pdf",
+      "kind:png",
+      "kind:tar",
+      "kind:zip",
+      "route:archive",
+      "route:document",
+      "route:nested",
+      "route:office",
+      "route:text",
+      "route:unrouted",
+      "route:vision",
+      "trait:script.cyrillic",
+      "trait:script.mixed"
+    ]
+  },
+  {
+    "path": "archive/mixed-bundle.tar.zst",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:ole-object",
+      "check:pdf-openaction",
+      "kind:ole2",
+      "kind:pdf",
+      "kind:png",
+      "kind:tar",
+      "kind:zip",
+      "kind:zstd",
+      "route:archive",
+      "route:document",
+      "route:nested",
+      "route:office",
+      "route:text",
+      "route:unrouted",
+      "route:vision",
+      "trait:script.cyrillic",
+      "trait:script.mixed"
     ]
   },
   {
@@ -46,6 +148,44 @@
       "kind:zip",
       "route:archive",
       "route:text"
+    ]
+  },
+  {
+    "path": "archive/zip-in-zip.zip",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:ole-object",
+      "check:pdf-openaction",
+      "feature:nested-archives",
+      "kind:ole2",
+      "kind:pdf",
+      "kind:png",
+      "kind:zip",
+      "route:archive",
+      "route:document",
+      "route:nested",
+      "route:office",
+      "route:text",
+      "route:unrouted",
+      "route:vision",
+      "trait:script.cyrillic",
+      "trait:script.mixed"
+    ]
+  },
+  {
+    "path": "audio/long/ami-es2002d-mix-headset.mp3",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:mp3",
+      "route:audio",
+      "trait:audio.multi-speaker",
+      "trait:audio.multi-window",
+      "trait:audio.spontaneous",
+      "trait:scale.long-media"
     ]
   },
   {
@@ -158,6 +298,19 @@
     ]
   },
   {
+    "path": "email/eml/rights-managed.eml",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "feature:attachments",
+      "feature:embedded-messages",
+      "feature:rights-managed",
+      "route:nested",
+      "route:text",
+      "route:unrouted"
+    ]
+  },
+  {
     "path": "email/generated/msg/03-html-inline-image.msg",
     "covers": [
       "capability:embeddings",
@@ -243,6 +396,27 @@
     "covers": [
       "kind:ost",
       "route:unrouted"
+    ]
+  },
+  {
+    "path": "email/mbox/many-messages.mbox",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:signature-mismatch",
+      "feature:attachments",
+      "feature:embedded-messages",
+      "feature:hyperlinks",
+      "feature:inline-images",
+      "kind:gif",
+      "kind:jpeg",
+      "kind:mbox",
+      "route:nested",
+      "route:unrouted",
+      "route:vision",
+      "trait:charset.declared",
+      "trait:scale.many-messages"
     ]
   },
   {
@@ -457,6 +631,18 @@
     ]
   },
   {
+    "path": "image/formats/tiff/stella-maberly-3page.tif",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:multi-page-image",
+      "kind:tiff",
+      "route:vision-converted",
+      "trait:scan.printed"
+    ]
+  },
+  {
     "path": "image/formats/wmf/fuzz-minimized.wmf",
     "covers": [
       "capability:embeddings",
@@ -496,6 +682,20 @@
       "check:svg-event-handler",
       "check:svg-external-href",
       "check:svg-script",
+      "kind:svg",
+      "route:vision-converted"
+    ]
+  },
+  {
+    "path": "image/vector/truncated.svg",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:svg-event-handler",
+      "check:svg-external-href",
+      "check:svg-script",
+      "check:svg-unreadable",
       "kind:svg",
       "route:vision-converted"
     ]
@@ -709,6 +909,39 @@
     ]
   },
   {
+    "path": "office/multilang/multilang-table.docx",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "feature:tables",
+      "kind:zip",
+      "route:office",
+      "trait:script.arabic",
+      "trait:script.cyrillic",
+      "trait:script.greek",
+      "trait:script.han",
+      "trait:script.hebrew",
+      "trait:script.kana",
+      "trait:script.mixed"
+    ]
+  },
+  {
+    "path": "office/multilang/multilang-table.odt",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "kind:odf",
+      "route:office",
+      "trait:script.arabic",
+      "trait:script.cyrillic",
+      "trait:script.greek",
+      "trait:script.han",
+      "trait:script.hebrew",
+      "trait:script.kana",
+      "trait:script.mixed"
+    ]
+  },
+  {
     "path": "office/odf/calc-odf13.ods",
     "covers": [
       "capability:embeddings",
@@ -904,6 +1137,22 @@
       "kind:jpeg",
       "kind:png",
       "kind:zip",
+      "route:office",
+      "route:vision"
+    ]
+  },
+  {
+    "path": "office/rtf/form-footnotes.rtf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:footnotes",
+      "feature:merged-cells",
+      "feature:pictures",
+      "feature:tables",
+      "kind:png",
+      "kind:rtf",
       "route:office",
       "route:vision"
     ]
@@ -1162,6 +1411,18 @@
     ]
   },
   {
+    "path": "pdf/large/oversized-page.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:scale.oversized-page",
+      "trait:text-layer.ocr"
+    ]
+  },
+  {
     "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-bg.pdf",
     "covers": [
       "capability:embeddings",
@@ -1181,6 +1442,23 @@
       "kind:pdf",
       "route:document",
       "trait:script.greek"
+    ]
+  },
+  {
+    "path": "pdf/multilang/multilang-table.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:script.arabic",
+      "trait:script.cyrillic",
+      "trait:script.greek",
+      "trait:script.han",
+      "trait:script.hebrew",
+      "trait:script.kana",
+      "trait:script.mixed"
     ]
   },
   {
@@ -1236,6 +1514,21 @@
       "trait:scan.printed",
       "trait:text-layer.ocr",
       "trait:text-layer.partial"
+    ]
+  },
+  {
+    "path": "pdf/scanned/scanned-tables.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:multi-column",
+      "feature:tables",
+      "kind:pdf",
+      "route:document",
+      "trait:scan.degraded",
+      "trait:scan.printed",
+      "trait:text-layer.none"
     ]
   },
   {
@@ -1338,6 +1631,19 @@
       "route:text",
       "trait:script.han",
       "trait:script.hebrew",
+      "trait:script.kana",
+      "trait:script.mixed"
+    ]
+  },
+  {
+    "path": "text/encodings/utf32-bom.txt",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "kind:utf-32 bom",
+      "route:text",
+      "trait:script.cyrillic",
+      "trait:script.han",
       "trait:script.kana",
       "trait:script.mixed"
     ]
@@ -1473,6 +1779,19 @@
       "route:audio",
       "trait:audio.multi-window",
       "trait:audio.noisy"
+    ]
+  },
+  {
+    "path": "video/prelinger-duck-and-cover/duck-and-cover-two-audio.mkv",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "capability:vision",
+      "feature:multiple-streams",
+      "kind:mkv",
+      "route:video",
+      "trait:audio.multi-window"
     ]
   },
   {
