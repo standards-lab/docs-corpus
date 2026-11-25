@@ -1,412 +1,6 @@
 {
   "vocabulary": {
     "library": {
-      "kind:pdf": {
-        "identifier": "route.PDF",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L18"
-      },
-      "kind:png": {
-        "identifier": "route.PNG",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L20"
-      },
-      "kind:jpeg": {
-        "identifier": "route.JPEG",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L21"
-      },
-      "kind:gif": {
-        "identifier": "route.GIF",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L22"
-      },
-      "kind:bmp": {
-        "identifier": "route.BMP",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L23"
-      },
-      "kind:tiff": {
-        "identifier": "route.TIFF",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L25"
-      },
-      "kind:emf": {
-        "identifier": "route.EMF",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L26"
-      },
-      "kind:wmf": {
-        "identifier": "route.WMF",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L27"
-      },
-      "kind:svg": {
-        "identifier": "route.SVG",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L28"
-      },
-      "kind:heic": {
-        "identifier": "route.HEIC",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L29"
-      },
-      "kind:webp": {
-        "identifier": "route.WebP",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L30"
-      },
-      "kind:avif": {
-        "identifier": "route.AVIF",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L31"
-      },
-      "kind:zip": {
-        "identifier": "route.ZIP",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L35"
-      },
-      "kind:ole2": {
-        "identifier": "route.OLE2",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L36"
-      },
-      "kind:odf": {
-        "identifier": "route.ODF",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L38"
-      },
-      "kind:rtf": {
-        "identifier": "route.RTF",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L39"
-      },
-      "kind:wordperfect": {
-        "identifier": "route.WordPerfect",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L41"
-      },
-      "kind:pst": {
-        "identifier": "route.PST",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L46"
-      },
-      "kind:ost": {
-        "identifier": "route.OST",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L47"
-      },
-      "kind:mbox": {
-        "identifier": "route.Mbox",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L50"
-      },
-      "kind:onestore": {
-        "identifier": "route.OneStore",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L54"
-      },
-      "kind:mscf": {
-        "identifier": "route.MSCF",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L56"
-      },
-      "kind:wav": {
-        "identifier": "route.WAV",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L58"
-      },
-      "kind:flac": {
-        "identifier": "route.FLAC",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L59"
-      },
-      "kind:mp3": {
-        "identifier": "route.MP3",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L60"
-      },
-      "kind:ogg": {
-        "identifier": "route.Ogg",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L61"
-      },
-      "kind:m4a": {
-        "identifier": "route.M4A",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L62"
-      },
-      "kind:mp4": {
-        "identifier": "route.MP4",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L64"
-      },
-      "kind:mkv": {
-        "identifier": "route.MKV",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L65"
-      },
-      "kind:webm": {
-        "identifier": "route.WebM",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L66"
-      },
-      "kind:avi": {
-        "identifier": "route.AVI",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L67"
-      },
-      "kind:gzip": {
-        "identifier": "route.Gzip",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L69"
-      },
-      "kind:zstd": {
-        "identifier": "route.Zstd",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L70"
-      },
-      "kind:7z": {
-        "identifier": "route.SevenZip",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L71"
-      },
-      "kind:tar": {
-        "identifier": "route.Tar",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L73"
-      },
-      "kind:pe": {
-        "identifier": "route.PE",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L75"
-      },
-      "kind:elf": {
-        "identifier": "route.ELF",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L76"
-      },
-      "kind:mach-o": {
-        "identifier": "route.MachO",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L77"
-      },
-      "kind:shebang": {
-        "identifier": "route.Shebang",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L78"
-      },
-      "kind:utf-8 bom": {
-        "identifier": "route.UTF8BOM",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L82"
-      },
-      "kind:utf-16 bom": {
-        "identifier": "route.UTF16BOM",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L83"
-      },
-      "kind:utf-32 bom": {
-        "identifier": "route.UTF32BOM",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L84"
-      },
-      "route:document": {
-        "identifier": "route.Document",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L21"
-      },
-      "route:office": {
-        "identifier": "route.Office",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L34"
-      },
-      "route:vision": {
-        "identifier": "route.Vision",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L36"
-      },
-      "route:vision-converted": {
-        "identifier": "route.VisionConverted",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L39"
-      },
-      "route:nested": {
-        "identifier": "route.Nested",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L49"
-      },
-      "route:onenote": {
-        "identifier": "route.OneNote",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L52"
-      },
-      "route:archive": {
-        "identifier": "route.Archive",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L55"
-      },
-      "route:audio": {
-        "identifier": "route.Audio",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L57"
-      },
-      "route:video": {
-        "identifier": "route.Video",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L59"
-      },
-      "route:text": {
-        "identifier": "route.Text",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L63"
-      },
-      "route:unrouted": {
-        "identifier": "route.Unrouted",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L72"
-      },
-      "check:signature-mismatch": {
-        "identifier": "inspect.SignatureMismatch",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L48"
-      },
-      "check:polyglot": {
-        "identifier": "inspect.Polyglot",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L51"
-      },
-      "check:executable": {
-        "identifier": "inspect.Executable",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L53"
-      },
-      "check:executable-extension": {
-        "identifier": "inspect.ExecutableExtension",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L56"
-      },
-      "check:double-extension": {
-        "identifier": "inspect.DoubleExtension",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L59"
-      },
-      "check:vba-project": {
-        "identifier": "inspect.VBAProject",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L61"
-      },
-      "check:macro-sheet": {
-        "identifier": "inspect.MacroSheet",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L63"
-      },
-      "check:activex": {
-        "identifier": "inspect.ActiveX",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L65"
-      },
-      "check:ole-object": {
-        "identifier": "inspect.OLEObject",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L68"
-      },
-      "check:external-relationship": {
-        "identifier": "inspect.ExternalRelationship",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L71"
-      },
-      "check:relationships-unreadable": {
-        "identifier": "inspect.RelationshipsUnreadable",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L75"
-      },
-      "check:ooxml-encrypted": {
-        "identifier": "inspect.OOXMLEncrypted",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L78"
-      },
-      "check:pdf-javascript": {
-        "identifier": "inspect.PDFJavaScript",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L81"
-      },
-      "check:pdf-js": {
-        "identifier": "inspect.PDFJS",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L82"
-      },
-      "check:pdf-openaction": {
-        "identifier": "inspect.PDFOpenAction",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L83"
-      },
-      "check:pdf-aa": {
-        "identifier": "inspect.PDFAA",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L84"
-      },
-      "check:pdf-launch": {
-        "identifier": "inspect.PDFLaunch",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L85"
-      },
-      "check:pdf-embeddedfile": {
-        "identifier": "inspect.PDFEmbeddedFile",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L86"
-      },
-      "check:pdf-richmedia": {
-        "identifier": "inspect.PDFRichMedia",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L87"
-      },
-      "check:pdf-xfa": {
-        "identifier": "inspect.PDFXFA",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L88"
-      },
-      "check:pdf-encrypt": {
-        "identifier": "inspect.PDFEncrypt",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L89"
-      },
-      "check:svg-script": {
-        "identifier": "inspect.SVGScript",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L92"
-      },
-      "check:svg-event-handler": {
-        "identifier": "inspect.SVGEventHandler",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L94"
-      },
-      "check:svg-external-href": {
-        "identifier": "inspect.SVGExternalHref",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L96"
-      },
-      "check:svg-foreign-object": {
-        "identifier": "inspect.SVGForeignObject",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L98"
-      },
-      "check:svg-unreadable": {
-        "identifier": "inspect.SVGUnreadable",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L101"
-      },
-      "check:archive-traversal": {
-        "identifier": "inspect.ArchiveTraversal",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L105"
-      },
-      "check:archive-absolute-path": {
-        "identifier": "inspect.ArchiveAbsolutePath",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L108"
-      },
-      "check:archive-symlink": {
-        "identifier": "inspect.ArchiveSymlink",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L111"
-      },
-      "check:archive-hardlink": {
-        "identifier": "inspect.ArchiveHardlink",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L113"
-      },
-      "check:archive-device": {
-        "identifier": "inspect.ArchiveDevice",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L116"
-      },
-      "check:archive-encrypted": {
-        "identifier": "inspect.ArchiveEncrypted",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L118"
-      },
-      "check:archive-bomb": {
-        "identifier": "inspect.ArchiveBomb",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L129"
-      },
-      "check:zip-unreadable": {
-        "identifier": "inspect.ZIPUnreadable",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L133"
-      },
-      "check:tar-unreadable": {
-        "identifier": "inspect.TarUnreadable",
-        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L137"
-      },
-      "capability:vision": {
-        "identifier": "docinfer.CapabilityVision",
-        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L28",
-        "fed_by": {
-          "routes": [
-            "route:document",
-            "route:video",
-            "route:vision",
-            "route:vision-converted"
-          ],
-          "links": [
-            "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/run.go#L546",
-            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/document.go#L215",
-            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/video.go#L118",
-            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/vision.go#L45",
-            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/picture.go#L60"
-          ]
-        }
-      },
-      "capability:transcription": {
-        "identifier": "docinfer.CapabilityTranscription",
-        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L29",
-        "fed_by": {
-          "routes": [
-            "route:audio",
-            "route:video"
-          ],
-          "links": [
-            "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/run.go#L555",
-            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/audio.go#L81",
-            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/video.go#L145"
-          ]
-        }
-      },
-      "capability:extraction": {
-        "identifier": "docinfer.CapabilityExtraction",
-        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L30",
-        "fed_by": {
-          "routes": [
-            "route:document",
-            "route:nested",
-            "route:office",
-            "route:onenote",
-            "route:text",
-            "route:vision",
-            "route:vision-converted",
-            "route:audio",
-            "route:video"
-          ],
-          "links": [
-            "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/embed.go#L24"
-          ]
-        }
-      },
       "capability:embeddings": {
         "identifier": "docinfer.CapabilityEmbeddings",
         "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L31",
@@ -432,80 +26,420 @@
             "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/text.go#L149"
           ]
         }
+      },
+      "capability:extraction": {
+        "identifier": "docinfer.CapabilityExtraction",
+        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L30",
+        "fed_by": {
+          "routes": [
+            "route:document",
+            "route:nested",
+            "route:office",
+            "route:onenote",
+            "route:text",
+            "route:vision",
+            "route:vision-converted",
+            "route:audio",
+            "route:video"
+          ],
+          "links": [
+            "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/embed.go#L24"
+          ]
+        }
+      },
+      "capability:transcription": {
+        "identifier": "docinfer.CapabilityTranscription",
+        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L29",
+        "fed_by": {
+          "routes": [
+            "route:audio",
+            "route:video"
+          ],
+          "links": [
+            "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/run.go#L555",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/audio.go#L81",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/video.go#L145"
+          ]
+        }
+      },
+      "capability:vision": {
+        "identifier": "docinfer.CapabilityVision",
+        "link": "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/shapes.go#L28",
+        "fed_by": {
+          "routes": [
+            "route:document",
+            "route:video",
+            "route:vision",
+            "route:vision-converted"
+          ],
+          "links": [
+            "https://github.com/standards-lab/docinfer/blob/c67e87e30ed80c5b6728d8a637fb2737d183f208/run.go#L546",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/document.go#L215",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/video.go#L118",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/vision.go#L45",
+            "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/stages/picture.go#L60"
+          ]
+        }
+      },
+      "check:activex": {
+        "identifier": "inspect.ActiveX",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L65"
+      },
+      "check:archive-absolute-path": {
+        "identifier": "inspect.ArchiveAbsolutePath",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L108"
+      },
+      "check:archive-bomb": {
+        "identifier": "inspect.ArchiveBomb",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L129"
+      },
+      "check:archive-device": {
+        "identifier": "inspect.ArchiveDevice",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L116"
+      },
+      "check:archive-encrypted": {
+        "identifier": "inspect.ArchiveEncrypted",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L118"
+      },
+      "check:archive-hardlink": {
+        "identifier": "inspect.ArchiveHardlink",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L113"
+      },
+      "check:archive-symlink": {
+        "identifier": "inspect.ArchiveSymlink",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L111"
+      },
+      "check:archive-traversal": {
+        "identifier": "inspect.ArchiveTraversal",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L105"
+      },
+      "check:double-extension": {
+        "identifier": "inspect.DoubleExtension",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L59"
+      },
+      "check:executable": {
+        "identifier": "inspect.Executable",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L53"
+      },
+      "check:executable-extension": {
+        "identifier": "inspect.ExecutableExtension",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L56"
+      },
+      "check:external-relationship": {
+        "identifier": "inspect.ExternalRelationship",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L71"
+      },
+      "check:macro-sheet": {
+        "identifier": "inspect.MacroSheet",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L63"
+      },
+      "check:ole-object": {
+        "identifier": "inspect.OLEObject",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L68"
+      },
+      "check:ooxml-encrypted": {
+        "identifier": "inspect.OOXMLEncrypted",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L78"
+      },
+      "check:pdf-aa": {
+        "identifier": "inspect.PDFAA",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L84"
+      },
+      "check:pdf-embeddedfile": {
+        "identifier": "inspect.PDFEmbeddedFile",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L86"
+      },
+      "check:pdf-encrypt": {
+        "identifier": "inspect.PDFEncrypt",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L89"
+      },
+      "check:pdf-javascript": {
+        "identifier": "inspect.PDFJavaScript",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L81"
+      },
+      "check:pdf-js": {
+        "identifier": "inspect.PDFJS",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L82"
+      },
+      "check:pdf-launch": {
+        "identifier": "inspect.PDFLaunch",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L85"
+      },
+      "check:pdf-openaction": {
+        "identifier": "inspect.PDFOpenAction",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L83"
+      },
+      "check:pdf-richmedia": {
+        "identifier": "inspect.PDFRichMedia",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L87"
+      },
+      "check:pdf-xfa": {
+        "identifier": "inspect.PDFXFA",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L88"
+      },
+      "check:polyglot": {
+        "identifier": "inspect.Polyglot",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L51"
+      },
+      "check:relationships-unreadable": {
+        "identifier": "inspect.RelationshipsUnreadable",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L75"
+      },
+      "check:signature-mismatch": {
+        "identifier": "inspect.SignatureMismatch",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L48"
+      },
+      "check:svg-event-handler": {
+        "identifier": "inspect.SVGEventHandler",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L94"
+      },
+      "check:svg-external-href": {
+        "identifier": "inspect.SVGExternalHref",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L96"
+      },
+      "check:svg-foreign-object": {
+        "identifier": "inspect.SVGForeignObject",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L98"
+      },
+      "check:svg-script": {
+        "identifier": "inspect.SVGScript",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L92"
+      },
+      "check:svg-unreadable": {
+        "identifier": "inspect.SVGUnreadable",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L101"
+      },
+      "check:tar-unreadable": {
+        "identifier": "inspect.TarUnreadable",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L137"
+      },
+      "check:vba-project": {
+        "identifier": "inspect.VBAProject",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L61"
+      },
+      "check:zip-unreadable": {
+        "identifier": "inspect.ZIPUnreadable",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/inspect/inspect.go#L133"
+      },
+      "kind:7z": {
+        "identifier": "route.SevenZip",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L71"
+      },
+      "kind:avi": {
+        "identifier": "route.AVI",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L67"
+      },
+      "kind:avif": {
+        "identifier": "route.AVIF",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L31"
+      },
+      "kind:bmp": {
+        "identifier": "route.BMP",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L23"
+      },
+      "kind:elf": {
+        "identifier": "route.ELF",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L76"
+      },
+      "kind:emf": {
+        "identifier": "route.EMF",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L26"
+      },
+      "kind:flac": {
+        "identifier": "route.FLAC",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L59"
+      },
+      "kind:gif": {
+        "identifier": "route.GIF",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L22"
+      },
+      "kind:gzip": {
+        "identifier": "route.Gzip",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L69"
+      },
+      "kind:heic": {
+        "identifier": "route.HEIC",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L29"
+      },
+      "kind:jpeg": {
+        "identifier": "route.JPEG",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L21"
+      },
+      "kind:m4a": {
+        "identifier": "route.M4A",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L62"
+      },
+      "kind:mach-o": {
+        "identifier": "route.MachO",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L77"
+      },
+      "kind:mbox": {
+        "identifier": "route.Mbox",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L50"
+      },
+      "kind:mkv": {
+        "identifier": "route.MKV",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L65"
+      },
+      "kind:mp3": {
+        "identifier": "route.MP3",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L60"
+      },
+      "kind:mp4": {
+        "identifier": "route.MP4",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L64"
+      },
+      "kind:mscf": {
+        "identifier": "route.MSCF",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L56"
+      },
+      "kind:odf": {
+        "identifier": "route.ODF",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L38"
+      },
+      "kind:ogg": {
+        "identifier": "route.Ogg",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L61"
+      },
+      "kind:ole2": {
+        "identifier": "route.OLE2",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L36"
+      },
+      "kind:onestore": {
+        "identifier": "route.OneStore",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L54"
+      },
+      "kind:ost": {
+        "identifier": "route.OST",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L47"
+      },
+      "kind:pdf": {
+        "identifier": "route.PDF",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L18"
+      },
+      "kind:pe": {
+        "identifier": "route.PE",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L75"
+      },
+      "kind:png": {
+        "identifier": "route.PNG",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L20"
+      },
+      "kind:pst": {
+        "identifier": "route.PST",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L46"
+      },
+      "kind:rtf": {
+        "identifier": "route.RTF",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L39"
+      },
+      "kind:shebang": {
+        "identifier": "route.Shebang",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L78"
+      },
+      "kind:svg": {
+        "identifier": "route.SVG",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L28"
+      },
+      "kind:tar": {
+        "identifier": "route.Tar",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L73"
+      },
+      "kind:tiff": {
+        "identifier": "route.TIFF",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L25"
+      },
+      "kind:utf-16 bom": {
+        "identifier": "route.UTF16BOM",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L83"
+      },
+      "kind:utf-32 bom": {
+        "identifier": "route.UTF32BOM",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L84"
+      },
+      "kind:utf-8 bom": {
+        "identifier": "route.UTF8BOM",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L82"
+      },
+      "kind:wav": {
+        "identifier": "route.WAV",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L58"
+      },
+      "kind:webm": {
+        "identifier": "route.WebM",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L66"
+      },
+      "kind:webp": {
+        "identifier": "route.WebP",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L30"
+      },
+      "kind:wmf": {
+        "identifier": "route.WMF",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L27"
+      },
+      "kind:wordperfect": {
+        "identifier": "route.WordPerfect",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L41"
+      },
+      "kind:zip": {
+        "identifier": "route.ZIP",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L35"
+      },
+      "kind:zstd": {
+        "identifier": "route.Zstd",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/identify.go#L70"
+      },
+      "route:archive": {
+        "identifier": "route.Archive",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L55"
+      },
+      "route:audio": {
+        "identifier": "route.Audio",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L57"
+      },
+      "route:document": {
+        "identifier": "route.Document",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L21"
+      },
+      "route:nested": {
+        "identifier": "route.Nested",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L49"
+      },
+      "route:office": {
+        "identifier": "route.Office",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L34"
+      },
+      "route:onenote": {
+        "identifier": "route.OneNote",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L52"
+      },
+      "route:text": {
+        "identifier": "route.Text",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L63"
+      },
+      "route:unrouted": {
+        "identifier": "route.Unrouted",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L72"
+      },
+      "route:video": {
+        "identifier": "route.Video",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L59"
+      },
+      "route:vision": {
+        "identifier": "route.Vision",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L36"
+      },
+      "route:vision-converted": {
+        "identifier": "route.VisionConverted",
+        "link": "https://github.com/standards-lab/docproc/blob/48216e1f3566798e7e48efbdd5ac3f2d1929218c/route/route.go#L39"
       }
     },
     "trait": {
-      "trait:script.arabic": {
-        "rule": "Its text holds at least a sentence in the Arabic script, written right to left."
-      },
-      "trait:script.hebrew": {
-        "rule": "Its text holds at least a sentence in the Hebrew script, written right to left."
-      },
-      "trait:script.cyrillic": {
-        "rule": "Its text holds at least a sentence in the Cyrillic script."
-      },
-      "trait:script.greek": {
-        "rule": "Its text holds at least a sentence in the Greek script."
-      },
-      "trait:script.devanagari": {
-        "rule": "Its text holds at least a sentence in the Devanagari script."
-      },
-      "trait:script.han": {
-        "rule": "Its text holds at least a sentence in Han characters."
-      },
-      "trait:script.kana": {
-        "rule": "Its text holds at least a sentence with Japanese hiragana or katakana."
-      },
-      "trait:script.hangul": {
-        "rule": "Its text holds at least a sentence in Korean Hangul."
-      },
-      "trait:script.mixed": {
-        "rule": "Its text holds sentences in two or more scripts, Latin counting as one."
-      },
-      "trait:text-layer.none": {
-        "rule": "A PDF none of whose pages has a text layer by docproc's document.HasText."
-      },
-      "trait:text-layer.partial": {
-        "rule": "A PDF some of whose pages have a text layer by docproc's document.HasText and some don't."
-      },
-      "trait:text-layer.ocr": {
-        "rule": "A PDF whose text layer was made by OCR: invisible text laid over page images."
-      },
-      "trait:text-layer.unmapped": {
-        "rule": "A PDF whose text layer reads as the wrong characters because a font lacks a Unicode mapping."
-      },
-      "trait:scan.printed": {
-        "rule": "Printed text captured as an image by a scanner or a camera."
-      },
-      "trait:scan.handwriting": {
-        "rule": "Handwritten text, scanned, photographed, or stored as ink."
-      },
-      "trait:scan.camera": {
-        "rule": "A page photographed rather than scanned flat, with perspective, uneven light, or curvature."
-      },
-      "trait:scan.degraded": {
-        "rule": "A scan with visible noise, skew, bleed-through, or under 200 dpi."
-      },
-      "trait:charset.windows-1252": {
-        "rule": "Text with no byte order mark that isn't UTF-8 and is windows-1252 or Latin-1, the encoding docproc falls back to."
-      },
-      "trait:charset.legacy-other": {
-        "rule": "Text with no byte order mark in a legacy encoding other than windows-1252, such as Shift_JIS, GB 18030, or KOI8-R."
-      },
-      "trait:charset.utf-16-no-bom": {
-        "rule": "Text with no byte order mark encoded as UTF-16, big- or little-endian."
-      },
-      "trait:charset.declared": {
-        "rule": "A message or markup that declares a charset other than UTF-8 for a part, or a header with MIME encoded-words."
-      },
-      "trait:audio.multi-window": {
-        "rule": "Speech longer than 30 s, media's default window limit, so it is cut into more than one window."
-      },
       "trait:audio.multi-speaker": {
         "rule": "Speech from two or more speakers."
       },
-      "trait:audio.spontaneous": {
-        "rule": "Unscripted speech, such as a conversation, interview, or meeting, not read aloud."
+      "trait:audio.multi-window": {
+        "rule": "Speech longer than 30 s, media's default window limit, so it is cut into more than one window."
       },
       "trait:audio.narrowband": {
         "rule": "Audio sampled at 8 kHz or less, such as telephone speech."
@@ -519,8 +453,35 @@
       "trait:audio.none": {
         "rule": "A video with no audio stream."
       },
+      "trait:audio.spontaneous": {
+        "rule": "Unscripted speech, such as a conversation, interview, or meeting, not read aloud."
+      },
+      "trait:charset.declared": {
+        "rule": "A message or markup that declares a charset other than UTF-8 for a part, or a header with MIME encoded-words."
+      },
+      "trait:charset.legacy-other": {
+        "rule": "Text with no byte order mark in a legacy encoding other than windows-1252, such as Shift_JIS, GB 18030, or KOI8-R."
+      },
+      "trait:charset.utf-16-no-bom": {
+        "rule": "Text with no byte order mark encoded as UTF-16, big- or little-endian."
+      },
+      "trait:charset.windows-1252": {
+        "rule": "Text with no byte order mark that isn't UTF-8 and is windows-1252 or Latin-1, the encoding docproc falls back to."
+      },
       "trait:scale.large-file": {
         "rule": "A file of 100 MiB or more."
+      },
+      "trait:scale.large-sheet": {
+        "rule": "A worksheet whose Markdown passes 256 KiB, so docproc-ooxml splits it across more than one rows line."
+      },
+      "trait:scale.long-media": {
+        "rule": "Audio or video of 30 minutes or more."
+      },
+      "trait:scale.many-entries": {
+        "rule": "An archive holding 1,000 entries or more."
+      },
+      "trait:scale.many-messages": {
+        "rule": "A mail store or mbox holding 1,000 messages or more."
       },
       "trait:scale.many-pages": {
         "rule": "A document of 100 pages or more."
@@ -528,28 +489,73 @@
       "trait:scale.oversized-page": {
         "rule": "A PDF page whose rendering at the request's DPI passes its MaxPixels, so docproc renders it at a lower DPI."
       },
-      "trait:scale.long-media": {
-        "rule": "Audio or video of 30 minutes or more."
+      "trait:scan.camera": {
+        "rule": "A page photographed rather than scanned flat, with perspective, uneven light, or curvature."
       },
-      "trait:scale.many-messages": {
-        "rule": "A mail store or mbox holding 1,000 messages or more."
+      "trait:scan.degraded": {
+        "rule": "A scan with visible noise, skew, bleed-through, or under 200 dpi."
       },
-      "trait:scale.many-entries": {
-        "rule": "An archive holding 1,000 entries or more."
+      "trait:scan.handwriting": {
+        "rule": "Handwritten text, scanned, photographed, or stored as ink."
       },
-      "trait:scale.large-sheet": {
-        "rule": "A worksheet whose Markdown passes 256 KiB, so docproc-ooxml splits it across more than one rows line."
+      "trait:scan.printed": {
+        "rule": "Printed text captured as an image by a scanner or a camera."
+      },
+      "trait:script.arabic": {
+        "rule": "Its text holds at least a sentence in the Arabic script, written right to left."
+      },
+      "trait:script.cyrillic": {
+        "rule": "Its text holds at least a sentence in the Cyrillic script."
+      },
+      "trait:script.devanagari": {
+        "rule": "Its text holds at least a sentence in the Devanagari script."
+      },
+      "trait:script.greek": {
+        "rule": "Its text holds at least a sentence in the Greek script."
+      },
+      "trait:script.han": {
+        "rule": "Its text holds at least a sentence in Han characters."
+      },
+      "trait:script.hangul": {
+        "rule": "Its text holds at least a sentence in Korean Hangul."
+      },
+      "trait:script.hebrew": {
+        "rule": "Its text holds at least a sentence in the Hebrew script, written right to left."
+      },
+      "trait:script.kana": {
+        "rule": "Its text holds at least a sentence with Japanese hiragana or katakana."
+      },
+      "trait:script.mixed": {
+        "rule": "Its text holds sentences in two or more scripts, Latin counting as one."
+      },
+      "trait:text-layer.none": {
+        "rule": "A PDF none of whose pages has a text layer by docproc's document.HasText."
+      },
+      "trait:text-layer.ocr": {
+        "rule": "A PDF whose text layer was made by OCR: invisible text laid over page images."
+      },
+      "trait:text-layer.partial": {
+        "rule": "A PDF some of whose pages have a text layer by docproc's document.HasText and some don't."
+      },
+      "trait:text-layer.unmapped": {
+        "rule": "A PDF whose text layer reads as the wrong characters because a font lacks a Unicode mapping."
       }
     },
     "feature": {
-      "feature:tables": {
-        "rule": "A table: in an OOXML document or slide, a OneNote page, or laid out on a PDF page."
+      "feature:animation": {
+        "rule": "An animated GIF, WebP, or AVIF."
       },
-      "feature:nested-tables": {
-        "rule": "A table inside another table's cell."
+      "feature:attached-picture": {
+        "rule": "Audio or video carrying an attached picture, such as cover art."
       },
-      "feature:merged-cells": {
-        "rule": "A table with a cell merged across rows or columns."
+      "feature:attachment-by-reference": {
+        "rule": "A message attachment stored by reference, with no file of its own."
+      },
+      "feature:attachments": {
+        "rule": "A message with at least one attached file."
+      },
+      "feature:cell-notes": {
+        "rule": "An xlsx cell note."
       },
       "feature:charts": {
         "rule": "A chart in an OOXML document, sheet, or slide."
@@ -557,74 +563,98 @@
       "feature:comments": {
         "rule": "A comment anchored to content in a docx or a pptx."
       },
-      "feature:cell-notes": {
-        "rule": "An xlsx cell note."
-      },
-      "feature:tracked-changes": {
-        "rule": "A docx holding insertions or deletions recorded as tracked changes."
-      },
-      "feature:footnotes": {
-        "rule": "A footnote or endnote in a docx."
-      },
-      "feature:speaker-notes": {
-        "rule": "A pptx slide with speaker notes."
-      },
-      "feature:text-boxes": {
-        "rule": "Text in an OOXML text box or shape."
-      },
-      "feature:equations": {
-        "rule": "A math equation: an OOXML equation or a OneNote math run."
-      },
-      "feature:smartart": {
-        "rule": "A SmartArt diagram in an OOXML document or slide."
-      },
-      "feature:formulas": {
-        "rule": "An xlsx cell holding a formula."
-      },
       "feature:dates": {
         "rule": "An xlsx cell with a date number format."
-      },
-      "feature:hyperlinks": {
-        "rule": "An external hyperlink in an OOXML document, a OneNote page, or a message body."
-      },
-      "feature:pictures": {
-        "rule": "A picture embedded in a document, sheet, slide, OneNote page, or message body."
-      },
-      "feature:picture-layout": {
-        "rule": "A picture covered by another, placed off its slide or page, or cropped away."
-      },
-      "feature:embedded-objects": {
-        "rule": "An embedded package, an OLE object, or a OneNote embedded file."
-      },
-      "feature:forms": {
-        "rule": "A PDF with an AcroForm whose fields are filled or empty."
-      },
-      "feature:signature-fields": {
-        "rule": "A PDF with a signature field, signed or not."
-      },
-      "feature:portfolio": {
-        "rule": "A PDF portfolio: a cover page over embedded documents."
-      },
-      "feature:multi-column": {
-        "rule": "A page laid out in two or more text columns."
-      },
-      "feature:attachments": {
-        "rule": "A message with at least one attached file."
       },
       "feature:embedded-messages": {
         "rule": "A message attached inside another message."
       },
-      "feature:attachment-by-reference": {
-        "rule": "A message attachment stored by reference, with no file of its own."
+      "feature:embedded-objects": {
+        "rule": "An embedded package, an OLE object, or a OneNote embedded file."
       },
-      "feature:inline-images": {
-        "rule": "A message body showing an image inline, as a data: URI or a cid: related part."
+      "feature:equations": {
+        "rule": "A math equation: an OOXML equation or a OneNote math run."
+      },
+      "feature:folders": {
+        "rule": "A mail store whose messages sit in more than one folder."
+      },
+      "feature:footnotes": {
+        "rule": "A footnote or endnote in a docx."
+      },
+      "feature:forms": {
+        "rule": "A PDF with an AcroForm whose fields are filled or empty."
+      },
+      "feature:formulas": {
+        "rule": "An xlsx cell holding a formula."
       },
       "feature:html-body": {
         "rule": "A message whose only body is HTML."
       },
-      "feature:tnef-part": {
-        "rule": "A message with a TNEF part, winmail.dat."
+      "feature:hyperlinks": {
+        "rule": "An external hyperlink in an OOXML document, a OneNote page, or a message body."
+      },
+      "feature:image-ocr": {
+        "rule": "A OneNote image carrying OneNote's own recognised text."
+      },
+      "feature:ink": {
+        "rule": "Handwriting or a drawing stored as ink strokes on a OneNote page."
+      },
+      "feature:inline-images": {
+        "rule": "A message body showing an image inline, as a data: URI or a cid: related part."
+      },
+      "feature:merged-cells": {
+        "rule": "A table with a cell merged across rows or columns."
+      },
+      "feature:multi-column": {
+        "rule": "A page laid out in two or more text columns."
+      },
+      "feature:multi-page-image": {
+        "rule": "A TIFF holding more than one page."
+      },
+      "feature:multiple-streams": {
+        "rule": "Audio or video with more than one audio stream or more than one video stream."
+      },
+      "feature:nested-archives": {
+        "rule": "An archive holding another archive."
+      },
+      "feature:nested-tables": {
+        "rule": "A table inside another table's cell."
+      },
+      "feature:non-note-items": {
+        "rule": "A contact, appointment, or task in a mail store."
+      },
+      "feature:note-tags": {
+        "rule": "A OneNote paragraph carrying a note tag, such as a to-do box."
+      },
+      "feature:orientation": {
+        "rule": "A picture with a stored rotation or mirror to apply before it shows upright."
+      },
+      "feature:page-revisions": {
+        "rule": "A OneNote page with earlier revisions besides its latest."
+      },
+      "feature:picture-layout": {
+        "rule": "A picture covered by another, placed off its slide or page, or cropped away."
+      },
+      "feature:pictures": {
+        "rule": "A picture embedded in a document, sheet, slide, OneNote page, or message body."
+      },
+      "feature:portfolio": {
+        "rule": "A PDF portfolio: a cover page over embedded documents."
+      },
+      "feature:protected-section": {
+        "rule": "A OneNote section that needs a password, as an input or inside a notebook."
+      },
+      "feature:rights-managed": {
+        "rule": "A rights-managed message, its content in a message.rpmsg attachment."
+      },
+      "feature:section-groups": {
+        "rule": "A OneNote notebook with a section inside a section group."
+      },
+      "feature:signature-fields": {
+        "rule": "A PDF with a signature field, signed or not."
+      },
+      "feature:smartart": {
+        "rule": "A SmartArt diagram in an OOXML document or slide."
       },
       "feature:smime-opaque": {
         "rule": "A message whose content is an opaque S/MIME part, application/pkcs7-mime."
@@ -632,56 +662,26 @@
       "feature:smime-signed": {
         "rule": "A clear-signed S/MIME message, multipart/signed."
       },
-      "feature:rights-managed": {
-        "rule": "A rights-managed message, its content in a message.rpmsg attachment."
+      "feature:speaker-notes": {
+        "rule": "A pptx slide with speaker notes."
       },
-      "feature:non-note-items": {
-        "rule": "A contact, appointment, or task in a mail store."
+      "feature:tables": {
+        "rule": "A table: in an OOXML document or slide, a OneNote page, or laid out on a PDF page."
       },
-      "feature:folders": {
-        "rule": "A mail store whose messages sit in more than one folder."
+      "feature:text-boxes": {
+        "rule": "Text in an OOXML text box or shape."
       },
       "feature:threads": {
         "rule": "Messages that reply to one another, linked by In-Reply-To, References, or Conversation-Index."
       },
-      "feature:note-tags": {
-        "rule": "A OneNote paragraph carrying a note tag, such as a to-do box."
+      "feature:tnef-part": {
+        "rule": "A message with a TNEF part, winmail.dat."
       },
-      "feature:ink": {
-        "rule": "Handwriting or a drawing stored as ink strokes on a OneNote page."
-      },
-      "feature:image-ocr": {
-        "rule": "A OneNote image carrying OneNote's own recognised text."
-      },
-      "feature:section-groups": {
-        "rule": "A OneNote notebook with a section inside a section group."
-      },
-      "feature:protected-section": {
-        "rule": "A OneNote section that needs a password, as an input or inside a notebook."
-      },
-      "feature:page-revisions": {
-        "rule": "A OneNote page with earlier revisions besides its latest."
-      },
-      "feature:multi-page-image": {
-        "rule": "A TIFF holding more than one page."
-      },
-      "feature:animation": {
-        "rule": "An animated GIF, WebP, or AVIF."
-      },
-      "feature:orientation": {
-        "rule": "A picture with a stored rotation or mirror to apply before it shows upright."
+      "feature:tracked-changes": {
+        "rule": "A docx holding insertions or deletions recorded as tracked changes."
       },
       "feature:transparency": {
         "rule": "A picture with an alpha channel or a transparent background."
-      },
-      "feature:nested-archives": {
-        "rule": "An archive holding another archive."
-      },
-      "feature:attached-picture": {
-        "rule": "Audio or video carrying an attached picture, such as cover art."
-      },
-      "feature:multiple-streams": {
-        "rule": "Audio or video with more than one audio stream or more than one video stream."
       }
     }
   },
