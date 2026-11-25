@@ -691,7 +691,7 @@
   },
   "corpus_placement": {
     "run": "01a21386-f572-713b-bb0d-7646e4669441",
-    "docproc": "docproc v0.5.0 (7e116e21e628accdc4b79181aeabb75a7df763c8), cmd/docproc v0.2.3",
+    "docproc": "docproc v0.5.0 (5a5926c711e3e2ba70e4a137c4aae74378734729), cmd/docproc v0.2.3",
     "docproc_command": "docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/curate",
     "command": "mise run place-traits --corpus"
   },
