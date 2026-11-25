@@ -1,6 +1,6 @@
 # goal · corpus.docs
 
-- **State:** building
+- **State:** brief ready
 - **Task:** curate
 - **Branch:** curate
 
@@ -136,7 +136,7 @@ cut it.
 
 ## Progress
 
-slices 9/9 committed (slice 9 done within 7 and 8) · standards done · spec round 1 closed · spec round 2 closed · spec round 3: no gaps · editor in progress
+slices 9/9 committed (slice 9 done within 7 and 8) · standards done · spec round 1 closed · spec round 2 closed · spec round 3: no gaps · editor done · validated
 - escalation, slice 5: docproc's text output is always UTF-8 and `encoding` names the source's
   encoding, so read text outputs as UTF-8? yes. Still wait for the encoding-keys release? yes, it
   is almost done. It shipped as docproc v0.5.0 (commit 5a5926c), run-directory schema still "2".
