@@ -71,12 +71,13 @@ func (s *sample) dispose(disposition, trimmedFor, gap string) {
 // name in coverage; candidates are left as they are.
 //
 // placed are the gap candidates the corpus placement placed. A sourced candidate's license status
-// is its candidate's; a generated one's is verified when every input's is, otherwise the first
-// input's that isn't, and it is redistributable when every input is, with the truth of the input
-// its TruthFrom names. They join the adopted samples: an adopted sample whose covers lie inside
+// is its candidate's; a generated one's inputs are adopted samples or placed sourced candidates,
+// and its license status is verified when every input's is, otherwise the first input's that
+// isn't, and it is redistributable when every input is, with the truth of the input its TruthFrom
+// names. They join the adopted samples: an adopted sample whose covers lie inside
 // one's is trimmed for it, and one whose covers lie inside another sample's leaves the corpus, its
-// gap's covered_by naming that sample. An adopted sample a generated candidate lists in its inputs
-// stays whatever covers it. A gap whose candidate's covers lack some of its covers keeps the ones
+// gap's covered_by naming that sample. An adopted sample or sourced candidate a generated
+// candidate lists in its inputs stays whatever covers it. A gap whose candidate's covers lack some of its covers keeps the ones
 // they confirm, and the rest become its open gap, id <gap>-open, split_from naming it, whose
 // candidate is unavailable until its searched and reason are recorded; the open gap goes once the
 // candidate confirms them all. A gap whose candidate placed doesn't list keeps its covers,
@@ -199,25 +200,35 @@ func readCandidates(gaps []Gap, placed []Placed, entries []Sample) ([]*sample, e
 	for i := range gaps {
 		byID[gaps[i].ID] = &gaps[i]
 	}
-	var out []*sample
 	for _, p := range placed {
 		g := byID[p.Gap]
 		if g == nil || g.Candidate == nil || (g.Candidate.Kind != "sourced" && g.Candidate.Kind != "generated") {
 			return nil, fmt.Errorf("%s: placed as gap %s's candidate, but that gap has no sourced or generated candidate", p.Path, p.Gap)
 		}
-		e := &Sample{
-			Path: p.Path, Library: p.Covers, Bytes: p.Bytes, Truth: []string{},
-			LicenseStatus: g.Candidate.LicenseStatus, Redistributable: g.Candidate.LicenseStatus == "verified",
-		}
-		if g.Candidate.Kind == "generated" {
-			e.LicenseStatus, e.Redistributable = inherited(g.Candidate.Inputs, samples)
-			if from, ok := samples[p.TruthFrom]; ok && slices.Contains(g.Candidate.Inputs, p.TruthFrom) {
-				e.Truth = slices.Clone(from.Truth)
+	}
+	var out []*sample
+	for _, kind := range []string{"sourced", "generated"} {
+		for _, p := range placed {
+			c := byID[p.Gap].Candidate
+			if c.Kind != kind {
+				continue
 			}
+			e := &Sample{
+				Path: p.Path, Library: p.Covers, Bytes: p.Bytes, Truth: []string{},
+				LicenseStatus: c.LicenseStatus, Redistributable: c.LicenseStatus == "verified",
+			}
+			if kind == "generated" {
+				e.LicenseStatus, e.Redistributable = inherited(c.Inputs, samples)
+				if from, ok := samples[p.TruthFrom]; ok && slices.Contains(c.Inputs, p.TruthFrom) {
+					e.Truth = slices.Clone(from.Truth)
+				}
+			} else {
+				samples[p.Path] = e
+			}
+			s := readSample(e)
+			s.gap = p.Gap
+			out = append(out, s)
 		}
-		s := readSample(e)
-		s.gap = p.Gap
-		out = append(out, s)
 	}
 	return out, nil
 }

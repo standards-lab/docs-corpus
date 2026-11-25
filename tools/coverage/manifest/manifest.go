@@ -63,7 +63,7 @@ type File struct {
 	DerivedFrom string `json:"derived_from,omitempty"`
 	// Command is the command that makes a generated file, run from the repository root.
 	Command string `json:"command,omitempty"`
-	// Inputs are the samples Command reads.
+	// Inputs are the adopted samples and sourced candidates Command reads.
 	Inputs []string `json:"inputs,omitzero"`
 	// Generator is the generating tool, with its version.
 	Generator string `json:"generator,omitempty"`
@@ -167,8 +167,8 @@ type Placed struct {
 // reading's license replacing the reference's when it names one, and of the candidates recorded
 // for coverage's gaps, but for those whose gap is covered_by another sample. A candidate carries
 // its recorded facts, its gap's candidate's provenance, and its covers in placed, or none when
-// placed lacks it. A sourced candidate has no truth. A generated one has
-// its inputs' distinct licenses, in input order joined by "; ", a license status that is verified
+// placed lacks it. A sourced candidate has no truth. A generated one, whose inputs are adopted
+// samples or sourced candidates, has its inputs' distinct licenses, in input order joined by "; ", a license status that is verified
 // when every input's is, otherwise the first input's that isn't, is redistributable when every
 // input is, and has the truth of the input its TruthFrom names, or none.
 //
@@ -176,8 +176,9 @@ type Placed struct {
 // both a sample and a truth or doc file, a reading for a path that is neither an adopted sample nor
 // a file one links, a sourced or generated candidate with no recorded file whose gap isn't
 // covered_by another sample, a recorded file for a gap that has no sourced or generated
-// candidate, a candidate at another file's path, a generated candidate whose input isn't an
-// adopted sample, and a TruthFrom on a sourced candidate or naming no input are errors.
+// candidate, a candidate at another file's path, a generated candidate whose input is neither an
+// adopted sample nor a sourced candidate it lists, and a TruthFrom on a sourced candidate or naming
+// no input are errors.
 func Build(coverage disposition.Coverage, reference Reference, readings []Reading, candidates []Candidate, placed []Placed) (Manifest, error) {
 	byPath := make(map[string]ReferenceFile, len(reference.Files))
 	for _, f := range reference.Files {
@@ -260,8 +261,16 @@ func addCandidates(files map[string]File, gaps []disposition.Gap, candidates []C
 	for _, g := range gaps {
 		byGap[g.ID] = g
 	}
+	sourcedFirst := make([]Candidate, 0, len(candidates))
+	for _, first := range []bool{true, false} {
+		for _, c := range candidates {
+			if sourced(byGap, c.Gap) == first {
+				sourcedFirst = append(sourcedFirst, c)
+			}
+		}
+	}
 	var errs []error
-	for _, c := range candidates {
+	for _, c := range sourcedFirst {
 		fetched[c.Gap] = true
 		g, ok := byGap[c.Gap]
 		if !ok || g.Candidate == nil || (g.Candidate.Kind != "sourced" && g.Candidate.Kind != "generated") {
@@ -277,7 +286,7 @@ func addCandidates(files map[string]File, gaps []disposition.Gap, candidates []C
 		}
 		f := candidateEntry(c, *g.Candidate, covers[c.Path])
 		if g.Candidate.Kind == "generated" {
-			if err := inherit(&f, c.TruthFrom, files); err != nil {
+			if err := inherit(&f, c.TruthFrom, files, byGap); err != nil {
 				errs = append(errs, fmt.Errorf("%s: %w", c.Path, err))
 				continue
 			}
@@ -301,13 +310,18 @@ func addCandidates(files map[string]File, gaps []disposition.Gap, candidates []C
 	return errs
 }
 
-func inherit(f *File, truthFrom string, files map[string]File) error {
+func sourced(gaps map[string]disposition.Gap, id string) bool {
+	g, ok := gaps[id]
+	return ok && g.Candidate != nil && g.Candidate.Kind == "sourced"
+}
+
+func inherit(f *File, truthFrom string, files map[string]File, gaps map[string]disposition.Gap) error {
 	var licenses []string
 	f.LicenseStatus, f.Redistributable = "verified", true
 	for _, path := range f.Inputs {
 		in, ok := files[path]
-		if !ok || in.Role != "sample" || in.Gap != "" {
-			return fmt.Errorf("its input %s is not an adopted sample", path)
+		if !ok || in.Role != "sample" || (in.Gap != "" && !sourced(gaps, in.Gap)) {
+			return fmt.Errorf("its input %s is neither an adopted sample nor a sourced candidate in the corpus", path)
 		}
 		if !slices.Contains(licenses, in.License) {
 			licenses = append(licenses, in.License)

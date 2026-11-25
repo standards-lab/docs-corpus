@@ -142,7 +142,7 @@ type Candidate struct {
 	LicenseRead string `json:"license_read,omitempty"`
 	// Command is the command that makes a generated file.
 	Command string `json:"command,omitempty"`
-	// Inputs are the adopted samples Command reads.
+	// Inputs are the adopted samples and sourced candidates Command reads.
 	Inputs []string `json:"inputs,omitempty"`
 	// Generator is the generating tool and its version.
 	Generator string `json:"generator,omitempty"`

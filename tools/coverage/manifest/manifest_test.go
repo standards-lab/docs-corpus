@@ -289,6 +289,27 @@ func TestBuildDerivesAGeneratedCandidatesLicenseAndTruthFromItsInputs(t *testing
 	}
 }
 
+func TestBuildDerivesAGeneratedCandidatesLicenseFromASourcedCandidateItReads(t *testing.T) {
+	coverage, files := generatedCoverage()
+	coverage.Gaps = append(coverage.Gaps, candidateCoverage("").Gaps...)
+	coverage.Gaps[0].Candidate.Inputs = []string{"in/b.txt", "x/c.bin"}
+	generated := manifest.Candidate{Gap: "g3", Path: "out/x.mp3", Source: "generated", Sha256: "h", Bytes: 5, Format: "audio/mpeg", FormatBy: "file-5.48"}
+	m, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, []manifest.Candidate{generated, fetched[0]}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := byPath(m)["out/x.mp3"]
+	if got.License != "PSF-2.0; MIT" || got.LicenseStatus != "reported" || !got.Redistributable {
+		t.Errorf("out/x.mp3 = %+v, want the licenses of in/b.txt and x/c.bin, reported, and redistributable", got)
+	}
+
+	coverage.Gaps[0].Candidate.Inputs = []string{"in/b.txt", "out/x.mp3"}
+	_, err = manifest.Build(coverage, manifest.Reference{Files: files}, nil, []manifest.Candidate{generated, fetched[0]}, nil)
+	if want := "out/x.mp3: its input out/x.mp3 is neither an adopted sample nor a sourced candidate in the corpus"; err == nil || !strings.Contains(err.Error(), want) {
+		t.Errorf("generated input: Build = %v, want an error containing %q", err, want)
+	}
+}
+
 func TestBuildRefusesInconsistentGeneratedCandidates(t *testing.T) {
 	record := manifest.Candidate{Gap: "g3", Path: "out/x.mp3"}
 	cases := []struct {
@@ -298,7 +319,7 @@ func TestBuildRefusesInconsistentGeneratedCandidates(t *testing.T) {
 		want       string
 	}{
 		{"ungenerated", nil, nil, "gap g3: its generated candidate has no generated file; run mise run generate-candidates"},
-		{"input not adopted", []manifest.Candidate{record}, []string{"in/a.wav", "in/z.txt"}, "out/x.mp3: its input in/z.txt is not an adopted sample"},
+		{"input not adopted", []manifest.Candidate{record}, []string{"in/a.wav", "in/z.txt"}, "out/x.mp3: its input in/z.txt is neither an adopted sample nor a sourced candidate in the corpus"},
 		{"truth from no input", []manifest.Candidate{{Gap: "g3", Path: "out/x.mp3", TruthFrom: "in/z.wav"}}, nil, "out/x.mp3: truth_from in/z.wav is not one of its inputs"},
 	}
 	for _, c := range cases {

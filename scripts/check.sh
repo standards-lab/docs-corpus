@@ -169,13 +169,18 @@ else
     | ([(.gaps // [])[] | select(.candidate.kind == "generated") | .candidate.inputs[]?]) as $inputs
     | (.samples // []) as $samples
     | ($samples | map({key: .path, value: .}) | from_entries) as $entries
+    | ([(.gaps // [])[] | select(.candidate.kind? == "sourced" and .covered_by == null)
+        | .candidate.license_status as $status | $files[.id] // empty | select($covers[.path] != null)
+        | {key: .path, value: {license_status: $status, redistributable: ($status == "verified"), truth: []}}]
+        | from_entries) as $sourced
+    | ($entries + $sourced) as $readable
     | ([(.gaps // [])[] | select(IN(.candidate.kind?; "sourced", "generated") and .covered_by == null)
         | .candidate as $c | $files[.id] // empty | select($covers[.path] != null)
         | (if $c.kind == "generated" then
-             [$c.inputs[]? | $entries[.]] as $in
+             [$c.inputs[]? | $readable[.]] as $in
              | {license_status: (first($in[] | (.license_status? // "") | select(. != "verified")) // "verified"),
                 redistributable: ($in != [] and all($in[]; .redistributable? == true)),
-                truth: (if .truth_from != null and IN(.truth_from; $c.inputs[]?) then ($entries[.truth_from].truth // []) else [] end)}
+                truth: (if .truth_from != null and IN(.truth_from; $c.inputs[]?) then ($readable[.truth_from].truth // []) else [] end)}
            else
              {license_status: $c.license_status, redistributable: ($c.license_status == "verified"), truth: []}
            end) as $facts
@@ -239,6 +244,8 @@ else
     def text: type == "string" and . != "";
     def github: test("^https://([a-z]+[.])?github(usercontent)?[.]com/");
     ((.samples // []) | map(select(.disposition == "adopt") | .path)) as $adopted
+    | ($fetched[0] | map({key: .gap, value: .path}) | from_entries) as $fetched_paths
+    | [(.gaps // [])[] | select(.candidate.kind? == "sourced" and .covered_by == null) | $fetched_paths[.id] // empty] as $sourced
     | ((.gaps // []) | map(.covers // []) | add // []) as $gapped
     | ((.samples // []) | map(select(.disposition == "adopt") | (.library + (.traits // []) + (.features // []))[]) | unique) as $exercised
     | ((.gaps // []) | group_by(.id)[] | select(length > 1)
@@ -272,10 +279,10 @@ else
               (select(($c.generator_license | text) | not)
                 | "gaps.\($id).candidate: needs its generator_license; record the generator\u0027s license"),
               (if ($c.inputs | type) != "array" or $c.inputs == [] then
-                "gaps.\($id).candidate: needs its inputs; list the adopted samples the command reads"
+                "gaps.\($id).candidate: needs its inputs; list the adopted samples and sourced candidates the command reads"
               else
-                $c.inputs[] | select(IN($adopted[]) | not)
-                | "gaps.\($id).candidate.inputs: \(.) is not an adopted sample; generate only from adopted samples"
+                $c.inputs[] | select(IN($adopted[], $sourced[]) | not)
+                | "gaps.\($id).candidate.inputs: \(.) is neither an adopted sample nor a sourced candidate in docs/candidates.json; generate only from those"
               end)
             elif $c.kind == "unavailable" then
               (select(($c.searched | text) | not)
@@ -289,10 +296,10 @@ else
       ([.vocabulary.library, .vocabulary.trait, .vocabulary.feature] | map(keys) | add[]
         | select(IN($exercised[]) | not) | select(IN($gapped[]) | not)
         | "vocabulary: \(.) is exercised by no adopted sample and is in no gap\u0027s covers; adopt a sample that exercises it, or add it to a gap\u0027s covers")
-  ' "$coverage"); then
+  ' --slurpfile fetched docs/candidates.json "$coverage"); then
     report "$problems"
   else
-    err "$coverage: jq could not check its gaps; each gap needs an id, covers, and a candidate"
+    err "$coverage: jq could not check its gaps; each gap needs an id, covers, and a candidate, and docs/candidates.json must be a JSON array"
   fi
 
   reference=${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json

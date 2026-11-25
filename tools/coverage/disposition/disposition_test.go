@@ -220,6 +220,41 @@ func TestDisposeRanksAGeneratedCandidateByItsInputs(t *testing.T) {
 	}
 }
 
+func TestDisposeTakesAGeneratedCandidatesLicenseFromASourcedCandidateItReads(t *testing.T) {
+	cases := []struct {
+		status  string
+		trimmed string
+		covered []string
+	}{
+		{"verified", "a trim x/cut", []string{"g6 ", "g8 ", "g9 "}},
+		{"reported", "a trim x/big", []string{"g6 ", "g8 ", "g9 "}},
+	}
+	for _, c := range cases {
+		coverage := parse(t, []string{entry("a", []string{"kind:h", "kind:s"}, 648, true, "")},
+			`[{"id": "g6", "covers": ["kind:u"], "candidate": {"kind": "generated", "inputs": ["x/src"]}},
+			{"id": "g8", "covers": ["kind:h", "kind:s"], "candidate": {"kind": "sourced", "license_status": "`+c.status+`"}},
+			{"id": "g9", "covers": ["kind:v"], "candidate": `+sourced+`}]`)
+		_, err := disposition.Dispose(coverage, []disposition.Placed{
+			{Gap: "g6", Path: "x/cut", Bytes: 600, Covers: []string{"kind:h", "kind:s", "kind:u"}},
+			{Gap: "g8", Path: "x/src", Bytes: 735, Covers: []string{"kind:h", "kind:s"}},
+			{Gap: "g9", Path: "x/big", Bytes: 900, Covers: []string{"kind:h", "kind:s", "kind:v"}},
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got := dispositions(coverage); !slices.Equal(got, []string{c.trimmed}) {
+			t.Errorf("%s: dispositions = %q, want %q", c.status, got, c.trimmed)
+		}
+		var covered []string
+		for _, g := range coverage.Gaps {
+			covered = append(covered, g.ID+" "+g.CoveredBy)
+		}
+		if !slices.Equal(covered, c.covered) {
+			t.Errorf("%s: covered_by = %q, want %q", c.status, covered, c.covered)
+		}
+	}
+}
+
 func gapLines(coverage *disposition.Coverage) []string {
 	var out []string
 	for _, g := range coverage.Gaps {
