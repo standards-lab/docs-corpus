@@ -150,7 +150,8 @@ from the file or from what docproc's kept run recorded for it:
 
 - PDF text layers from the run's page outputs, OCR layers from invisible text over page images,
   page counts, forms, signature fields, and portfolios, read with pdfinfo, pdfimages, pdffonts, and
-  qpdf;
+  qpdf, and an oversized page from a page image the run rendered below the 150 dpi that
+  cmd/docproc requests;
 - audio and video streams, duration, and sample rate, read with ffprobe;
 - image frames, alpha, and stored orientation, read with ImageMagick's identify;
 - OOXML structures read from the package's parts, with legacy and RTF documents converted to OOXML
@@ -289,8 +290,26 @@ trailing `.txt` is dropped from a name that already has an extension, so `jwz.mb
 `format_by`, the `file` version that ran. A later fetch must match the record, so a pinned
 candidate can't change. The fetch skips a gap whose candidate is `covered_by` another sample.
 
+`mise run generate-candidates` makes each generated candidate that the record doesn't list yet,
+once, by running its recorded command from the repository root, and records it with `source:
+"generated"`, at the path the command writes. Each input must match `MANIFEST.json` first, the
+directories of the corpus paths the command names are created, and the command must write exactly
+one new file; if any command fails, nothing is recorded. Nothing regenerates a recorded
+candidate, and its bytes are never edited, so the record and the manifest's sha256 pin what was
+made. Generation is not byte-reproducible: archives and the mbox carry the time they were made.
+
+Run it with mise's pinned tools first on `PATH`, since the host's may be older: bsdtar from
+`conda:libarchive`, ffmpeg from `conda:ffmpeg`, magick from ImageMagick, qpdf, and Go, each from
+`mise where <tool>`'s `bin`. pandoc, Ghostscript, LibreOffice, iconv, and coreutils are unpinned
+and run as the host installs them. The candidate's `generator` in `.gaps` records the versions
+that ran, and the manifest carries it.
+
 The manifest gives each candidate its gap's candidate's provenance, its covers from the corpus
-placement, its `gap`, and no truth: a sourced candidate inherits none. `dispose` reads the record
+placement, and its `gap`. A sourced candidate has no truth. A generated candidate has the truth of
+the input its record's `truth_from` names, unchanged, set only where the command leaves that
+input's content as it was, as audio-1's MP3 keeps the AMI headset mix's speech; otherwise it has
+none. Its license is its inputs' distinct licenses, joined by `; `, verified only when every
+input's is, and redistributable only when every input is. `dispose` reads the record
 and the placement, and settles each placed candidate's place:
 
 - **Open gap**: the covers of a gap that its candidate's placed covers lack become its open gap,
@@ -337,9 +356,11 @@ After the data passes, it checks the manifest against the data and git. It fails
   candidate lists it in its `inputs`, as [`STANDARDS.md`](../STANDARDS.md) allows;
 - a candidate's gap has no sourced or generated candidate, or is `covered_by` another sample;
 - a candidate's provenance differs from its gap's candidate's;
-- a sourced candidate has truth;
+- a sourced candidate has truth, or a generated one has truth that isn't its inputs';
+- a generated candidate's license, license status, or redistributability differs from what its
+  inputs give;
 - a candidate's covers lack some of its gap's covers;
-- a sourced gap that no sample covers has no candidate in the manifest;
+- a sourced or generated gap that no sample covers has no candidate in the manifest;
 - a path in `judged.json` isn't a sample, or an ID there isn't in the vocabulary;
 - with `~/docs` present, the manifest differs from what `mise run manifest` prints.
 

@@ -16,8 +16,8 @@ manifest, the truth files, the docs, the coverage, and the check. The repository
 `MANIFEST.json` is the inventory. It has `version: 1` and one entry per corpus file, by `role`: a
 `sample`, or a `truth` or `doc` file a sample links. Files sit under the format directories
 `archive/`, `audio/`, `email/`, `exec/`, `image/`, `office/`, `onenote/`, `pdf/`, `text/`, and
-`video/`: an adopted sample at the path it had in `~/docs`, and a gap candidate at
-`<area>/<source>/<name>`, as [docs/coverage.md](docs/coverage.md#candidates-in-the-corpus) states. Each entry records the file's `sha256`, `bytes`, and `format`, as
+`video/`: an adopted sample at the path it had in `~/docs`, a sourced gap candidate at
+`<area>/<source>/<name>`, and a generated one at the path its command writes, as [docs/coverage.md](docs/coverage.md#candidates-in-the-corpus) states. Each entry records the file's `sha256`, `bytes`, and `format`, as
 `file -b --mime-type` reports it, and its provenance: `source`, `url`, `ref`, `license`,
 `license_url`, `license_read`, `license_status`, `redistributable`, `derived_from`, and `note`,
 each present where its source records it. A sample also records its `covers`, its scenario IDs in
@@ -29,9 +29,10 @@ The manifest is generated, never edited by hand. It is built from the adopted sa
 `docs/coverage.json`, `~/docs`' manifest, and
 [`docs/license-readings.json`](docs/license-readings.json), the licenses read at their source
 for the samples, truth files, and doc files `~/docs` records only as reported. The candidates
-come from [`docs/candidates.json`](docs/candidates.json), what was fetched for each gap, with
-their provenance from the gap's candidate and their covers from
-[`docs/corpus-placement.json`](docs/corpus-placement.json). To regenerate it, run:
+come from [`docs/candidates.json`](docs/candidates.json), what was fetched or generated for each
+gap, with their provenance from the gap's candidate and their covers from
+[`docs/corpus-placement.json`](docs/corpus-placement.json). A generated candidate's license
+follows from its inputs'. To regenerate it, run:
 
 ```sh
 mise run manifest > MANIFEST.json
@@ -39,7 +40,7 @@ mise run manifest > MANIFEST.json
 
 With `--copy`, it first copies every adopted file it lists from `~/docs`, or `$DOCS_REFERENCE`,
 into place and checks each copy's size and sha256. `mise run fetch-candidates` places the
-candidates. Git ignores the format directories, so sample files
+sourced candidates, and `mise run generate-candidates` makes the generated ones once. Git ignores the format directories, so sample files
 are never committed; truth and doc files are committed with `git add -f`, and
 [`scripts/check.sh`](scripts/check.sh) enforces both. The working context,
 [`context/README.md`](context/README.md), states what is still planned.
