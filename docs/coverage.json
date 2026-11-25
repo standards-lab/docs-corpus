@@ -12539,7 +12539,7 @@
           "email/eml/cpython/msg_22.eml"
         ],
         "generator": "Go 1.27.4: github.com/standards-lab/docs-corpus/tools/coverage/cmd/generate",
-        "generator_license": "BSD-3-Clause",
+        "generator_license": "Apache-2.0",
         "fit": "Fair: exactly 1,000 messages, the four adopted CPython test messages repeated in turn, about 3.4 MB; it tests the count, and its From lines carry the time it was made."
       }
     },
@@ -12697,7 +12697,7 @@
           "text/encodings/windows-1252.txt"
         ],
         "generator": "Go 1.27.4: github.com/standards-lab/docs-corpus/tools/coverage/cmd/generate",
-        "generator_license": "BSD-3-Clause",
+        "generator_license": "Apache-2.0",
         "fit": "Fair: the adopted msg_36.eml, its body and attachments unchanged, with a Content-Class: rpmsg.message header and the adopted windows-1252.txt attached as message.rpmsg; docproc detects a rights-managed .eml by that header and that attachment name (docproc tools/mail/README.md:190-193, src/mapping.rs:33-36). The payload is not real rights-management encryption, which docproc doesn't read anyway."
       }
     }
