@@ -7,6 +7,9 @@ type Coverage struct {
 	Vocabulary Vocabulary `json:"vocabulary"`
 	// LibraryPlacement names the docproc run the library IDs were placed from.
 	LibraryPlacement LibraryPlacement `json:"library_placement"`
+	// CorpusPlacement names the docproc run over the corpus the manifest's covers were placed
+	// from.
+	CorpusPlacement *CorpusPlacement `json:"corpus_placement,omitempty"`
 	// Samples are the ~/docs samples, sorted by path.
 	Samples []Sample `json:"samples"`
 	// Gaps are the scenarios no adopted sample exercises, each with its candidate.
@@ -54,6 +57,19 @@ type LibraryPlacement struct {
 	// Run is the run's ID.
 	Run string `json:"run"`
 	// Command is the command that placed them.
+	Command string `json:"command"`
+}
+
+// CorpusPlacement is the docproc run over the corpus's format directories that place-traits
+// --corpus places the manifest's samples from.
+type CorpusPlacement struct {
+	// Run is the run's ID.
+	Run string `json:"run"`
+	// Docproc is the docproc release that ran, with its commit and its command module's version.
+	Docproc string `json:"docproc"`
+	// DocprocCommand is the docproc command that made the run, run from the repository root.
+	DocprocCommand string `json:"docproc_command"`
+	// Command is the command that places the covers.
 	Command string `json:"command"`
 }
 

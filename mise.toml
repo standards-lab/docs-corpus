@@ -20,7 +20,7 @@ description = "Run scripts/check.sh: build, vet, format, fix, tidy, test, and li
 run = "scripts/check.sh"
 
 [tasks.place-traits]
-description = "Print every ~/docs sample's trait and feature placement with tools/coverage's place-traits; --facts adds the probes' findings"
+description = "Print every ~/docs sample's trait and feature placement with tools/coverage's place-traits; --facts adds the probes' findings, and --corpus prints the covers of every sample MANIFEST.json lists, placed from docproc's run over the corpus"
 run = "go run ./tools/coverage/cmd/place-traits"
 
 [tasks.dispose]

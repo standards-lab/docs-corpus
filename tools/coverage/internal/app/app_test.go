@@ -55,6 +55,7 @@ func TestDisposeWritesSortedIDsEmptyListsAndUnescapedText(t *testing.T) {
 		"library": {"kind:z": {"identifier": "Z", "link": "l"}, "kind:a": {"identifier": "A", "link": "l"}},
 		"trait": {}, "feature": {"feature:b": {"rule": "x"}, "feature:a": {"rule": "Q&A > 1"}}},
 		"library_placement": {"run": "r", "command": "c"},
+		"corpus_placement": {"run": "r2", "docproc": "v", "docproc_command": "d", "command": "c2"},
 		"samples": [{"path": "a", "sha256": "s", "library": ["kind:a"], "traits": [], "features": [],
 			"judged": {"feature:b": "seen", "feature:a": "Q&A <b>"}, "format": "f", "bytes": 1,
 			"license_status": "n/a", "redistributable": true, "truth": [], "docs": [], "disposition": "trim", "trimmed_for": "z"}],
@@ -89,6 +90,12 @@ func TestDisposeWritesSortedIDsEmptyListsAndUnescapedText(t *testing.T) {
   "library_placement": {
     "run": "r",
     "command": "c"
+  },
+  "corpus_placement": {
+    "run": "r2",
+    "docproc": "v",
+    "docproc_command": "d",
+    "command": "c2"
   },
   "samples": [
     {
@@ -150,13 +157,15 @@ func TestPlaceTraitsRefusesOtherArguments(t *testing.T) {
 	}
 }
 
-func TestPlaceTraitsAcceptsFacts(t *testing.T) {
+func TestPlaceTraitsAcceptsFactsAndCorpus(t *testing.T) {
 	ctx, cancel := context.WithCancel(t.Context())
 	cancel()
-	var stdout, stderr bytes.Buffer
-	err := app.PlaceTraits(ctx, []string{"--facts"}, &stdout, &stderr)
-	if stderr.Len() != 0 || err != nil && strings.Contains(err.Error(), "usage") {
-		t.Errorf("PlaceTraits(--facts) = %v with stderr %q, want --facts accepted", err, stderr.String())
+	for _, args := range [][]string{{"--facts"}, {"--corpus"}, {"--corpus", "--facts"}} {
+		var stdout, stderr bytes.Buffer
+		err := app.PlaceTraits(ctx, args, &stdout, &stderr)
+		if stderr.Len() != 0 || err != nil && strings.Contains(err.Error(), "usage") {
+			t.Errorf("PlaceTraits(%v) = %v with stderr %q, want it accepted", args, err, stderr.String())
+		}
 	}
 }
 

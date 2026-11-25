@@ -181,3 +181,81 @@ func TestRunWithoutAParserPanicsNamingIt(t *testing.T) {
 	}()
 	_ = p.Run(context.Background(), &bytes.Buffer{})
 }
+
+func corpusPlacer(t *testing.T, coverage string) placement.Placer {
+	t.Helper()
+	p := placer(t, "")
+	root := filepath.Dir(p.Docs)
+	corpus := filepath.Join(root, "corpus")
+	write(t, filepath.Join(corpus, "MANIFEST.json"), `{"version": 1, "files": [
+		{"path": "text/b.txt", "role": "sample", "format": "text/plain"},
+		{"path": "text/b.truth.txt", "role": "truth", "format": "text/plain"},
+		{"path": "email/c.eml", "role": "sample", "format": "message/rfc822"}]}`)
+	write(t, filepath.Join(corpus, "text", "b.txt"), "caf\xe9 au lait")
+	write(t, filepath.Join(corpus, "text", "b.truth.txt"), "café au lait")
+	write(t, filepath.Join(corpus, "email", "c.eml"), "Subject: x\nContent-Type: text/html\n\n<p>hi</p>\n")
+	write(t, filepath.Join(p.Runs, "r2", "manifest.json"), `{"inputs": ["/repo/email", "/repo/text"]}`)
+	write(t, filepath.Join(p.Runs, "r2", "record.jsonl"), strings.Join([]string{
+		`{"event": "part", "input": "/repo/text/b.txt", "part": {"depth": 0, "content_type": {"kind": "txt", "route": "text"}}}`,
+		`{"event": "part", "input": "/repo/email/c.eml", "part": {"depth": 0, "content_type": {"kind": "eml", "route": "nested"}, "flags": [{"check": "html"}]}}`,
+		`{"event": "part", "input": "/repo/email/c.eml", "part": {"depth": 1, "content_type": {"kind": ""}}}`,
+		`{"event": "part", "input": "/repo/text/b.truth.txt", "part": {"depth": 0, "content_type": {"kind": "txt", "route": "text"}}}`,
+	}, "\n")+"\n")
+	write(t, p.Coverage, coverage)
+	p.Docs, p.Corpus = corpus, true
+	return p
+}
+
+func TestRunWithCorpusPlacesTheManifestsSamplesCovers(t *testing.T) {
+	p := corpusPlacer(t, `{
+		"vocabulary": {"library": {
+			"capability:extraction": {"fed_by": {"routes": ["route:text", "route:nested"]}},
+			"capability:mail": {"fed_by": {"routes": ["route:nested"]}},
+			"kind:txt": {}}},
+		"library_placement": {"run": "r1"},
+		"corpus_placement": {"run": "r2"},
+		"samples": [{"path": "text/b.txt", "library": ["kind:other"], "judged": {"trait:scan.handwriting": "seen"}}]}`)
+	var out bytes.Buffer
+	if err := p.Run(context.Background(), &out); err != nil {
+		t.Fatal(err)
+	}
+	want := `[
+  {
+    "path": "email/c.eml",
+    "covers": [
+      "capability:extraction",
+      "capability:mail",
+      "check:html",
+      "feature:html-body",
+      "kind:eml",
+      "route:nested"
+    ]
+  },
+  {
+    "path": "text/b.txt",
+    "covers": [
+      "capability:extraction",
+      "kind:txt",
+      "route:text",
+      "trait:charset.windows-1252",
+      "trait:scan.handwriting"
+    ]
+  }
+]
+`
+	if got := out.String(); got != want {
+		t.Errorf("Run wrote\n%s\nwant\n%s", got, want)
+	}
+}
+
+func TestRunWithCorpusRefusesCoverageDataNamingNoCorpusRun(t *testing.T) {
+	p := corpusPlacer(t, `{"library_placement": {"run": "r1"}, "samples": []}`)
+	var out bytes.Buffer
+	err := p.Run(context.Background(), &out)
+	if err == nil || !strings.Contains(err.Error(), "names no corpus_placement.run") {
+		t.Errorf("Run = %v, want an error naming corpus_placement.run", err)
+	}
+	if out.Len() != 0 {
+		t.Errorf("Run wrote %q despite its error", out.String())
+	}
+}

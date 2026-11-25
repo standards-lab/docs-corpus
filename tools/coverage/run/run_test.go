@@ -144,3 +144,52 @@ func TestLoadRefusesARunDirectoryWithNoRundirJSON(t *testing.T) {
 		t.Errorf("Load of a run directory with no rundir.json = %v, want an error naming it and the docproc to run again", err)
 	}
 }
+
+func TestLoadTakesPathsRelativeToTheInputsCommonDirectory(t *testing.T) {
+	root := t.TempDir()
+	runs := filepath.Join(root, "runs")
+	write(t, filepath.Join(root, "rundir.json"), `{"schema": "2"}`)
+	write(t, filepath.Join(runs, "r1", "manifest.json"), `{"inputs": ["/corpus/audio", "/corpus/email", "/corpus/pdf"]}`)
+	write(t, filepath.Join(runs, "r1", "record.jsonl"), strings.Join([]string{
+		`{"event": "start", "input": "/corpus/audio/a.wav"}`,
+		`{"event": "start", "input": "/corpus/pdf/edge/b.pdf"}`,
+		`{"event": "start", "input": "/corpusx/c.pdf"}`,
+	}, "\n")+"\n")
+	rec, err := run.Load(runs, "r1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, path := range []string{"audio/a.wav", "pdf/edge/b.pdf"} {
+		if got := len(rec.Events(path)); got != 1 {
+			t.Errorf("%s has %d events, want 1", path, got)
+		}
+	}
+	if got := rec.Events("../corpusx/c.pdf"); got != nil {
+		t.Errorf("an input outside the inputs' directory has events: %v", got)
+	}
+}
+
+func TestEventPartHasItsContentTypeAndFlags(t *testing.T) {
+	root := t.TempDir()
+	runs := filepath.Join(root, "runs")
+	write(t, filepath.Join(root, "rundir.json"), `{"schema": "2"}`)
+	write(t, filepath.Join(runs, "r1", "manifest.json"), `{"inputs": ["/in"]}`)
+	write(t, filepath.Join(runs, "r1", "record.jsonl"),
+		`{"event": "part", "input": "/in/a.zip", "part": {"depth": 0, "content_type": {"kind": "zip", "route": "archive"}, "flags": [{"check": "bomb"}]}}`+"\n"+
+			`{"event": "part", "input": "/in/a.zip", "part": {"depth": 1, "content_type": {"kind": ""}}}`+"\n")
+	rec, err := run.Load(runs, "r1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	events := rec.Events("a.zip")
+	first, second := events[0].Part, events[1].Part
+	if first.ContentType.Kind != "zip" || first.ContentType.Route == nil || *first.ContentType.Route != "archive" {
+		t.Errorf("the first part's content type = %+v, want zip on archive", first.ContentType)
+	}
+	if len(first.Flags) != 1 || first.Flags[0].Check != "bomb" {
+		t.Errorf("the first part's flags = %+v, want bomb", first.Flags)
+	}
+	if second.ContentType.Route != nil || second.Flags != nil {
+		t.Errorf("the second part = %+v, want no route and no flags", second)
+	}
+}

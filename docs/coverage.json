@@ -689,6 +689,12 @@
     "run": "01a208e5-e581-7b95-b43a-0f91f8d3b40e",
     "command": "scripts/place-library.sh"
   },
+  "corpus_placement": {
+    "run": "01a2133f-1259-7f79-8832-e63227038d0d",
+    "docproc": "docproc v0.5.0 (7e116e21e628accdc4b79181aeabb75a7df763c8), cmd/docproc v0.2.3",
+    "docproc_command": "docproc run audio email image office onenote pdf text video --out ~/runs/docs-corpus/curate",
+    "command": "mise run place-traits --corpus"
+  },
   "samples": [
     {
       "path": "archive/high-ratio-200mb.zip",

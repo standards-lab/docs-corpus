@@ -37,10 +37,28 @@ type Event struct {
 	Event   string          `json:"event"`
 	Input   string          `json:"input"`
 	Outcome json.RawMessage `json:"outcome"`
-	Part    struct {
-		Depth *float64 `json:"depth"`
-	} `json:"part"`
-	Output *Output `json:"output"`
+	Part    Part            `json:"part"`
+	Output  *Output         `json:"output"`
+}
+
+// Part is the part of an input an event is about: its depth, the input at 0, its content type,
+// and the flags docproc's checks raised on it.
+type Part struct {
+	Depth       *float64    `json:"depth"`
+	ContentType ContentType `json:"content_type"`
+	Flags       []Flag      `json:"flags"`
+}
+
+// ContentType is a part's kind and the route docproc dispatched it on; Route is nil when the
+// record has none.
+type ContentType struct {
+	Kind  string  `json:"kind"`
+	Route *string `json:"route"`
+}
+
+// Flag is one flag a docproc check raised on a part.
+type Flag struct {
+	Check string `json:"check"`
 }
 
 // Row is one line of a record output: the output's name and the line's JSON object.
@@ -58,10 +76,10 @@ type Record struct {
 
 const schema = "2"
 
-// Load reads the run id under runs: its manifest's first input, the root the events' input paths
-// are taken relative to, and its record.jsonl. The run directory is runs' parent: Load refuses
-// one whose rundir.json is missing or names a schema other than "2", and its content store is
-// runs' sibling, content.
+// Load reads the run id under runs: its manifest's inputs, whose deepest common directory is the
+// root the events' input paths are taken relative to, the one input itself when there is one, and
+// its record.jsonl. The run directory is runs' parent: Load refuses one whose rundir.json is
+// missing or names a schema other than "2", and its content store is runs' sibling, content.
 func Load(runs, id string) (_ *Record, err error) {
 	dir := filepath.Dir(runs)
 	if err := checkSchema(dir); err != nil {
@@ -81,7 +99,7 @@ func Load(runs, id string) (_ *Record, err error) {
 	if len(manifest.Inputs) == 0 {
 		return nil, errors.New("run: " + id + ": its manifest names no input")
 	}
-	root := manifest.Inputs[0] + "/"
+	root := strings.TrimSuffix(commonRoot(manifest.Inputs), "/") + "/"
 	f, err := os.Open(filepath.Join(runs, id, "record.jsonl"))
 	if err != nil {
 		return nil, err
@@ -99,6 +117,16 @@ func Load(runs, id string) (_ *Record, err error) {
 		}
 	}
 	return r, scanner.Err()
+}
+
+func commonRoot(inputs []string) string {
+	root := inputs[0]
+	for _, in := range inputs[1:] {
+		for root != in && !strings.HasPrefix(in, strings.TrimSuffix(root, "/")+"/") && root != filepath.Dir(root) {
+			root = filepath.Dir(root)
+		}
+	}
+	return root
 }
 
 func checkSchema(dir string) error {

@@ -182,6 +182,35 @@ probe findings.
 startup, naming the tool and the fix, when a probe is not on `PATH` or is older than the version
 its [adapter](../tools/coverage/probe/doc.go) in the `probe` package accepts.
 
+## Corpus placement
+
+The manifest's covers are placed from a docproc run over the corpus itself: the format
+directories of a working copy whose sample files are in place. `.corpus_placement` records that
+run's ID, the docproc release that made it, the `docproc_command` that ran it from the repository
+root, and the `command` that places the covers. `mise run place-traits --corpus` places every
+sample `MANIFEST.json` lists, reading its file from the working copy and the run from
+`${RUNS:-$HOME/runs/docs-corpus/curate/runs}`. It places its library IDs from that run by the
+rules of [Library placement](#library-placement), adds its trait and feature IDs as
+[`place-traits`](#trait-and-feature-placement) places them, with the `judged` IDs of the sample's
+entry in `.samples`, and prints each sample's `covers`.
+
+To make the run, put docproc's tools on `PATH`, as docproc's README states for its release:
+`docproc-ooxml`, `docproc-mail`, and `docproc-onenote` from their release tags, the real `7zz`
+binary rather than mise's shim, and docker for `soffice`'s pinned image. Then install docproc
+outside the repository and run it from the repository root, with the run directory outside it:
+
+```sh
+GOBIN=<dir> go install github.com/standards-lab/docproc/cmd/docproc@v0.2.3
+<dir>/docproc run audio email image office onenote pdf text video --out ~/runs/docs-corpus/curate
+```
+
+Record the run's ID, from the summary's last line, in `.corpus_placement`. To place the covers and
+compare them with the manifest, run this from the repository root:
+
+```sh
+mise run place-traits --corpus | cmp - <(jq '[.files[] | select(.role == "sample") | {path, covers}] | sort_by(.path)' MANIFEST.json)
+```
+
 ## Gaps
 
 Each scenario lists the adopted samples that exercise it. A scenario that no adopted sample
