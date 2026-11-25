@@ -24,6 +24,10 @@ var (
 	portfolio      = regexp.MustCompile(`/Collection[\t\n\v\f\r ]*(<<|\d+ 0 R)`)
 )
 
+// RequestDPI is the DPI docproc's run requests a PDF's pages at, cmd/docproc's document request;
+// a page rendered below it passed the request's MaxPixels.
+const RequestDPI = 150
+
 func isDigits(s string) bool {
 	if s == "" {
 		return false
@@ -111,7 +115,10 @@ func (pr Prober) PDF(ctx context.Context, path string, outputs []run.Event) (tra
 			traits.Add("trait:text-layer.partial")
 		}
 	}
-	if len(dpis) > 1 {
+	if slices.ContainsFunc(dpiValues, func(dpi string) bool {
+		n, err := strconv.ParseFloat(dpi, 64)
+		return err == nil && n < RequestDPI
+	}) {
 		traits.Add("trait:scale.oversized-page")
 	}
 	if max(pages, rendered) >= 100 {

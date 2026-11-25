@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"slices"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -33,6 +34,29 @@ func output(kind, name, meta string) run.Event {
 	}}}
 }
 
+func TestPDFPlacesAnOversizedPageOnlyBelowTheRequestDPI(t *testing.T) {
+	pr := media.Prober{PDFInfo: lines("Pages:          2"), PDFImages: lines(), PDFFonts: lines(), QPDF: lines()}
+	cases := map[string]struct {
+		dpis []string
+		want bool
+	}{
+		"one page below":      {[]string{`"40"`}, true},
+		"request and above":   {[]string{`"150"`, `"300"`}, false},
+		"just below":          {[]string{`"150"`, `"149"`}, true},
+		"unreadable dpi only": {[]string{`""`}, false},
+	}
+	for name, c := range cases {
+		var outputs []run.Event
+		for i, dpi := range c.dpis {
+			outputs = append(outputs, output("image", "page "+strconv.Itoa(i+1), "dpi="+dpi))
+		}
+		traits, _, _ := pr.PDF(context.Background(), "/a.pdf", outputs)
+		if got := traits["trait:scale.oversized-page"]; got != c.want {
+			t.Errorf("%s: oversized-page = %v, want %v (request DPI %d)", name, got, c.want, media.RequestDPI)
+		}
+	}
+}
+
 func TestPDFPlacesTextLayersScaleAndForms(t *testing.T) {
 	pr := media.Prober{
 		PDFInfo: lines("Title:          x", "Pages:          120"),
@@ -56,7 +80,7 @@ func TestPDFPlacesTextLayersScaleAndForms(t *testing.T) {
 		nested,
 		output("image", "page 1", `dpi="150"`),
 		output("image", "page 2", `dpi="150"`),
-		output("image", "page 3", `dpi="300"`),
+		output("image", "page 3", `dpi="40"`),
 		output("image", "page 4", `dpi=""`),
 	}
 	traits, features, facts := pr.PDF(context.Background(), "/a.pdf", outputs)
@@ -71,7 +95,7 @@ func TestPDFPlacesTextLayersScaleAndForms(t *testing.T) {
 		Pages:                120,
 		RenderedPages:        4,
 		TextPages:            1,
-		DPIs:                 []string{"150", "300"},
+		DPIs:                 []string{"150", "40"},
 		PagesWithLargeImages: 1,
 		LargeImagePPI:        []int{300},
 		Fonts:                2,
