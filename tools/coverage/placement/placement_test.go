@@ -259,3 +259,31 @@ func TestRunWithCorpusRefusesCoverageDataNamingNoCorpusRun(t *testing.T) {
 		t.Errorf("Run wrote %q despite its error", out.String())
 	}
 }
+
+func TestRunWithCorpusPlacesOneNotePackagesAndReplayedOutcomes(t *testing.T) {
+	p := placer(t, "")
+	root := filepath.Dir(p.Docs)
+	corpus := filepath.Join(root, "corpus")
+	write(t, filepath.Join(corpus, "MANIFEST.json"), `{"version": 1, "files": [
+		{"path": "onenote/n.onepkg", "role": "sample", "format": "application/msonenote"},
+		{"path": "onenote/s.one", "role": "sample", "format": "application/onenote"}]}`)
+	write(t, filepath.Join(corpus, "onenote", "n.onepkg"), "MSCF")
+	write(t, filepath.Join(corpus, "onenote", "s.one"), "onestore")
+	write(t, filepath.Join(root, "content", "aa", "aa01"), `{"path": ["Group", "Section"]}`+"\n")
+	write(t, filepath.Join(p.Runs, "r2", "manifest.json"), `{"inputs": ["/repo/onenote", "/repo/text"]}`)
+	write(t, filepath.Join(p.Runs, "r2", "record.jsonl"), strings.Join([]string{
+		`{"event": "output", "input": "/repo/onenote/n.onepkg", "part": {"depth": 0, "content_type": {"kind": "mscf", "route": "onenote"}}, "output": {"kind": "record", "name": "section 1", "sha256": "aa01", "media_type": "application/x-docproc-onenote+jsonl"}}`,
+		`{"event": "part", "input": "/repo/onenote/s.one", "part": {"depth": 0, "content_type": {"kind": "onestore", "route": "onenote"}}, "outcome": "seen", "recorded": "encrypted"}`,
+	}, "\n")+"\n")
+	write(t, p.Coverage, `{"vocabulary": {"library": {}}, "corpus_placement": {"run": "r2"}, "samples": []}`)
+	p.Docs, p.Corpus = corpus, true
+	var out bytes.Buffer
+	if err := p.Run(context.Background(), &out); err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{`"feature:section-groups"`, `"feature:protected-section"`} {
+		if !strings.Contains(out.String(), want) {
+			t.Errorf("Run wrote\n%s\nwant it to place %s", out.String(), want)
+		}
+	}
+}

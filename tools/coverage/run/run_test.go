@@ -35,6 +35,8 @@ func load(t *testing.T) *run.Record {
 		`{"event": "output", "input": "/in/m.pst", "output": {"kind": "record", "name": "message 1", "sha256": "cd01", "media_type": "application/x-docproc-mail+jsonl"}}`,
 		`{"event": "output", "input": "/elsewhere/a.pdf", "output": {"kind": "text", "name": "page 1", "sha256": "ab01"}}`,
 		`{"event": "end", "input": "/in/m.pst", "outcome": "encrypted"}`,
+		`{"event": "part", "input": "/in/n.one", "outcome": "seen", "recorded": "encrypted"}`,
+		`{"event": "part", "input": "/in/n.one", "outcome": "seen"}`,
 	}, "\n")+"\n")
 	write(t, filepath.Join(root, "content", "ab", "ab01"), "café")
 	write(t, filepath.Join(root, "content", "ef", "ef01"), "naïve")
@@ -63,6 +65,17 @@ func TestLoadGroupsEventsByPathUnderTheRunsInput(t *testing.T) {
 	ends := rec.Events("m.pst")
 	if got := string(ends[len(ends)-1].Outcome); got != `"encrypted"` {
 		t.Errorf("m.pst's outcome = %s", got)
+	}
+}
+
+func TestLoadTakesAReplayedPartsRecordedOutcome(t *testing.T) {
+	events := load(t).Events("n.one")
+	var got []string
+	for _, e := range events {
+		got = append(got, string(e.Outcome))
+	}
+	if want := []string{`"encrypted"`, `"seen"`}; strings.Join(got, " ") != strings.Join(want, " ") {
+		t.Errorf("n.one's outcomes = %q, want %q", got, want)
 	}
 }
 

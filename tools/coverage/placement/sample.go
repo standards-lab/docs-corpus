@@ -215,7 +215,7 @@ func (p *prober) probe(ctx context.Context, s sample, entry manifestEntry) (idse
 				features.Add("feature:html-body")
 			}
 		}
-	case ext == ".one" || ext == ".onetoc2":
+	case ext == ".one" || ext == ".onetoc2" || ext == ".onepkg":
 		outcomes := idset.Set{}
 		for _, e := range p.rec.Events(rel) {
 			outcomes.Add(string(e.Outcome))

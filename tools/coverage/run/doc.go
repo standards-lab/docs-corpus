@@ -10,7 +10,8 @@
 //   - [Record] is a loaded run; [Record.Events] and [Record.Outputs] return an input's events,
 //     [Record.Text] the text the run extracted from it, and [Record.Rows] its record outputs'
 //     lines.
-//   - [Event] is one record line, [Part] the part it is about, with its [ContentType] and
-//     [Flag]s, [Output] an output event's output, with [Output.MetaRaw] returning one meta
-//     value's JSON, and [Row] one record output line.
+//   - [Event] is one record line, a replayed part's carrying the outcome it was first recorded
+//     with, [Part] the part it is about, with its [ContentType] and [Flag]s, [Output] an output
+//     event's output, with [Output.MetaRaw] returning one meta value's JSON, and [Row] one record
+//     output line.
 package run

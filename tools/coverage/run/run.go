@@ -32,13 +32,16 @@ func (o *Output) MetaRaw(key string) string {
 	return "null"
 }
 
-// Event is one line of a run's record.jsonl.
+// Event is one line of a run's record.jsonl. For a part the run replayed from its run
+// directory's index, whose outcome is seen, Load sets Outcome to Recorded, the outcome the part
+// first had.
 type Event struct {
-	Event   string          `json:"event"`
-	Input   string          `json:"input"`
-	Outcome json.RawMessage `json:"outcome"`
-	Part    Part            `json:"part"`
-	Output  *Output         `json:"output"`
+	Event    string          `json:"event"`
+	Input    string          `json:"input"`
+	Outcome  json.RawMessage `json:"outcome"`
+	Recorded json.RawMessage `json:"recorded"`
+	Part     Part            `json:"part"`
+	Output   *Output         `json:"output"`
 }
 
 // Part is the part of an input an event is about: its depth, the input at 0, its content type,
@@ -78,8 +81,9 @@ const schema = "2"
 
 // Load reads the run id under runs: its manifest's inputs, whose deepest common directory is the
 // root the events' input paths are taken relative to, the one input itself when there is one, and
-// its record.jsonl. The run directory is runs' parent: Load refuses one whose rundir.json is
-// missing or names a schema other than "2", and its content store is runs' sibling, content.
+// its record.jsonl, a replayed part's event taking its recorded outcome. The run directory is
+// runs' parent: Load refuses one whose rundir.json is missing or names a schema other than "2",
+// and its content store is runs' sibling, content.
 func Load(runs, id string) (_ *Record, err error) {
 	dir := filepath.Dir(runs)
 	if err := checkSchema(dir); err != nil {
@@ -111,6 +115,9 @@ func Load(runs, id string) (_ *Record, err error) {
 		var e Event
 		if err := json.Unmarshal(scanner.Bytes(), &e); err != nil {
 			return nil, err
+		}
+		if len(e.Recorded) > 0 {
+			e.Outcome = e.Recorded
 		}
 		if rel, ok := strings.CutPrefix(e.Input, root); ok {
 			r.events[rel] = append(r.events[rel], e)
