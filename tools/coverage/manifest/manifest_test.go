@@ -119,13 +119,20 @@ func TestBuildCarriesTruthQualifiersAsNotes(t *testing.T) {
 }
 
 func TestBuildAppliesLicenseReadings(t *testing.T) {
-	m := build(t, []disposition.Sample{adopted("a.pdf", nil, nil), adopted("b.pdf", nil, nil)},
-		[]manifest.ReferenceFile{ref("a.pdf", "sample", ""), ref("b.pdf", "sample", "")},
-		[]manifest.Reading{{Path: "a.pdf", LicenseURL: "https://example.org/license", LicenseRead: "2026-11-25"}})
-	a, b := byPath(m)["a.pdf"], byPath(m)["b.pdf"]
-	if a.LicenseURL != "https://example.org/license" || a.LicenseRead != "2026-11-25" || a.LicenseStatus != "verified" {
-		t.Errorf("read sample = %+v, want the reading applied and verified", a)
+	m := build(t, []disposition.Sample{adopted("a.pdf", []string{"a.truth"}, []string{"a.doc"}), adopted("b.pdf", nil, nil)},
+		[]manifest.ReferenceFile{ref("a.pdf", "sample", "a.truth"), ref("b.pdf", "sample", ""), ref("a.truth", "truth", ""), ref("a.doc", "doc", "")},
+		[]manifest.Reading{
+			{Path: "a.pdf", LicenseURL: "https://example.org/license", LicenseRead: "2026-11-25"},
+			{Path: "a.truth", LicenseURL: "https://example.org/license", LicenseRead: "2026-11-25"},
+			{Path: "a.doc", LicenseURL: "https://example.org/license", LicenseRead: "2026-11-25"},
+		})
+	for _, path := range []string{"a.pdf", "a.truth", "a.doc"} {
+		f := byPath(m)[path]
+		if f.LicenseURL != "https://example.org/license" || f.LicenseRead != "2026-11-25" || f.LicenseStatus != "verified" {
+			t.Errorf("read %s = %+v, want the reading applied and verified", path, f)
+		}
 	}
+	b := byPath(m)["b.pdf"]
 	if b.LicenseURL != "" || b.LicenseRead != "" || b.LicenseStatus != "reported" {
 		t.Errorf("unread sample = %+v, want the reference's status and no reading", b)
 	}
@@ -146,7 +153,7 @@ func TestBuildRefusesInconsistentInputs(t *testing.T) {
 		{"missing truth", []disposition.Sample{adopted("a.pdf", []string{"t.json"}, nil)}, []manifest.ReferenceFile{ref("a.pdf", "sample", "")}, nil, "t.json: a truth file the reference manifest lacks"},
 		{"sample as truth", []disposition.Sample{adopted("a.pdf", []string{"b.pdf"}, nil), adopted("b.pdf", nil, nil)},
 			[]manifest.ReferenceFile{ref("a.pdf", "sample", ""), ref("b.pdf", "sample", "")}, nil, "b.pdf: both an adopted sample and a truth file"},
-		{"stray reading", nil, nil, []manifest.Reading{{Path: "x.pdf"}}, "x.pdf: a license reading for a path that is not an adopted sample"},
+		{"stray reading", nil, nil, []manifest.Reading{{Path: "x.pdf"}}, "x.pdf: a license reading for a path that is neither an adopted sample nor a file one links"},
 	}
 	for _, c := range cases {
 		_, err := manifest.Build(disposition.Coverage{Samples: c.samples}, manifest.Reference{Files: c.files}, c.readings)

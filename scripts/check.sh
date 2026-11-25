@@ -323,6 +323,8 @@ if [ -f MANIFEST.json ]; then
         | "MANIFEST.json: version is \(.version | tojson), not 1; \($regenerate)"),
       (.files[] | select(IN(.role; "sample", "truth", "doc") | not)
         | "\(.path): role is \(.role | tojson); set sample, truth, or doc, and \($regenerate)"),
+      (.files[] | select(.role != "sample" and .license_status == "reported")
+        | "\(.path): a \(.role) file whose license is only reported; read it at its source, add the reading to docs/license-readings.json, and \($regenerate)"),
       (.files[] | .path as $p | (.covers // [])[] | select(IN($ids[]) | not)
         | "\($p).covers: \(.) is not in docs/coverage.json\u0027s vocabulary; place the sample with an ID the vocabulary defines, or define it there, then \($regenerate)"),
       ($samples[] | select($in_git[.path])

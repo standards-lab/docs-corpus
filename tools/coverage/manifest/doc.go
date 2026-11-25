@@ -7,7 +7,7 @@
 //   - [Manifest] is the inventory, schema [Version], of [File] entries, a sample's with its
 //     [Truth] files.
 //   - [Reference] is the reference docs' manifest, of [ReferenceFile] entries.
-//   - [Reading] is a sample's license, read at its source.
+//   - [Reading] is a sample's, truth file's, or doc file's license, read at its source.
 //   - [Build] builds the inventory.
 //   - [Copy] copies its files from the reference docs and checks each copy.
 //

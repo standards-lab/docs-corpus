@@ -1,11 +1,26 @@
 [
   {
+    "path": "audio/long/librivox-stella-maberly.truth-approx.txt",
+    "license_url": "https://archive.org/details/statementofstell00anst",
+    "license_read": "2026-11-25"
+  },
+  {
     "path": "audio/short/minds14-fr/minds14-fr-FR-0.wav",
     "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
     "license_read": "2026-11-25"
   },
   {
+    "path": "audio/short/minds14-fr/minds14-fr-FR.truth.json",
+    "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
+    "license_read": "2026-11-25"
+  },
+  {
     "path": "pdf/large/cfr-2024-title32-vol1.pdf",
+    "license_url": "https://www.govinfo.gov/about/policies",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "pdf/large/cfr-2024-title32-vol1.truth.xml",
     "license_url": "https://www.govinfo.gov/about/policies",
     "license_read": "2026-11-25"
   },
@@ -16,6 +31,16 @@
   },
   {
     "path": "pdf/scanned/olmocr-bench/old_scans-69.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans.truth.jsonl",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/table_tests.truth.jsonl",
     "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
     "license_read": "2026-11-25"
   },
@@ -42,6 +67,11 @@
   {
     "path": "video/prelinger-duck-and-cover/duck-and-cover-theora.ogv",
     "license_url": "https://archive.org/details/DuckandC1951",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "video/tears-of-steel/tos-en.srt",
+    "license_url": "https://mango.blender.org/sharing/",
     "license_read": "2026-11-25"
   }
 ]

@@ -38,7 +38,9 @@
       "source": "internet-archive",
       "url": "https://archive.org/download/statementofstell00anst/statementofstell00anst_djvu.txt",
       "license": "Public domain (1896; IA: NOT_IN_COPYRIGHT)",
-      "license_status": "reported",
+      "license_url": "https://archive.org/details/statementofstell00anst",
+      "license_read": "2026-11-25",
+      "license_status": "verified",
       "redistributable": true
     },
     {
@@ -117,7 +119,9 @@
       "source": "minds14",
       "url": "https://huggingface.co/datasets/PolyAI/minds14 (fr-FR train, rows API)",
       "license": "CC-BY-4.0",
-      "license_status": "reported",
+      "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
+      "license_read": "2026-11-25",
+      "license_status": "verified",
       "redistributable": true
     },
     {
@@ -2711,7 +2715,9 @@
       "source": "govinfo",
       "url": "https://www.govinfo.gov/content/pkg/CFR-2024-title32-vol1/xml/CFR-2024-title32-vol1.xml",
       "license": "US government work (17 USC 105)",
-      "license_status": "reported",
+      "license_url": "https://www.govinfo.gov/about/policies",
+      "license_read": "2026-11-25",
+      "license_status": "verified",
       "redistributable": true
     },
     {
@@ -2861,7 +2867,9 @@
       "source": "olmocr-bench",
       "url": "https://huggingface.co/datasets/allenai/olmOCR-bench/resolve/54a96a6fb6a2bd3b297e59869491db4d3625b711/bench_data/old_scans.jsonl (filtered)",
       "license": "ODC-BY-1.0",
-      "license_status": "reported",
+      "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+      "license_read": "2026-11-25",
+      "license_status": "verified",
       "redistributable": true
     },
     {
@@ -2873,7 +2881,9 @@
       "source": "olmocr-bench",
       "url": "https://huggingface.co/datasets/allenai/olmOCR-bench/resolve/54a96a6fb6a2bd3b297e59869491db4d3625b711/bench_data/table_tests.jsonl (filtered)",
       "license": "ODC-BY-1.0",
-      "license_status": "reported",
+      "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+      "license_read": "2026-11-25",
+      "license_status": "verified",
       "redistributable": true
     },
     {
@@ -3593,7 +3603,9 @@
       "source": "blender-tos",
       "url": "https://download.blender.org/demo/movies/ToS/subtitles/TOS-en.srt",
       "license": "CC-BY-3.0",
-      "license_status": "reported",
+      "license_url": "https://mango.blender.org/sharing/",
+      "license_read": "2026-11-25",
+      "license_status": "verified",
       "redistributable": true
     }
   ]

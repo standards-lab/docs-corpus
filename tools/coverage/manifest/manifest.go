@@ -120,9 +120,10 @@ type ReferenceFile struct {
 	Note string `json:"note"`
 }
 
-// Reading is a sample's license, read at its source, which makes its status verified.
+// Reading is a sample's, truth file's, or doc file's license, read at its source, which makes its
+// status verified.
 type Reading struct {
-	// Path is the sample's path.
+	// Path is the file's path.
 	Path string `json:"path"`
 	// LicenseURL is where the license was read.
 	LicenseURL string `json:"license_url"`
@@ -131,10 +132,10 @@ type Reading struct {
 }
 
 // Build returns the manifest of coverage's adopted samples and the truth and doc files they link,
-// each with the reference's facts and provenance, the sample's covers, and its readings applied.
-// A file the reference lacks, a sample whose sha256 differs from the reference's, a path that is
-// both a sample and a truth or doc file, or a reading for a path that is not an adopted sample is
-// an error.
+// each with the reference's facts and provenance, a sample's covers, and its reading applied. A
+// file the reference lacks, a sample whose sha256 differs from the reference's, a path that is both
+// a sample and a truth or doc file, or a reading for a path that is neither an adopted sample nor a
+// file one links is an error.
 func Build(coverage disposition.Coverage, reference Reference, readings []Reading) (Manifest, error) {
 	byPath := make(map[string]ReferenceFile, len(reference.Files))
 	for _, f := range reference.Files {
@@ -164,10 +165,6 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 		f.Covers = covers(s)
 		f.Truth, f.TruthNote = truth(ref.Truth, s.Truth)
 		f.Docs = append([]string{}, s.Docs...)
-		if r, ok := readingFor[s.Path]; ok {
-			f.LicenseURL, f.LicenseRead, f.LicenseStatus = r.LicenseURL, r.LicenseRead, "verified"
-			delete(readingFor, s.Path)
-		}
 		files[s.Path] = f
 		for _, p := range s.Truth {
 			linked[p] = "truth"
@@ -178,9 +175,6 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 			}
 			linked[p] = "doc"
 		}
-	}
-	for path := range readingFor {
-		errs = append(errs, fmt.Errorf("%s: a license reading for a path that is not an adopted sample", path))
 	}
 	for path, role := range linked {
 		if _, ok := files[path]; ok {
@@ -193,6 +187,15 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 			continue
 		}
 		files[path] = entry(ref, role)
+	}
+	for path, r := range readingFor {
+		f, ok := files[path]
+		if !ok {
+			errs = append(errs, fmt.Errorf("%s: a license reading for a path that is neither an adopted sample nor a file one links", path))
+			continue
+		}
+		f.LicenseURL, f.LicenseRead, f.LicenseStatus = r.LicenseURL, r.LicenseRead, "verified"
+		files[path] = f
 	}
 	if err := errors.Join(errs...); err != nil {
 		return Manifest{}, err

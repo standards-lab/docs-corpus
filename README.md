@@ -27,7 +27,7 @@ adds `command`, `inputs`, `generator`, and `generator_license`, and a candidate 
 The manifest is generated, never edited by hand. To regenerate it from the adopted samples in
 `docs/coverage.json`, `~/docs`' manifest, and
 [`docs/license-readings.json`](docs/license-readings.json), the licenses read at their source
-for samples `~/docs` records only as reported, run:
+for the samples, truth files, and doc files `~/docs` records only as reported, run:
 
 ```sh
 mise run manifest > MANIFEST.json
