@@ -59,7 +59,7 @@ func TestDisposeAdoptsTrimsAndReplaces(t *testing.T) {
 		entry("e", []string{"kind:z"}, 5, false, `, "disposition": "trim", "trimmed_for": "a"`),
 		entry("f", []string{"kind:x"}, 1, true, `, "sensitive": true`),
 	}, `[{"id": "g1", "covers": ["kind:w"], "candidate": {"kind": "unavailable"}}]`)
-	droppable, err := disposition.Dispose(coverage)
+	droppable, err := disposition.Dispose(coverage, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -87,7 +87,7 @@ func TestDisposeAppliesTheTieBreaks(t *testing.T) {
 		entry("cheap", []string{"kind:x", "kind:y"}, 5, true, ""),
 		entry("held", []string{"kind:x"}, 1, false, ""),
 	}, `[]`)
-	if _, err := disposition.Dispose(coverage); err != nil {
+	if _, err := disposition.Dispose(coverage, nil); err != nil {
 		t.Fatal(err)
 	}
 	want := []string{"big-truth trim verified", "small trim verified", "verified adopt", "cheap trim verified", "held trim verified"}
@@ -104,7 +104,7 @@ func TestDisposeGroupsReplacesUnderThePreferredGap(t *testing.T) {
 		entry("twin", []string{"kind:x", "kind:z"}, 3, false, ""),
 	}, `[{"id": "g-large", "covers": [], "candidate": null}, {"id": "g-small", "covers": [], "candidate": null},
 		{"id": "spare", "covers": ["kind:x"], "candidate": null}, {"id": "open", "covers": ["kind:q"], "candidate": null}]`)
-	droppable, err := disposition.Dispose(coverage)
+	droppable, err := disposition.Dispose(coverage, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -120,7 +120,7 @@ func TestDisposeGroupsReplacesUnderThePreferredGap(t *testing.T) {
 func TestDisposeNamesTheGapsItMayDrop(t *testing.T) {
 	coverage := parse(t, []string{entry("a", []string{"kind:x"}, 1, true, "")},
 		`[{"id": "spent", "covers": ["kind:x"], "candidate": null}, {"id": "open", "covers": ["kind:x", "kind:q"], "candidate": null}]`)
-	droppable, err := disposition.Dispose(coverage)
+	droppable, err := disposition.Dispose(coverage, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -131,7 +131,7 @@ func TestDisposeNamesTheGapsItMayDrop(t *testing.T) {
 
 func TestDisposeNeverInventsAGap(t *testing.T) {
 	coverage := parse(t, []string{entry("lone", []string{"kind:x"}, 1, false, "")}, `[]`)
-	if _, err := disposition.Dispose(coverage); err == nil || !strings.Contains(err.Error(), "lone") {
+	if _, err := disposition.Dispose(coverage, nil); err == nil || !strings.Contains(err.Error(), "lone") {
 		t.Errorf("Dispose = %v, want an error naming lone", err)
 	}
 }
@@ -160,6 +160,91 @@ func TestPlaceRefusesAMismatchedPlacement(t *testing.T) {
 	}
 }
 
+const sourced = `{"kind": "sourced", "license_status": "verified"}`
+
+func TestDisposeTrimsForCandidatesAndDropsCandidatesInsideAnother(t *testing.T) {
+	coverage := parse(t, []string{
+		entry("a", []string{"kind:x"}, 1, true, ""),
+		entry("b", []string{"kind:y"}, 1, true, ""),
+		entry("c", []string{"kind:x"}, 2, false, `, "disposition": "trim", "trimmed_for": "a"`),
+	}, `[{"id": "g1", "covers": ["kind:z"], "candidate": `+sourced+`},
+		{"id": "g2", "covers": ["kind:z"], "candidate": `+sourced+`},
+		{"id": "g3", "covers": ["kind:w"], "candidate": {"kind": "generated", "inputs": ["b"]}},
+		{"id": "g4", "covers": ["kind:v"], "covered_by": "x/kept", "candidate": `+sourced+`}]`)
+	_, err := disposition.Dispose(coverage, []disposition.Placed{
+		{Gap: "g1", Path: "x/one", Bytes: 9, Covers: []string{"kind:x", "kind:y", "kind:z"}},
+		{Gap: "g2", Path: "x/two", Bytes: 1, Covers: []string{"kind:z"}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []string{"a trim x/one", "b adopt", "c trim x/one"}
+	if got := dispositions(coverage); !slices.Equal(got, want) {
+		t.Errorf("dispositions = %q, want %q", got, want)
+	}
+	var covered []string
+	for _, g := range coverage.Gaps {
+		covered = append(covered, g.ID+" "+g.CoveredBy)
+	}
+	if want := []string{"g1 ", "g2 x/one", "g3 ", "g4 x/kept"}; !slices.Equal(covered, want) {
+		t.Errorf("covered_by = %q, want %q", covered, want)
+	}
+}
+
+func gapLines(coverage *disposition.Coverage) []string {
+	var out []string
+	for _, g := range coverage.Gaps {
+		line := g.ID + " " + strings.Join(g.Covers, ",")
+		if g.SplitFrom != "" {
+			line += " from " + g.SplitFrom + " " + g.Candidate.Kind + " " + g.Candidate.Reason
+		}
+		out = append(out, line)
+	}
+	return out
+}
+
+func TestDisposeSplitsTheCoversACandidateDoesNotConfirm(t *testing.T) {
+	coverage := parse(t, nil, `[{"id": "g1", "covers": ["feature:f", "kind:x"], "candidate": `+sourced+`},
+		{"id": "g2", "covers": ["kind:y"], "candidate": `+sourced+`}]`)
+	placed := []disposition.Placed{{Gap: "g1", Path: "x/one", Covers: []string{"kind:x"}}}
+	if _, err := disposition.Dispose(coverage, placed); err != nil {
+		t.Fatal(err)
+	}
+	want := []string{"g1 kind:x", "g1-open feature:f from g1 unavailable ", "g2 kind:y"}
+	if got := gapLines(coverage); !slices.Equal(got, want) {
+		t.Errorf("gaps = %q, want %q", got, want)
+	}
+	coverage.Gaps[1].Candidate.Reason = "unconfirmed"
+	if _, err := disposition.Dispose(coverage, placed); err != nil {
+		t.Fatal(err)
+	}
+	want[1] = "g1-open feature:f from g1 unavailable unconfirmed"
+	if got := gapLines(coverage); !slices.Equal(got, want) {
+		t.Errorf("gaps after a second dispose = %q, want %q", got, want)
+	}
+	placed[0].Covers = []string{"feature:f", "kind:x"}
+	if _, err := disposition.Dispose(coverage, placed); err != nil {
+		t.Fatal(err)
+	}
+	if got, want := gapLines(coverage), []string{"g1 feature:f,kind:x", "g2 kind:y"}; !slices.Equal(got, want) {
+		t.Errorf("gaps once confirmed = %q, want %q", got, want)
+	}
+}
+
+func TestDisposeRefusesAPlacedCandidateWithoutOne(t *testing.T) {
+	cases := map[string]string{
+		"no gap":       `[]`,
+		"unavailable":  `[{"id": "g1", "covers": ["kind:x"], "candidate": {"kind": "unavailable"}}]`,
+		"open id used": `[{"id": "g1", "covers": ["kind:x", "kind:y"], "candidate": ` + sourced + `}, {"id": "g1-open", "covers": ["kind:z"], "candidate": {"kind": "unavailable"}}]`,
+	}
+	for name, gaps := range cases {
+		_, err := disposition.Dispose(parse(t, nil, gaps), []disposition.Placed{{Gap: "g1", Path: "x/one", Covers: []string{"kind:x"}}})
+		if err == nil {
+			t.Errorf("%s: Dispose = nil, want an error", name)
+		}
+	}
+}
+
 func TestDisposeReproducesTheCoverageData(t *testing.T) {
 	data := docstest.Coverage(t)
 	var want, coverage disposition.Coverage
@@ -172,7 +257,7 @@ func TestDisposeReproducesTheCoverageData(t *testing.T) {
 		coverage.Samples[i].Disposition = "unset"
 		coverage.Samples[i].TrimmedFor = "unset"
 	}
-	if _, err := disposition.Dispose(&coverage); err != nil {
+	if _, err := disposition.Dispose(&coverage, nil); err != nil {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(coverage, want) {

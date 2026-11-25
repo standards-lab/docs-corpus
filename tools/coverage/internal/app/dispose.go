@@ -45,7 +45,7 @@ func Dispose(args []string, stdout, stderr io.Writer) error {
 			return fmt.Errorf("%s: %w", *placementPath, err)
 		}
 	}
-	droppable, err := disposition.Dispose(&coverage)
+	droppable, err := disposition.Dispose(&coverage, nil)
 	if err != nil {
 		return err
 	}

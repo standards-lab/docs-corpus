@@ -64,48 +64,70 @@ func (s *sample) dispose(disposition, trimmedFor, gap string) {
 	s.entry.Disposition, s.entry.TrimmedFor, s.entry.Gap = disposition, trimmedFor, gap
 }
 
-// Dispose derives every sample's disposition in coverage as
-// docs/coverage.md states, and sets it in place with its trimmed_for or gap, and each gap a
-// replace names its covers. A replaced sample takes the gap of the replaced sample whose covers
-// contain its own, the one the tie-break prefers among those no other replaced sample's covers
-// contain, and that gap is the one those samples name in coverage; candidates are left as they
-// are. It returns the gaps no replace names whose covers adopted samples all exercise, which may
-// be dropped. A group of replaced samples that names no gap, or names two, is an error.
-func Dispose(coverage *Coverage) ([]string, error) {
+// Dispose derives every sample's disposition in coverage as docs/coverage.md states, and sets it
+// in place with its trimmed_for or gap, and each gap a replace names its covers. A replaced sample
+// takes the gap of the replaced sample whose covers contain its own, the one the tie-break prefers
+// among those no other replaced sample's covers contain, and that gap is the one those samples
+// name in coverage; candidates are left as they are.
+//
+// placed are the gap candidates the corpus placement placed. They join the adopted samples: an
+// adopted sample whose covers lie inside one's is trimmed for it, and one whose covers lie inside
+// another sample's leaves the corpus, its gap's covered_by naming that sample. An adopted sample a
+// generated candidate lists in its inputs stays whatever covers it. A gap whose candidate's covers
+// lack some of its covers keeps the ones they confirm, and the rest become its open gap, id
+// <gap>-open, split_from naming it, whose candidate is unavailable until its searched and reason
+// are recorded; the open gap goes once the candidate confirms them all. A gap whose candidate
+// placed doesn't list keeps its covers, covered_by, and open gap as they are.
+//
+// It returns the gaps no replace names whose covers adopted samples all exercise, which may be
+// dropped. A group of replaced samples that names no gap, or names two, a placed candidate whose
+// gap has no sourced or generated candidate, and an open gap's id taken by another gap are errors.
+func Dispose(coverage *Coverage, placed []Placed) ([]string, error) {
 	samples := make([]*sample, len(coverage.Samples))
 	for i := range coverage.Samples {
 		samples[i] = readSample(&coverage.Samples[i])
 	}
+	inputs := idset.Set{}
+	for _, g := range coverage.Gaps {
+		if g.Candidate != nil && g.Candidate.Kind == "generated" {
+			inputs.Add(g.Candidate.Inputs...)
+		}
+	}
+	candidates, err := readCandidates(coverage.Gaps, placed)
+	if err != nil {
+		return nil, err
+	}
 
-	var eligible, adopted []*sample
+	var eligible []*sample
 	for _, s := range samples {
 		if s.entry.Redistributable && !s.entry.Sensitive {
 			eligible = append(eligible, s)
 		}
 	}
-	for _, s := range eligible {
-		if !slices.ContainsFunc(eligible, func(t *sample) bool {
-			return t != s && within(s, t) && (len(t.covers) > len(s.covers) || rank(t, s) < 0)
-		}) {
-			adopted = append(adopted, s)
-		}
-	}
+	adopted := kept(eligible, inputs)
+	corpus := kept(slices.Concat(eligible, candidates), inputs)
 	var replaced []*sample
 	for _, s := range samples {
-		holder := best(filter(adopted, func(t *sample) bool { return within(s, t) }))
 		switch {
-		case holder == s:
-			s.dispose("adopt", "", "")
-		case holder != nil:
-			s.dispose("trim", holder.entry.Path, "")
-		default:
+		case !slices.ContainsFunc(adopted, func(t *sample) bool { return within(s, t) }):
 			replaced = append(replaced, s)
+		case slices.Contains(corpus, s):
+			s.dispose("adopt", "", "")
+		default:
+			s.dispose("trim", holder(s, corpus).entry.Path, "")
 		}
 	}
 
 	gaps := map[string]*Gap{}
 	for i := range coverage.Gaps {
 		gaps[coverage.Gaps[i].ID] = &coverage.Gaps[i]
+	}
+	for _, c := range candidates {
+		g := gaps[c.gap]
+		g.CoveredBy = ""
+		if !slices.Contains(corpus, c) {
+			g.CoveredBy = holder(c, corpus).entry.Path
+		}
 	}
 	outer := filter(replaced, func(s *sample) bool {
 		return !slices.ContainsFunc(replaced, func(t *sample) bool { return t != s && within(s, t) && len(t.covers) > len(s.covers) })
@@ -122,10 +144,7 @@ func Dispose(coverage *Coverage) ([]string, error) {
 		groupGap[key] = s.gap
 	}
 	named := idset.Set{}
-	for _, s := range samples {
-		if !slices.Contains(replaced, s) {
-			continue
-		}
+	for _, s := range replaced {
 		holder := best(filter(outer, func(t *sample) bool { return within(s, t) }))
 		key := strings.Join(holder.covers, " ")
 		id, ok := groupGap[key]
@@ -150,7 +169,93 @@ func Dispose(coverage *Coverage) ([]string, error) {
 			droppable = append(droppable, g.ID)
 		}
 	}
-	return droppable, nil
+	return droppable, split(coverage, candidates)
+}
+
+func readCandidates(gaps []Gap, placed []Placed) ([]*sample, error) {
+	byID := map[string]*Gap{}
+	for i := range gaps {
+		byID[gaps[i].ID] = &gaps[i]
+	}
+	var out []*sample
+	for _, p := range placed {
+		g := byID[p.Gap]
+		if g == nil || g.Candidate == nil || (g.Candidate.Kind != "sourced" && g.Candidate.Kind != "generated") {
+			return nil, fmt.Errorf("%s: placed as gap %s's candidate, but that gap has no sourced or generated candidate", p.Path, p.Gap)
+		}
+		s := readSample(&Sample{
+			Path: p.Path, Library: p.Covers, Bytes: p.Bytes,
+			LicenseStatus: g.Candidate.LicenseStatus, Redistributable: g.Candidate.LicenseStatus == "verified",
+		})
+		s.gap = p.Gap
+		out = append(out, s)
+	}
+	return out, nil
+}
+
+func kept(pool []*sample, inputs idset.Set) []*sample {
+	return filter(pool, func(s *sample) bool {
+		return inputs[s.entry.Path] || !slices.ContainsFunc(pool, func(t *sample) bool {
+			return t != s && within(s, t) && (len(t.covers) > len(s.covers) || rank(t, s) < 0)
+		})
+	})
+}
+
+func holder(s *sample, corpus []*sample) *sample {
+	return best(filter(corpus, func(t *sample) bool { return t != s && within(s, t) }))
+}
+
+func split(coverage *Coverage, candidates []*sample) error {
+	placed := map[string]*sample{}
+	for _, c := range candidates {
+		placed[c.gap] = c
+	}
+	open := map[string]Gap{}
+	ids := idset.Set{}
+	for _, g := range coverage.Gaps {
+		ids.Add(g.ID)
+		if g.SplitFrom != "" {
+			open[g.SplitFrom] = g
+		}
+	}
+	out := make([]Gap, 0, len(coverage.Gaps))
+	for _, g := range coverage.Gaps {
+		c := placed[g.SplitFrom]
+		if g.SplitFrom != "" && c != nil {
+			continue
+		}
+		c = placed[g.ID]
+		if c == nil || g.SplitFrom != "" {
+			out = append(out, g)
+			continue
+		}
+		o, hasOpen := open[g.ID]
+		full := idset.New(g.Covers...)
+		full.Add(o.Covers...)
+		confirmed, unconfirmed := idset.Set{}, idset.Set{}
+		for id := range full {
+			if c.set[id] {
+				confirmed.Add(id)
+			} else {
+				unconfirmed.Add(id)
+			}
+		}
+		g.Covers = confirmed.Sorted("")
+		out = append(out, g)
+		if len(unconfirmed) == 0 {
+			continue
+		}
+		if !hasOpen {
+			o = Gap{ID: g.ID + "-open", SplitFrom: g.ID, Candidate: &Candidate{Kind: "unavailable"}}
+			if ids[o.ID] {
+				return fmt.Errorf("gap %s: its open gap's id %s is another gap's; rename that gap", g.ID, o.ID)
+			}
+		}
+		o.Covers = unconfirmed.Sorted("")
+		out = append(out, o)
+	}
+	coverage.Gaps = out
+	return nil
 }
 
 func filter(samples []*sample, keep func(*sample) bool) []*sample {

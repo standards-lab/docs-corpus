@@ -115,6 +115,10 @@ type Gap struct {
 	ID string `json:"id"`
 	// Covers are the IDs a sample filling it must exercise.
 	Covers []string `json:"covers"`
+	// SplitFrom, for an open gap, is the gap whose candidate's covers lack this one's covers.
+	SplitFrom string `json:"split_from,omitempty"`
+	// CoveredBy is the sample whose covers contain its candidate's, which leaves the corpus.
+	CoveredBy string `json:"covered_by,omitempty"`
 	// Candidate is the file researched to fill it.
 	Candidate *Candidate `json:"candidate"`
 }
@@ -168,4 +172,17 @@ type Placement struct {
 	Traits []string `json:"traits"`
 	// Features are its feature IDs.
 	Features []string `json:"features"`
+}
+
+// Placed is a gap candidate as the corpus placement placed it: its gap, path, and size, as
+// docs/candidates.json records them, and its covers, as place-traits --corpus prints them.
+type Placed struct {
+	// Gap is the id of the gap it fills.
+	Gap string
+	// Path is its path from the repository root.
+	Path string
+	// Bytes is its size.
+	Bytes int64
+	// Covers are its library, trait, and feature IDs.
+	Covers []string
 }
