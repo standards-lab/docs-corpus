@@ -942,15 +942,6 @@
     ]
   },
   {
-    "path": "office/odf/calc-odf13.ods",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "kind:odf",
-      "route:office"
-    ]
-  },
-  {
     "path": "office/poi/45540_form_Footer.xlsx",
     "covers": [
       "capability:embeddings",
@@ -1155,15 +1146,6 @@
       "kind:rtf",
       "route:office",
       "route:vision"
-    ]
-  },
-  {
-    "path": "office/rtf/test-rtf.rtf",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "kind:rtf",
-      "route:office"
     ]
   },
   {
@@ -1420,28 +1402,6 @@
       "route:document",
       "trait:scale.oversized-page",
       "trait:text-layer.ocr"
-    ]
-  },
-  {
-    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-bg.pdf",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "capability:vision",
-      "kind:pdf",
-      "route:document",
-      "trait:script.cyrillic"
-    ]
-  },
-  {
-    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-el.pdf",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "capability:vision",
-      "kind:pdf",
-      "route:document",
-      "trait:script.greek"
     ]
   },
   {

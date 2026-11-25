@@ -361,6 +361,7 @@ After the data passes, it checks the manifest against the data and git. It fails
   inputs give;
 - a candidate's covers lack some of its gap's covers;
 - a sourced or generated gap that no sample covers has no candidate in the manifest;
+- `corpus-placement.json`'s rows differ from the manifest's samples' paths and covers;
 - a path in `judged.json` isn't a sample, or an ID there isn't in the vocabulary;
 - with `~/docs` present, the manifest differs from what `mise run manifest` prints.
 

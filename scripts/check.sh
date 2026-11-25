@@ -393,6 +393,9 @@ if [ -f MANIFEST.json ]; then
             (($g.covers - (.covers // [])) as $missing | select($missing != [])
               | "\(.path): its placed covers lack gap \($id)\u0027s \($missing | join(", ")); run docproc over the corpus and mise run place-traits --corpus > docs/corpus-placement.json as docs/coverage.md states, then mise run dispose to split the covers it does not confirm into an open gap, and \($regenerate)")
           end),
+      ([$samples[] | {path, covers}] | sort_by(.path)) as $rows
+      | (($placed[0] - $rows) + ($rows - $placed[0]) | map(.path) | unique | select(. != [])
+        | "docs/corpus-placement.json: its rows for \(join(", ")) differ from MANIFEST.json\u0027s samples\u0027 paths and covers; regenerate it with mise run place-traits --corpus > docs/corpus-placement.json as docs/coverage.md states, then mise run dispose > docs/coverage.json and mise run manifest > MANIFEST.json"),
       ([$samples[].gap] as $filled | $coverage[0].gaps[]
         | select(IN(.candidate.kind; "sourced", "generated") and .covered_by == null and (IN(.id; $filled[]) | not))
         | "gaps.\(.id): its \(.candidate.kind) candidate is not a sample in MANIFEST.json; run mise run \(if .candidate.kind == "sourced" then "fetch-candidates" else "generate-candidates" end), then \($regenerate)"),
@@ -403,7 +406,7 @@ if [ -f MANIFEST.json ]; then
             .value | keys[] | select(IN($ids[]) | not)
             | "docs/judged.json: \($p): \(.) is not in docs/coverage.json\u0027s vocabulary; judge an ID the vocabulary defines"
           end)
-  ' --slurpfile judged docs/judged.json MANIFEST.json); then
+  ' --slurpfile judged docs/judged.json --slurpfile placed docs/corpus-placement.json MANIFEST.json); then
     while read -r problem; do
       if [ -n "$problem" ]; then
         err "$problem"
