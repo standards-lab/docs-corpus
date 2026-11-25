@@ -28,8 +28,9 @@ adds `command`, `inputs`, `generator`, and `generator_license`, and a candidate 
 The manifest is generated, never edited by hand. It is built from the adopted samples in
 `docs/coverage.json`, `~/docs`' manifest, and
 [`docs/license-readings.json`](docs/license-readings.json), the licenses read at their source
-for the samples, truth files, and doc files `~/docs` records only as reported; a reading's
-`license`, where it has one, replaces the license `~/docs` records. The candidates
+for every adopted sample and every truth and doc file; a reading's `license`, where it has one,
+replaces the license `~/docs` records. Every adopted sample, truth, and doc entry records its
+reading's `license_url` and `license_read`. The candidates
 come from [`docs/candidates.json`](docs/candidates.json), what was fetched or generated for each
 gap, with their provenance from the gap's candidate and their covers from
 [`docs/corpus-placement.json`](docs/corpus-placement.json). A generated candidate's license
