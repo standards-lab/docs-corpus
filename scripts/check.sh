@@ -43,17 +43,22 @@ err() {
   fail=1
 }
 
-areas=(archive audio email image office onenote pdf text video)
+areas=(archive audio email exec image office onenote pdf text video)
 
 if [ -f MANIFEST.json ]; then
-  while IFS=$'\t' read -r path bytes sha; do
+  while IFS=$'\t' read -r path role bytes sha; do
+    if [ "$role" = sample ]; then
+      payload="mise run fetch -- <release-url|dir>, or mise run manifest --copy > MANIFEST.json"
+    else
+      payload="git checkout -- $path"
+    fi
     if [ ! -f "$path" ]; then
-      err "$path: in MANIFEST.json but missing; put the payload in place with mise run manifest --copy > MANIFEST.json"
+      err "$path: in MANIFEST.json but missing; restore it with $payload"
       continue
     fi
-    [ "$(stat -c %s "$path")" = "$bytes" ] || err "$path: size differs from MANIFEST.json; restore it with mise run manifest --copy > MANIFEST.json"
-    [ "$(sha256sum "$path" | cut -d' ' -f1)" = "$sha" ] || err "$path: sha256 differs from MANIFEST.json; restore it with mise run manifest --copy > MANIFEST.json"
-  done < <(jq -r '.files[] | [.path, (.bytes|tostring), .sha256] | @tsv' MANIFEST.json)
+    [ "$(stat -c %s "$path")" = "$bytes" ] || err "$path: size differs from MANIFEST.json; restore it with $payload"
+    [ "$(sha256sum "$path" | cut -d' ' -f1)" = "$sha" ] || err "$path: sha256 differs from MANIFEST.json; restore it with $payload"
+  done < <(jq -r '.files[] | [.path, .role, (.bytes|tostring), .sha256] | @tsv' MANIFEST.json)
 
   existing_areas=()
   for area in "${areas[@]}"; do

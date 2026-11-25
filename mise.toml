@@ -30,3 +30,11 @@ run = "go run ./tools/coverage/cmd/dispose"
 [tasks.manifest]
 description = "Print MANIFEST.json from docs/coverage.json, docs/license-readings.json, and ~/docs' manifest with tools/coverage's manifest; --copy first copies every file it lists from ~/docs into place"
 run = "go run ./tools/coverage/cmd/manifest"
+
+[tasks.pack]
+description = "Write one uncompressed tar per format area, <area>.tar, of the sample files MANIFEST.json lists into the directory given, with scripts/pack.sh; fails if a file differs from MANIFEST.json or a tar reaches 2 GiB"
+run = "scripts/pack.sh"
+
+[tasks.fetch]
+description = "Fetch every format area's <area>.tar from a release URL or a directory mise run pack wrote, with scripts/fetch.sh, and place the sample files at their manifest paths once each matches MANIFEST.json's size and sha256"
+run = "scripts/fetch.sh"

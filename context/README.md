@@ -16,8 +16,10 @@ versioned corpus in this repository, public from v1 ([README.md](../README.md)).
   ([docs/coverage.md](../docs/coverage.md#the-manifest)).
 - **Coverage page** (built): the scenario vocabulary, each `~/docs` sample's disposition, and
   each gap's candidate ([docs/coverage.md](../docs/coverage.md)).
-- **Distribution** (planned): the payload as release assets on each version tag, and the fetch
-  step that verifies it against the manifest ([README.md](../README.md)).
+- **Distribution** (built): `mise run pack` writes one uncompressed tar per format area of the
+  sample files, and `mise run fetch` reads them from a release URL or a directory and places each
+  file once it matches the manifest's size and sha256 ([README.md](../README.md#distribution)).
+  Publishing them on each version tag is planned, in snapshot.
 - **Baseline** (planned): docproc's and docinfer's run over each version, the reference timings
   capstone.data-intelligence measures against.
 - **Check** (built): the Go gates for [tools/coverage](../tools/coverage), from build to

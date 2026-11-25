@@ -8,9 +8,8 @@ the scenarios it exercises recorded in `MANIFEST.json`. The repository is public
 is in the corpus.
 
 Each version is a git tag. The payload, the sample files themselves, is the tag's GitHub release
-assets: one archive per format area, each under 2 GiB. Git holds the manifest, the truth files,
-the docs, the coverage, and the check. A fetch step downloads the archives and verifies each
-file's sha256 against the manifest. The repository uses no Git LFS.
+assets, one archive per format area, as [Distribution](#distribution) describes. Git holds the
+manifest, the truth files, the docs, the coverage, and the check. The repository uses no Git LFS.
 
 ## The manifest
 
@@ -39,3 +38,22 @@ place and checks each copy's size and sha256. Git ignores the format directories
 are never committed; truth and doc files are committed with `git add -f`, and
 [`scripts/check.sh`](scripts/check.sh) enforces both. The working context,
 [`context/README.md`](context/README.md), states what is still planned.
+
+## Distribution
+
+A format area is the top directory of a sample's path. Each area with samples has one release
+asset, `<area>.tar`: an uncompressed tar of that area's sample files, at their manifest paths in
+sorted order, each under 2 GiB. Truth and doc files aren't packed, since git carries them. To
+place the sample files in a checkout, from a version's release assets or a local directory, run:
+
+```sh
+mise run fetch -- <release-url|dir>
+```
+
+The release URL is the base the assets download from, such as
+`https://github.com/standards-lab/docs-corpus/releases/download/<tag>`. The fetch extracts every area's
+tar into a staging directory, verifies each sample file's size and sha256 against
+`MANIFEST.json`, and moves them into place only when every file matches; otherwise it names each
+file that is missing or differs, and places nothing. To write the tars from a working copy whose
+sample files are in place, run `mise run pack -- <dir>`; it fails when a file differs from the
+manifest or an area's tar would reach 2 GiB.
