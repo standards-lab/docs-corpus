@@ -136,10 +136,10 @@ cut it.
 
 ## Progress
 
-slices 9/9 committed (slice 9 done within 7 and 8) · standards in progress · spec — · editor —
+slices 9/9 committed (slice 9 done within 7 and 8) · standards done · spec round 1 closed · spec round 2 closed · spec round 3: no gaps · editor in progress
 - escalation, slice 5: docproc's text output is always UTF-8 and `encoding` names the source's
   encoding, so read text outputs as UTF-8? yes. Still wait for the encoding-keys release? yes, it
-  is almost done. It shipped as docproc v0.5.0 (7e116e2), run-directory schema still "2".
+  is almost done. It shipped as docproc v0.5.0 (commit 5a5926c), run-directory schema still "2".
 - escalation, slice 3: read the six committed "reported" truth files' licenses at source? yes;
   behavior 5 extends to truth and doc files.
 - escalation, slice 7: email-6's dead URL → use the raw URL at the same commit, yes; judged IDs
@@ -153,6 +153,13 @@ slices 9/9 committed (slice 9 done within 7 and 8) · standards in progress · s
 - escalation, slice 8: image-3's pinned ImageMagick writes one frame; pdf-7's oversized-page
   probe; dispose trims the bg and el eurlex PDFs and their truth. → revise image-3's command for
   the pinned ImageMagick; fix the probe to the vocabulary's rule; accept the trims.
+- escalation, spec round 1: behavior 3's "full provenance" — 80 adopted samples carry no
+  license_url or license_read and most no ref, since ~/docs never recorded them. → read every
+  adopted sample's license at its source; the check requires license_url and license_read.
+- escalation, spec round 2: the 25 samples made for the pool → Apache-2.0, this repository's
+  work; the hand-written script-bearing.svg → replaced by a sourced SVG, image-6 regenerated;
+  bbb-alpha-inverted.avif (CC-BY-3.0) and the safedocs .md and .pdf (CC-BY-4.0) → a reading's
+  optional `license` overrides ~/docs'. All yes.
 
 ## Decisions
 
