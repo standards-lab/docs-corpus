@@ -13,45 +13,58 @@ manifest, the truth files, the docs, the coverage, and the check. The repository
 
 ## The manifest
 
-`MANIFEST.json` is the inventory. It has `version: 1` and one entry per corpus file, by `role`: a
-`sample`, or a `truth` or `doc` file a sample links. Files sit under the format directories
+`MANIFEST.json` is the inventory. It has `version: 1` and one entry per corpus file, whose `role`
+is `sample`, or `truth` or `doc` for a file a sample links. Files sit under the format directories
 `archive/`, `audio/`, `email/`, `exec/`, `image/`, `office/`, `onenote/`, `pdf/`, `text/`, and
-`video/`: an adopted sample at the path it had in `~/docs`, a sourced gap candidate at
-`<area>/<source>/<name>`, and a generated one at the path its command writes, as [docs/coverage.md](docs/coverage.md#candidates-in-the-corpus) states. Each entry records the file's `sha256`, `bytes`, and `format`, as
-`file -b --mime-type` reports it, and its provenance: `source`, `url`, `ref`, `license`,
-`license_url`, `license_read`, `license_status`, `redistributable`, `derived_from`, and `note`,
-each present where its source records it. A sample also records its `covers`, its scenario IDs in
-[`docs/coverage.json`](docs/coverage.json)'s vocabulary; its `truth`, a list of `path` and `note`
-pairs; a `truth_note` giving the reason when it has no truth; and its `docs`. A generated file
-adds `command`, `inputs`, `generator`, and `generator_license`, and a candidate its `gap`.
+`video/`. An adopted sample keeps the path it had in `~/docs`, a sourced gap candidate sits at
+`<area>/<source>/<name>`, and a generated one at the path its command writes, as
+[docs/coverage.md](docs/coverage.md#candidates-in-the-corpus) states.
 
-The manifest is generated, never edited by hand. It is built from the adopted samples in
-`docs/coverage.json`, `~/docs`' manifest, and
-[`docs/license-readings.json`](docs/license-readings.json), the licenses read at their source
-for every adopted sample and every truth and doc file; a reading's `license`, where it has one,
-replaces the license `~/docs` records. Every adopted sample, truth, and doc entry records its
-reading's `license_url` and `license_read`. The candidates
-come from [`docs/candidates.json`](docs/candidates.json), what was fetched or generated for each
-gap, with their provenance from the gap's candidate and their covers from
-[`docs/corpus-placement.json`](docs/corpus-placement.json). A generated candidate's license
-follows from its inputs'. To regenerate it, run:
+Each entry records the file's `sha256`, `bytes`, and `format`, as `file -b --mime-type` reports
+it, and its provenance: `source`, `url`, `ref`, `license`, `license_url`, `license_read`,
+`license_status`, `redistributable`, `derived_from`, and `note`, each present where its source
+records it. A sample also records:
+
+- `covers`: its scenario IDs in [`docs/coverage.json`](docs/coverage.json)'s vocabulary;
+- `truth`: a list of `path` and `note` pairs, or, when it has no truth, a `truth_note` giving the
+  reason;
+- `docs`: the doc files it links.
+
+A generated file adds `command`, `inputs`, `generator`, and `generator_license`, and a candidate
+adds its `gap`.
+
+The manifest is generated, never edited by hand. `mise run manifest` builds it from three sources
+for the adopted samples and their files:
+
+- the adopted samples in `docs/coverage.json`;
+- `~/docs`' manifest;
+- [`docs/license-readings.json`](docs/license-readings.json): the license of every adopted
+  sample, truth file, and doc file, read at its source. Each of those entries records its
+  reading's `license_url` and `license_read`, and a reading's `license`, where it has one,
+  replaces the license `~/docs` records.
+
+The candidates come from [`docs/candidates.json`](docs/candidates.json), which records what was
+fetched or generated for each gap. A candidate takes its provenance from its gap's candidate and
+its covers from [`docs/corpus-placement.json`](docs/corpus-placement.json), and a generated
+candidate's license follows from its inputs'. To regenerate the manifest, run:
 
 ```sh
 mise run manifest > MANIFEST.json
 ```
 
 With `--copy`, it first copies every adopted file it lists from `~/docs`, or `$DOCS_REFERENCE`,
-into place and checks each copy's size and sha256. `mise run fetch-candidates` places the
-sourced candidates, and `mise run generate-candidates` makes the generated ones once. Git ignores the format directories, so sample files
-are never committed; truth and doc files are committed with `git add -f`, and
-[`scripts/check.sh`](scripts/check.sh) enforces both. The working context,
-[`context/README.md`](context/README.md), states what is still planned.
+into place and checks each copy's size and sha256. `mise run fetch-candidates` places the sourced
+candidates, and `mise run generate-candidates` makes the generated ones once.
+
+Git ignores the format directories, so sample files are never committed. Truth and doc files are
+committed with `git add -f`, and [`scripts/check.sh`](scripts/check.sh) enforces both. The
+working context, [`context/README.md`](context/README.md), states what is still planned.
 
 ## Distribution
 
 A format area is the top directory of a sample's path. Each area with samples has one release
-asset, `<area>.tar`: an uncompressed tar of that area's sample files, at their manifest paths in
-sorted order, each under 2 GiB. Truth and doc files aren't packed, since git carries them. To
+asset, `<area>.tar`, under 2 GiB: an uncompressed tar of that area's sample files, at their
+manifest paths in sorted order. Truth and doc files aren't packed, since git carries them. To
 place the sample files in a checkout, from a version's release assets or a local directory, run:
 
 ```sh
@@ -59,9 +72,11 @@ mise run fetch -- <release-url|dir>
 ```
 
 The release URL is the base the assets download from, such as
-`https://github.com/standards-lab/docs-corpus/releases/download/<tag>`. The fetch extracts every area's
-tar into a staging directory, verifies each sample file's size and sha256 against
-`MANIFEST.json`, and moves them into place only when every file matches; otherwise it names each
-file that is missing or differs, and places nothing. To write the tars from a working copy whose
-sample files are in place, run `mise run pack -- <dir>`; it fails when a file differs from the
-manifest or an area's tar would reach 2 GiB.
+`https://github.com/standards-lab/docs-corpus/releases/download/<tag>`. The fetch extracts every
+area's tar into a staging directory and verifies each sample file's size and sha256 against
+`MANIFEST.json`. It moves the files into place only when every one matches; otherwise it names
+each file that is missing or differs, and places nothing.
+
+To write the tars into `<dir>` from a working copy whose sample files are in place, run
+`mise run pack -- <dir>`. It fails when a file differs from the manifest or an area's tar would
+reach 2 GiB.

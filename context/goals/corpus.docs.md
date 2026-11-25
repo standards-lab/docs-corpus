@@ -163,82 +163,35 @@ slices 9/9 committed (slice 9 done within 7 and 8) · standards done · spec rou
 
 ## Decisions
 
-- curate: tools/coverage writes JSON with encoding/json from typed structs (json.Encoder,
-  SetIndent("", "  "), SetEscapeHTML(false), trailing newline); the Python-emulating jsonvalue
-  package is removed, with Truthy and Compare replaced by typed logic, and ID-keyed objects such
-  as the vocabulary are written key-sorted.
-- curate: sample files sit at their manifest paths, ignored by git; truth and doc files are
-  committed, and the check enforces both.
-- curate: each MANIFEST.json entry carries full provenance, and the check matches each
-  candidate's provenance to its gap's candidate.
-- curate: MANIFEST.json truth is a list of {path, note} with `~/docs`' qualifiers unchanged, and a
-  sample with no truth carries a truth note with the reason.
-- curate: a candidate has only truth inherited unchanged from an input's truth.
-- curate: the nine "reported" adopted licenses are read at their source and recorded verified in
-  MANIFEST.json; coverage.json keeps "reported".
-- curate: a new candidate's covers are placed from a docproc run over the curated tree, never
-  copied from its gap.
-- curate: covers a Fair candidate's placement doesn't confirm become an unavailable open gap.
-- curate: a generated sample's recorded inputs stay adopted and are exempt from containment;
-  STANDARDS.md names the exception.
-- curate: the check fails a sample whose covers lie inside another sample's, whatever the format.
-- curate: a candidate's format is `file -b --mime-type`'s.
-- curate: generated candidates are made once with mise's pinned tools where pinned, the versions
-  run are recorded, sha256 pins the bytes, and nothing regenerates them.
-- curate: the fetch step is a script with a mise task, taking a release URL or a local directory
-  and verifying each file's size and sha256 against MANIFEST.json.
-- curate: each release asset is one uncompressed tar per area; executables get an `exec` area,
-  making ten.
-- curate: docs-corpus carries Apache-2.0, and email-5's and email-8's generator_license is
-  Apache-2.0.
-- curate: docproc's text-output encoding becomes two keys, `encoding` and `encoding_by`
-  (`fallback`, `bom`), as docproc's own task; curate's placement run builds docproc at the
-  release carrying them, and curate waits for it, named by what it carries, not by a tag.
-- curate: tools/coverage reads docproc text outputs as UTF-8; `encoding` and `encoding_by` are
-  metadata naming the source's encoding.
-- curate: tools/coverage's run reader checks the run directory's schema and refuses one it
-  doesn't know; it reads schema "2" and whatever the encoding-keys release writes.
-- curate: the corpus placement pins docproc v0.5.0. docproc v0.6.0 (RAR, xz, bzip2, MPEG-PS and
-  Ogg-video kinds; `.ogv` moves from kind ogg to the Ogg-video kind) and docproc-coverage's "text
-  as the last resort" release (#! scripts route to text, polyglot scanned for them, so exec-4's
-  check:polyglot can reopen) will move placements; adopting them is a later task's.
-- curate: the vocabulary's links stay pinned to docproc `48216e1`; IDs a newer run adds link to
-  the release.
-- review: once curate writes `MANIFEST.json`, the check validates its `covers` against the
-  vocabulary in `docs/coverage.json`.
-- review: email-7 (attachment-by-reference) is an accepted open gap; its candidate is
-  `unavailable`, and curate leaves it open.
+- curate: the corpus placement pins docproc v0.5.0, with cmd/docproc v0.2.3. docproc v0.6.0
+  (RAR, xz, bzip2, MPEG-PS, and Ogg-video kinds; `.ogv` moves from kind ogg to the Ogg-video kind)
+  and docproc-coverage's "text as the last resort" release (#! scripts route to text and get the
+  polyglot scan) move placements. A later task adopts them, and the second reopens
+  exec-4-open's check:polyglot.
+- curate: the vocabulary's links stay pinned to docproc `48216e1`; an ID a newer run adds links to
+  that run's release.
+- curate: the candidates for archive-1, archive-2, archive-3, and archive-5 reuse `~/docs` paths
+  (`archive/mixed-bundle.7z`, `.tar.gz`, `.tar.zst`, `archive/zip-in-zip.zip`) with different
+  content, so baseline must not compare v1 runs with `~/docs` runs by path alone.
+- curate: 24 samples and 26 truth and doc entries record `license_url`
+  https://github.com/standards-lab/docs-corpus/blob/main/LICENSE, which resolves only once curate
+  merges and LICENSE is on main; snapshot relies on it.
 - review: a copyleft fixture, such as onenote-1's AGPL-3.0-or-later test.onepkg from Joplin, is
   acceptable in the public corpus when it ships unmodified with its license.
-- review: a generated candidate may transform adopted samples by its recorded command, as email-8
-  adds a rights-managed header and attachment to msg_36.eml.
-- review: every candidate whose `fit` is rated Fair (8 of them, among them onenote-2's image-ocr and
-  onenote-3's page-revisions) must be confirmed to exercise its covers when curate builds it.
-- review: email-8 is generated from the adopted msg_36.eml, whose covers lie inside email-8's, so
-  the subset rule and the adopted-inputs rule conflict there; curate settles which gives way.
-- review: Cerebro and Athena add no scenarios until their design tasks close.
-- review: docs-corpus takes the workspace's LICENSE, Apache-2.0, identical to the other
-  repositories', before snapshot makes it public; the generated candidates' `generator_license`
-  then names Apache-2.0, since their generator, `tools/coverage/cmd/generate`, is this
-  repository's own code. Samples keep their own licenses, recorded per sample.
-- review: coverage.json is rebuilt by `mise run place-traits` then `mise run dispose`; curate
+- review: `mise run place-traits` then `mise run dispose` rebuild coverage.json; a later task
   changes placements or dispositions through them, never by hand.
-- review: tools/coverage's probe minimums equal the mise.toml pins; a host whose PATH puts older
-  system tools ahead of mise's installs must run the programs with mise's paths first.
-- review: dispose never edits gap candidates; a disposition move that trims a generated
-  candidate's input fails the check until the candidate is revised.
 - plan: ~/docs is never changed. It is the reference for a corpus built from scratch in
   docs-corpus.
-- plan: `MANIFEST.json` carries `version`, and acceptance runs cite it.
-- plan: curate first and publish one v1.
-- plan: docs-corpus stays private until snapshot publishes v1; snapshot makes it public.
+- plan: snapshot publishes one v1, from curate's set. docs-corpus stays private until then, and
+  snapshot makes it public.
+- plan: acceptance runs cite `MANIFEST.json`'s `version`.
 - plan: once docs-corpus v1 is final, the baseline task reruns docproc and docinfer over it,
   repoints the acceptance citations, and removes ~/docs.
 - plan: the corpus has no size cap.
-- plan: the corpus is laid out by format directory, and each sample's `covers` indexes its
-  scenarios in the fixed vocabulary.
 
 ## Pending edits
 
-- coordinator · `context/docs-corpus.md`: the corpus note (what the corpus holds, how it changes,
-  how it is shared), cited from `context/README.md`'s Notes.
+- coordinator · `context/docs-corpus.md`: the corpus note, cited from `context/README.md`'s Notes.
+  It says what the corpus holds, how it changes, and how it is shared, and links to docs-corpus's
+  README.md (the manifest, and the release tars `mise run fetch` places) and docs/coverage.md
+  (the scenarios, gaps, and candidates) rather than restating them.
