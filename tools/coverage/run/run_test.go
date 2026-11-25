@@ -23,16 +23,23 @@ func load(t *testing.T) *run.Record {
 	t.Helper()
 	root := t.TempDir()
 	runs := filepath.Join(root, "runs")
+	write(t, filepath.Join(root, "rundir.json"), `{"schema": "2"}`)
 	write(t, filepath.Join(runs, "r1", "manifest.json"), `{"inputs": ["/in"]}`)
 	write(t, filepath.Join(runs, "r1", "record.jsonl"), strings.Join([]string{
 		`{"event": "start", "input": "/in/a.pdf"}`,
-		`{"event": "output", "input": "/in/a.pdf", "output": {"kind": "text", "name": "page 1", "sha256": "ab01", "media_type": "text/plain", "meta": {"page": 1, "encoding": "ISO-8859-1"}}}`,
+		`{"event": "output", "input": "/in/a.pdf", "output": {"kind": "text", "name": "page 1", "sha256": "ab01", "media_type": "text/plain", "meta": {"page": 1, "encoding": "windows-1252", "encoding_by": "fallback"}}}`,
+		`{"event": "output", "input": "/in/b.txt", "output": {"kind": "text", "name": "text", "sha256": "ef01", "media_type": "text/plain", "meta": {"encoding": "windows-1252 (fallback)"}}}`,
+		`{"event": "output", "input": "/in/b.txt", "output": {"kind": "markdown", "name": "text", "sha256": "ef02", "media_type": "text/markdown", "meta": {"encoding": "utf-16le (byte order mark)"}}}`,
+		`{"event": "output", "input": "/in/c.txt", "output": {"kind": "text", "name": "text", "sha256": "ef03", "media_type": "text/plain", "meta": {"encoding": "utf-16le", "encoding_by": "bom"}}}`,
 		`{"event": "output", "input": "/in/a.pdf", "part": {"depth": 1}, "output": {"kind": "image", "name": "page 1", "sha256": "ab02", "media_type": "image/png"}}`,
 		`{"event": "output", "input": "/in/m.pst", "output": {"kind": "record", "name": "message 1", "sha256": "cd01", "media_type": "application/x-docproc-mail+jsonl"}}`,
 		`{"event": "output", "input": "/elsewhere/a.pdf", "output": {"kind": "text", "name": "page 1", "sha256": "ab01"}}`,
 		`{"event": "end", "input": "/in/m.pst", "outcome": "encrypted"}`,
 	}, "\n")+"\n")
-	write(t, filepath.Join(root, "content", "ab", "ab01"), "caf\xe9")
+	write(t, filepath.Join(root, "content", "ab", "ab01"), "café")
+	write(t, filepath.Join(root, "content", "ef", "ef01"), "naïve")
+	write(t, filepath.Join(root, "content", "ef", "ef02"), "# Ünïcode")
+	write(t, filepath.Join(root, "content", "ef", "ef03"), "żółw")
 	write(t, filepath.Join(root, "content", "cd", "cd01"),
 		`{"subject": "Hi", "body": {"text": "T", "n": 1}}`+"\n"+`{"x": [{"title": "Z"}]}`+"\n"+`not json`+"\n"+`["a list"]`+"\n")
 	rec, err := run.Load(runs, "r1")
@@ -72,10 +79,12 @@ func TestOutputMetaRawIsTheValuesJSON(t *testing.T) {
 	}
 }
 
-func TestTextDecodesOutputsAndReadsRecordStrings(t *testing.T) {
+func TestTextReadsOutputsAsUTF8AndReadsRecordStrings(t *testing.T) {
 	rec := load(t)
-	if got := rec.Text("a.pdf"); got != "café" {
-		t.Errorf("Text(a.pdf) = %q, want the ISO-8859-1 text decoded", got)
+	for path, want := range map[string]string{"a.pdf": "café", "b.txt": "naïve\n# Ünïcode", "c.txt": "żółw"} {
+		if got := rec.Text(path); got != want {
+			t.Errorf("Text(%s) = %q, want the UTF-8 output unchanged, %q, whatever its encoding meta names", path, got, want)
+		}
 	}
 	if got := rec.Text("m.pst"); got != "Hi\nT\nZ" {
 		t.Errorf("Text(m.pst) = %q, want the record's subject, text, and title", got)
@@ -100,7 +109,9 @@ func TestRowsAreTheRecordOutputsObjectLines(t *testing.T) {
 }
 
 func TestLoadFailsOnAMissingOrEmptyManifest(t *testing.T) {
-	runs := t.TempDir()
+	root := t.TempDir()
+	runs := filepath.Join(root, "runs")
+	write(t, filepath.Join(root, "rundir.json"), `{"schema": "2"}`)
 	if _, err := run.Load(runs, "r1"); err == nil {
 		t.Error("Load of a missing run succeeded")
 	}
@@ -108,5 +119,28 @@ func TestLoadFailsOnAMissingOrEmptyManifest(t *testing.T) {
 	write(t, filepath.Join(runs, "r2", "record.jsonl"), "")
 	if _, err := run.Load(runs, "r2"); err == nil {
 		t.Error("Load of a run with no input succeeded")
+	}
+}
+
+func TestLoadRefusesARunDirectoryOfAnotherSchema(t *testing.T) {
+	root := t.TempDir()
+	runs := filepath.Join(root, "runs")
+	write(t, filepath.Join(runs, "r1", "manifest.json"), `{"inputs": ["/in"]}`)
+	write(t, filepath.Join(runs, "r1", "record.jsonl"), "")
+	write(t, filepath.Join(root, "rundir.json"), `{"schema": "3"}`)
+	_, err := run.Load(runs, "r1")
+	if err == nil || !strings.Contains(err.Error(), `schema "3"`) || !strings.Contains(err.Error(), `reads schema "2"`) {
+		t.Errorf("Load of a schema 3 run directory = %v, want an error naming schema \"3\" and the \"2\" it reads", err)
+	}
+}
+
+func TestLoadRefusesARunDirectoryWithNoRundirJSON(t *testing.T) {
+	root := t.TempDir()
+	runs := filepath.Join(root, "runs")
+	write(t, filepath.Join(runs, "r1", "manifest.json"), `{"inputs": ["/in"]}`)
+	write(t, filepath.Join(runs, "r1", "record.jsonl"), "")
+	_, err := run.Load(runs, "r1")
+	if err == nil || !strings.Contains(err.Error(), "no rundir.json") || !strings.Contains(err.Error(), "docproc v0.5.0") {
+		t.Errorf("Load of a run directory with no rundir.json = %v, want an error naming it and the docproc to run again", err)
 	}
 }

@@ -5,7 +5,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -28,14 +30,6 @@ func (o *Output) MetaRaw(key string) string {
 		return string(raw)
 	}
 	return "null"
-}
-
-func (o *Output) metaString(key string) string {
-	var s string
-	if raw, ok := o.Meta[key]; ok {
-		_ = json.Unmarshal(raw, &s)
-	}
-	return s
 }
 
 // Event is one line of a run's record.jsonl.
@@ -62,10 +56,18 @@ type Record struct {
 	events  map[string][]Event
 }
 
+const schema = "2"
+
 // Load reads the run id under runs: its manifest's first input, the root the events' input paths
-// are taken relative to, and its record.jsonl. The content store is runs' sibling, content.
+// are taken relative to, and its record.jsonl. The run directory is runs' parent: Load refuses
+// one whose rundir.json is missing or names a schema other than "2", and its content store is
+// runs' sibling, content.
 func Load(runs, id string) (_ *Record, err error) {
-	r := &Record{content: filepath.Join(filepath.Dir(runs), "content"), events: map[string][]Event{}}
+	dir := filepath.Dir(runs)
+	if err := checkSchema(dir); err != nil {
+		return nil, err
+	}
+	r := &Record{content: filepath.Join(dir, "content"), events: map[string][]Event{}}
 	data, err := os.ReadFile(filepath.Join(runs, id, "manifest.json"))
 	if err != nil {
 		return nil, err
@@ -99,6 +101,28 @@ func Load(runs, id string) (_ *Record, err error) {
 	return r, scanner.Err()
 }
 
+func checkSchema(dir string) error {
+	path := filepath.Join(dir, "rundir.json")
+	data, err := os.ReadFile(path)
+	if errors.Is(err, fs.ErrNotExist) {
+		return fmt.Errorf("run: %s holds no rundir.json, so it is no schema %q run directory; run docproc v0.5.0 or later again to write one: %w",
+			dir, schema, err)
+	}
+	if err != nil {
+		return err
+	}
+	var f struct {
+		Schema string `json:"schema"`
+	}
+	if err := json.Unmarshal(data, &f); err != nil {
+		return fmt.Errorf("run: %s: %w", path, err)
+	}
+	if f.Schema != schema {
+		return fmt.Errorf("run: %s is schema %q; run reads schema %q", dir, f.Schema, schema)
+	}
+	return nil
+}
+
 // Events returns the events of the input at path, in the record's order.
 func (r *Record) Events(path string) []Event {
 	return r.events[path]
@@ -124,8 +148,9 @@ func (r *Record) Outputs(path string) []Event {
 }
 
 // Text returns the text the run extracted from the input at path, joined by newlines: each text
-// and markdown output decoded by its meta encoding, UTF-8 when it names none, and the markdown,
-// subject, text, and title strings of each record output's lines.
+// and markdown output read as UTF-8, as docproc writes them whatever their encoding and
+// encoding_by meta say of the source, and the markdown, subject, text, and title strings of each
+// record output's lines.
 func (r *Record) Text(path string) string {
 	var parts []string
 	for _, e := range r.Outputs(path) {
@@ -133,12 +158,7 @@ func (r *Record) Text(path string) string {
 		if out.Kind != "text" && out.Kind != "markdown" && out.Kind != "record" {
 			continue
 		}
-		data := r.blob(out.Sha256)
-		enc := out.metaString("encoding")
-		if enc == "" {
-			enc = "utf-8"
-		}
-		body := text.DecodeOrUTF8(data, enc)
+		body := string(r.blob(out.Sha256))
 		if out.Kind == "record" {
 			for _, line := range text.SplitLines(body) {
 				if found, err := stringsUnder([]byte(line), recordTextKeys); err == nil {

@@ -43,6 +43,7 @@ func placer(t *testing.T, samples string) placement.Placer {
 	write(t, filepath.Join(docs, "text", "b.txt"), "caf\xe9 au lait")
 	write(t, filepath.Join(docs, "email", "c.eml"), "Subject: x\nContent-Type: text/html\n\n<p>hi</p>\n")
 	runs := filepath.Join(root, "runs")
+	write(t, filepath.Join(root, "rundir.json"), `{"schema": "2"}`)
 	write(t, filepath.Join(runs, "r1", "manifest.json"), `{"inputs": ["/docs"]}`)
 	write(t, filepath.Join(runs, "r1", "record.jsonl"), "")
 	coverage := filepath.Join(root, "coverage.json")
