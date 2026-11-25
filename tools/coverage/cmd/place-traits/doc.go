@@ -1,5 +1,6 @@
-// Command place-traits prints the trait and feature placement of every ~/docs sample as a JSON
-// array, sorted by path. Run it from the repository root:
+// Command place-traits prints, as a JSON array sorted by path, the trait and feature placement of
+// every ~/docs sample, or with --corpus the covers of every sample MANIFEST.json lists. Run it from
+// the repository root:
 //
 //	go run ./tools/coverage/cmd/place-traits [--facts] [--corpus]
 //
@@ -9,9 +10,8 @@
 // it places the samples the repository's MANIFEST.json lists instead, from docproc's run over the
 // corpus, read from $RUNS, default ~/runs/docs-corpus/curate/runs, with the judged IDs
 // docs/judged.json records for samples docs/coverage.json doesn't list, and prints each one's
-// covers.
-// With --facts, each element also has the probes' findings. It writes nothing outside a temporary
-// directory.
+// covers. With --facts, each element also has the probes' findings. It writes nothing outside a
+// temporary directory.
 //
 // See docs/coverage.md
 package main
