@@ -131,12 +131,42 @@ type Reading struct {
 	LicenseRead string `json:"license_read"`
 }
 
+// Candidate is a gap candidate's file as docs/candidates.json records it once fetched.
+type Candidate struct {
+	// Gap is the id of the gap it fills.
+	Gap string `json:"gap"`
+	// Path is its path from the repository root.
+	Path string `json:"path"`
+	// Source names the collection it comes from.
+	Source string `json:"source"`
+	// Sha256 is its content's SHA-256, in hex.
+	Sha256 string `json:"sha256"`
+	// Bytes is its size.
+	Bytes int64 `json:"bytes"`
+	// Format is its media type, as file -b --mime-type reports it.
+	Format string `json:"format"`
+	// FormatBy is the file version that reported Format.
+	FormatBy string `json:"format_by"`
+}
+
+// Placed is one sample's covers, an element of place-traits --corpus's output.
+type Placed struct {
+	// Path is the sample's path.
+	Path string `json:"path"`
+	// Covers are its library, trait, and feature IDs.
+	Covers []string `json:"covers"`
+}
+
 // Build returns the manifest of coverage's adopted samples and the truth and doc files they link,
-// each with the reference's facts and provenance, a sample's covers, and its reading applied. A
-// file the reference lacks, a sample whose sha256 differs from the reference's, a path that is both
-// a sample and a truth or doc file, or a reading for a path that is neither an adopted sample nor a
-// file one links is an error.
-func Build(coverage disposition.Coverage, reference Reference, readings []Reading) (Manifest, error) {
+// each with the reference's facts and provenance, a sample's covers, and its reading applied, and
+// of the candidates fetched for coverage's gaps, but for those whose gap is covered_by another
+// sample. A candidate carries its recorded facts, its gap's candidate's provenance, no truth, and
+// its covers in placed, or none when placed lacks it. A file
+// the reference lacks, a sample whose sha256 differs from the reference's, a path that is both a
+// sample and a truth or doc file, a reading for a path that is neither an adopted sample nor a file
+// one links, a sourced candidate with no fetched file, a fetched file for a gap that has no sourced
+// or generated candidate, and a candidate at another file's path are errors.
+func Build(coverage disposition.Coverage, reference Reference, readings []Reading, candidates []Candidate, placed []Placed) (Manifest, error) {
 	byPath := make(map[string]ReferenceFile, len(reference.Files))
 	for _, f := range reference.Files {
 		byPath[f.Path] = f
@@ -197,6 +227,7 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 		f.LicenseURL, f.LicenseRead, f.LicenseStatus = r.LicenseURL, r.LicenseRead, "verified"
 		files[path] = f
 	}
+	errs = append(errs, addCandidates(files, coverage.Gaps, candidates, placed)...)
 	if err := errors.Join(errs...); err != nil {
 		return Manifest{}, err
 	}
@@ -206,6 +237,73 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 	}
 	slices.SortFunc(m.Files, func(a, b File) int { return strings.Compare(a.Path, b.Path) })
 	return m, nil
+}
+
+func addCandidates(files map[string]File, gaps []disposition.Gap, candidates []Candidate, placed []Placed) []error {
+	covers := make(map[string][]string, len(placed))
+	for _, p := range placed {
+		covers[p.Path] = p.Covers
+	}
+	fetched := make(map[string]bool, len(candidates))
+	byGap := make(map[string]disposition.Gap, len(gaps))
+	for _, g := range gaps {
+		byGap[g.ID] = g
+	}
+	var errs []error
+	for _, c := range candidates {
+		fetched[c.Gap] = true
+		g, ok := byGap[c.Gap]
+		if !ok || g.Candidate == nil || (g.Candidate.Kind != "sourced" && g.Candidate.Kind != "generated") {
+			errs = append(errs, fmt.Errorf("%s: a candidate for gap %s, which has no sourced or generated candidate", c.Path, c.Gap))
+			continue
+		}
+		if g.CoveredBy != "" {
+			continue
+		}
+		if _, ok := files[c.Path]; ok {
+			errs = append(errs, fmt.Errorf("%s: gap %s's candidate is at another file's path", c.Path, c.Gap))
+			continue
+		}
+		files[c.Path] = candidateEntry(c, *g.Candidate, covers[c.Path])
+	}
+	for _, g := range gaps {
+		if g.Candidate != nil && g.Candidate.Kind == "sourced" && !fetched[g.ID] {
+			errs = append(errs, fmt.Errorf("gap %s: its sourced candidate has no fetched file; run mise run fetch-candidates", g.ID))
+		}
+	}
+	return errs
+}
+
+func candidateEntry(c Candidate, from disposition.Candidate, placed []string) File {
+	f := File{
+		Path:             c.Path,
+		Role:             "sample",
+		Sha256:           c.Sha256,
+		Bytes:            c.Bytes,
+		Format:           c.Format,
+		Truth:            []Truth{},
+		Docs:             []string{},
+		Source:           c.Source,
+		URL:              from.URL,
+		Ref:              from.Ref,
+		License:          from.License,
+		LicenseURL:       from.LicenseURL,
+		LicenseRead:      from.LicenseRead,
+		LicenseStatus:    from.LicenseStatus,
+		Redistributable:  from.LicenseStatus == "verified",
+		Command:          from.Command,
+		Inputs:           slices.Clone(from.Inputs),
+		Generator:        from.Generator,
+		GeneratorLicense: from.GeneratorLicense,
+		Gap:              c.Gap,
+	}
+	if from.Kind == "sourced" {
+		f.TruthNote = "a sourced candidate, which inherits no truth"
+	}
+	if placed != nil {
+		f.Covers = slices.Compact(slices.Sorted(slices.Values(placed)))
+	}
+	return f
 }
 
 func entry(ref ReferenceFile, role string) File {

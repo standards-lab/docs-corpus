@@ -10,14 +10,17 @@ import (
 	"os"
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/disposition"
+	"github.com/standards-lab/docs-corpus/tools/coverage/manifest"
 )
 
 // Dispose reads docs/coverage.json, relative to the working directory, and writes it to stdout
 // with every disposition derived by disposition.Dispose, indented by two spaces, with no HTML
-// escaped, and a newline. A key disposition.Coverage does not define is an error. args are the
-// command line's arguments without the program's name: --placement <file> first sets the traits
-// and features from that place-traits output, as disposition.Place does. It names each gap that
-// may be dropped on stderr. An error writes nothing to stdout.
+// escaped, and a newline. The candidates it places are those docs/candidates.json records that
+// docs/corpus-placement.json places, with the covers placed there. A key disposition.Coverage does
+// not define is an error. args are the command line's arguments without the program's name:
+// --placement <file> first sets the traits and features from that place-traits output, as
+// disposition.Place does. It names each gap that may be dropped on stderr. An error writes nothing
+// to stdout.
 func Dispose(args []string, stdout, stderr io.Writer) error {
 	flags := flag.NewFlagSet("dispose", flag.ContinueOnError)
 	flags.SetOutput(stderr)
@@ -45,7 +48,11 @@ func Dispose(args []string, stdout, stderr io.Writer) error {
 			return fmt.Errorf("%s: %w", *placementPath, err)
 		}
 	}
-	droppable, err := disposition.Dispose(&coverage, nil)
+	placed, err := corpusPlaced()
+	if err != nil {
+		return err
+	}
+	droppable, err := disposition.Dispose(&coverage, placed)
 	if err != nil {
 		return err
 	}
@@ -58,6 +65,28 @@ func Dispose(args []string, stdout, stderr io.Writer) error {
 		}
 	}
 	return nil
+}
+
+func corpusPlaced() ([]disposition.Placed, error) {
+	var candidates []manifest.Candidate
+	if err := decodeStrict("docs/candidates.json", &candidates); err != nil {
+		return nil, err
+	}
+	var rows []manifest.Placed
+	if err := decodeStrict("docs/corpus-placement.json", &rows); err != nil {
+		return nil, err
+	}
+	covers := map[string][]string{}
+	for _, r := range rows {
+		covers[r.Path] = r.Covers
+	}
+	var placed []disposition.Placed
+	for _, c := range candidates {
+		if ids, ok := covers[c.Path]; ok {
+			placed = append(placed, disposition.Placed{Gap: c.Gap, Path: c.Path, Bytes: c.Bytes, Covers: ids})
+		}
+	}
+	return placed, nil
 }
 
 func encode(w io.Writer, v any) error {

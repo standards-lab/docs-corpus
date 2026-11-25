@@ -13,12 +13,13 @@ import (
 	"github.com/standards-lab/docs-corpus/tools/coverage/manifest"
 )
 
-// Manifest reads docs/coverage.json and docs/license-readings.json, relative to the working
-// directory, and the reference manifest under $DOCS_REFERENCE, default ~/docs, and writes
-// MANIFEST.json, as manifest.Build builds it, to stdout, in dispose's JSON form. args are the
-// command line's arguments without the program's name: --copy first copies every file it lists
-// from the reference docs to its path under the working directory, as manifest.Copy does. An error
-// writes nothing to stdout.
+// Manifest reads docs/coverage.json, docs/license-readings.json, docs/candidates.json, and
+// docs/corpus-placement.json, relative to the working directory, and the reference manifest under
+// $DOCS_REFERENCE, default ~/docs, and writes MANIFEST.json, as manifest.Build builds it, to
+// stdout, in dispose's JSON form. args are the command line's arguments without the program's
+// name: --copy first copies every file it lists from the reference docs to its path under the
+// working directory, as manifest.Copy does, leaving the candidates to mise run fetch-candidates.
+// An error writes nothing to stdout.
 func Manifest(args []string, stdout, stderr io.Writer) error {
 	flags := flag.NewFlagSet("manifest", flag.ContinueOnError)
 	flags.SetOutput(stderr)
@@ -37,6 +38,14 @@ func Manifest(args []string, stdout, stderr io.Writer) error {
 	if err := decodeStrict("docs/license-readings.json", &readings); err != nil {
 		return err
 	}
+	var candidates []manifest.Candidate
+	if err := decodeStrict("docs/candidates.json", &candidates); err != nil {
+		return err
+	}
+	var placed []manifest.Placed
+	if err := decodeStrict("docs/corpus-placement.json", &placed); err != nil {
+		return err
+	}
 	dir := os.Getenv("DOCS_REFERENCE")
 	if dir == "" {
 		home, err := os.UserHomeDir()
@@ -53,14 +62,24 @@ func Manifest(args []string, stdout, stderr io.Writer) error {
 	if err := json.Unmarshal(data, &reference); err != nil {
 		return fmt.Errorf("%s: %w", filepath.Join(dir, "MANIFEST.json"), err)
 	}
-	m, err := manifest.Build(coverage, reference, readings)
+	m, err := manifest.Build(coverage, reference, readings, candidates, placed)
 	if err != nil {
 		return err
 	}
 	if *copyFiles {
-		if err := manifest.Copy(m, dir, "."); err != nil {
+		if err := manifest.Copy(adoptedFiles(m), dir, "."); err != nil {
 			return err
 		}
 	}
 	return encode(stdout, m)
+}
+
+func adoptedFiles(m manifest.Manifest) manifest.Manifest {
+	out := manifest.Manifest{Version: m.Version}
+	for _, f := range m.Files {
+		if f.Gap == "" {
+			out.Files = append(out.Files, f)
+		}
+	}
+	return out
 }

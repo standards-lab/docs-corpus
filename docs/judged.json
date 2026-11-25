@@ -1,0 +1,9 @@
+{
+  "image/wikimedia-commons/Grocery_Store_Receipt_in_Vienna.jpg": {
+    "trait:scan.camera": "a phone photo (EXIF moto g pure) of a crumpled receipt on a dark table, with perspective, folds, and uneven light, seen rendered",
+    "trait:scan.printed": "the receipt's printed thermal text, a Hofer store's item lines, totals, and QR code, seen rendered"
+  },
+  "pdf/verapdf-corpus/veraPDF test suite 6-3-8-t01-fail-c.pdf": {
+    "trait:text-layer.unmapped": "the page renders Font, but pdftotext reads )RQW; pdffonts lists its one font, GITMIG+LiberationSans,Bold, as Identity-H with uni no"
+  }
+}

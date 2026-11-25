@@ -31,7 +31,7 @@ func ref(path, role, truth string) manifest.ReferenceFile {
 
 func build(t *testing.T, samples []disposition.Sample, files []manifest.ReferenceFile, readings []manifest.Reading) manifest.Manifest {
 	t.Helper()
-	m, err := manifest.Build(disposition.Coverage{Samples: samples}, manifest.Reference{Files: files}, readings)
+	m, err := manifest.Build(disposition.Coverage{Samples: samples}, manifest.Reference{Files: files}, readings, nil, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -156,7 +156,77 @@ func TestBuildRefusesInconsistentInputs(t *testing.T) {
 		{"stray reading", nil, nil, []manifest.Reading{{Path: "x.pdf"}}, "x.pdf: a license reading for a path that is neither an adopted sample nor a file one links"},
 	}
 	for _, c := range cases {
-		_, err := manifest.Build(disposition.Coverage{Samples: c.samples}, manifest.Reference{Files: c.files}, c.readings)
+		_, err := manifest.Build(disposition.Coverage{Samples: c.samples}, manifest.Reference{Files: c.files}, c.readings, nil, nil)
+		if err == nil || !strings.Contains(err.Error(), c.want) {
+			t.Errorf("%s: Build = %v, want an error containing %q", c.name, err, c.want)
+		}
+	}
+}
+
+func candidateCoverage(coveredBy string) disposition.Coverage {
+	return disposition.Coverage{Gaps: []disposition.Gap{
+		{ID: "g1", Covers: []string{"kind:a"}, CoveredBy: coveredBy, Candidate: &disposition.Candidate{
+			Kind: "sourced", URL: "https://example.org/c", Ref: "r1", License: "MIT", LicenseURL: "https://example.org/l",
+			LicenseStatus: "verified", LicenseRead: "2026-11-24", Fit: "Good: it fits",
+		}},
+		{ID: "g2", Covers: []string{"kind:b"}, Candidate: &disposition.Candidate{Kind: "unavailable", Searched: "s", Reason: "r"}},
+	}}
+}
+
+var fetched = []manifest.Candidate{{Gap: "g1", Path: "x/c.bin", Source: "suite", Sha256: "h", Bytes: 7, Format: "application/zip", FormatBy: "file-5.48"}}
+
+func TestBuildAddsTheFetchedCandidatesWithTheirGapsProvenanceAndPlacedCovers(t *testing.T) {
+	m, err := manifest.Build(candidateCoverage(""), manifest.Reference{}, nil, fetched,
+		[]manifest.Placed{{Path: "x/c.bin", Covers: []string{"route:b", "kind:a", "kind:a"}}, {Path: "elsewhere", Covers: []string{"kind:z"}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := manifest.File{
+		Path: "x/c.bin", Role: "sample", Sha256: "h", Bytes: 7, Format: "application/zip",
+		Covers: []string{"kind:a", "route:b"}, Truth: []manifest.Truth{}, TruthNote: "a sourced candidate, which inherits no truth",
+		Docs: []string{}, Source: "suite", URL: "https://example.org/c", Ref: "r1", License: "MIT",
+		LicenseURL: "https://example.org/l", LicenseRead: "2026-11-24", LicenseStatus: "verified", Redistributable: true, Gap: "g1",
+	}
+	if len(m.Files) != 1 || !reflect.DeepEqual(m.Files[0], want) {
+		t.Errorf("files = %+v, want only %+v", m.Files, want)
+	}
+}
+
+func TestBuildLeavesAnUnplacedCandidateWithoutCoversAndACoveredOneOut(t *testing.T) {
+	m, err := manifest.Build(candidateCoverage(""), manifest.Reference{}, nil, fetched, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(m.Files) != 1 || m.Files[0].Covers != nil {
+		t.Errorf("files = %+v, want x/c.bin without covers", m.Files)
+	}
+	m, err = manifest.Build(candidateCoverage("other/sample"), manifest.Reference{}, nil, fetched, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(m.Files) != 0 {
+		t.Errorf("files = %+v, want none: g1 is covered by another sample", m.Files)
+	}
+}
+
+func TestBuildRefusesInconsistentCandidates(t *testing.T) {
+	stray := []manifest.Candidate{fetched[0], {Gap: "g2", Path: "x/d.bin"}}
+	clash := []manifest.Candidate{{Gap: "g1", Path: "a.pdf"}}
+	cases := []struct {
+		name       string
+		files      []manifest.ReferenceFile
+		samples    []disposition.Sample
+		candidates []manifest.Candidate
+		want       string
+	}{
+		{"unfetched", nil, nil, nil, "gap g1: its sourced candidate has no fetched file; run mise run fetch-candidates"},
+		{"no candidate", nil, nil, stray, "x/d.bin: a candidate for gap g2, which has no sourced or generated candidate"},
+		{"clash", []manifest.ReferenceFile{ref("a.pdf", "sample", "")}, []disposition.Sample{adopted("a.pdf", nil, nil)}, clash, "a.pdf: gap g1's candidate is at another file's path"},
+	}
+	for _, c := range cases {
+		coverage := candidateCoverage("")
+		coverage.Samples = c.samples
+		_, err := manifest.Build(coverage, manifest.Reference{Files: c.files}, nil, c.candidates, nil)
 		if err == nil || !strings.Contains(err.Error(), c.want) {
 			t.Errorf("%s: Build = %v, want an error containing %q", c.name, err, c.want)
 		}

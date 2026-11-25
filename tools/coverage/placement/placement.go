@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"path/filepath"
 	"slices"
@@ -21,8 +22,8 @@ import (
 )
 
 // Placer places every sample the coverage data lists, or, with Corpus, every sample the manifest
-// lists. A nil Charset, Soffice, or Parser, or an empty Docs, Runs, or Coverage, panics naming the
-// field when Run is called.
+// lists. A nil Charset, Soffice, or Parser, an empty Docs, Runs, or Coverage, or with Corpus an
+// empty Judged, panics naming the field when Run is called.
 type Placer struct {
 	// Docs is the directory the samples and their MANIFEST.json are in: ~/docs, or with Corpus the
 	// repository root.
@@ -47,6 +48,9 @@ type Placer struct {
 	// library IDs placed from corpus_placement.run as scripts/place-library.sh places them from
 	// the kept run, and writes each one's covers: its library, trait, and feature IDs.
 	Corpus bool
+	// Judged is the path of the judged IDs of samples the coverage data doesn't list,
+	// docs/judged.json: by corpus path, each ID with its evidence. Corpus reads it.
+	Judged string
 }
 
 type coverageData struct {
@@ -72,9 +76,10 @@ type manifestFile struct {
 // features, the IDs probed and judged, each sorted; with Corpus, its covers, the library IDs the
 // run observed with those, sorted, in their place; with Facts, its facts and probed IDs too. The
 // output is an array indented by two spaces, with no HTML escaped, and a newline. It writes
-// nothing outside a temporary directory, which it removes. A sample missing from the manifest, a
-// file it cannot read, coverage data with Corpus that names no corpus_placement.run, and a context
-// that ends are errors, and an error writes nothing to w.
+// nothing outside a temporary directory, which it removes. With Corpus, a sample's judged IDs are
+// the coverage data's for its path and Judged's. A sample missing from the manifest, a file it
+// cannot read, coverage data with Corpus that names no corpus_placement.run, and a context that
+// ends are errors, and an error writes nothing to w.
 func (p Placer) Run(ctx context.Context, w io.Writer) (err error) {
 	p.require()
 	data, err := os.ReadFile(p.Coverage)
@@ -106,7 +111,15 @@ func (p Placer) Run(ctx context.Context, w io.Writer) (err error) {
 		if runID == "" {
 			return fmt.Errorf("%s names no corpus_placement.run; run docproc over the corpus and record its run there, as docs/coverage.md states", p.Coverage)
 		}
-		samples = corpusSamples(manifest.Files, coverage.Samples)
+		data, err := os.ReadFile(p.Judged)
+		if err != nil {
+			return err
+		}
+		var judged map[string]map[string]json.RawMessage
+		if err := json.Unmarshal(data, &judged); err != nil {
+			return fmt.Errorf("%s: %w", p.Judged, err)
+		}
+		samples = corpusSamples(manifest.Files, coverage.Samples, judged)
 	}
 	rec, err := run.Load(p.Runs, runID)
 	if err != nil {
@@ -174,16 +187,22 @@ func (p Placer) Run(ctx context.Context, w io.Writer) (err error) {
 	return err
 }
 
-func corpusSamples(files []manifestFile, placed []sample) []sample {
-	judged := map[string]map[string]json.RawMessage{}
+func corpusSamples(files []manifestFile, placed []sample, judged map[string]map[string]json.RawMessage) []sample {
+	byPath := map[string]map[string]json.RawMessage{}
 	for _, s := range placed {
-		judged[s.Path] = s.Judged
+		byPath[s.Path] = s.Judged
 	}
 	var samples []sample
 	for _, f := range files {
-		if f.Role == "sample" {
-			samples = append(samples, sample{Path: f.Path, Judged: judged[f.Path]})
+		if f.Role != "sample" {
+			continue
 		}
+		ids := maps.Clone(byPath[f.Path])
+		if ids == nil {
+			ids = map[string]json.RawMessage{}
+		}
+		maps.Copy(ids, judged[f.Path])
+		samples = append(samples, sample{Path: f.Path, Judged: ids})
 	}
 	return samples
 }
@@ -204,6 +223,7 @@ func (p Placer) require() {
 	}{
 		{"Docs", p.Docs != ""}, {"Runs", p.Runs != ""}, {"Coverage", p.Coverage != ""},
 		{"Charset", p.Charset != nil}, {"Soffice", p.Soffice != nil}, {"Parser", p.Parser != nil},
+		{"Judged", !p.Corpus || p.Judged != ""},
 	} {
 		if !f.ok {
 			panic("placement: Placer.Run requires a " + f.name)

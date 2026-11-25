@@ -46,8 +46,10 @@ err() {
 areas=(archive audio email exec image office onenote pdf text video)
 
 if [ -f MANIFEST.json ]; then
-  while IFS=$'\t' read -r path role bytes sha; do
-    if [ "$role" = sample ]; then
+  while IFS=$'\t' read -r path role bytes sha gap; do
+    if [ "$role" = sample ] && [ -n "$gap" ]; then
+      payload="mise run fetch -- <release-url|dir>, or mise run fetch-candidates"
+    elif [ "$role" = sample ]; then
       payload="mise run fetch -- <release-url|dir>, or mise run manifest --copy > MANIFEST.json"
     else
       payload="git checkout -- $path"
@@ -58,7 +60,7 @@ if [ -f MANIFEST.json ]; then
     fi
     [ "$(stat -c %s "$path")" = "$bytes" ] || err "$path: size differs from MANIFEST.json; restore it with $payload"
     [ "$(sha256sum "$path" | cut -d' ' -f1)" = "$sha" ] || err "$path: sha256 differs from MANIFEST.json; restore it with $payload"
-  done < <(jq -r '.files[] | [.path, .role, (.bytes|tostring), .sha256] | @tsv' MANIFEST.json)
+  done < <(jq -r '.files[] | [.path, .role, (.bytes|tostring), .sha256, (.gap // "")] | @tsv' MANIFEST.json)
 
   existing_areas=()
   for area in "${areas[@]}"; do
@@ -162,9 +164,16 @@ else
     def covers: (.library + (.traits // []) + (.features // [])) | unique;
     def within($outer): (covers - ($outer | covers)) == [];
     def rank: [(.truth // []) == [], .license_status != "verified", .redistributable != true, .bytes, .path];
-    (.samples // []) as $samples
-    | ($samples | map(select(.disposition == "adopt"))) as $adopted
-    | ($samples | map({key: .path, value: .}) | from_entries) as $by
+    ($placed[0] | map({key: .path, value: .covers}) | from_entries) as $covers
+    | ($fetched[0] | map({key: .gap, value: .}) | from_entries) as $files
+    | ([(.gaps // [])[] | select(.candidate.kind == "generated") | .candidate.inputs[]?]) as $inputs
+    | ([(.gaps // [])[] | select(IN(.candidate.kind?; "sourced", "generated") and .covered_by == null)
+        | .candidate.license_status as $status | $files[.id] // empty | select($covers[.path] != null)
+        | {path, gap, format, bytes, library: $covers[.path], truth: [], license_status: $status,
+           redistributable: ($status == "verified"), disposition: "adopt"}]) as $candidates
+    | (.samples // []) as $samples
+    | ($samples | map(select(.disposition == "adopt")) + $candidates) as $adopted
+    | ($samples + $candidates | map({key: .path, value: .}) | from_entries) as $by
     | ((.gaps // []) | map({key: .id, value: .}) | from_entries) as $gaps
     | ($samples[]
         | select((.format | type) != "string" or (.bytes | type) != "number" or (.license_status | type) != "string"
@@ -200,15 +209,22 @@ else
       ($adopted | group_by([.format, covers])[] | select(length > 1)
         | "\(map(.path) | join(", ")): adopted samples share a format and covers; keep the one the tie-break prefers and trim the rest for it"),
       ($adopted[] as $a | $adopted[]
-        | select(.path != $a.path and within($a) and (covers != ($a | covers)))
-        | "\(.path): its covers are inside \($a.path)\u0027s; trim it for \($a.path)"),
+        | select(.path != $a.path and within($a) and (covers != ($a | covers)) and (IN(.path; $inputs[]) | not))
+        | if has("gap") then "\(.path): gap \(.gap)\u0027s candidate, its covers are inside \($a.path)\u0027s; run mise run dispose, which records the gap covered_by \($a.path)"
+          else "\(.path): its covers are inside \($a.path)\u0027s; trim it for \($a.path)" end),
       ($adopted[] as $a | $adopted[]
-        | select(.path != $a.path and .format != $a.format and covers == ($a | covers) and rank > ($a | rank))
-        | "\(.path): its covers equal \($a.path)\u0027s, which wins the tie-break; trim it for \($a.path)")
-  ' "$coverage"); then
+        | select(.path != $a.path and .format != $a.format and covers == ($a | covers) and rank > ($a | rank) and (IN(.path; $inputs[]) | not))
+        | "\(.path): its covers equal \($a.path)\u0027s, which wins the tie-break; \(if has("gap") then "run mise run dispose, which records gap \(.gap) covered_by it" else "trim it for \($a.path)" end)"),
+      ((.gaps // [])[] | select(.covered_by != null) | .covered_by as $by_path
+        | if $by[$by_path].disposition != "adopt" then
+            "gaps.\(.id).covered_by: \($by_path) is neither an adopted sample nor a placed candidate; run mise run dispose"
+          elif (.covers - ($by[$by_path] | covers)) != [] then
+            "gaps.\(.id).covered_by: \($by_path)\u0027s covers lack \(.covers - ($by[$by_path] | covers) | join(", ")); run mise run dispose"
+          else empty end)
+  ' --slurpfile fetched docs/candidates.json --slurpfile placed docs/corpus-placement.json "$coverage"); then
     report "$problems"
   else
-    err "$coverage: jq could not check its dispositions; each sample needs library, traits, features, and disposition fields"
+    err "$coverage: jq could not check its dispositions; each sample needs library, traits, features, and disposition fields, and docs/candidates.json and docs/corpus-placement.json must be JSON arrays"
   fi
 
   if problems=$(jq -r '
@@ -317,6 +333,8 @@ if [ -f MANIFEST.json ]; then
     def covers: (.library + (.traits // []) + (.features // [])) | unique;
     ($coverage[0].vocabulary | [.library, .trait, .feature] | map(keys) | add) as $ids
     | ($coverage[0].samples | map(select(.disposition == "adopt") | {key: .path, value: covers}) | from_entries) as $adopted
+    | ($coverage[0].gaps | map({key: .id, value: .}) | from_entries) as $gaps
+    | ([$coverage[0].gaps[] | select(.candidate.kind == "generated") | .candidate.inputs[]?]) as $inputs
     | ($tracked | map({key: ., value: true}) | from_entries) as $in_git
     | [.files[] | select(.role == "sample")] as $samples
     | (select(.version != 1)
@@ -341,9 +359,33 @@ if [ -f MANIFEST.json ]; then
       ($samples[] as $outer | $samples[]
         | select(.path != $outer.path and (((.covers // []) - ($outer.covers // [])) == [])
             and ((.format == $outer.format and ((.covers // []) | unique) == (($outer.covers // []) | unique)) | not)
-            and (.path as $p | any($outer.inputs[]?; . == $p) | not))
-        | "\(.path): its covers lie inside \($outer.path)\u0027s; a sample stays only for a scenario no other covers, so trim it for \($outer.path) by mise run dispose, then \($regenerate)")
-  ' MANIFEST.json); then
+            and (IN(.path; $inputs[]) | not))
+        | "\(.path): its covers lie inside \($outer.path)\u0027s; a sample stays only for a scenario no other covers, so trim it for \($outer.path) by mise run dispose, then \($regenerate)"),
+      ($samples[] | select(has("gap")) | .gap as $id | $gaps[$id] as $g
+        | if ($g.candidate.kind? | IN("sourced", "generated")) | not then
+            "\(.path): a candidate for gap \($id), which has no sourced or generated candidate in docs/coverage.json; \($regenerate)"
+          elif $g.covered_by != null then
+            "\(.path): gap \($id) is covered_by \($g.covered_by), so its candidate leaves the corpus; \($regenerate)"
+          else
+            (. as $f | ["url", "ref", "license", "license_url", "license_read", "license_status", "command", "inputs", "generator", "generator_license"][]
+              | select(($f[.] // null) != ($g.candidate[.] // null))
+              | "\($f.path).\(.): differs from gap \($id)\u0027s candidate; never edit a candidate\u0027s provenance here, \($regenerate)"),
+            (select($g.candidate.kind == "sourced" and .truth != [])
+              | "\(.path): a sourced candidate inherits no truth; \($regenerate)"),
+            (($g.covers - (.covers // [])) as $missing | select($missing != [])
+              | "\(.path): its placed covers lack gap \($id)\u0027s \($missing | join(", ")); run docproc over the corpus and mise run place-traits --corpus > docs/corpus-placement.json as docs/coverage.md states, then mise run dispose to split the covers it does not confirm into an open gap, and \($regenerate)")
+          end),
+      ([$samples[].gap] as $filled | $coverage[0].gaps[]
+        | select(.candidate.kind == "sourced" and .covered_by == null and (IN(.id; $filled[]) | not))
+        | "gaps.\(.id): its sourced candidate is not a sample in MANIFEST.json; run mise run fetch-candidates, then \($regenerate)"),
+      ($judged[0] | to_entries[] | .key as $p
+        | if any($samples[]; .path == $p) | not then
+            "docs/judged.json: \($p) is not a sample in MANIFEST.json; judge only the corpus\u0027s samples"
+          else
+            .value | keys[] | select(IN($ids[]) | not)
+            | "docs/judged.json: \($p): \(.) is not in docs/coverage.json\u0027s vocabulary; judge an ID the vocabulary defines"
+          end)
+  ' --slurpfile judged docs/judged.json MANIFEST.json); then
     while read -r problem; do
       if [ -n "$problem" ]; then
         err "$problem"

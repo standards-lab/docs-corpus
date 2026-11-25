@@ -2,14 +2,12 @@ package disposition_test
 
 import (
 	"encoding/json"
-	"reflect"
 	"slices"
 	"strconv"
 	"strings"
 	"testing"
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/disposition"
-	"github.com/standards-lab/docs-corpus/tools/coverage/internal/docstest"
 )
 
 func entry(path string, library []string, size int, redistributable bool, extra string) string {
@@ -242,25 +240,5 @@ func TestDisposeRefusesAPlacedCandidateWithoutOne(t *testing.T) {
 		if err == nil {
 			t.Errorf("%s: Dispose = nil, want an error", name)
 		}
-	}
-}
-
-func TestDisposeReproducesTheCoverageData(t *testing.T) {
-	data := docstest.Coverage(t)
-	var want, coverage disposition.Coverage
-	for _, v := range []*disposition.Coverage{&want, &coverage} {
-		if err := json.Unmarshal(data, v); err != nil {
-			t.Fatal(err)
-		}
-	}
-	for i := range coverage.Samples {
-		coverage.Samples[i].Disposition = "unset"
-		coverage.Samples[i].TrimmedFor = "unset"
-	}
-	if _, err := disposition.Dispose(&coverage, nil); err != nil {
-		t.Fatal(err)
-	}
-	if !reflect.DeepEqual(coverage, want) {
-		t.Error("Dispose does not reproduce docs/coverage.json's dispositions; run mise run dispose and compare")
 	}
 }

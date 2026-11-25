@@ -690,9 +690,9 @@
     "command": "scripts/place-library.sh"
   },
   "corpus_placement": {
-    "run": "01a2133f-1259-7f79-8832-e63227038d0d",
+    "run": "01a2135e-4b68-7343-9ac5-1cc4edb0391c",
     "docproc": "docproc v0.5.0 (7e116e21e628accdc4b79181aeabb75a7df763c8), cmd/docproc v0.2.3",
-    "docproc_command": "docproc run audio email image office onenote pdf text video --out ~/runs/docs-corpus/curate",
+    "docproc_command": "docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/curate",
     "command": "mise run place-traits --corpus"
   },
   "samples": [
@@ -890,7 +890,7 @@
       "truth": [],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "text/epub/lorem-ipsum.epub"
+      "trimmed_for": "archive/tika/testZipEncrypted.zip"
     },
     {
       "path": "archive/zip-in-zip.zip",
@@ -1617,7 +1617,7 @@
       ],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0003.flac"
+      "trimmed_for": "audio/tika/testFLAC_commentAndNativePicture.flac"
     },
     {
       "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0001.flac",
@@ -1640,7 +1640,7 @@
       ],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0003.flac"
+      "trimmed_for": "audio/tika/testFLAC_commentAndNativePicture.flac"
     },
     {
       "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0002.flac",
@@ -1663,7 +1663,7 @@
       ],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0003.flac"
+      "trimmed_for": "audio/tika/testFLAC_commentAndNativePicture.flac"
     },
     {
       "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0003.flac",
@@ -1685,7 +1685,8 @@
         "audio/short/librispeech/librispeech-dev-clean.truth.json"
       ],
       "docs": [],
-      "disposition": "adopt"
+      "disposition": "trim",
+      "trimmed_for": "audio/tika/testFLAC_commentAndNativePicture.flac"
     },
     {
       "path": "audio/short/minds14-es/minds14-es-ES-0.wav",
@@ -2594,7 +2595,8 @@
       "docs": [
         "email/eml/cpython/cpython.LICENSE"
       ],
-      "disposition": "adopt"
+      "disposition": "trim",
+      "trimmed_for": "email/mimekit/jwz.mbox"
     },
     {
       "path": "email/eml/cpython/msg_26.eml",
@@ -2917,7 +2919,8 @@
       "docs": [
         "email/eml/cpython/cpython.LICENSE"
       ],
-      "disposition": "adopt"
+      "disposition": "trim",
+      "trimmed_for": "email/mimekit/jwz.mbox"
     },
     {
       "path": "email/eml/cpython/msg_41.eml",
@@ -2985,7 +2988,7 @@
         "email/eml/cpython/cpython.LICENSE"
       ],
       "disposition": "trim",
-      "trimmed_for": "email/eml/cpython/msg_25.eml"
+      "trimmed_for": "email/mimekit/jwz.mbox"
     },
     {
       "path": "email/eml/cpython/msg_44.eml",
@@ -4164,7 +4167,7 @@
       "truth": [],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "email/eml/cpython/msg_07.eml"
+      "trimmed_for": "image/pillow/dispose_bgnd.gif"
     },
     {
       "path": "image/formats/heic/example.heic",
@@ -4250,7 +4253,8 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "adopt"
+      "disposition": "trim",
+      "trimmed_for": "email/mimekit/jwz.mbox"
     },
     {
       "path": "image/formats/tiff/photo-deflate.tif",
@@ -4271,7 +4275,7 @@
       "truth": [],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "image/formats/tiff/old-style-jpeg-compression.tif"
+      "trimmed_for": "email/mimekit/jwz.mbox"
     },
     {
       "path": "image/formats/tiff/scanned-3page-g4.tif",
@@ -8623,7 +8627,7 @@
       "truth": [],
       "docs": [],
       "disposition": "trim",
-      "trimmed_for": "pdf/edge/attachments/file-attachment.pdf"
+      "trimmed_for": "pdf/verapdf-corpus/veraPDF test suite 6-4-2-t01-fail-a.pdf"
     },
     {
       "path": "pdf/edge/attachments/file-attachment-annotation.pdf",
@@ -11781,6 +11785,7 @@
         "kind:jpeg",
         "route:vision"
       ],
+      "covered_by": "image/wikimedia-commons/Grocery_Store_Receipt_in_Vienna.jpg",
       "candidate": {
         "kind": "sourced",
         "url": "https://raw.githubusercontent.com/python-pillow/Pillow/af804a54817a1214e3c0b36110a947e2059311f2/Tests/images/hopper_orientation_6.jpg",
@@ -12141,7 +12146,6 @@
       "id": "exec-4",
       "covers": [
         "check:executable",
-        "check:polyglot",
         "kind:shebang",
         "route:unrouted"
       ],
@@ -12154,6 +12158,18 @@
         "license_status": "verified",
         "license_read": "2026-11-24",
         "fit": "Good: CPython's zipfile fixture, header.sh's #!/bin/bash script with a stored ZIP appended, as its README records, so a shebang file carries a ZIP end record."
+      }
+    },
+    {
+      "id": "exec-4-open",
+      "covers": [
+        "check:polyglot"
+      ],
+      "split_from": "exec-4",
+      "candidate": {
+        "kind": "unavailable",
+        "searched": "exec-4's candidate, exec/cpython/exe_with_zip, CPython's zipfile fixture of a #!/bin/bash script with a stored ZIP appended, placed from docproc run 01a2134c-19c5-7599-9ce6-16216b4d69a1, which flags it executable only",
+        "reason": "docproc v0.5.0 doesn't flag a #! script with an appended ZIP: inspect's containerKinds exempts route.Shebang from the polyglot scan; reopen once docproc flags it"
       }
     },
     {
@@ -12347,9 +12363,9 @@
         "capability:embeddings",
         "capability:extraction",
         "kind:zip",
-        "route:office",
-        "trait:scale.large-sheet"
+        "route:office"
       ],
+      "covered_by": "office/realworld/xlsx/copy-rows.xlsx",
       "candidate": {
         "kind": "sourced",
         "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testRecordSizeExceeded.xlsx",
@@ -12359,6 +12375,18 @@
         "license_status": "verified",
         "license_read": "2026-11-24",
         "fit": "Fair: Tika's 12 MB workbook, one sheet of 200,000 rows by 15 columns of inline strings, 328 MB of sheet XML, so its Markdown passes 256 KiB many times over; heavy to process."
+      }
+    },
+    {
+      "id": "office-8-open",
+      "covers": [
+        "trait:scale.large-sheet"
+      ],
+      "split_from": "office-8",
+      "candidate": {
+        "kind": "unavailable",
+        "searched": "office-8's candidate, office/tika/testRecordSizeExceeded.xlsx, placed from docproc run 01a2134c-19c5-7599-9ce6-16216b4d69a1, which wrote its sheet/1 record output as 1,988 rows lines, 328,577,613 bytes",
+        "reason": "place-traits has no probe for trait:scale.large-sheet, which is placed by judgement, and no judgement is recorded for the file"
       }
     },
     {
@@ -12496,6 +12524,7 @@
         "feature:smime-opaque",
         "route:nested"
       ],
+      "covered_by": "email/mimekit/jwz.mbox",
       "candidate": {
         "kind": "sourced",
         "url": "https://raw.githubusercontent.com/mozilla/releases-comm-central/39236b1504283dded4e2acc5f886dfce59f5deee/mailnews/test/data/smime/alice.sig.SHA256.opaque.eml",
@@ -12515,6 +12544,7 @@
         "feature:smime-signed",
         "route:nested"
       ],
+      "covered_by": "email/mimekit/jwz.mbox",
       "candidate": {
         "kind": "sourced",
         "url": "https://raw.githubusercontent.com/pyca/cryptography/dc9bc13ec1229323ad4ba113b024f695bbeb3cc4/vectors/cryptography_vectors/x509/PKITS_data/smime/SignedAllCertificatesNoPoliciesTest2.eml",
@@ -12557,7 +12587,7 @@
       ],
       "candidate": {
         "kind": "sourced",
-        "url": "https://media.githubusercontent.com/media/rjohnsondev/java-libpst/f158a64acf2a0e46ac3bd699bc7a5a8da6c40d26/src/test/resources/example-2013.ost",
+        "url": "https://raw.githubusercontent.com/rjohnsondev/java-libpst/f158a64acf2a0e46ac3bd699bc7a5a8da6c40d26/src/test/resources/example-2013.ost",
         "ref": "f158a64acf2a0e46ac3bd699bc7a5a8da6c40d26",
         "license": "Apache-2.0 (java-libpst is LGPL or Apache-2.0; taken under Apache-2.0)",
         "license_url": "https://raw.githubusercontent.com/rjohnsondev/java-libpst/f158a64acf2a0e46ac3bd699bc7a5a8da6c40d26/README.txt",
@@ -12591,10 +12621,10 @@
       "covers": [
         "capability:embeddings",
         "capability:extraction",
-        "feature:image-ocr",
         "kind:onestore",
         "route:onenote"
       ],
+      "covered_by": "onenote/large/Large Desktop.one",
       "candidate": {
         "kind": "sourced",
         "url": "https://raw.githubusercontent.com/laurent22/joplin/aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6/packages/onenote-converter/test-data/Printout.one",
@@ -12607,14 +12637,26 @@
       }
     },
     {
+      "id": "onenote-2-open",
+      "covers": [
+        "feature:image-ocr"
+      ],
+      "split_from": "onenote-2",
+      "candidate": {
+        "kind": "unavailable",
+        "searched": "onenote-2's candidate, onenote/joplin/Printout.one, placed from docproc run 01a2134c-19c5-7599-9ce6-16216b4d69a1, whose page record lists an image and an embedded file",
+        "reason": "docproc-onenote 0.1.2 gives the page's media no ocr or text, so no run shows the image's recognized text that feature:image-ocr needs"
+      }
+    },
+    {
       "id": "onenote-3",
       "covers": [
         "capability:embeddings",
         "capability:extraction",
-        "feature:page-revisions",
         "kind:onestore",
         "route:onenote"
       ],
+      "covered_by": "onenote/interop/SUT/Encryption.one",
       "candidate": {
         "kind": "sourced",
         "url": "https://raw.githubusercontent.com/laurent22/joplin/aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6/packages/onenote-converter/test-data/Page%20versions.one",
@@ -12624,6 +12666,18 @@
         "license_status": "verified",
         "license_read": "2026-11-24",
         "fit": "Fair: Joplin's converter fixture for page versions, a 25,128-byte section of one page, Test!, of math content; its earlier revisions are known from the fixture's name and the converter test it serves, not parsed."
+      }
+    },
+    {
+      "id": "onenote-3-open",
+      "covers": [
+        "feature:page-revisions"
+      ],
+      "split_from": "onenote-3",
+      "candidate": {
+        "kind": "unavailable",
+        "searched": "onenote-3's candidate, onenote/joplin/Page versions.one, placed from docproc run 01a2134c-19c5-7599-9ce6-16216b4d69a1, whose one page record has revisions null",
+        "reason": "docproc-onenote 0.1.2 records none of the page's earlier revisions, so no run shows the page revisions feature:page-revisions needs"
       }
     },
     {

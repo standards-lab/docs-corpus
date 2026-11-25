@@ -29,8 +29,12 @@ err() {
   fail=1
 }
 
-restore="restore it with mise run manifest --copy > MANIFEST.json"
-while IFS=$'\t' read -r path bytes sha; do
+while IFS=$'\t' read -r path bytes sha gap; do
+  if [ -n "$gap" ]; then
+    restore="restore it with mise run fetch-candidates"
+  else
+    restore="restore it with mise run manifest --copy > MANIFEST.json"
+  fi
   if [ ! -f "$path" ]; then
     err "$path: in MANIFEST.json but missing; $restore"
   elif [ "$(stat -c %s "$path")" != "$bytes" ]; then
@@ -38,7 +42,7 @@ while IFS=$'\t' read -r path bytes sha; do
   elif [ "$(sha256sum "$path" | cut -d' ' -f1)" != "$sha" ]; then
     err "$path: sha256 differs from MANIFEST.json; $restore"
   fi
-done < <(jq -r '.files[] | select(.role == "sample") | [.path, (.bytes|tostring), .sha256] | @tsv' MANIFEST.json)
+done < <(jq -r '.files[] | select(.role == "sample") | [.path, (.bytes|tostring), .sha256, (.gap // "")] | @tsv' MANIFEST.json)
 
 if [ "$fail" -ne 0 ]; then
   exit 1

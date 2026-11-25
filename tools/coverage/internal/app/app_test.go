@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/standards-lab/docs-corpus/tools/coverage/internal/app"
+	"github.com/standards-lab/docs-corpus/tools/coverage/internal/docstest"
 )
 
 func write(t *testing.T, path, data string) {
@@ -22,8 +23,15 @@ func write(t *testing.T, path, data string) {
 	}
 }
 
+func noCandidates(t *testing.T, dir string) {
+	t.Helper()
+	write(t, filepath.Join(dir, "docs", "candidates.json"), `[]`)
+	write(t, filepath.Join(dir, "docs", "corpus-placement.json"), `[]`)
+}
+
 func TestDisposeWritesTheDisposedData(t *testing.T) {
 	dir := t.TempDir()
+	noCandidates(t, dir)
 	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [{"path": "a", "library": ["kind:x"], "traits": [], "features": [], `+
 		`"bytes": 1, "license_status": "n/a", "redistributable": true, "truth": [], "docs": []}], `+
 		`"gaps": [{"id": "spent", "covers": ["kind:x"], "candidate": null}]}`)
@@ -49,8 +57,45 @@ func TestDisposeWritesTheDisposedData(t *testing.T) {
 	}
 }
 
+func TestDisposeWithCandidatesTrimsForThemAndSplitsTheirGaps(t *testing.T) {
+	dir := t.TempDir()
+	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [{"path": "a", "library": ["kind:x"], "traits": [], "features": [], `+
+		`"bytes": 1, "license_status": "n/a", "redistributable": true, "truth": [], "docs": []}], `+
+		`"gaps": [{"id": "g1", "covers": ["kind:y", "kind:z"], "candidate": {"kind": "sourced", "license_status": "verified"}}]}`)
+	write(t, filepath.Join(dir, "docs", "candidates.json"), `[{"gap": "g1", "path": "x/c", "source": "s", "sha256": "h", "bytes": 2, "format": "f", "format_by": "file-5"},
+		{"gap": "g9", "path": "x/unplaced", "source": "s", "sha256": "h", "bytes": 2, "format": "f", "format_by": "file-5"}]`)
+	write(t, filepath.Join(dir, "docs", "corpus-placement.json"), `[{"path": "x/c", "covers": ["kind:x", "kind:y"]}]`)
+	t.Chdir(dir)
+	var stdout, stderr bytes.Buffer
+	if err := app.Dispose(nil, &stdout, &stderr); err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{`"trimmed_for": "x/c"`, `"id": "g1-open"`, `"split_from": "g1"`} {
+		if !strings.Contains(stdout.String(), want) {
+			t.Errorf("stdout = %s\nwant it to contain %s", stdout.String(), want)
+		}
+	}
+}
+
+func TestDisposeReproducesTheCoverageData(t *testing.T) {
+	root := docstest.Root(t)
+	want, err := os.ReadFile(filepath.Join(root, "docs", "coverage.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Chdir(root)
+	var stdout, stderr bytes.Buffer
+	if err := app.Dispose(nil, &stdout, &stderr); err != nil {
+		t.Fatal(err)
+	}
+	if stdout.String() != string(want) {
+		t.Error("dispose does not reproduce docs/coverage.json; run mise run dispose and compare")
+	}
+}
+
 func TestDisposeWritesSortedIDsEmptyListsAndUnescapedText(t *testing.T) {
 	dir := t.TempDir()
+	noCandidates(t, dir)
 	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"vocabulary": {
 		"library": {"kind:z": {"identifier": "Z", "link": "l"}, "kind:a": {"identifier": "A", "link": "l"}},
 		"trait": {}, "feature": {"feature:b": {"rule": "x"}, "feature:a": {"rule": "Q&A > 1"}}},
@@ -207,6 +252,7 @@ func TestManifestWritesTheInventoryAndCopiesItsFiles(t *testing.T) {
 		"library": ["kind:x"], "traits": [], "features": [], "format": "text/plain", "bytes": 3, "license_status": "reported",
 		"redistributable": true, "truth": [], "docs": [], "disposition": "adopt"}], "gaps": []}`)
 	write(t, filepath.Join(dir, "docs", "license-readings.json"), `[{"path": "a/s.txt", "license_url": "https://example.org/l", "license_read": "2026-11-25"}]`)
+	noCandidates(t, dir)
 	write(t, filepath.Join(docs, "MANIFEST.json"), `{"files": [{"path": "a/s.txt", "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
 		"bytes": 3, "format": "text/plain", "source": "s", "source_url": "https://example.org/s?a&b", "license": "CC0-1.0",
 		"license_status": "reported", "redistributable": true, "role": "sample", "truth": "none: a timing input"}]}`)
@@ -255,6 +301,7 @@ func TestManifestRefusesArgumentsAndAMissingReference(t *testing.T) {
 	dir := t.TempDir()
 	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [], "gaps": []}`)
 	write(t, filepath.Join(dir, "docs", "license-readings.json"), `[]`)
+	noCandidates(t, dir)
 	t.Setenv("DOCS_REFERENCE", filepath.Join(dir, "absent"))
 	t.Chdir(dir)
 	var stdout, stderr bytes.Buffer

@@ -202,11 +202,13 @@ func corpusPlacer(t *testing.T, coverage string) placement.Placer {
 		`{"event": "part", "input": "/repo/text/b.truth.txt", "part": {"depth": 0, "content_type": {"kind": "txt", "route": "text"}}}`,
 	}, "\n")+"\n")
 	write(t, p.Coverage, coverage)
+	p.Judged = filepath.Join(root, "judged.json")
+	write(t, p.Judged, `{"email/c.eml": {"trait:scan.printed": "seen in the message"}}`)
 	p.Docs, p.Corpus = corpus, true
 	return p
 }
 
-func TestRunWithCorpusPlacesTheManifestsSamplesCovers(t *testing.T) {
+func TestRunWithCorpusPlacesTheManifestsSamplesCoversWithTheirJudgedIDs(t *testing.T) {
 	p := corpusPlacer(t, `{
 		"vocabulary": {"library": {
 			"capability:extraction": {"fed_by": {"routes": ["route:text", "route:nested"]}},
@@ -228,7 +230,8 @@ func TestRunWithCorpusPlacesTheManifestsSamplesCovers(t *testing.T) {
       "check:html",
       "feature:html-body",
       "kind:eml",
-      "route:nested"
+      "route:nested",
+      "trait:scan.printed"
     ]
   },
   {
@@ -276,6 +279,8 @@ func TestRunWithCorpusPlacesOneNotePackagesAndReplayedOutcomes(t *testing.T) {
 		`{"event": "part", "input": "/repo/onenote/s.one", "part": {"depth": 0, "content_type": {"kind": "onestore", "route": "onenote"}}, "outcome": "seen", "recorded": "encrypted"}`,
 	}, "\n")+"\n")
 	write(t, p.Coverage, `{"vocabulary": {"library": {}}, "corpus_placement": {"run": "r2"}, "samples": []}`)
+	p.Judged = filepath.Join(root, "judged.json")
+	write(t, p.Judged, `{}`)
 	p.Docs, p.Corpus = corpus, true
 	var out bytes.Buffer
 	if err := p.Run(context.Background(), &out); err != nil {
