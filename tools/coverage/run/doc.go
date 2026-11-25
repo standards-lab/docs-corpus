@@ -1,8 +1,8 @@
 // Package run reads a docproc run: its record.jsonl's events, grouped by input path relative to
 // the run's inputs' common directory, and its outputs' blobs in the content store beside the runs
 // directory. It reads the run directory docproc v0.5.0 writes, schema "2" in its rundir.json, and
-// refuses any other. Text and markdown outputs are UTF-8, as docproc's API defines them; their encoding and
-// encoding_by meta describe the source file and never select a decoder.
+// refuses any other. Text and markdown outputs are UTF-8, as docproc's API defines them; their
+// encoding and encoding_by meta describe the source file and never select a decoder.
 //
 // Its exported identifiers:
 //

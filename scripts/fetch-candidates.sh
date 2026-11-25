@@ -6,8 +6,8 @@
 # trailing .txt dropped from a name that already has an extension. Each fetched file must match
 # the path, size, and sha256 docs/candidates.json records for its gap; a gap it doesn't record yet
 # is recorded with its file's size, sha256, and format as file -b --mime-type reports it, with
-# file's version. Nothing is placed or recorded unless every
-# candidate is fetched and matches, and the record keeps the entries of the gaps it skips.
+# file's version. Nothing is placed or recorded unless every candidate is fetched and matches,
+# and the record keeps the entries of the gaps it skips.
 # Usage: scripts/fetch-candidates.sh
 # See docs/coverage.md
 set -euo pipefail
