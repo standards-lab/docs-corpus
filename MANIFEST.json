@@ -455,6 +455,8 @@
       "source": "librivox",
       "url": "https://archive.org/download/statement_of_stella_maberly_1910_librivox/StellaMaberly_librivox.m4b",
       "license": "Public Domain Mark 1.0",
+      "license_url": "https://archive.org/details/statement_of_stella_maberly_1910_librivox",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -577,6 +579,8 @@
       "source": "cpython",
       "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_07.txt",
       "license": "PSF-2.0",
+      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -601,6 +605,8 @@
       "source": "cpython",
       "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_15.txt",
       "license": "PSF-2.0",
+      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -626,6 +632,8 @@
       "source": "cpython",
       "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_16.txt",
       "license": "PSF-2.0",
+      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -652,6 +660,8 @@
       "source": "cpython",
       "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_22.txt",
       "license": "PSF-2.0",
+      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -677,6 +687,8 @@
       "source": "cpython",
       "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_26.txt",
       "license": "PSF-2.0",
+      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -702,6 +714,8 @@
       "source": "cpython",
       "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_36.txt",
       "license": "PSF-2.0",
+      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -1178,6 +1192,8 @@
       "source": "poi",
       "url": "https://github.com/apache/poi/blob/81ab52621cb3ecaf9cb96a5a92edcb2e5fd60408/test-data/hsmf/example_sent_regular.msg",
       "license": "Apache-2.0; poi/LICENSE and poi/NOTICE",
+      "license_url": "https://github.com/apache/poi/blob/81ab52621cb3ecaf9cb96a5a92edcb2e5fd60408/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -1207,6 +1223,8 @@
       "source": "poi",
       "url": "https://github.com/apache/poi/blob/81ab52621cb3ecaf9cb96a5a92edcb2e5fd60408/test-data/hsmf/msgClassAppointment.msg",
       "license": "Apache-2.0; poi/LICENSE and poi/NOTICE",
+      "license_url": "https://github.com/apache/poi/blob/81ab52621cb3ecaf9cb96a5a92edcb2e5fd60408/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -1284,6 +1302,8 @@
       "source": "tika",
       "url": "https://github.com/apache/tika/blob/48010f83ad3869119f54546cbb272fde88130283/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/test-outlook2003.msg",
       "license": "Apache-2.0; tika/LICENSE and tika/NOTICE",
+      "license_url": "https://github.com/apache/tika/blob/48010f83ad3869119f54546cbb272fde88130283/LICENSE.txt",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -1317,6 +1337,8 @@
       "source": "tika",
       "url": "https://github.com/apache/tika/blob/48010f83ad3869119f54546cbb272fde88130283/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testMSG_att_msg.msg",
       "license": "Apache-2.0; tika/LICENSE and tika/NOTICE",
+      "license_url": "https://github.com/apache/tika/blob/48010f83ad3869119f54546cbb272fde88130283/LICENSE.txt",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -1347,6 +1369,8 @@
       "source": "tika",
       "url": "https://github.com/apache/tika/blob/48010f83ad3869119f54546cbb272fde88130283/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testMSG_chinese.msg",
       "license": "Apache-2.0; tika/LICENSE and tika/NOTICE",
+      "license_url": "https://github.com/apache/tika/blob/48010f83ad3869119f54546cbb272fde88130283/LICENSE.txt",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -1384,6 +1408,8 @@
       "source": "java-libpst",
       "url": "https://github.com/rjohnsondev/java-libpst/blob/f158a64acf2a0e46ac3bd699bc7a5a8da6c40d26/src/test/resources/dist-list.pst",
       "license": "Apache-2.0 (java-libpst is LGPL or Apache-2.0; taken under Apache-2.0); java-libpst/LICENSE",
+      "license_url": "https://github.com/rjohnsondev/java-libpst/blob/f158a64acf2a0e46ac3bd699bc7a5a8da6c40d26/LICENSE.APACHE-2.0.txt",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -1424,6 +1450,8 @@
       "source": "testdata",
       "url": "https://github.com/libyal/testdata/blob/f018eb7c91c8356123b021ecd28ae894dd500210/pst/outlook.pst",
       "license": "CC-BY-4.0; libyal/LICENSE",
+      "license_url": "https://github.com/libyal/testdata/blob/f018eb7c91c8356123b021ecd28ae894dd500210/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -1500,6 +1528,8 @@
       "source": "tika",
       "url": "https://github.com/apache/tika/blob/48010f83ad3869119f54546cbb272fde88130283/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testPST.pst",
       "license": "Apache-2.0; tika/LICENSE and tika/NOTICE",
+      "license_url": "https://github.com/apache/tika/blob/48010f83ad3869119f54546cbb272fde88130283/LICENSE.txt",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -1642,6 +1672,8 @@
       "source": "poi",
       "url": "https://raw.githubusercontent.com/apache/poi/6327f056ba3cfdae326a0261a236460592b80f5c/test-data/slideshow/wrench.emf",
       "license": "Apache-2.0",
+      "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -1665,6 +1697,8 @@
       "source": "libheif",
       "url": "https://raw.githubusercontent.com/strukturag/libheif/12a259a5882dd99d45ec5fc77e296a3b620d1e2e/examples/example.heic",
       "license": "MIT",
+      "license_url": "https://github.com/strukturag/libheif/blob/12a259a5882dd99d45ec5fc77e296a3b620d1e2e/examples/COPYING",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -1728,6 +1762,8 @@
       "source": "poi",
       "url": "https://raw.githubusercontent.com/apache/poi/6327f056ba3cfdae326a0261a236460592b80f5c/test-data/slideshow/clusterfuzz-testcase-minimized-6701721724125184.wmf",
       "license": "Apache-2.0",
+      "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -2274,6 +2310,8 @@
       "source": "openpreserve",
       "url": "https://raw.githubusercontent.com/openpreserve/format-corpus/366f068cec399d0cdfd61fa473de3ab6dc858098/office/wordprocessing/WordPerfect6/testWordPerfect_6_61.wpd",
       "license": "CC0-1.0",
+      "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/office/wordprocessing/WordPerfect6/readme.md",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -2299,6 +2337,8 @@
       "source": "open-xml-sdk",
       "url": "https://raw.githubusercontent.com/dotnet/Open-XML-SDK/431ab05cf160248cc3885a4a766026d4f8243792/test/DocumentFormat.OpenXml.Tests.Assets/assets/TestDataStorage/v2FxTestFiles/wordprocessing/O12%20templates/BingoSheet_TP10220238.dotx",
       "license": "MIT",
+      "license_url": "https://github.com/dotnet/Open-XML-SDK/blob/431ab05cf160248cc3885a4a766026d4f8243792/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -2324,6 +2364,8 @@
       "source": "open-xml-sdk",
       "url": "https://raw.githubusercontent.com/dotnet/Open-XML-SDK/431ab05cf160248cc3885a4a766026d4f8243792/test/DocumentFormat.OpenXml.Tests.Assets/assets/TestDataStorage/v2FxTestFiles/spreadsheet/macro.xlsm",
       "license": "MIT",
+      "license_url": "https://github.com/dotnet/Open-XML-SDK/blob/431ab05cf160248cc3885a4a766026d4f8243792/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -2348,6 +2390,8 @@
       "source": "poi",
       "url": "https://raw.githubusercontent.com/apache/poi/6327f056ba3cfdae326a0261a236460592b80f5c/test-data/spreadsheet/protected_passtika.xlsb",
       "license": "Apache-2.0",
+      "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -2372,6 +2416,8 @@
       "source": "poi",
       "url": "https://raw.githubusercontent.com/apache/poi/6327f056ba3cfdae326a0261a236460592b80f5c/test-data/spreadsheet/xlmmacro.xlsm",
       "license": "Apache-2.0",
+      "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -2571,6 +2617,8 @@
       "source": "poi",
       "url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/test-data/document/delins.docx",
       "license": "Apache-2.0",
+      "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -2618,6 +2666,8 @@
       "source": "poi",
       "url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/test-data/document/form_footnotes.docx",
       "license": "Apache-2.0",
+      "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -2672,6 +2722,8 @@
       "source": "poi",
       "url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/test-data/document/WordWithAttachments.docx",
       "license": "Apache-2.0",
+      "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -2774,6 +2826,8 @@
       "source": "poi",
       "url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/test-data/slideshow/layouts.pptx",
       "license": "Apache-2.0",
+      "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -2820,6 +2874,8 @@
       "source": "poi",
       "url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/test-data/slideshow/56812.pptx",
       "license": "Apache-2.0",
+      "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -2863,6 +2919,8 @@
       "source": "docling",
       "url": "https://github.com/docling-project/docling/blob/7b12671e1d324710e70784c18844d1d97522414f/tests/data/pptx/sources/powerpoint_sample.pptx",
       "license": "MIT",
+      "license_url": "https://github.com/docling-project/docling/blob/7b12671e1d324710e70784c18844d1d97522414f/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -2911,6 +2969,8 @@
       "source": "poi",
       "url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/test-data/slideshow/shapes.pptx",
       "license": "Apache-2.0",
+      "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -2966,6 +3026,8 @@
       "source": "poi",
       "url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/test-data/spreadsheet/XSSFSheet.copyRows.xlsx",
       "license": "Apache-2.0",
+      "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3011,6 +3073,8 @@
       "source": "poi",
       "url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/test-data/spreadsheet/simple-monthly-budget.xlsx",
       "license": "Apache-2.0",
+      "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3057,6 +3121,8 @@
       "source": "poi",
       "url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/test-data/spreadsheet/WithDrawing.xlsx",
       "license": "Apache-2.0",
+      "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3196,6 +3262,8 @@
       "source": "interop-testsuites",
       "url": "https://github.com/OfficeDev/Interop-TestSuites/blob/fe87ed3253de01804a2ae6e1d0015943da6023f8/FileSyncandWOPI/Setup/SUT/Encryption.one",
       "license": "MIT; interop/LICENSE",
+      "license_url": "https://github.com/OfficeDev/Interop-TestSuites/blob/fe87ed3253de01804a2ae6e1d0015943da6023f8/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3235,6 +3303,8 @@
       "source": "interop-testsuites",
       "url": "https://github.com/OfficeDev/Interop-TestSuites/blob/fe87ed3253de01804a2ae6e1d0015943da6023f8/FileSyncandWOPI/Setup/SUT/FileSyncWOPI_OneNoteWithODB.one",
       "license": "MIT; interop/LICENSE",
+      "license_url": "https://github.com/OfficeDev/Interop-TestSuites/blob/fe87ed3253de01804a2ae6e1d0015943da6023f8/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3308,6 +3378,8 @@
       "source": "onenote.rs",
       "url": "https://media.githubusercontent.com/media/msiemens/onenote.rs/727389a674665dc07e0c31818cd4b54b64b9c684/crates/parser/tests/samples/Large%20Desktop.one",
       "license": "MPL-2.0; onenote-rs/LICENSE",
+      "license_url": "https://github.com/msiemens/onenote.rs/blob/727389a674665dc07e0c31818cd4b54b64b9c684/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3336,6 +3408,8 @@
       "source": "interop-testsuites",
       "url": "https://raw.githubusercontent.com/OfficeDev/Interop-TestSuites/fe87ed3253de01804a2ae6e1d0015943da6023f8/FileSyncandWOPI/Setup/SUT/LargeData.one",
       "license": "MIT; interop/LICENSE",
+      "license_url": "https://github.com/OfficeDev/Interop-TestSuites/blob/fe87ed3253de01804a2ae6e1d0015943da6023f8/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3388,6 +3462,8 @@
       "source": "onenote.rs",
       "url": "https://github.com/msiemens/onenote.rs/blob/727389a674665dc07e0c31818cd4b54b64b9c684/crates/parser/tests/samples/New Section Group/New Section 2.one",
       "license": "MPL-2.0; onenote-rs/LICENSE",
+      "license_url": "https://github.com/msiemens/onenote.rs/blob/727389a674665dc07e0c31818cd4b54b64b9c684/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3433,6 +3509,8 @@
       "source": "onenote.rs",
       "url": "https://github.com/msiemens/onenote.rs/blob/727389a674665dc07e0c31818cd4b54b64b9c684/crates/parser/tests/samples/handwriting_recognition.one",
       "license": "MPL-2.0; onenote-rs/LICENSE",
+      "license_url": "https://github.com/msiemens/onenote.rs/blob/727389a674665dc07e0c31818cd4b54b64b9c684/LICENSE",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3492,6 +3570,8 @@
       "source": "openpreserve",
       "url": "https://raw.githubusercontent.com/openpreserve/format-corpus/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/fileAttachment.pdf",
       "license": "CC0-1.0",
+      "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/readme.md",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3515,6 +3595,8 @@
       "source": "openpreserve",
       "url": "https://raw.githubusercontent.com/openpreserve/format-corpus/366f068cec399d0cdfd61fa473de3ab6dc858098/office-examples/OpenOffice.org%203.2.0%20OSX/pdf-features/simple-open-password.pdf",
       "license": "CC0-1.0",
+      "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3579,6 +3661,8 @@
       "source": "verapdf",
       "url": "https://raw.githubusercontent.com/veraPDF/veraPDF-corpus/bb75f4f0073d9350dfd058c0162a367e6fadf25e/Isartor%20test%20files/PDFA-1b/6.9%20Interactive%20Forms/isartor-6-9-t01-fail-a.pdf",
       "license": "CC-BY-4.0",
+      "license_url": "https://github.com/veraPDF/veraPDF-corpus/blob/bb75f4f0073d9350dfd058c0162a367e6fadf25e/README.md",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3604,6 +3688,8 @@
       "source": "verapdf",
       "url": "https://raw.githubusercontent.com/veraPDF/veraPDF-corpus/bb75f4f0073d9350dfd058c0162a367e6fadf25e/PDF_A-2b/6.4%20Interactive%20forms/6.4.1%20General/veraPDF%20test%20suite%206-4-1-t02-pass-a.pdf",
       "license": "CC-BY-4.0",
+      "license_url": "https://github.com/veraPDF/veraPDF-corpus/blob/bb75f4f0073d9350dfd058c0162a367e6fadf25e/README.md",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3652,6 +3738,8 @@
       "source": "openpreserve",
       "url": "https://raw.githubusercontent.com/openpreserve/format-corpus/366f068cec399d0cdfd61fa473de3ab6dc858098/pdf-handbuilt-test-corpus/T01_007_header-no-version-info.pdf",
       "license": "CC0-1.0",
+      "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3680,6 +3768,8 @@
       "source": "verapdf",
       "url": "https://raw.githubusercontent.com/veraPDF/veraPDF-corpus/bb75f4f0073d9350dfd058c0162a367e6fadf25e/PDF_A-3b/6.8%20Embedded%20files/veraPDF%20test%20suite%206-8-t02-pass-c.pdf",
       "license": "CC-BY-4.0",
+      "license_url": "https://github.com/veraPDF/veraPDF-corpus/blob/bb75f4f0073d9350dfd058c0162a367e6fadf25e/README.md",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3730,6 +3820,8 @@
       "source": "openpreserve",
       "url": "https://raw.githubusercontent.com/openpreserve/format-corpus/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/digitally_signed_3D_Portfolio.pdf",
       "license": "CC0-1.0",
+      "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/readme.md",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -4434,6 +4526,8 @@
       "source": "openpreserve",
       "url": "https://raw.githubusercontent.com/openpreserve/format-corpus/366f068cec399d0cdfd61fa473de3ab6dc858098/ebooks/calibre%200.9.0/lorem-ipsum.epub",
       "license": "CC0-1.0",
+      "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -4517,6 +4611,8 @@
       "source": "ami",
       "url": "https://groups.inf.ed.ac.uk/ami/AMICorpusMirror/amicorpus/ES2002d/video/ES2002d.Corner.avi",
       "license": "CC-BY-4.0",
+      "license_url": "https://groups.inf.ed.ac.uk/ami/corpus/license.shtml",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true,
       "note": "DivX (MPEG-4 Part 2) 352x288, 25 fps, 44:47, no audio stream: the room camera."
@@ -4568,6 +4664,8 @@
       "source": "ami",
       "url": "https://groups.inf.ed.ac.uk/ami/AMICorpusMirror/amicorpus/ES2002d/audio/ES2002d.Mix-Headset.wav",
       "license": "CC-BY-4.0",
+      "license_url": "https://groups.inf.ed.ac.uk/ami/corpus/license.shtml",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -4696,6 +4794,8 @@
       "source": "nasa",
       "url": "https://images-assets.nasa.gov/video/iss060m262481358_Expedition_60_InFlight_PAO_Pittsburgh_2019_0905/iss060m262481358_Expedition_60_InFlight_PAO_Pittsburgh_2019_0905~small.mp4",
       "license": "NASA media: generally not subject to copyright in the US; acknowledge NASA, imply no endorsement; NASA emblems and logos (insignia) are not covered (https://www.nasa.gov/nasa-brand-center/images-and-media/)",
+      "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true,
       "note": "NASA rendition \"small\": H.264 640x360 30 fps, AAC 22.05 kHz stereo, 25:31. Expedition 60 (Morgan, Hague) in-flight interviews with Pittsburgh TV stations, 2019-09-05, over the space-to-ground link; per-minute RMS runs from -24 to -37 dBFS."
@@ -4864,6 +4964,8 @@
       "source": "generated",
       "url": "generated: ffmpeg clip of tos-clip-180s-480p-subs.mkv",
       "license": "CC-BY-3.0 (film); CC-BY-ND-3.0 (soundtrack)",
+      "license_url": "https://mango.blender.org/sharing/",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true,
       "derived_from": "https://download.blender.org/demo/movies/ToS/tears_of_steel_720p.mov",
@@ -4898,6 +5000,8 @@
       "source": "generated",
       "url": "generated: ffmpeg clip of tos-clip-30s-360p.webm",
       "license": "CC-BY-3.0 (film); CC-BY-ND-3.0 (soundtrack)",
+      "license_url": "https://mango.blender.org/sharing/",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true,
       "derived_from": "https://download.blender.org/demo/movies/ToS/tears_of_steel_720p.mov",
