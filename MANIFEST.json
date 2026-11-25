@@ -1821,35 +1821,9 @@
       "gap": "image-4"
     },
     {
-      "path": "image/vector/script-bearing.svg",
-      "role": "sample",
-      "sha256": "a44d794e6708452ed62b56b8066b5c886d859feb395e7b97d300724eb7607950",
-      "bytes": 648,
-      "format": "image/svg+xml",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "capability:vision",
-        "check:svg-event-handler",
-        "check:svg-external-href",
-        "check:svg-script",
-        "kind:svg",
-        "route:vision-converted"
-      ],
-      "truth": [],
-      "docs": [],
-      "source": "generated",
-      "url": "generated: generated:hand-written",
-      "license": "Apache-2.0",
-      "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
-      "license_read": "2026-11-25",
-      "license_status": "verified",
-      "redistributable": true
-    },
-    {
       "path": "image/vector/truncated.svg",
       "role": "sample",
-      "sha256": "ec5e324cb295709ab7d3bbd3d9941dfddff9a56222f69ab5d988d37dd66ee825",
+      "sha256": "017e1c637fb0f5479344d8b250866958d0a30519023c446080567daf4d500b90",
       "bytes": 600,
       "format": "image/svg+xml",
       "covers": [
@@ -1867,12 +1841,12 @@
       "truth_note": "a generated candidate, which inherits no input's truth unchanged",
       "docs": [],
       "source": "generated",
-      "license": "Apache-2.0",
+      "license": "BSD-3-Clause",
       "license_status": "verified",
       "redistributable": true,
-      "command": "head -c 600 image/vector/script-bearing.svg > image/vector/truncated.svg",
+      "command": "head -c 600 image/wpt/clear-mapped-animation.svg > image/vector/truncated.svg",
       "inputs": [
-        "image/vector/script-bearing.svg"
+        "image/wpt/clear-mapped-animation.svg"
       ],
       "generator": "GNU coreutils 9.12 head",
       "generator_license": "GPL-3.0-or-later",
@@ -1906,6 +1880,35 @@
       "license_status": "verified",
       "redistributable": true,
       "gap": "image-7"
+    },
+    {
+      "path": "image/wpt/clear-mapped-animation.svg",
+      "role": "sample",
+      "sha256": "0a5b60013c84f11d42e8500a785deb166466468cfd2b19afff10b5e5333dc32d",
+      "bytes": 735,
+      "format": "image/svg+xml",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:svg-event-handler",
+        "check:svg-external-href",
+        "check:svg-script",
+        "kind:svg",
+        "route:vision-converted"
+      ],
+      "truth": [],
+      "truth_note": "a sourced candidate, which inherits no truth",
+      "docs": [],
+      "source": "wpt",
+      "url": "https://raw.githubusercontent.com/web-platform-tests/wpt/de3c5d09c7b01a10b5d60cfdeac7fd37d929d579/svg/animations/scripted/clear-mapped-animation.svg",
+      "ref": "de3c5d09c7b01a10b5d60cfdeac7fd37d929d579",
+      "license": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/web-platform-tests/wpt/de3c5d09c7b01a10b5d60cfdeac7fd37d929d579/LICENSE.md",
+      "license_read": "2026-11-25",
+      "license_status": "verified",
+      "redistributable": true,
+      "gap": "image-8"
     },
     {
       "path": "image/wpt/requiredextensions-xhtml.tentative.svg",

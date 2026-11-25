@@ -690,7 +690,7 @@
     "command": "scripts/place-library.sh"
   },
   "corpus_placement": {
-    "run": "01a21395-b7af-757b-a26b-ff420b19fe23",
+    "run": "01a213b1-1f33-733f-95f5-7631306daea6",
     "docproc": "docproc v0.5.0 (5a5926c711e3e2ba70e4a137c4aae74378734729), cmd/docproc v0.2.3",
     "docproc_command": "docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/curate",
     "command": "mise run place-traits --corpus"
@@ -4605,7 +4605,8 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "adopt"
+      "disposition": "trim",
+      "trimmed_for": "image/vector/truncated.svg"
     },
     {
       "path": "office/legacy/generated/bullets.libreoffice.ppt",
@@ -12414,13 +12415,13 @@
       ],
       "candidate": {
         "kind": "generated",
-        "command": "head -c 600 image/vector/script-bearing.svg > image/vector/truncated.svg",
+        "command": "head -c 600 image/wpt/clear-mapped-animation.svg > image/vector/truncated.svg",
         "inputs": [
-          "image/vector/script-bearing.svg"
+          "image/wpt/clear-mapped-animation.svg"
         ],
         "generator": "GNU coreutils 9.12 head",
         "generator_license": "GPL-3.0-or-later",
-        "fit": "Fair: the adopted SVG cut inside its text element's attributes, so the root element is found but the markup ends in an unclosed token; it keeps the script and handler the scan meets before it ends."
+        "fit": "Fair: image-8's web-platform-tests SVG cut at 600 bytes, inside its inline script's text, so the root element is found but the markup ends inside an open element; it keeps the onload handler, the scripts, and the external hrefs the scan meets before it ends."
       }
     },
     {
@@ -12751,6 +12752,29 @@
         "generator": "Go 1.27.4: github.com/standards-lab/docs-corpus/tools/coverage/cmd/generate",
         "generator_license": "Apache-2.0",
         "fit": "Fair: the adopted msg_36.eml, its body and attachments unchanged, with a Content-Class: rpmsg.message header and the adopted windows-1252.txt attached as message.rpmsg; docproc detects a rights-managed .eml by that header and that attachment name (docproc tools/mail/README.md:190-193, src/mapping.rs:33-36). The payload is not real rights-management encryption, which docproc doesn't read anyway."
+      }
+    },
+    {
+      "id": "image-8",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:svg-event-handler",
+        "check:svg-external-href",
+        "check:svg-script",
+        "kind:svg",
+        "route:vision-converted"
+      ],
+      "candidate": {
+        "kind": "sourced",
+        "url": "https://raw.githubusercontent.com/web-platform-tests/wpt/de3c5d09c7b01a10b5d60cfdeac7fd37d929d579/svg/animations/scripted/clear-mapped-animation.svg",
+        "ref": "de3c5d09c7b01a10b5d60cfdeac7fd37d929d579",
+        "license": "BSD-3-Clause",
+        "license_url": "https://raw.githubusercontent.com/web-platform-tests/wpt/de3c5d09c7b01a10b5d60cfdeac7fd37d929d579/LICENSE.md",
+        "license_status": "verified",
+        "license_read": "2026-11-25",
+        "fit": "Good: a 735-byte web-platform-tests reftest whose root svg has an onload handler, with an inline script, two html:script elements naming files, and html:link hrefs to a Bugzilla URL and a reference file; no foreignObject. It takes over the hand-written image/vector/script-bearing.svg's covers."
       }
     }
   ],

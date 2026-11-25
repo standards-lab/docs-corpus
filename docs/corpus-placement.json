@@ -674,19 +674,6 @@
     ]
   },
   {
-    "path": "image/vector/script-bearing.svg",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "capability:vision",
-      "check:svg-event-handler",
-      "check:svg-external-href",
-      "check:svg-script",
-      "kind:svg",
-      "route:vision-converted"
-    ]
-  },
-  {
     "path": "image/vector/truncated.svg",
     "covers": [
       "capability:embeddings",
@@ -711,6 +698,19 @@
       "route:vision",
       "trait:scan.camera",
       "trait:scan.printed"
+    ]
+  },
+  {
+    "path": "image/wpt/clear-mapped-animation.svg",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:svg-event-handler",
+      "check:svg-external-href",
+      "check:svg-script",
+      "kind:svg",
+      "route:vision-converted"
     ]
   },
   {

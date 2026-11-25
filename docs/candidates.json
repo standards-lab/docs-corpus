@@ -256,7 +256,7 @@
     "gap": "image-6",
     "path": "image/vector/truncated.svg",
     "source": "generated",
-    "sha256": "ec5e324cb295709ab7d3bbd3d9941dfddff9a56222f69ab5d988d37dd66ee825",
+    "sha256": "017e1c637fb0f5479344d8b250866958d0a30519023c446080567daf4d500b90",
     "bytes": 600,
     "format": "image/svg+xml",
     "format_by": "file-5.48"
@@ -268,6 +268,15 @@
     "sha256": "24f913c22b2cc62df2020882f2cb944cfcd23b9b2e9f7a533c7e50d140c5618f",
     "bytes": 3410199,
     "format": "image/jpeg",
+    "format_by": "file-5.48"
+  },
+  {
+    "gap": "image-8",
+    "path": "image/wpt/clear-mapped-animation.svg",
+    "source": "wpt",
+    "sha256": "0a5b60013c84f11d42e8500a785deb166466468cfd2b19afff10b5e5333dc32d",
+    "bytes": 735,
+    "format": "image/svg+xml",
     "format_by": "file-5.48"
   },
   {

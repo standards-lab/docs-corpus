@@ -147,12 +147,6 @@
     "license_read": "2026-11-25"
   },
   {
-    "path": "image/vector/script-bearing.svg",
-    "license": "Apache-2.0",
-    "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
     "path": "office/legacy/generated/comments.libreoffice.doc",
     "license": "Apache-2.0",
     "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",

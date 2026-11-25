@@ -229,6 +229,9 @@ a `candidate`. A replaced sample names the gap whose covers contain its own. Rep
 need the same covers, or covers inside another replaced sample's, share one gap; where several
 replaced samples' covers contain a sample's, it shares the gap of the one the tie-breaks prefer.
 A gap for scenarios no sample exercised groups the IDs one candidate file can exercise together.
+A gap also holds the covers of an adopted sample that breaks [`STANDARDS.md`](../STANDARDS.md),
+such as one constructed by hand, so that its candidate takes them over: image-8's sourced SVG
+holds the covers of the hand-written `image/vector/script-bearing.svg`, which `dispose` then trims.
 
 The data stores no list of samples per scenario: it follows from the placements. To print each
 scenario with the adopted samples that exercise it, or with the gaps that cover it, run:
@@ -253,8 +256,8 @@ Each gap names one candidate, its `candidate` object, of one of three kinds, its
   `license_status: "verified"`.
 - **generated**: a file a recorded command makes. It records the exact `command`, run from the
   repository root, its `inputs`, the `generator` that runs, with its version, and the
-  `generator_license`. The inputs are adopted samples only, and a command may read its own
-  earlier output, so nothing in a candidate is typed by hand. The candidate's own license
+  `generator_license`. The inputs are adopted samples or sourced candidates in the corpus, and
+  a command may read its own earlier output, so nothing in a candidate is typed by hand. The candidate's own license
   follows from its inputs': an archive of adopted samples carries their licenses.
 - **unavailable**: no file can be sourced or generated for the gap's covers. It records
   `searched`, the suites, files, and searches tried, and `reason`, why none exists, such as a
@@ -319,8 +322,8 @@ and the placement, and settles each placed candidate's place:
   confirms its covers.
 - **Trim**: an adopted sample whose covers lie inside a candidate's is trimmed, and
   `trimmed_for` names the sample the tie-breaks prefer among those that stay, candidate or not.
-  A sample a generated candidate lists in its `inputs` stays, as [`STANDARDS.md`](../STANDARDS.md)
-  allows.
+  A sample or sourced candidate a generated candidate lists in its `inputs` stays, as
+  [`STANDARDS.md`](../STANDARDS.md) allows.
 - **Covered**: a candidate whose covers lie inside another sample's leaves the corpus, and its
   gap's `covered_by` names that sample.
 
