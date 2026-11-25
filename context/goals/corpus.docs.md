@@ -48,17 +48,18 @@ scripts that have been deleted.
 4. The 97 adopted samples and the truth and doc files they link sit at their manifest paths,
    copied from `~/docs`, which stays unchanged. Sample files are ignored by git. Truth and doc
    files are committed. Each adopted sample's covers equal its covers in the coverage data.
-5. The licenses of the nine adopted samples `~/docs` records as "reported" are read at their
-   source and recorded as verified, with URL and date. A sample whose license doesn't allow
-   redistribution leaves the corpus, and its scenarios become a gap.
+5. The licenses of the nine adopted samples `~/docs` records as "reported", and of every
+   committed truth or doc file it records as "reported", are read at their source and recorded
+   as verified, with URL and date. A sample whose license doesn't allow redistribution leaves the
+   corpus, and its scenarios become a gap.
 6. A fetch command takes a release URL or a local directory. It downloads one uncompressed tar per
    format area and extracts the files to their manifest paths. It fails when any file's size or
    sha256 differs from the manifest, or when a manifest file is missing. A matching pack step
    builds those tars from a working copy. There are ten areas, the review's nine plus `exec`.
 7. tools/coverage reads the run directory that the docproc release carrying the encoding keys
    writes.
-   - Text outputs are decoded by their two encoding keys: `encoding` holds the charset alone, and
-     `encoding_by` is fallback, bom, or absent.
+   - Text outputs are read as UTF-8, as docproc's API defines them; `encoding` and `encoding_by`
+     name the source file's encoding and are metadata only.
    - The reader reads the run directory's schema version. It reads the kept run's schema and that
      release's schema, and refuses any other, naming it. If that schema changes a manifest,
      event, or content-store shape the reader uses, the reader follows the change.
@@ -135,7 +136,12 @@ cut it.
 
 ## Progress
 
-slices 0/9 committed · standards — · spec — · editor —
+slices 4/9 committed · standards — · spec — · editor —
+- escalation, slice 5: docproc's text output is always UTF-8 and `encoding` names the source's
+  encoding, so read text outputs as UTF-8? yes. Still wait for the encoding-keys release? yes, it
+  is almost done.
+- escalation, slice 3: read the six committed "reported" truth files' licenses at source? yes;
+  behavior 5 extends to truth and doc files.
 
 ## Decisions
 
@@ -170,6 +176,8 @@ slices 0/9 committed · standards — · spec — · editor —
 - curate: docproc's text-output encoding becomes two keys, `encoding` and `encoding_by`
   (`fallback`, `bom`), as docproc's own task; curate's placement run builds docproc at the
   release carrying them, and curate waits for it, named by what it carries, not by a tag.
+- curate: tools/coverage reads docproc text outputs as UTF-8; `encoding` and `encoding_by` are
+  metadata naming the source's encoding.
 - curate: tools/coverage's run reader checks the run directory's schema and refuses one it
   doesn't know; it reads schema "2" and whatever the encoding-keys release writes.
 - curate: the vocabulary's links stay pinned to docproc `48216e1`; IDs a newer run adds link to
@@ -195,9 +203,6 @@ slices 0/9 committed · standards — · spec — · editor —
   changes placements or dispositions through them, never by hand.
 - review: tools/coverage's probe minimums equal the mise.toml pins; a host whose PATH puts older
   system tools ahead of mise's installs must run the programs with mise's paths first.
-- review: docproc output encodings such as `windows-1252 (fallback)` and `utf-8 (byte order mark)`
-  are not decoded by tools/coverage; fixing it may move placements, so it is curate's to take or
-  leave.
 - review: dispose never edits gap candidates; a disposition move that trims a generated
   candidate's input fails the check until the candidate is revised.
 - plan: ~/docs is never changed. It is the reference for a corpus built from scratch in
