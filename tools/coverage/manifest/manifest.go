@@ -180,10 +180,6 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 	for _, f := range reference.Files {
 		byPath[f.Path] = f
 	}
-	readingFor := make(map[string]Reading, len(readings))
-	for _, r := range readings {
-		readingFor[r.Path] = r
-	}
 	files := map[string]File{}
 	linked := map[string]string{}
 	var errs []error
@@ -227,14 +223,14 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 		}
 		files[path] = entry(ref, role)
 	}
-	for path, r := range readingFor {
-		f, ok := files[path]
+	for _, r := range readings {
+		f, ok := files[r.Path]
 		if !ok {
-			errs = append(errs, fmt.Errorf("%s: a license reading for a path that is neither an adopted sample nor a file one links", path))
+			errs = append(errs, fmt.Errorf("%s: a license reading for a path that is neither an adopted sample nor a file one links", r.Path))
 			continue
 		}
 		f.LicenseURL, f.LicenseRead, f.LicenseStatus = r.LicenseURL, r.LicenseRead, "verified"
-		files[path] = f
+		files[r.Path] = f
 	}
 	errs = append(errs, addCandidates(files, coverage.Gaps, candidates, placed)...)
 	if err := errors.Join(errs...); err != nil {

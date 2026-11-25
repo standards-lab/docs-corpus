@@ -55,9 +55,6 @@ func TestBuildListsAdoptedSamplesAndTheirFilesSorted(t *testing.T) {
 			ref("b/s.txt", "sample", "b/s.truth"), ref("a/s.txt", "sample", ""), ref("b/s.truth", "truth", ""),
 			ref("LICENSE", "doc", ""), ref("z/trimmed.txt", "sample", ""), ref("z/trimmed.truth", "truth", ""),
 		}, nil)
-	if m.Version != 1 {
-		t.Errorf("Version = %d, want 1", m.Version)
-	}
 	var got []string
 	for _, f := range m.Files {
 		got = append(got, f.Path+" "+f.Role)

@@ -46,21 +46,19 @@ func Manifest(args []string, stdout, stderr io.Writer) error {
 	if err := decodeStrict("docs/corpus-placement.json", &placed); err != nil {
 		return err
 	}
-	dir := os.Getenv("DOCS_REFERENCE")
-	if dir == "" {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			return err
-		}
-		dir = filepath.Join(home, "docs")
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
 	}
-	data, err := os.ReadFile(filepath.Join(dir, "MANIFEST.json"))
+	dir := envOr("DOCS_REFERENCE", filepath.Join(home, "docs"))
+	referencePath := filepath.Join(dir, "MANIFEST.json")
+	data, err := os.ReadFile(referencePath)
 	if err != nil {
 		return fmt.Errorf("%w; set DOCS_REFERENCE to the reference docs", err)
 	}
 	var reference manifest.Reference
 	if err := json.Unmarshal(data, &reference); err != nil {
-		return fmt.Errorf("%s: %w", filepath.Join(dir, "MANIFEST.json"), err)
+		return fmt.Errorf("%s: %w", referencePath, err)
 	}
 	m, err := manifest.Build(coverage, reference, readings, candidates, placed)
 	if err != nil {
