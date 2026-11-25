@@ -15,6 +15,24 @@
     "license_read": "2026-11-25"
   },
   {
+    "path": "image/formats/avif/bbb-alpha-inverted.avif",
+    "license": "CC-BY-3.0",
+    "license_url": "https://github.com/AOMediaCodec/av1-avif/blob/bf4c18d1f3971069b75e87d6ee469790589f4f09/testFiles/Microsoft/ReadMe.md",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "pdf/edge/encrypted/unicode-passwords-corrigendum5.md",
+    "license": "CC-BY-4.0",
+    "license_url": "https://github.com/pdf-association/safedocs/blob/68f730ab8c39204844112c499c5707b79878533b/NOTICE.txt",
+    "license_read": "2026-11-25"
+  },
+  {
+    "path": "pdf/edge/malformed/compacted-syntax.pdf",
+    "license": "CC-BY-4.0",
+    "license_url": "https://github.com/pdf-association/safedocs/blob/68f730ab8c39204844112c499c5707b79878533b/NOTICE.txt",
+    "license_read": "2026-11-25"
+  },
+  {
     "path": "pdf/large/cfr-2024-title32-vol1.pdf",
     "license_url": "https://www.govinfo.gov/about/policies",
     "license_read": "2026-11-25"

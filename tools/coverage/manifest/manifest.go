@@ -125,6 +125,8 @@ type ReferenceFile struct {
 type Reading struct {
 	// Path is the file's path.
 	Path string `json:"path"`
+	// License is the license read, when it differs from the reference's.
+	License string `json:"license,omitempty"`
 	// LicenseURL is where the license was read.
 	LicenseURL string `json:"license_url"`
 	// LicenseRead is the date it was read, YYYY-MM-DD.
@@ -161,10 +163,11 @@ type Placed struct {
 }
 
 // Build returns the manifest of coverage's adopted samples and the truth and doc files they link,
-// each with the reference's facts and provenance, a sample's covers, and its reading applied, and
-// of the candidates recorded for coverage's gaps, but for those whose gap is covered_by another
-// sample. A candidate carries its recorded facts, its gap's candidate's provenance, and its covers
-// in placed, or none when placed lacks it. A sourced candidate has no truth. A generated one has
+// each with the reference's facts and provenance, a sample's covers, and its reading applied, the
+// reading's license replacing the reference's when it names one, and of the candidates recorded
+// for coverage's gaps, but for those whose gap is covered_by another sample. A candidate carries
+// its recorded facts, its gap's candidate's provenance, and its covers in placed, or none when
+// placed lacks it. A sourced candidate has no truth. A generated one has
 // its inputs' distinct licenses, in input order joined by "; ", a license status that is verified
 // when every input's is, otherwise the first input's that isn't, is redistributable when every
 // input is, and has the truth of the input its TruthFrom names, or none.
@@ -230,6 +233,9 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 			continue
 		}
 		f.LicenseURL, f.LicenseRead, f.LicenseStatus = r.LicenseURL, r.LicenseRead, "verified"
+		if r.License != "" {
+			f.License = r.License
+		}
 		files[r.Path] = f
 	}
 	errs = append(errs, addCandidates(files, coverage.Gaps, candidates, placed)...)

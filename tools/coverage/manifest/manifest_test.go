@@ -119,7 +119,7 @@ func TestBuildAppliesLicenseReadings(t *testing.T) {
 	m := build(t, []disposition.Sample{adopted("a.pdf", []string{"a.truth"}, []string{"a.doc"}), adopted("b.pdf", nil, nil)},
 		[]manifest.ReferenceFile{ref("a.pdf", "sample", "a.truth"), ref("b.pdf", "sample", ""), ref("a.truth", "truth", ""), ref("a.doc", "doc", "")},
 		[]manifest.Reading{
-			{Path: "a.pdf", LicenseURL: "https://example.org/license", LicenseRead: "2026-11-25"},
+			{Path: "a.pdf", License: "MIT", LicenseURL: "https://example.org/license", LicenseRead: "2026-11-25"},
 			{Path: "a.truth", LicenseURL: "https://example.org/license", LicenseRead: "2026-11-25"},
 			{Path: "a.doc", LicenseURL: "https://example.org/license", LicenseRead: "2026-11-25"},
 		})
@@ -128,6 +128,12 @@ func TestBuildAppliesLicenseReadings(t *testing.T) {
 		if f.LicenseURL != "https://example.org/license" || f.LicenseRead != "2026-11-25" || f.LicenseStatus != "verified" {
 			t.Errorf("read %s = %+v, want the reading applied and verified", path, f)
 		}
+	}
+	if got := byPath(m)["a.pdf"].License; got != "MIT" {
+		t.Errorf("a.pdf license = %q, want the reading's MIT", got)
+	}
+	if got := byPath(m)["a.truth"].License; got != "CC0-1.0" {
+		t.Errorf("a.truth license = %q, want the reference's CC0-1.0, as its reading names none", got)
 	}
 	b := byPath(m)["b.pdf"]
 	if b.LicenseURL != "" || b.LicenseRead != "" || b.LicenseStatus != "reported" {
@@ -266,7 +272,11 @@ func TestBuildDerivesAGeneratedCandidatesLicenseAndTruthFromItsInputs(t *testing
 
 	generated[0].TruthFrom = ""
 	for _, f := range files {
-		readings = append(readings, manifest.Reading{Path: f.Path, LicenseURL: "https://example.org/l", LicenseRead: "2026-11-25"})
+		r := manifest.Reading{Path: f.Path, LicenseURL: "https://example.org/l", LicenseRead: "2026-11-25"}
+		if f.Path == "in/b.txt" {
+			r.License = "Apache-2.0"
+		}
+		readings = append(readings, r)
 	}
 	files[3].Redistributable = true
 	m, err = manifest.Build(coverage, manifest.Reference{Files: files}, readings, generated, nil)
@@ -274,8 +284,8 @@ func TestBuildDerivesAGeneratedCandidatesLicenseAndTruthFromItsInputs(t *testing
 		t.Fatal(err)
 	}
 	got = byPath(m)["out/x.mp3"]
-	if len(got.Truth) != 0 || got.TruthNote == "" || got.LicenseStatus != "verified" || !got.Redistributable {
-		t.Errorf("out/x.mp3 = %+v, want no truth with a truth note, verified, and redistributable", got)
+	if len(got.Truth) != 0 || got.TruthNote == "" || got.License != "CC0-1.0; Apache-2.0" || got.LicenseStatus != "verified" || !got.Redistributable {
+		t.Errorf("out/x.mp3 = %+v, want no truth with a truth note, its inputs' read licenses, verified, and redistributable", got)
 	}
 }
 

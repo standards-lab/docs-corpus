@@ -1606,7 +1606,9 @@
       "docs": [],
       "source": "av1-avif",
       "url": "https://raw.githubusercontent.com/AOMediaCodec/av1-avif/bf4c18d1f3971069b75e87d6ee469790589f4f09/testFiles/Microsoft/bbb_alpha_inverted.avif",
-      "license": "BSD-2-Clause",
+      "license": "CC-BY-3.0",
+      "license_url": "https://github.com/AOMediaCodec/av1-avif/blob/bf4c18d1f3971069b75e87d6ee469790589f4f09/testFiles/Microsoft/ReadMe.md",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3503,7 +3505,9 @@
       ],
       "source": "safedocs",
       "url": "https://raw.githubusercontent.com/pdf-association/safedocs/68f730ab8c39204844112c499c5707b79878533b/Unicode%20passwords/corrigendum5/corrigendum5.md",
-      "license": "Apache-2.0",
+      "license": "CC-BY-4.0",
+      "license_url": "https://github.com/pdf-association/safedocs/blob/68f730ab8c39204844112c499c5707b79878533b/NOTICE.txt",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
@@ -3592,7 +3596,9 @@
       ],
       "source": "safedocs",
       "url": "https://raw.githubusercontent.com/pdf-association/safedocs/68f730ab8c39204844112c499c5707b79878533b/CompactedSyntax/CompactedPDFSyntaxTest.pdf",
-      "license": "Apache-2.0",
+      "license": "CC-BY-4.0",
+      "license_url": "https://github.com/pdf-association/safedocs/blob/68f730ab8c39204844112c499c5707b79878533b/NOTICE.txt",
+      "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
     },
