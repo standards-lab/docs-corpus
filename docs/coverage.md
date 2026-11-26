@@ -383,6 +383,45 @@ To count the dispositions and gaps, run:
 jq '(.samples | group_by(.disposition) | map({(.[0].disposition): length}) | add) + {gaps: (.gaps | length)}' docs/coverage.json
 ```
 
+## Measurements
+
+[`measurements.json`](measurements.json) is the measurement list: the targeted acceptance
+measurements in docproc and docinfer that rerun over corpus inputs. It is written by hand, and
+none is listed yet. A measurement input is a `~/docs` sample, or a truth file, that a listed
+measurement reads. As [`STANDARDS.md`](../STANDARDS.md) allows, it stays in the corpus while a
+measurement lists it, even when another sample covers its scenarios. The list is the only way a
+sample enters the corpus for a measurement: `dispose` gives such a sample the `measure`
+disposition, where it would otherwise be trimmed.
+
+The list is a JSON array, `[]` when it is empty, with one object per measurement:
+
+- `id`: the measurement's own id.
+- `repository`: `docproc` or `docinfer`, the repository whose acceptance it reruns.
+- `acceptance`: the heading of the section it reruns in that repository's `docs/acceptance.md`,
+  such as `Word error rate`.
+- `summary`: one line saying what it measures.
+- `needs_truth`: `true` when its inputs need truth, else `false`.
+- `inputs`: the corpus paths it reads, each a sample's `path` in [`coverage.json`](coverage.json)
+  or a truth file a sample there lists in its `truth`.
+
+An entry names its inputs by path and holds no other facts about them: the manifest and
+`coverage.json` hold those. `scripts/check.sh` reads `docs/measurements.json`, or the copy the
+`MEASUREMENTS` environment variable names, after the coverage data passes. It fails when:
+
+- the file is missing, isn't JSON, or isn't an array, or an entry isn't an object;
+- an entry lacks its id, or two entries share an id;
+- an entry has a field other than these six;
+- an entry lacks its repository or its acceptance section, its summary, or a boolean
+  `needs_truth`;
+- an entry lists no inputs, or an input that isn't a path;
+- an input is neither a sample nor a truth file in `coverage.json`;
+- an input isn't redistributable, is sensitive, or carries a break. A truth file takes these facts
+  from the samples that list it: it isn't redistributable when none of them is, and it is
+  sensitive when one of them is;
+- a measurement that needs truth lists a sample without truth.
+
+Each failure message names its fix.
+
 ## The manifest
 
 [`MANIFEST.json`](../MANIFEST.json) lists each adopted sample and each candidate in the corpus,

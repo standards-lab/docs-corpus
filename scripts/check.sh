@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Checks the tools/coverage Go module, then the corpus files against MANIFEST.json once it is
-# present, the coverage data, and MANIFEST.json against the coverage data and git, and runs
-# lint-context and lint-references. Writes nothing but Go's caches.
+# present, the coverage data, the measurement list against the coverage data, and MANIFEST.json
+# against the coverage data and git, and runs lint-context and lint-references. Writes nothing but Go's caches.
 # See docs/coverage.md
 # See architecture/standards/go-elemental/principles/release-and-ci.md
 set -euo pipefail
@@ -96,9 +96,9 @@ report() {
   local problem
   while read -r problem; do
     if [ -n "$problem" ]; then
-      err "$coverage: $problem"
+      err "$1: $problem"
     fi
-  done <<<"$1"
+  done <<<"$2"
 }
 
 coverage=${COVERAGE:-docs/coverage.json}
@@ -160,7 +160,7 @@ else
             or (.reason | type) != "string" or .reason == "")
         | "samples[\($i)].breaks: \(.standard | tojson) needs the opening of a STANDARDS.md bullet, verbatim, as standard, and a reason")
   ' --rawfile standards STANDARDS.md "$coverage"); then
-    report "$problems"
+    report "$coverage" "$problems"
   else
     err "$coverage: jq could not read it; it must be JSON with a vocabulary of library, trait, and feature objects"
   fi
@@ -248,7 +248,7 @@ else
             "gaps.\(.id).covered_by: \($by_path)\u0027s covers lack \(.covers - ($by[$by_path] | covers) | join(", ")); run mise run dispose"
           else empty end)
   ' --slurpfile fetched docs/candidates.json --slurpfile placed docs/corpus-placement.json "$coverage"); then
-    report "$problems"
+    report "$coverage" "$problems"
   else
     err "$coverage: jq could not check its dispositions; each sample needs library, traits, features, and disposition fields, and docs/candidates.json and docs/corpus-placement.json must be JSON arrays"
   fi
@@ -310,7 +310,7 @@ else
         | select(IN($exercised[]) | not) | select(IN($gapped[]) | not)
         | "vocabulary: \(.) is exercised by no adopted sample and is in no gap\u0027s covers; adopt a sample that exercises it, or add it to a gap\u0027s covers")
   ' --slurpfile fetched docs/candidates.json "$coverage"); then
-    report "$problems"
+    report "$coverage" "$problems"
   else
     err "$coverage: jq could not check its gaps; each gap needs an id, covers, and a candidate, and docs/candidates.json must be a JSON array"
   fi
@@ -344,11 +344,68 @@ else
           | select(IN($linked[]) | not)
           | "\(.): a \($ref) truth or doc file no sample links; add it to its sample\u0027s truth or docs, or to docs_without_sample with its handling")
     ' --arg ref "$reference" "$coverage"); then
-      report "$problems"
+      report "$coverage" "$problems"
     else
       err "$coverage: jq could not compare it with $reference; both must be JSON, the reference with a files array"
     fi
   fi
+fi
+
+stop_if_failed
+
+measurements=${MEASUREMENTS:-docs/measurements.json}
+if [ ! -f "$measurements" ]; then
+  err "$measurements: missing; restore docs/measurements.json from git, or point MEASUREMENTS at the measurement list"
+elif problems=$(jq -r --slurpfile coverage "$coverage" '
+  def text: type == "string" and . != "";
+  def name($i): if (.id? | text) then .id else "[\($i)]" end;
+  ($coverage[0].samples // []) as $samples
+  | ($samples | map({key: .path, value: .}) | from_entries) as $by_path
+  | ($samples | map(.path as $p | .truth[]? | {key: ., value: $p}) | group_by(.key)
+      | map({key: .[0].key, value: map(.value)}) | from_entries) as $truth_of
+  | if type != "array" then
+      "is not an array; list each measurement there as an object, or [] when there are none"
+    else
+      (to_entries[] | .key as $i | .value
+        | if type != "object" then
+            "[\($i)]: is not an object; give each measurement its id, repository, acceptance, summary, needs_truth, and inputs"
+          else
+            name($i) as $m | (.needs_truth == true) as $needs_truth
+            | (select((.id | text) | not)
+                | "\($m): needs an id; give each measurement an id of its own"),
+              (keys[] | select(IN("id", "repository", "acceptance", "summary", "needs_truth", "inputs") | not)
+                | "\($m).\(.): is not a measurement field; remove it, since MANIFEST.json and docs/coverage.json hold its inputs\u0027 facts"),
+              (select((.repository | IN("docproc", "docinfer")) and (.acceptance | text) | not)
+                | "\($m): needs its acceptance section; set repository to docproc or docinfer, and acceptance to the heading of the docs/acceptance.md section it reruns"),
+              (select((.summary | text) | not)
+                | "\($m): needs a one-line summary; say what it measures"),
+              (select(.needs_truth | type != "boolean")
+                | "\($m).needs_truth: is not true or false; say whether its inputs need truth"),
+              (if (.inputs | type) != "array" or .inputs == [] or any(.inputs[]; text | not) then
+                "\($m): needs its inputs; list the corpus paths it reads, each a sample or truth file in docs/coverage.json"
+              else
+                .inputs[] as $p | $by_path[$p] as $s | ($truth_of[$p] // [] | map($by_path[.])) as $owners
+                | if $s == null and $owners == [] then
+                    "\($m).inputs: \($p) is neither a sample nor a truth file in docs/coverage.json; name an input by its path there"
+                  else
+                    (select(($s != null and $s.redistributable != true) or ($s == null and all($owners[]; .redistributable != true)))
+                      | "\($m).inputs: \($p) is not redistributable; remove it, and measure a redistributable input instead"),
+                    (select($s.sensitive == true or any($owners[]; .sensitive == true))
+                      | "\($m).inputs: \($p) is sensitive; remove it, and measure an input that is not"),
+                    ($s.breaks[0]? // empty
+                      | "\($m).inputs: \($p) breaks \(.standard | tojson); remove it, and measure an input that breaks no standard"),
+                    (select($needs_truth and $owners == [] and ($s.truth // []) == [])
+                      | "\($m).inputs: \($p) has no truth, and \($m) needs truth; measure an input whose docs/coverage.json entry lists its truth")
+                  end
+              end)
+          end),
+      (map(.id? | select(text)) | group_by(.)[] | select(length > 1)
+        | "\(.[0]) appears \(length) times; give each measurement its own id")
+    end
+' "$measurements"); then
+  report "$measurements" "$problems"
+else
+  err "$measurements: jq could not read it; it must be a JSON array of measurements, or [] when there are none"
 fi
 
 stop_if_failed
