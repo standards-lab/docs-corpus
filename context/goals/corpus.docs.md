@@ -123,3 +123,8 @@
   docs-corpus): review the third-party documents inside olmOCR-bench, read today under the
   dataset's ODC-BY license, against STANDARDS.md's reading rule. `roadmap/index.toml`: add it to
   `backlog`.
+- coordinator · `.claude/marathon.toml`, `[workspace] exclusive`: add go-ai, docproc, and docinfer
+  to the group, now that corpus.docs no longer touches docproc and docinfer beside the capstone.
+  `context/waves.md` (wave C) and `context/ai-strategy.md`: "join … when corpus.docs syncs"
+  becomes that they are in the group. If a second active goal then touches the grown group, the
+  sync asks the architect first.
