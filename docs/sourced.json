@@ -12,8 +12,8 @@
     "truth": [
       {
         "path": "video/dvids-ghosts-in-the-machine/ghosts-in-the-machine.interpretation.json",
-        "sha256": "25ce30c5cb516ef11e588b8ebd038d17dba85e33345d3a7244d5e39c34d2d5cf",
-        "bytes": 11877,
+        "sha256": "96da6783b2ea30cc84a6811ba8f89b948002eee19ceec9253a217955923aee39",
+        "bytes": 12094,
         "format": "application/json",
         "license": "Apache-2.0",
         "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",

@@ -1,7 +1,7 @@
 {
   "video": "video/dvids-ghosts-in-the-machine/ghosts-in-the-machine-1920x1080.mp4",
   "dvids": 882019,
-  "about": "This key collects published readings of the first Ghosts in the Machine video, attributes the official account as the publisher's own reading rather than ground truth, records no timestamps, and paraphrases the copyrighted outlets rather than quoting them.",
+  "about": "This key collects published readings of the first Ghosts in the Machine video, attributes the official account as the publisher's own reading rather than ground truth, records no timestamps, and paraphrases the copyrighted outlets rather than quoting them. A locator for an outlet carries none of its words: it gives paragraph numbers, counting the article body's paragraphs from 1, from the first paragraph of text after the byline to the article's last paragraph, and not counting the headline, standfirst, byline, dates, captions, embedded newsletter sign-up boxes, or the author's biography. A locator for the official account, which is public domain, may begin with the paragraph's opening words. Each element's disagreement records only a conflict between sources' statements, and its unexplained field records what no source says about the element, or is null.",
   "sources": [
     {
       "id": "army-mil",
@@ -52,21 +52,22 @@
       "readings": [
         {
           "source": "vice",
-          "reading": "The question plays on young people's unspoken worries and doubts about the world, and the ad implies the 4th PSYOP Group is its answer, holding out hidden knowledge and the means to use it.",
-          "locator": "the two closing paragraphs, beginning 'Even in a world of streaming' and 'The answer implicit in the ad'"
+          "reading": "In Vice's reading the ad answers its own question by pointing to the 4th PSYOP Group, an appeal aimed at young people unsettled by a confusing world, who would be drawn by the offer of knowing hidden things and acting on them.",
+          "locator": "paragraphs 8 and 9"
         },
         {
           "source": "task-and-purpose",
-          "reading": "The question is the single thing the unsettling recruiting pitch puts to its viewers.",
-          "locator": "first paragraph"
+          "reading": "Task & Purpose treats the strings question as the core of the video's recruiting pitch and finds the pitch unsettling.",
+          "locator": "paragraph 1"
         },
         {
           "source": "military-times",
-          "reading": "The video's message is to join Army PSYOP and become the unseen hand that controls world affairs, above all the Chinese and Russian governments.",
-          "locator": "headline, and the third paragraph, beginning 'The recruiting video, which was published'"
+          "reading": "Military Times reads the video as inviting recruits into Army PSYOP so they can uncover and control the hidden forces behind world events, with China's and Russia's governments named as the chief targets.",
+          "locator": "headline, and paragraph 3"
         }
       ],
-      "disagreement": null
+      "disagreement": null,
+      "unexplained": null
     },
     {
       "id": "sun-tzu-opening",
@@ -75,16 +76,17 @@
       "readings": [
         {
           "source": "military-times",
-          "reading": "The video starts with a Sun Tzu quotation from the Art of War before cycling through cities, a forest, a black-and-white cartoon, and 20th-century wars and speeches.",
-          "locator": "second paragraph, beginning 'The video kicks off'"
+          "reading": "Military Times names a quotation from Sun Tzu's Art of War as the video's opening, ahead of the footage it goes on to describe.",
+          "locator": "paragraph 2"
         },
         {
           "source": "vice",
-          "reading": "Vice describes the start differently, as the camera moving through pine woods to a cartoon ghost fixed to a twig while words float over a song, and does not mention the quotation.",
-          "locator": "first paragraph, beginning 'It feels like a lost cutscene'"
+          "reading": "Vice begins its description with the camera moving across a pine forest and settling on a cartoon ghost attached to a twig, with text on screen over a sung soundtrack, and does not mention the quotation.",
+          "locator": "paragraph 1"
         }
       ],
-      "disagreement": "Military Times says the video opens with the Sun Tzu quotation; Vice describes its opening as pine woods and a cartoon ghost on a twig and does not mention the quotation."
+      "disagreement": "Military Times says the video opens with a Sun Tzu quotation; Vice says it opens on a forest and a cartoon ghost on a twig, and mentions no quotation.",
+      "unexplained": null
     },
     {
       "id": "ghosts",
@@ -96,13 +98,13 @@
       "readings": [
         {
           "source": "vice",
-          "reading": "The ghosts come amid a fast jumble of images, the dancing ghost on the burning set follows the line 'We are everywhere', and together the song, images, and message build a slowly growing dread.",
-          "locator": "first paragraph, and the paragraphs beginning 'As first spotted by Task & Purpose' and 'We are everywhere'"
+          "reading": "Vice places the ghosts within a rapid run of mixed images, notes that the dancing ghost on the burning television appears right after the words 'We are everywhere', and says the music, pictures, and text together leave the viewer increasingly uneasy.",
+          "locator": "paragraphs 1, 3, and 4"
         },
         {
           "source": "military-times",
-          "reading": "The video links all its footage to the notion of being a ghost.",
-          "locator": "second paragraph, beginning 'The video kicks off'"
+          "reading": "Military Times says the idea of being a ghost is the thread that connects every kind of footage in the video.",
+          "locator": "paragraph 2"
         },
         {
           "source": "army-mil",
@@ -110,11 +112,12 @@
           "locator": "paragraph beginning 'There were little things we got pushback on'"
         }
       ],
-      "disagreement": "The outlets read the ghosts as part of the video's eerie mood and its notion of being a ghost; the official account treats the dancing ghost only as a departure from the command's knight crest that drew internal pushback, and gives it no meaning."
+      "disagreement": "The official account says the dancing ghost is not the Psychological Operations Command's crest, which is a knight chess piece, and that it drew internal pushback; Vice and Military Times present the ghosts without that point.",
+      "unexplained": null
     },
     {
       "id": "archival-footage",
-      "element": "Archival cartoons and radio from world events, 20th-century conflicts and speeches, Chinese troops marching, and a train car.",
+      "element": "Old cartoons, archival radio recordings of historical events, footage of wars and speeches from the twentieth century, marching Chinese troops, and a railway car.",
       "cue": [
         "visual",
         "audio"
@@ -122,30 +125,31 @@
       "readings": [
         {
           "source": "vice",
-          "reading": "A train car and marching Chinese troops are among the images that arrive in a rapid jumble while the music builds.",
-          "locator": "first paragraph, beginning 'It feels like a lost cutscene'"
+          "reading": "Vice lists a railway car and Chinese soldiers on the march among the many images shown in quick succession as the soundtrack intensifies.",
+          "locator": "paragraph 1"
         },
         {
           "source": "task-and-purpose",
-          "reading": "The old cartoons and radio clips of world events combine into something that draws the viewer in while disturbing them, far darker and tenser than the Army's usual television recruiting ads.",
-          "locator": "third paragraph, beginning 'Complete with eerie whistling'"
+          "reading": "Task & Purpose says the blend of vintage cartoons and archival radio about historical events is what makes the video at once compelling and disturbing.",
+          "locator": "paragraph 3"
         },
         {
           "source": "military-times",
-          "reading": "The footage cycles between present-day cities and 20th-century wars and speeches, all linked to the notion of being a ghost.",
-          "locator": "second paragraph, beginning 'The video kicks off'"
+          "reading": "Military Times sees the video returning again and again to contrast scenes of modern cities with wartime and oratory footage from the last century, joined by the theme of being a ghost.",
+          "locator": "paragraph 2"
         },
         {
           "source": "military-times",
-          "reading": "Because the video refers so often to Russia and China, the reporter suggests it may itself be a psychological operation aimed at audiences abroad; this is the reporter's opinion.",
-          "locator": "fifth paragraph, beginning 'Given the number of references'"
+          "reading": "The reporter's own view, offered as opinion, is that the video's frequent Russian and Chinese references make it look like a PSYOP in its own right, directed at foreign viewers.",
+          "locator": "paragraph 5"
         }
       ],
-      "disagreement": "Only Military Times reads the Russia and China references as possibly aimed at foreign audiences, and it offers that as its reporter's opinion."
+      "disagreement": null,
+      "unexplained": null
     },
     {
       "id": "masked-soldiers",
-      "element": "Soldiers in white masks walking through woods, with eerie whistling and music that builds.",
+      "element": "Soldiers in white masks walking through woods, while someone whistles and the music swells.",
       "cue": [
         "visual",
         "audio"
@@ -153,20 +157,21 @@
       "readings": [
         {
           "source": "vice",
-          "reading": "American soldiers wearing white masks in the woods are among the images shown while the music grows in intensity, and the whole leaves the viewer with a slowly growing dread.",
-          "locator": "first paragraph, and the paragraph beginning 'As first spotted by Task & Purpose'"
+          "reading": "Vice includes American soldiers in white face masks moving through woods in the run of images set to rising music, and says the whole leaves the viewer increasingly uneasy.",
+          "locator": "paragraphs 1 and 3"
         },
         {
           "source": "task-and-purpose",
-          "reading": "Background whistling and suspense music make the video dark and tense, far from the Army's usual, sometimes corny television commercials.",
-          "locator": "third paragraph, beginning 'Complete with eerie whistling'"
+          "reading": "In Task & Purpose's view, the whistling and a score that builds suspense give the video a grim, strained mood that sets it well apart from the Army's TV recruiting ads, which the outlet says can be corny.",
+          "locator": "paragraph 3"
         }
       ],
-      "disagreement": null
+      "disagreement": null,
+      "unexplained": null
     },
     {
       "id": "not-showing-the-shark",
-      "element": "The video never shows what a PSYOP soldier does, and keeps the threat out of sight.",
+      "element": "No scene depicts PSYOP soldiers at work, and the threat the video builds toward is never shown.",
       "cue": "visual",
       "readings": [
         {
@@ -176,11 +181,12 @@
         },
         {
           "source": "task-and-purpose",
-          "reading": "Col. Chris Stangle says the artist modeled the video on the restraint Jaws showed with its shark, aiming to convey how the craft feels when it succeeds rather than depict a PSYOP soldier's work.",
-          "locator": "fifth and sixth paragraphs, beginning 'Col. Chris Stangle' and 'Drawing on this approach'"
+          "reading": "Task & Purpose reports Col. Chris Stangle saying the video's artist followed Jaws in keeping the danger mostly unseen, so that instead of depicting PSYOP soldiers' duties the video gives a sense of what successful work in the field is like.",
+          "locator": "paragraphs 5 and 6"
         }
       ],
-      "disagreement": null
+      "disagreement": null,
+      "unexplained": null
     },
     {
       "id": "ghosts-in-the-machine-psywar",
@@ -189,16 +195,17 @@
       "readings": [
         {
           "source": "vice",
-          "reading": "Vice gives the lines from 'A feeling in the dark' to 'PSYWAR' as the words that follow the dancing ghost, among the images and message it says build a growing dread.",
-          "locator": "paragraphs beginning 'As first spotted by Task & Purpose' and 'We are everywhere'"
+          "reading": "Vice quotes the video's closing words, from 'A feeling in the dark' through 'PSYWAR', as coming after the dancing ghost, and counts them in the message it says leaves viewers uneasy.",
+          "locator": "paragraphs 3 and 4"
         },
         {
           "source": "task-and-purpose",
-          "reading": "Task & Purpose ends on the stage line, after reporting Stangle's view that psychological operations happen everywhere, every day, and that PSYOP works behind the scenes and goes unmentioned when it succeeds.",
-          "locator": "last paragraph, beginning 'As the video says', and the paragraphs beginning 'Throughout the world, Stangle said' and 'The point of psychological operations'"
+          "reading": "Task & Purpose ends by quoting the video's line about warfare evolving and the world being a stage, after relaying Stangle's view that influence operations pervade daily life worldwide and that PSYOP works best when its role stays hidden and nobody discusses it.",
+          "locator": "paragraphs 10, 14, and 17"
         }
       ],
-      "disagreement": null
+      "disagreement": null,
+      "unexplained": null
     },
     {
       "id": "props",
@@ -211,7 +218,8 @@
           "locator": "paragraph beginning 'Gray and his team produced both videos in-house'"
         }
       ],
-      "disagreement": "None, but no source says what the props mean; the official account says only why they were used."
+      "disagreement": null,
+      "unexplained": "No source says what the props mean; the official account says only why they were used."
     }
   ]
 }

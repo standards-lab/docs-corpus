@@ -358,9 +358,9 @@ manifest's sha256 pin what was made. Generation is not byte-reproducible: archiv
 carry the time they were made.
 
 It runs mise's pinned tools ahead of the host's, as `activate_aggressive` sets: bsdtar from
-`conda:libarchive`, ffmpeg from `conda:ffmpeg`, magick from ImageMagick, qpdf, and Go. pandoc, Ghostscript, LibreOffice, iconv, and coreutils are unpinned
-and run as the host installs them. The candidate's `generator` in `.gaps` records the versions
-that ran, and the manifest carries it.
+`conda:libarchive`, ffmpeg from `conda:ffmpeg`, magick from ImageMagick, qpdf, and Go. pandoc,
+Ghostscript, LibreOffice, iconv, and coreutils are unpinned and run as the host installs them. The
+candidate's `generator` in `.gaps` records the versions that ran, and the manifest carries it.
 
 The manifest gives each candidate its gap's candidate's provenance, its covers from the corpus
 placement, and its `gap`. A sourced candidate has no truth. A generated candidate has the truth of
@@ -489,12 +489,12 @@ Each failure message names its fix.
 ## The manifest
 
 [`MANIFEST.json`](../MANIFEST.json) lists each adopted or measured sample, each candidate in the
-corpus, and each [sourced input](#sourced-inputs), with its `covers`: its `library`, `traits`,
-and `features` IDs together, sorted. It also lists the truth and doc files the samples link, as
-[README.md](../README.md#the-manifest) describes. Each sample or truth file a measurement reads names, in `measures`, the ids of the
-measurements in [`measurements.json`](measurements.json) that list it. `mise run manifest` builds
-it from this data, the measurement list, and the sourced input list, so the inventory and the
-scenario index agree.
+corpus, and each [sourced input](#sourced-inputs), with its `covers`: its `library`, `traits`, and
+`features` IDs together, sorted. It also lists the truth and doc files the samples link, as
+[README.md](../README.md#the-manifest) describes. Each sample or truth file a measurement reads
+names, in `measures`, the ids of the measurements in [`measurements.json`](measurements.json) that
+list it. `mise run manifest` builds it from this data, the measurement list, and the sourced input
+list, so the inventory and the scenario index agree.
 `scripts/check.sh` checks the manifest before the data. It fails when:
 
 - a listed file is missing, or its size or sha256 differs from its entry;
