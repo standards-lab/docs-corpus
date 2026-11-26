@@ -128,7 +128,7 @@ the last slice and gated on the grep. Every other slice is two-way.
 
 ## Progress
 
-slices 2/7 committed (1 ab8b982, 2 f4715ec; docproc run 01a218c9-8847-7ec5-b98e-cf5803c6a989, 123.5 s, placement reproduced) · standards — · spec — · editor —
+slices 4/7 committed (1 ab8b982, 2 f4715ec, 3 ai-hosting a0dd635, 4 docproc f600c44; docproc run 01a218c9-8847-7ec5-b98e-cf5803c6a989, 123.5 s, placement reproduced) · standards — · spec — · editor —
 - slice 1, decided without the architect: removed `manifest --copy` and `dispose --placement`, whose only inputs were ~/docs and the retired placement mode.
 
 ## Decisions
