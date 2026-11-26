@@ -88,11 +88,11 @@ entry's `breaks`, a list with one object per standard it breaks:
   realistic`;
 - `reason`: how the sample breaks it, from what its source record or the file shows.
 
-A sample with a break is trimmed, never adopted or replaced, whatever its other facts.
-`trimmed_for` names the sample the tie-breaks prefer among those in the corpus whose covers
-contain its own, and is absent when none does. Each of its covers must still be another corpus
-sample's or a gap's; `dispose` stops, naming the covers, when one isn't, so a break never loses a
-scenario silently. The disposition follows from the break: it is never set by hand. For example,
+`dispose` trims a sample with a break, whatever its other facts, so its disposition is never set
+by hand. `trimmed_for` names the sample the tie-breaks prefer among those in the corpus whose
+covers contain its own, and is absent when none does. Each of its covers must still be another
+corpus sample's or a gap's; `dispose` stops, naming the covers, when one isn't, so a break never
+loses a scenario silently. For example,
 `onenote/large/Large OneDrive.one` records that its pages are printouts of generated test PDFs,
 and `image/vector/script-bearing.svg` that it was written by hand.
 
@@ -300,17 +300,16 @@ Each gap names one candidate, its `candidate` object, of one of three kinds, its
   scenarios until a candidate turns up.
 
 Each sourced or generated candidate also has a `fit` line: a rating, Good or Fair, then its
-quality and how it exercises the gap's covers. A candidate meets
-[`STANDARDS.md`](../STANDARDS.md)'s realistic-content standard, and its fit line shows it; a
-generated candidate's fit line says how its content is realistic: the sourced real text, images,
-speech, or scans its inputs give it.
+quality and how it exercises the gap's covers. The fit line also shows that the candidate meets
+[`STANDARDS.md`](../STANDARDS.md)'s realistic-content standard; a generated candidate's names the
+sourced real text, images, speech, or scans its inputs give its content.
 
 A candidate that breaks a standard leaves the corpus: its rows leave
 [`candidates.json`](candidates.json), [`judged.json`](judged.json), and, through the tools,
 [`corpus-placement.json`](corpus-placement.json) and the manifest, and its file leaves the working
-copy. Its gap stays open: its candidate becomes unavailable, `searched` naming the candidate that
-left and how it was made or fetched, and `reason` the standard it broke and why, as archive-11,
-email-5, and office-8 record. No replacement is searched for until a later task takes the gap up.
+copy. Its gap stays open, with an unavailable candidate whose `searched` names the candidate that
+left and how it was made or fetched, and whose `reason` names the standard it broke and why, as
+archive-11, email-5, and office-8 record. No replacement is searched for until a later task takes the gap up.
 
 `dispose` writes two fields to record what the corpus placement found, as
 [Candidates in the corpus](#candidates-in-the-corpus) states:

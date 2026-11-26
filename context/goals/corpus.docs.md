@@ -87,10 +87,8 @@ Two-way: nothing is tagged or published, and the repository stays private.
 
 ## Progress
 
-slices 4/5 committed (6f928ef: slices 3–4 together, as neither passes the check alone; both
-placements at docproc v0.9.0; exec-4-open closed; audio-3 opened by the refresh, its candidate a
-Commons PD speech); slice 5's docs went in with them, its record pin goes to the editor ·
-standards d7314a4, 5058db9 · spec round 1: 2 gaps · editor —
+slices 5/5 committed · standards d7314a4, 5058db9 · spec round 2 clean (271530a closed round
+1's two gaps) · editor done
 - escalation, slice 1: v1.ai.inference's sync (standards-lab #222) added the OneNote timing-section
   removal and the realistic-content standard to docproc-final. Fold both in? yes; trim through a
   recorded standard break dispose reads? yes; docproc's and the onenote spike's edits as pending
@@ -102,17 +100,13 @@ standards d7314a4, 5058db9 · spec round 1: 2 gaps · editor —
 
 ## Decisions
 
-- docproc-final: a sample that breaks a standard records the break in the coverage data, and
-  dispose trims it; dispositions still never change by hand.
-- docproc-final: onenote.rs's timing sections, `Large Desktop.one` and `Large OneDrive.one`, are
-  out of the corpus under the realistic-content standard; ~/docs keeps them.
-- docproc-final: started on docproc-coverage's released tags before that goal's coordinator
-  sync; only the coordinator note waits on the sync.
-- plan: docproc-final re-curates the set once, against docproc-coverage's final release, after
-  that goal syncs; releases after it go to a later corpus goal. Until then the corpus placement
-  pins docproc v0.5.0 (cmd/docproc v0.2.3).
-- plan: docproc-final refreshes the ~/docs review placement at that release, not only the
-  corpus run, and edits gap covers the release changes by design, recording the reason.
+- docproc-final: the realistic-content standard admits limit checks whose content is real
+  (archive-8, pdf-7, `archive/high-ratio-200mb.zip`, `text/json/deeply-nested-64.json`) and
+  `text/csv/tab-separated.tsv` (real city names, random values); it rejects scale, stress, and
+  timing inputs whose content is templated, random, or pseudo-words.
+- docproc-final: place-library and `place-traits --corpus` reread the placements' runs, in
+  `~/runs/docs-corpus/docproc-final/docs` and `.../corpus`, so baseline keeps them until v1 is final.
+- plan: docproc releases after v0.9.0, docproc-coverage's last, go to a later corpus goal.
 - curate: the vocabulary's links stay pinned to docproc `48216e1`; an ID a newer run adds links to
   that run's release.
 - curate: the candidates for archive-1, archive-2, archive-3, and archive-5 reuse `~/docs` paths
@@ -127,8 +121,8 @@ standards d7314a4, 5058db9 · spec round 1: 2 gaps · editor —
   changes placements or dispositions through them, never by hand.
 - plan: ~/docs is never changed. It is the reference for a corpus built from scratch in
   docs-corpus.
-- plan: snapshot publishes one v1, from curate's set. docs-corpus stays private until then, and
-  snapshot makes it public.
+- plan: snapshot publishes one v1, from the set docproc-final re-curated. docs-corpus stays
+  private until then, and snapshot makes it public.
 - plan: acceptance runs cite `MANIFEST.json`'s `version`.
 - plan: once docs-corpus v1 is final, the baseline task reruns docproc and docinfer over it,
   repoints the acceptance citations, and removes ~/docs.

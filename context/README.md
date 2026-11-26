@@ -17,9 +17,9 @@ versioned corpus in this repository, public from v1 ([README.md](../README.md)).
   placed from docproc's run over the corpus and contain its gap's covers. No sample's covers lie
   inside another's, except a generated sample's inputs
   ([docs/coverage.md](../docs/coverage.md#the-manifest)).
-- **Coverage page** (built): the scenario vocabulary, each `~/docs` sample's disposition, and
-  each gap's candidate, the open gap a candidate leaves, and the sample that covers a dropped
-  candidate's gap ([docs/coverage.md](../docs/coverage.md)).
+- **Coverage page** (built): the scenario vocabulary, each `~/docs` sample's disposition and the
+  standards it breaks, and each gap's candidate, the open gap a candidate leaves, and the sample
+  that covers a dropped candidate's gap ([docs/coverage.md](../docs/coverage.md)).
 - **Distribution** (built): `mise run pack` writes one uncompressed tar of sample files per format
   area, and `mise run fetch` reads the tars from a release URL or a directory and places the files
   once every one matches the manifest's size and sha256
