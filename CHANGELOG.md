@@ -10,8 +10,9 @@ over, are documented here. The format follows
 ## [v0.2.0] - 2026-11-26
 
 The second release holds 210 samples in the same ten format areas, 81 of them new: 80 measured
-samples that targeted acceptance measurements in docproc and docinfer rerun over, and DVIDS 882019,
-the first sourced input. It adds 22 truth files, for 58 in all, and 101 license readings, for 250.
+samples, which docproc's and docinfer's targeted acceptance measurements rerun over, and DVIDS
+882019, the first sourced input. It adds 22 truth files, for 58 in all, and 101 license readings,
+for 250 in all.
 No v0.1.0 sample file is removed or changed. The sample files are again the release's assets, one
 uncompressed `<area>.tar` per format area.
 
