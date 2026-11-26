@@ -90,13 +90,15 @@ Two-way: nothing is tagged or published, and the repository stays private.
 slices 4/5 committed (6f928ef: slices 3–4 together, as neither passes the check alone; both
 placements at docproc v0.9.0; exec-4-open closed; audio-3 opened by the refresh, its candidate a
 Commons PD speech); slice 5's docs went in with them, its record pin goes to the editor ·
-standards — · spec — · editor —
+standards d7314a4, 5058db9 · spec round 1: 2 gaps · editor —
 - escalation, slice 1: v1.ai.inference's sync (standards-lab #222) added the OneNote timing-section
   removal and the realistic-content standard to docproc-final. Fold both in? yes; trim through a
   recorded standard break dispose reads? yes; docproc's and the onenote spike's edits as pending
   edits? yes; sweep every sample and candidate now? yes. The amended brief was approved.
 - escalation, slice 2: does text/csv/tab-separated.tsv (real city names, random values, gen_text.py)
   pass the realistic-content standard? yes; office-1, office-2, and pdf-1 stay.
+- escalation, spec review: does large-100k-rows.csv fail as a stress input? yes. Do the 200 MB
+  zip bomb and the 64-level JSON pass as limit checks, as archive-8 and pdf-7 did? yes.
 
 ## Decisions
 
