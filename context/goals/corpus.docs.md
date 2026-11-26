@@ -128,7 +128,8 @@ the last slice and gated on the grep. Every other slice is two-way.
 
 ## Progress
 
-slices 0/7 committed · standards — · spec — · editor —
+slices 1/7 committed (1 ab8b982) · standards — · spec — · editor —
+- slice 1, decided without the architect: removed `manifest --copy` and `dispose --placement`, whose only inputs were ~/docs and the retired placement mode.
 
 ## Decisions
 
