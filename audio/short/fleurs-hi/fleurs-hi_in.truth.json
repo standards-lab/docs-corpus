@@ -1,0 +1,31 @@
+{
+ "dataset": "google/fleurs",
+ "config": "hi_in",
+ "split": "validation",
+ "license": "CC-BY-4.0",
+ "source": "https://huggingface.co/datasets/google/fleurs",
+ "via": "datasets-server rows API (decoded audio assets)",
+ "items": [
+  {
+   "file": "fleurs-hi_in-1602.wav",
+   "text": "मेजरकेन खाना भूमध्य सागर में समान क्षेत्रों की तरह रोटी सब्जियों और मांस विशेष रूप से सूअर का मांस पर आधारित है और जैतून के तेल का उपयोग करता है।",
+   "speaker_id": null,
+   "gender": 1,
+   "source_row": 0
+  },
+  {
+   "file": "fleurs-hi_in-1601.wav",
+   "text": "वैज्ञानिकों का मानना है कि ओसेलोट्स गंध के द्वारा जानवरों का पीछा करते और खाते शिकार हैं यह सूँघते हुए कि वे ज़मीन पर कहाँ रहे होंगे।",
+   "speaker_id": null,
+   "gender": 1,
+   "source_row": 1
+  },
+  {
+   "file": "fleurs-hi_in-1608.wav",
+   "text": "आर्मंड वर्सास ने कहा मैंने अपनी बहन और उसकी दोस्त को खो दिया और रास्ते में व्हीलचेयर में दो दिव्यांग लोग थे और लोग उनपर उछल रहे थे और उन्हें धक्का दे रहे थे",
+   "speaker_id": null,
+   "gender": 0,
+   "source_row": 2
+  }
+ ]
+}

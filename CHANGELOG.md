@@ -9,9 +9,11 @@ over, are documented here. The format follows
 
 ### Added
 
-- [`docs/measurements.json`](docs/measurements.json), the measurement list: the targeted
-  acceptance measurements in docproc and docinfer that rerun over corpus inputs, written by hand
-  and empty for now.
+- [`docs/measurements.json`](docs/measurements.json), the hand-written measurement list:
+  the targeted acceptance measurements in docproc and docinfer that rerun over corpus inputs.
+- Eight measurements and their 80 measured samples, with their truth: docproc's word error rate,
+  PDF page text, PDF pages in shared gs processes, peak memory, and office-and-mail run, and
+  docinfer's transcription, vision re-probe, and the re-probe's confirmation.
 - The `measure` disposition in `docs/coverage.json`: a `~/docs` sample a measurement lists, which
   would otherwise be trimmed, stays in the corpus.
 - `measures` in `MANIFEST.json`: each sample or truth file a measurement reads names the ids of

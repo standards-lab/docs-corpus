@@ -1,0 +1,31 @@
+{
+ "dataset": "google/fleurs",
+ "config": "ru_ru",
+ "split": "validation",
+ "license": "CC-BY-4.0",
+ "source": "https://huggingface.co/datasets/google/fleurs",
+ "via": "datasets-server rows API (decoded audio assets)",
+ "items": [
+  {
+   "file": "fleurs-ru_ru-1614.wav",
+   "text": "они умеют отлично видеть в темноте при помощи ночного видения и почти незаметно передвигаться оцелоты выслеживают добычу сливаясь с окружающей обстановкой а затем набрасываются на добычу",
+   "speaker_id": null,
+   "gender": 1,
+   "source_row": 0
+  },
+  {
+   "file": "fleurs-ru_ru-1554.wav",
+   "text": "он сказал что создал дверной звонок работающий от wifi",
+   "speaker_id": null,
+   "gender": 1,
+   "source_row": 1
+  },
+  {
+   "file": "fleurs-ru_ru-1634.wav",
+   "text": "в японии приблизительно 7000 островов самый большой из которых — хонсю что делает японию 7-м по величине островом в мире!",
+   "speaker_id": null,
+   "gender": 0,
+   "source_row": 2
+  }
+ ]
+}

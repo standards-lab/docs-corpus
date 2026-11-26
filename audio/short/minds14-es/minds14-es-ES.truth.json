@@ -1,0 +1,44 @@
+{
+ "dataset": "PolyAI/minds14",
+ "config": "es-ES",
+ "split": "train",
+ "license": "CC-BY-4.0",
+ "source": "https://huggingface.co/datasets/PolyAI/minds14",
+ "via": "datasets-server rows API (decoded audio assets)",
+ "items": [
+  {
+   "file": "minds14-es-ES-0.wav",
+   "text": "hola buenas a ver tengo un problema con vuestra aplicación resulta que quiero hacer una transferencia bancaria a una cuenta conocida",
+   "speaker_id": null,
+   "gender": null,
+   "source_row": 0,
+   "english_transcription": "hello good to see I have a problem with your application it turns out that I want to make a bank transfer to a known account",
+   "intent_class": 2,
+   "path": "es-ES~APP_ERROR/60266571dc3604f481bcb50a.wav"
+  },
+  {
+   "file": "minds14-es-ES-1.wav",
+   "text": "la aplicación no carga el saldo de mi nueva cuenta",
+   "speaker_id": null,
+   "gender": null,
+   "source_row": 1,
+   "english_transcription": "the application does not load the balance of my new account",
+   "intent_class": 2,
+   "path": "es-ES~APP_ERROR/6026655bdc3604f481bcb4fa.wav",
+   "text_original": "la aplicación no cargue el saldo de mi nueva cuenta",
+   "correction": "'no cargue' (subjunctive, ungrammatical here) corrected to 'no carga', matching the dataset's own English translation 'does not load'. Medium-high confidence from text; not checked against audio."
+  },
+  {
+   "file": "minds14-es-ES-2.wav",
+   "text": "hola tengo un problema con la aplicación no carga y tampoco voy a quitar Gael saldo de mi cuenta nueva dice que la aplicación está siendo reparada y ahora no puedo acceder a mi cuenta necesito inmediatamente",
+   "speaker_id": null,
+   "gender": null,
+   "source_row": 2,
+   "english_transcription": "hello I have a problem with the application does not load and I will not remove Gael balance from my new account says that the application is being repaired and now I can not access my account I need immediately",
+   "intent_class": 2,
+   "path": "es-ES~APP_ERROR/6026655cdc3604f481bcb4fb.wav",
+   "suspect": "Suspect: 'tampoco voy a quitar Gael saldo' is garbled ('Gael' is a name). Left unchanged; needs a listen."
+  }
+ ],
+ "corrections_note": "'text' is the transcript to score against. Where it was corrected, 'text_original' holds the dataset's version and 'correction' says why. 'suspect' marks a transcript that looks wrong but was left as is."
+}

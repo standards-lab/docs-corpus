@@ -1,0 +1,44 @@
+{
+ "dataset": "PolyAI/minds14",
+ "config": "ko-KR",
+ "split": "train",
+ "license": "CC-BY-4.0",
+ "source": "https://huggingface.co/datasets/PolyAI/minds14",
+ "via": "datasets-server rows API (decoded audio assets)",
+ "items": [
+  {
+   "file": "minds14-ko-KR-0.wav",
+   "text": "app Manager 하고 싶은데 최대 금액이 얼마인지요",
+   "speaker_id": null,
+   "gender": null,
+   "source_row": 0,
+   "english_transcription": "I want to do app manager, what is the maximum amount",
+   "intent_class": 3,
+   "path": "ko-KR~ATM_LIMIT/602bef265f67b421554f65e7.wav",
+   "suspect": "Suspect: 'app Manager' in a Korean ATM-limit request is probably a mis-transcription (perhaps 'ATM'). Left unchanged; needs a listen."
+  },
+  {
+   "file": "minds14-ko-KR-1.wav",
+   "text": "제가 ATM 기에서 최대 얼마까지 돈을 인출할 수 있을까요",
+   "speaker_id": null,
+   "gender": null,
+   "source_row": 1,
+   "english_transcription": "Up to how much money can I withdraw from an ATM machine",
+   "intent_class": 3,
+   "path": "ko-KR~ATM_LIMIT/602ba7735f67b421554f642e.wav"
+  },
+  {
+   "file": "minds14-ko-KR-2.wav",
+   "text": "ATM 기기에서 돈을 출금하고 싶은데 출금할 수 있는 가장 큰 액수가 얼마정도인지 문의합니다",
+   "speaker_id": null,
+   "gender": null,
+   "source_row": 2,
+   "english_transcription": "I want to get money from an ATM machine, but I ask what is the largest amount I can withdraw.",
+   "intent_class": 3,
+   "path": "ko-KR~ATM_LIMIT/602cad5d963e11ccd901d47a.wav",
+   "text_original": "ATM 기기에서 돈을 출근하고 싶은데 출금할 수 있는 가장 큰 액수가 얼마정도인지 문의합니다",
+   "correction": "출근 ('go to work') corrected to 출금 ('withdraw'): the request is an ATM withdrawal, and the same sentence uses 출금. High confidence from text; not checked against audio."
+  }
+ ],
+ "corrections_note": "'text' is the transcript to score against. Where it was corrected, 'text_original' holds the dataset's version and 'correction' says why. 'suspect' marks a transcript that looks wrong but was left as is."
+}

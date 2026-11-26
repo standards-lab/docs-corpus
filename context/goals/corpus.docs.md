@@ -11,15 +11,22 @@
 3. [x] docproc-final
 4. [x] snapshot
 5. [x] measurement-set
-6. [ ] truth
+6. [x] truth
 7. [ ] snapshot-2
 8. [ ] baseline
 
 ## Decisions
 
-- truth: writes the seven measurements' entries first, then copies about 80 inputs with
-  `mise run manifest --copy`; ~/docs and `~/runs/docs-corpus/docproc-final/{docs,corpus}` are
-  deleted only after truth merges.
+- truth: baseline updates a measurement's `acceptance` when it renames or replaces that heading,
+  since the check doesn't match headings.
+- baseline: when it commits the ~/docs manifest rows, corrects dodm-5200-01's `url` from the
+  placeholder `https://www.esd.whs.mil/Directives/issuances/ (not recorded)` to its issuance PDF,
+  the reading's `license_url`; a reading can't set `url`.
+- truth: shared gs lists all 60 redistributable PDFs in ~/docs, not the brief's 59, which missed
+  `header-no-version-info.pdf` (recorded text/plain); the vision entries list the PDFs the runs
+  actually read, not old_scans-4/15/17/30/31/46/63/64.
+- truth: peak memory doesn't list `archive/mixed-bundle.tar.zst`; the reruns backlog goal reruns
+  peak memory without that 7zz input.
 - baseline: waits for v1.ai.hosting's acceptance to merge; runs on the laptop over every file in
   v0.2.0's areas; docinfer goes through the gateway's `docinfer` key at the caps acceptance leaves;
   a run with any Azure fallback is rerun.
@@ -32,8 +39,12 @@
 - baseline: rewrites docproc's STANDARDS.md ~/docs gloss, puts the testdata READMEs' origins in the
   past tense, corrects sevenzip's testdata README, reruns payload-measurement; commits docinfer's
   `~/runs/docinfer/tools` scripts; rebuilds ai-hosting's bench dense pages from its docproc run.
-- baseline: deletes ~/docs outright, with no archive, and every run built from it, once a workspace
-  grep finds nothing live reading them; the closed spikes stay as they closed.
+- baseline: deletes ~/docs outright, with no archive, and every run built from it, including
+  `~/runs/docs-corpus/docproc-final/{docs,corpus}`, only after truth merges and a workspace grep
+  finds nothing live reading them; the closed spikes stay as they closed.
+- baseline: `mise run place-traits` fails on the laptop, because mise puts the older system
+  ffprobe, magick, and bsdtar first on PATH; run, as truth did,
+  `PATH=$(mise bin-paths | tr '\n' ':')$PATH go run ./tools/coverage/cmd/place-traits --corpus`.
 - baseline: held gotenberg at 9.10.1-libreoffice: 9.10.2 changes nothing docproc uses, and
   docproc releases after v0.9.0 go to a later corpus goal.
 - baseline: supplies the v0.2.0 times that the data-intelligence pending edit states inline.
@@ -80,9 +91,9 @@
   a new version tag, since a released tag is never re-cut. A sample stays when it exercises a
   scenario no other sample covers, or when a measurement in `docs/measurements.json` reads it. The
   manifest and coverage are never edited by hand: its `mise` tasks regenerate them, without
-  `~/docs`, which baseline removed. It says how the corpus is shared: the repository is public, each version
-  tag's release assets hold the sample files, one tar per format area, from v0.1.0, and
-  `mise run fetch` places them in a checkout once each matches the manifest. It says that gb10-2
+  `~/docs`, which baseline removed. It says how the corpus is shared: the repository is public,
+  each version tag's release assets hold the sample files, one tar per format area, from v0.1.0,
+  and `mise run fetch` places them in a checkout once each matches the manifest. It says that gb10-2
   holds the verified v0.2.0 checkout at `~/docs-corpus`, and that docs-corpus's `docs/baseline.md`
   records docproc's and docinfer's baseline runs over it. It links to docs-corpus's
   [README.md](https://github.com/standards-lab/docs-corpus/blob/main/README.md),
@@ -106,6 +117,6 @@
   "the acceptance run over docs-corpus v0.2.0, measured against its baseline".
 - coordinator · `roadmap/corpus-measurement-reruns.toml`: create the backlog goal (repos docproc
   and docinfer): rerun the targeted acceptance sections that baseline leaves dated to the retired
-  `~/docs` pool (docproc's Word error rate, PDF pages in shared gs processes, Peak memory, and the
-  office-and-mail run; docinfer's Transcription) over docs-corpus's measurement inputs, and cite
-  the docs-corpus tag in each. `roadmap/index.toml`: add it to `backlog`.
+  `~/docs` pool (docproc's "Word error rate", "PDF pages in shared gs processes", "Peak memory",
+  and "The office-and-mail ~/docs run"; docinfer's "Transcription") over docs-corpus's measurement
+  inputs, and cite the docs-corpus tag in each. `roadmap/index.toml`: add it to `backlog`.

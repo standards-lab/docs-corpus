@@ -396,19 +396,18 @@ jq '(.samples | group_by(.disposition) | map({(.[0].disposition): length}) | add
 ## Measurements
 
 [`measurements.json`](measurements.json) is the measurement list: the targeted acceptance
-measurements in docproc and docinfer that rerun over corpus inputs. It is written by hand, and is
-empty. A measurement input is a `~/docs` sample, or a truth file, that a listed measurement reads.
-As [`STANDARDS.md`](../STANDARDS.md) allows, it stays in the corpus while a measurement lists it,
-even when another sample covers its scenarios. The list is the only way a sample enters the corpus
-for a measurement: `dispose` gives a listed sample it would otherwise trim the `measure`
-disposition.
+measurements in docproc and docinfer that rerun over corpus inputs. It is written by hand. A
+measurement input is a `~/docs` sample, or a truth file, that a listed measurement reads. As
+[`STANDARDS.md`](../STANDARDS.md) allows, it stays in the corpus while a measurement lists it, even
+when another sample covers its scenarios. The list is the only way a sample enters the corpus for a
+measurement: `dispose` gives a listed sample it would otherwise trim the `measure` disposition.
 
 The list is a JSON array, `[]` when it is empty, with one object per measurement:
 
 - `id`: the measurement's own id.
 - `repository`: `docproc` or `docinfer`, the repository whose acceptance it reruns.
 - `acceptance`: the heading of the section it reruns in that repository's `docs/acceptance.md`,
-  such as `Word error rate`.
+  verbatim, such as `Word error rate`.
 - `summary`: one line saying what it measures.
 - `needs_truth`: `true` when its inputs need truth, else `false`.
 - `inputs`: the corpus paths it reads, each a sample's `path` in [`coverage.json`](coverage.json)
