@@ -7,6 +7,34 @@ over, are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- [`docs/baseline.md`](docs/baseline.md), the reference capstone.data-intelligence measures
+  against: docproc's and docinfer's runs over each tag's files, starting with v0.2.0.
+- [`docs/reference-rows.json`](docs/reference-rows.json), the rows of `~/docs`' manifest for the
+  adopted and measured samples and the truth and doc files they link, which `mise run manifest`
+  builds their entries from.
+- `scripts/check.sh` fails a manifest `url` that is empty, only whitespace, or contains "not
+  recorded".
+
+### Changed
+
+- `mise run manifest` reads nothing outside the repository, and `scripts/check.sh` compares
+  `MANIFEST.json` with its output on every run.
+- `pdf/born-digital/dodm-5200-01.pdf`'s `url` is its issuance PDF, the URL its license reading
+  names.
+- `mise run place-traits --corpus` reads the baseline's v0.2.0 docproc run by default, and the
+  corpus placement cites that run.
+- The `vision-reprobe` and `vision-confirmation` measurements list the inputs of their reruns over
+  v0.2.0.
+- The tests that read samples read the checkout's fetched files, and skip when they aren't
+  fetched.
+
+### Removed
+
+- `scripts/place-library.sh`, `place-traits` without `--corpus`, `manifest --copy`,
+  `dispose --placement`, and the check's comparisons with `~/docs`.
+
 ## [v0.2.0] - 2026-11-26
 
 The second release holds 210 samples in the same ten format areas, 81 of them new: 80 measured

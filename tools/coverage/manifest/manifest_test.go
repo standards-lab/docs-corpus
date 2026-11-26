@@ -1,11 +1,7 @@
 package manifest_test
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
-	"os"
-	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
@@ -486,42 +482,5 @@ func TestBuildRefusesAnUnlistedOrCollidingSourcedInput(t *testing.T) {
 		if err == nil || !strings.Contains(err.Error(), c.want) {
 			t.Errorf("%s: Build = %v, want an error containing %q", c.name, err, c.want)
 		}
-	}
-}
-
-func sum(data string) string {
-	h := sha256.Sum256([]byte(data))
-	return hex.EncodeToString(h[:])
-}
-
-func TestCopyPutsEachFileInPlaceAndChecksIt(t *testing.T) {
-	src, dst := t.TempDir(), t.TempDir()
-	for path, data := range map[string]string{"a/b c.txt": "abc", "d.txt": "defg", "bad.txt": "xyz"} {
-		if err := os.MkdirAll(filepath.Join(src, filepath.Dir(path)), 0o755); err != nil {
-			t.Fatal(err)
-		}
-		if err := os.WriteFile(filepath.Join(src, path), []byte(data), 0o644); err != nil {
-			t.Fatal(err)
-		}
-	}
-	good := manifest.Manifest{Files: []manifest.File{
-		{Path: "a/b c.txt", Sha256: sum("abc"), Bytes: 3},
-		{Path: "d.txt", Sha256: sum("defg"), Bytes: 4},
-	}}
-	if err := manifest.Copy(good, src, dst); err != nil {
-		t.Fatal(err)
-	}
-	if data, err := os.ReadFile(filepath.Join(dst, "a", "b c.txt")); err != nil || string(data) != "abc" {
-		t.Errorf("copied a/b c.txt = %q, %v", data, err)
-	}
-	if err := manifest.Copy(good, t.TempDir(), dst); err != nil {
-		t.Errorf("Copy over files already in place = %v, want them left as they are", err)
-	}
-	bad := manifest.Manifest{Files: []manifest.File{{Path: "bad.txt", Sha256: sum("abc"), Bytes: 3}}}
-	if err := manifest.Copy(bad, src, dst); err == nil || !strings.Contains(err.Error(), "sha256") {
-		t.Errorf("Copy of a file whose sha256 differs = %v, want a sha256 error", err)
-	}
-	if _, err := os.Stat(filepath.Join(dst, "bad.txt")); !os.IsNotExist(err) {
-		t.Errorf("bad.txt stayed after its check failed: %v", err)
 	}
 }

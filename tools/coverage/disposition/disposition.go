@@ -3,7 +3,6 @@ package disposition
 import (
 	"cmp"
 	"fmt"
-	"maps"
 	"slices"
 	"strings"
 
@@ -381,27 +380,4 @@ func filter(samples []*sample, keep func(*sample) bool) []*sample {
 		}
 	}
 	return out
-}
-
-// Place sets each sample's traits and features in coverage to its element in placement, the
-// elements place-traits prints. A sample placement lacks, or an element no sample has, is an
-// error.
-func Place(coverage *Coverage, placement []Placement) error {
-	placed := map[string]Placement{}
-	for _, p := range placement {
-		placed[p.Path] = p
-	}
-	for i := range coverage.Samples {
-		s := &coverage.Samples[i]
-		p, ok := placed[s.Path]
-		if !ok {
-			return fmt.Errorf("placement: has no element for %s", s.Path)
-		}
-		s.Traits, s.Features = p.Traits, p.Features
-		delete(placed, s.Path)
-	}
-	if extra := slices.Sorted(maps.Keys(placed)); len(extra) > 0 {
-		return fmt.Errorf("placement: %s is not a sample", extra[0])
-	}
-	return nil
 }

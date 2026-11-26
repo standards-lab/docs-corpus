@@ -85,15 +85,18 @@ type Truth struct {
 	Note string `json:"note,omitempty"`
 }
 
-// Reference is the reference docs' MANIFEST.json, ~/docs', in the fields Build reads.
+// Reference is the rows of the reference docs' manifest, the local ~/docs pool's, that the
+// corpus's adopted and measured samples and the truth and doc files they link were copied with, in
+// the fields Build reads. docs/reference-rows.json keeps them as an input Build reads, not as an
+// inventory of its own.
 type Reference struct {
-	// Files are its entries.
+	// Files are its rows.
 	Files []ReferenceFile `json:"files"`
 }
 
-// ReferenceFile is one entry of the reference manifest.
+// ReferenceFile is one row of the reference manifest.
 type ReferenceFile struct {
-	// Path is its path under the reference docs.
+	// Path is its path under the reference docs, and in the corpus.
 	Path string `json:"path"`
 	// Sha256 is its content's SHA-256, in hex.
 	Sha256 string `json:"sha256"`

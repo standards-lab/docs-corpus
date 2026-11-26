@@ -9,33 +9,40 @@ import (
 	"testing"
 )
 
-// Dir returns the reference docs directory, $DOCS_REFERENCE or else ~/docs, and skips t, naming
-// the directory, when it is absent.
-func Dir(t testing.TB) string {
-	t.Helper()
-	dir := os.Getenv("DOCS_REFERENCE")
-	if dir == "" {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			t.Skipf("no home directory to find ~/docs in: %v", err)
-		}
-		dir = filepath.Join(home, "docs")
-	}
-	if _, err := os.Stat(filepath.Join(dir, "MANIFEST.json")); err != nil {
-		t.Skipf("%s/MANIFEST.json is absent; set DOCS_REFERENCE to the reference docs", dir)
-	}
-	return dir
-}
-
-// Path returns the path of rel under Dir, skipping t when Dir is absent and failing it when Dir
-// is present but rel is not.
+// Path returns the path of rel in the repository's checkout, skipping t, naming the fetch, when
+// the file isn't fetched, and failing it when MANIFEST.json doesn't list rel.
 func Path(t testing.TB, rel string) string {
 	t.Helper()
-	path := filepath.Join(Dir(t), rel)
+	if !listed(t)[rel] {
+		t.Fatalf("%s: not a file MANIFEST.json lists", rel)
+	}
+	path := filepath.Join(Root(t), filepath.FromSlash(rel))
 	if _, err := os.Stat(path); err != nil {
-		t.Fatalf("%s: %v", path, err)
+		t.Skipf("%s is not fetched; fetch the samples with mise run fetch: %v", rel, err)
 	}
 	return path
+}
+
+func listed(t testing.TB) map[string]bool {
+	t.Helper()
+	path := filepath.Join(Root(t), "MANIFEST.json")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("%s: %v", path, err)
+	}
+	var manifest struct {
+		Files []struct {
+			Path string `json:"path"`
+		} `json:"files"`
+	}
+	if err := json.Unmarshal(data, &manifest); err != nil {
+		t.Fatalf("%s: %v", path, err)
+	}
+	paths := make(map[string]bool, len(manifest.Files))
+	for _, f := range manifest.Files {
+		paths[f.Path] = true
+	}
+	return paths
 }
 
 // Sample is one sample's entry in docs/coverage.json.
@@ -85,8 +92,9 @@ func Coverage(t testing.TB) []byte {
 	return data
 }
 
-// Samples returns the samples of the repository's docs/coverage.json, skipping t when the file is
-// absent, as Coverage does, and failing it when the file doesn't parse.
+// Samples returns the samples of the repository's docs/coverage.json that MANIFEST.json lists,
+// skipping t when docs/coverage.json is absent, as Coverage does, and failing it when either file
+// doesn't parse.
 func Samples(t testing.TB) []Sample {
 	t.Helper()
 	var coverage struct {
@@ -95,5 +103,6 @@ func Samples(t testing.TB) []Sample {
 	if err := json.Unmarshal(Coverage(t), &coverage); err != nil {
 		t.Fatalf("docs/coverage.json: %v", err)
 	}
-	return coverage.Samples
+	paths := listed(t)
+	return slices.DeleteFunc(coverage.Samples, func(s Sample) bool { return !paths[s.Path] })
 }

@@ -116,9 +116,6 @@ with the data, run this from the repository root:
 mise run dispose | cmp - docs/coverage.json
 ```
 
-To re-derive the placements and the dispositions together, run `mise run place-traits > "$tmp"`,
-then `mise run dispose --placement "$tmp"`, where `$tmp` names a temporary file.
-
 ### Truth and doc files
 
 A truth file or doc file follows its sample's disposition: it stays while a sample that lists it
@@ -146,21 +143,12 @@ Each entry in `.samples` has the sample's `path` and `sha256`, from `~/docs/MANI
 `library`: the library IDs the sample exercises. Every `~/docs` sample has an entry, even one with
 an empty `library`.
 
-The placements come from docproc's run over `~/docs`, made by the docproc release the corpus
+The placements came from docproc's run over `~/docs`, made by the docproc release the corpus
 targets. `.library_placement` in [`coverage.json`](coverage.json) records the run's ID, the
 `docproc` release that made it, the `docproc_command` that ran it, and the `command` that placed
-the IDs. The run reads `~/docs` and writes only its run directory, outside the repository. To make
-it, put docproc's tools on `PATH` as [Corpus placement](#corpus-placement) states, install
-`cmd/docproc` v0.2.7, the command of docproc v0.9.0, and run:
-
-```sh
-GOBIN=<dir> go install github.com/standards-lab/docproc/cmd/docproc@v0.2.7
-<dir>/docproc run --out ~/runs/docs-corpus/docproc-final/docs ~/docs
-```
-
-Record the run's ID, from the summary's last line, in `.library_placement`. The placing command
-is a script that runs one jq program over the run's `record.jsonl`. A sample's library IDs are
-what the run observed for that file:
+the IDs. That command is retired, so `.samples`' library IDs are a record that nothing reruns; the
+[corpus placement](#corpus-placement) places the manifest's covers by the same rules. A sample's
+library IDs are what the run observed for that file:
 
 - Every event of the file's input counts. That includes the parts docproc found inside the file,
   such as archive members, attachments, and embedded files, so their IDs go to the top-level sample.
@@ -169,22 +157,15 @@ what the run observed for that file:
   `seen`, gives none.
 - A sample gets a `capability:` ID when one of its routes is in that capability's `fed_by`.
 
-To rerun the command and compare its output with the data, run this from the repository root:
-
-```sh
-scripts/place-library.sh | cmp - <(jq '.samples | map({path, sha256, library})' docs/coverage.json)
-```
-
-The script reads the run from `${RUNS:-$HOME/runs/docs-corpus/docproc-final/docs/runs}` and the
-manifest from `${DOCS_REFERENCE:-$HOME/docs}`. It writes nothing.
-
 ## Trait and feature placement
 
 Each entry's `traits` and `features` are the trait and feature IDs the sample exercises, placed by
-reading the file and its manifest entry, never from the manifest's `covers` tags. Each value's
-rule in the vocabulary is the test. The [`place-traits`](../tools/coverage/cmd/place-traits/doc.go)
-command of the Go module `tools/coverage` probes every sample and applies the rules it can decide
-from the file or from what docproc's kept run recorded for it:
+reading the file and its manifest entry, never from the manifest's `covers` tags, and kept as a
+record, as its library IDs are. Each value's rule in the vocabulary is the test. The
+[`place-traits`](../tools/coverage/cmd/place-traits/doc.go) command of the Go module
+`tools/coverage` probes every sample the manifest lists, as [Corpus placement](#corpus-placement)
+states, and applies the rules it can decide from the file or from what docproc's run recorded for
+it:
 
 - PDF text layers from the run's page outputs, OCR layers from invisible text over page images,
   page counts, forms, signature fields, and portfolios, read with pdfinfo, pdfimages, pdffonts, and
@@ -207,16 +188,8 @@ from the file or from what docproc's kept run recorded for it:
 Where a value takes judgement, such as handwriting, a degraded or simulated scan, spontaneous or
 noisy speech, or a layout in columns, the entry's `judged` object holds the ID and the evidence
 for it: what was seen in the rendered file, or what its truth or source record shows. The command
-adds those IDs to what it probes. To rerun it and compare its output with the data, run this from
-the repository root:
-
-```sh
-mise run place-traits | cmp - <(jq '.samples | map({path, traits, features})' docs/coverage.json)
-```
-
-It reads the same run and manifest as `scripts/place-library.sh`, and writes only to a temporary
-directory. With `--facts`, as in `mise run place-traits --facts`, it also prints each sample's
-probe findings.
+adds those IDs to what it probes. It writes only to a temporary directory. With `--facts`, as in
+`mise run place-traits --corpus --facts`, it also prints each sample's probe findings.
 
 [`mise.toml`](../mise.toml) pins Go and every probe `place-traits` calls except LibreOffice's
 `soffice`, the one unpinned host requirement: it is in neither mise's registry nor conda-forge, so
@@ -235,8 +208,8 @@ run's ID, the docproc release that made it, the `docproc_command` that ran it fr
 root, and the `command` that places the covers.
 
 `mise run place-traits --corpus` places every sample `MANIFEST.json` lists, reading its file from
-the working copy and the run from `${RUNS:-$HOME/runs/docs-corpus/docproc-final/corpus/runs}`. For
-each sample, it takes the library IDs from that run by the rules of
+the working copy and the run from `${RUNS:-$HOME/runs/docs-corpus/baseline/v0.2.0/docproc/runs}`.
+For each sample, it takes the library IDs from that run by the rules of
 [Library placement](#library-placement), adds the trait and feature IDs
 [`place-traits`](#trait-and-feature-placement) probes and the `judged` IDs of the sample's entry in
 `.samples`, and prints the sample's `covers`. A candidate has no entry in `.samples`, so its judged
@@ -252,13 +225,14 @@ repository root with the run directory outside it:
 
 ```sh
 GOBIN=<dir> go install github.com/standards-lab/docproc/cmd/docproc@v0.2.7
-<dir>/docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/docproc-final/corpus
+<dir>/docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/baseline/v0.2.0/docproc
 ```
 
-Record the run's ID, from the summary's last line, in `.corpus_placement`. A run into the same
-run directory replays the parts its index already holds, with outcome `seen` and the first
-outcome under `recorded`; the placement reads the recorded one. To place the covers and compare
-them with the committed placement and the manifest, run this from the repository root:
+Record the run's ID, from the summary's last line, in `.corpus_placement`.
+[baseline.md](baseline.md#v020) records the run it cites, its machine, and its counts. A run into
+the same run directory replays the parts its index already holds, with outcome `seen` and the
+first outcome under `recorded`; the placement reads the recorded one. To place the covers and
+compare them with the committed placement and the manifest, run this from the repository root:
 
 ```sh
 mise run place-traits --corpus | cmp - docs/corpus-placement.json
@@ -464,8 +438,7 @@ and lists each truth file as a truth file. Each entry names its measurements in 
 from the docproc run over the corpus. Like a measured sample, it is exempt from the covers rules:
 it may share a format and covers with another sample, and its covers may lie inside another's.
 `docs/coverage.json` doesn't list it, so `dispose` gives it no disposition, and it changes no other
-sample's. Its file is a release asset like every sample's, and its truth files are committed. `mise
-run manifest --copy` copies neither from `~/docs`.
+sample's. Its file is a release asset like every sample's, and its truth files are committed.
 
 `scripts/check.sh` reads `docs/sourced.json`, or the copy the `SOURCED` environment variable
 names, after the coverage data passes and before the measurement list. It fails when:
@@ -493,8 +466,36 @@ corpus, and each [sourced input](#sourced-inputs), with its `covers`: its `libra
 `features` IDs together, sorted. It also lists the truth and doc files the samples link, as
 [README.md](../README.md#the-manifest) describes. Each sample or truth file a measurement reads
 names, in `measures`, the ids of the measurements in [`measurements.json`](measurements.json) that
-list it. `mise run manifest` builds it from this data, the measurement list, and the sourced input
-list, so the inventory and the scenario index agree.
+list it. `mise run manifest` builds it from this data, the reference rows, the measurement list,
+and the sourced input list, so the inventory and the scenario index agree. It reads nothing outside
+the repository.
+
+### Reference rows
+
+[`reference-rows.json`](reference-rows.json) holds the rows of `~/docs`' manifest for the adopted
+and measured samples and the truth and doc files they link: an input `mise run manifest` builds
+their entries from, not an inventory of its own. Each row keeps the fields the manifest reads:
+`path`, `sha256`, `bytes`, `format`, `source`, `source_url`, which becomes the entry's `url`,
+`license`, `license_status`, `redistributable`, `role`, `truth`, `derived_from`, and `note`, each
+where `~/docs` recorded it. A field it doesn't read fails `mise run manifest`. The rows were copied
+from `~/docs/MANIFEST.json` with this jq program, taking each row whose path an adopted or measured
+sample in `coverage.json` has or links:
+
+```sh
+jq --slurpfile cov docs/coverage.json '
+  ([$cov[0].samples[] | select(.disposition == "adopt" or .disposition == "measure")
+    | .path, .truth[], .docs[]] | unique) as $need
+  | [.files[] | select(.path | IN($need[]))
+     | with_entries(select(.key | IN("path", "sha256", "bytes", "format", "source", "source_url",
+         "license", "license_status", "redistributable", "role", "truth", "derived_from", "note")))]
+  | sort_by(.path)' ~/docs/MANIFEST.json
+```
+
+with one correction: `pdf/born-digital/dodm-5200-01.pdf`'s `source_url`, which `~/docs` didn't
+record, is its issuance PDF, the URL its license reading names.
+
+### Checking the manifest
+
 `scripts/check.sh` checks the manifest before the data. It fails when:
 
 - a listed file is missing, or its size or sha256 differs from its entry;
@@ -504,6 +505,9 @@ After the data and the measurement list pass, it checks the manifest against the
 fails when:
 
 - the manifest's `version` isn't 1, or an entry's role isn't sample, truth, or doc;
+- an entry's `url` is empty, only whitespace, or contains "not recorded". An entry with no `url`
+  passes, and so does an annotated one, such as `generated: …` or an https URL with a note after
+  it;
 - an adopted or measured sample lacks `license_url` or `license_read`, the reading of its license
   at its source that [`docs/license-readings.json`](license-readings.json) records;
 - an entry's `covers` ID isn't in the vocabulary;
@@ -529,7 +533,7 @@ fails when:
 - a sourced or generated gap that no sample covers has no candidate in the manifest;
 - `corpus-placement.json`'s rows differ from the manifest's samples' paths and covers;
 - a path in `judged.json` isn't a sample, or an ID there isn't in the vocabulary;
-- with `~/docs` present, the manifest differs from what `mise run manifest` prints.
+- the manifest differs from what `mise run manifest` prints.
 
 The payload must be in place: without it, every sample is a missing file. Each failure message
 names its fix.
@@ -572,18 +576,10 @@ variable names. It fails when:
   adopted samples here, a generated candidate's inputs are exempt, and measured samples are
   skipped;
 - a gap's `covered_by` names neither an adopted sample nor a candidate in the corpus, or one whose
-  covers lack the gap's;
-- a `~/docs` sample is missing from `.samples`, or its entry's sha256 differs from the manifest's;
-- an entry in `.samples` isn't a `~/docs` sample;
-- an entry's format, bytes, license status, redistributability, or sensitivity differs from the
-  manifest's;
-- an entry links a truth or doc file that isn't in the manifest;
-- a truth or doc file in the manifest is linked by no sample and isn't in `.docs_without_sample`.
+  covers lack the gap's.
 
-The last five compare against `${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json`, and run only when
-that file exists; a `DOCS_REFERENCE` that names no manifest fails the check. `~/docs` is planned
-to be removed once the corpus is final, so the check doesn't depend on it: without `~/docs`, it
-still verifies every disposition from the facts each entry records. Each failure message names its fix.
+The check doesn't read `~/docs`: it verifies every disposition from the facts each entry records.
+Each failure message names its fix.
 
 To fix an unknown ID, use an ID the vocabulary defines. If the scenario is new, define it in the
 vocabulary, with its link or rule.

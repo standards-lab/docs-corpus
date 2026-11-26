@@ -1,8 +1,8 @@
 # docs-corpus context
 
 The corpus the workspace's real workloads run over: docproc's and docinfer's acceptance, and
-capstone.data-intelligence's. It starts from the local pool at `~/docs` (592 files, 1.7 GB,
-`MANIFEST.json` dated 2026-11-06), which docproc's acceptance ran over, and becomes a curated,
+capstone.data-intelligence's. It was built from the local pool at `~/docs` (592 files, 1.7 GB,
+`MANIFEST.json` dated 2026-11-06), which docproc's acceptance first ran over, into a curated,
 versioned corpus in this repository, public from v0.1.0 ([README.md](../README.md)).
 
 ## Capability map
@@ -34,8 +34,8 @@ versioned corpus in this repository, public from v0.1.0 ([README.md](../README.m
   once every one matches the manifest's size and sha256
   ([README.md](../README.md#distribution)). From v0.1.0, the tars are each version tag's release
   assets ([CHANGELOG.md](../CHANGELOG.md)).
-- **Baseline** (planned): docproc's and docinfer's run over each version, the reference timings
-  capstone.data-intelligence measures against.
+- **Baseline** (built): docproc's and docinfer's runs over each version, the reference
+  capstone.data-intelligence measures against ([docs/baseline.md](../docs/baseline.md)).
 - **Check** (built): the Go gates for [tools/coverage](../tools/coverage), from build to
   golangci-lint, the [manifest checks](../docs/coverage.md#the-manifest), the
   [coverage checks](../docs/coverage.md#the-check), and `lint-context` and `lint-references`

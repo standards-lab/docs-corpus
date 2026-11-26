@@ -1,9 +1,8 @@
-// Package placement places every ~/docs sample the coverage data lists on the trait and feature
-// axes, as docs/coverage.md states: it probes each file by its extension and header with media,
-// office, mail, and text, adds what docproc's run recorded for it and the IDs the coverage data
-// judged for it, and writes the placement as JSON. In its corpus mode it places every sample the
-// repository's MANIFEST.json lists instead, from docproc's run over the corpus, with the library
-// IDs that run observed, and writes each sample's covers.
+// Package placement places every sample the repository's MANIFEST.json lists on the library,
+// trait, and feature axes, as docs/coverage.md states: it takes the library IDs docproc's run over
+// the corpus observed for each file, probes it by its extension and header with media, office,
+// mail, and text, adds what that run recorded for it and the IDs judged for it, and writes each
+// sample's covers as JSON.
 //
 // Its exported identifiers:
 //

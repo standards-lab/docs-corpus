@@ -35,14 +35,12 @@ func noCandidates(t *testing.T, dir string) {
 func TestDisposeWritesTheDisposedData(t *testing.T) {
 	dir := t.TempDir()
 	noCandidates(t, dir)
-	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [{"path": "a", "library": ["kind:x"], "traits": [], "features": [], `+
+	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [{"path": "a", "library": ["kind:x"], "traits": [], "features": ["feature:f"], `+
 		`"bytes": 1, "license_status": "n/a", "redistributable": true, "truth": [], "docs": []}], `+
 		`"gaps": [{"id": "spent", "covers": ["kind:x"], "candidate": null}]}`)
-	placement := filepath.Join(dir, "placement.json")
-	write(t, placement, `[{"path": "a", "traits": [], "features": ["feature:f"]}]`)
 	t.Chdir(dir)
 	var stdout, stderr bytes.Buffer
-	if err := app.Dispose([]string{"--placement", placement}, &stdout, &stderr); err != nil {
+	if err := app.Dispose(nil, &stdout, &stderr); err != nil {
 		t.Fatal(err)
 	}
 	if !strings.Contains(stdout.String(), `"feature:f"`) || !strings.HasSuffix(stdout.String(), "}\n") || !strings.Contains(stdout.String(), `"disposition": "adopt"`) {
@@ -52,8 +50,10 @@ func TestDisposeWritesTheDisposedData(t *testing.T) {
 		t.Errorf("stderr = %q, want gap spent named", stderr.String())
 	}
 	stdout.Reset()
-	if err := app.Dispose([]string{"extra"}, &stdout, &stderr); err == nil {
-		t.Error("Dispose with an argument = nil, want its usage")
+	for _, args := range [][]string{{"extra"}, {"--placement", "p.json"}} {
+		if err := app.Dispose(args, &stdout, &stderr); err == nil {
+			t.Errorf("Dispose(%v) = nil, want it refused", args)
+		}
 	}
 	if stdout.Len() != 0 {
 		t.Errorf("Dispose wrote %q despite its error", stdout.String())
@@ -254,7 +254,7 @@ func TestPlaceTraitsRefusesOtherArguments(t *testing.T) {
 		t.Errorf("PlaceTraits(--bogus) = %v with stderr %q, want the flag refused", err, stderr.String())
 	}
 	stderr.Reset()
-	if err := app.PlaceTraits(ctx, []string{"extra"}, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "usage: place-traits") {
+	if err := app.PlaceTraits(ctx, []string{"--corpus", "extra"}, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "usage: place-traits") {
 		t.Errorf("PlaceTraits(extra) = %v, want its usage", err)
 	}
 	if stdout.Len() != 0 {
@@ -262,10 +262,21 @@ func TestPlaceTraitsRefusesOtherArguments(t *testing.T) {
 	}
 }
 
-func TestPlaceTraitsAcceptsFactsAndCorpus(t *testing.T) {
+func TestPlaceTraitsRequiresCorpus(t *testing.T) {
 	ctx, cancel := context.WithCancel(t.Context())
 	cancel()
-	for _, args := range [][]string{{"--facts"}, {"--corpus"}, {"--corpus", "--facts"}} {
+	for _, args := range [][]string{nil, {"--facts"}} {
+		var stdout, stderr bytes.Buffer
+		if err := app.PlaceTraits(ctx, args, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "usage: place-traits --corpus") {
+			t.Errorf("PlaceTraits(%v) = %v, want its usage", args, err)
+		}
+	}
+}
+
+func TestPlaceTraitsAcceptsCorpusAndFacts(t *testing.T) {
+	ctx, cancel := context.WithCancel(t.Context())
+	cancel()
+	for _, args := range [][]string{{"--corpus"}, {"--corpus", "--facts"}} {
 		var stdout, stderr bytes.Buffer
 		err := app.PlaceTraits(ctx, args, &stdout, &stderr)
 		if stderr.Len() != 0 || err != nil && strings.Contains(err.Error(), "usage") {
@@ -306,21 +317,20 @@ func TestGenerateRefusesBadArguments(t *testing.T) {
 	}
 }
 
-func TestManifestWritesTheInventoryAndCopiesItsFiles(t *testing.T) {
-	dir, docs := t.TempDir(), t.TempDir()
+func TestManifestWritesTheInventoryFromTheReferenceRows(t *testing.T) {
+	dir := t.TempDir()
 	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [{"path": "a/s.txt", "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
 		"library": ["kind:x"], "traits": [], "features": [], "format": "text/plain", "bytes": 3, "license_status": "reported",
 		"redistributable": true, "truth": [], "docs": [], "disposition": "adopt"}], "gaps": []}`)
 	write(t, filepath.Join(dir, "docs", "license-readings.json"), `[{"path": "a/s.txt", "license_url": "https://example.org/l", "license_read": "2026-11-25"}]`)
 	noCandidates(t, dir)
-	write(t, filepath.Join(docs, "MANIFEST.json"), `{"files": [{"path": "a/s.txt", "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+	write(t, filepath.Join(dir, "docs", "reference-rows.json"), `[{"path": "a/s.txt", "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
 		"bytes": 3, "format": "text/plain", "source": "s", "source_url": "https://example.org/s?a&b", "license": "CC0-1.0",
-		"license_status": "reported", "redistributable": true, "role": "sample", "truth": "none: a timing input"}]}`)
-	write(t, filepath.Join(docs, "a", "s.txt"), "abc")
-	t.Setenv("DOCS_REFERENCE", docs)
+		"license_status": "reported", "redistributable": true, "role": "sample", "truth": "none: a timing input"}]`)
+	t.Setenv("HOME", t.TempDir())
 	t.Chdir(dir)
 	var stdout, stderr bytes.Buffer
-	if err := app.Manifest([]string{"--copy"}, &stdout, &stderr); err != nil {
+	if err := app.Manifest(nil, &stdout, &stderr); err != nil {
 		t.Fatal(err)
 	}
 	want := `{
@@ -352,13 +362,13 @@ func TestManifestWritesTheInventoryAndCopiesItsFiles(t *testing.T) {
 	if got := stdout.String(); got != want {
 		t.Errorf("Manifest wrote\n%s\nwant\n%s", got, want)
 	}
-	if data, err := os.ReadFile(filepath.Join(dir, "a", "s.txt")); err != nil || string(data) != "abc" {
-		t.Errorf("a/s.txt = %q, %v, want it copied", data, err)
+	if _, err := os.Stat(filepath.Join(dir, "a", "s.txt")); !os.IsNotExist(err) {
+		t.Errorf("Manifest placed a/s.txt: %v, want it to write nothing but stdout", err)
 	}
 }
 
 func TestManifestNamesTheMeasurementsThatReadAFile(t *testing.T) {
-	dir, docs := t.TempDir(), t.TempDir()
+	dir := t.TempDir()
 	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [{"path": "a/s.txt", "sha256": "h",
 		"library": ["kind:x"], "traits": [], "features": [], "format": "text/plain", "bytes": 3, "license_status": "reported",
 		"redistributable": true, "truth": [], "docs": [], "disposition": "measure"}], "gaps": []}`)
@@ -366,9 +376,8 @@ func TestManifestNamesTheMeasurementsThatReadAFile(t *testing.T) {
 	noCandidates(t, dir)
 	measurement := `{"id": "m", "repository": "docproc", "acceptance": "A", "summary": "s", "needs_truth": false, "inputs": ["a/s.txt"]`
 	write(t, filepath.Join(dir, "docs", "measurements.json"), `[`+measurement+`}]`)
-	write(t, filepath.Join(docs, "MANIFEST.json"), `{"files": [{"path": "a/s.txt", "sha256": "h", "bytes": 3, "format": "text/plain",
-		"role": "sample", "truth": "none: a timing input"}]}`)
-	t.Setenv("DOCS_REFERENCE", docs)
+	write(t, filepath.Join(dir, "docs", "reference-rows.json"), `[{"path": "a/s.txt", "sha256": "h", "bytes": 3, "format": "text/plain",
+		"role": "sample", "truth": "none: a timing input"}]`)
 	t.Chdir(dir)
 	var stdout, stderr bytes.Buffer
 	if err := app.Manifest(nil, &stdout, &stderr); err != nil {
@@ -389,8 +398,8 @@ func TestManifestNamesTheMeasurementsThatReadAFile(t *testing.T) {
 	}
 }
 
-func TestManifestAdmitsAListedSourcedInputAndLeavesItOutOfTheCopy(t *testing.T) {
-	dir, docs := t.TempDir(), t.TempDir()
+func TestManifestAdmitsAListedSourcedInput(t *testing.T) {
+	dir := t.TempDir()
 	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [], "gaps": []}`)
 	write(t, filepath.Join(dir, "docs", "license-readings.json"), `[]`)
 	noCandidates(t, dir)
@@ -402,11 +411,10 @@ func TestManifestAdmitsAListedSourcedInputAndLeavesItOutOfTheCopy(t *testing.T) 
 		"truth": [{"path": "video/d/v.key.json", "sha256": "k", "bytes": 2, "format": "application/json", "license": "Apache-2.0",
 		"license_url": "https://example.org/l", "license_read": "2026-11-26"}]`
 	write(t, filepath.Join(dir, "docs", "sourced.json"), `[`+sourced+`}]`)
-	write(t, filepath.Join(docs, "MANIFEST.json"), `{"files": []}`)
-	t.Setenv("DOCS_REFERENCE", docs)
+	write(t, filepath.Join(dir, "docs", "reference-rows.json"), `[]`)
 	t.Chdir(dir)
 	var stdout, stderr bytes.Buffer
-	if err := app.Manifest([]string{"--copy"}, &stdout, &stderr); err != nil {
+	if err := app.Manifest(nil, &stdout, &stderr); err != nil {
 		t.Fatal(err)
 	}
 	for _, want := range []string{`"path": "video/d/v.mp4"`, `"path": "video/d/v.key.json"`, `"role": "truth"`, `"kind:x"`, `"measures": [
@@ -432,19 +440,21 @@ func TestManifestAdmitsAListedSourcedInputAndLeavesItOutOfTheCopy(t *testing.T) 
 	}
 }
 
-func TestManifestRefusesArgumentsAndAMissingReference(t *testing.T) {
+func TestManifestRefusesArgumentsAndUnknownReferenceFields(t *testing.T) {
 	dir := t.TempDir()
 	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [], "gaps": []}`)
 	write(t, filepath.Join(dir, "docs", "license-readings.json"), `[]`)
+	write(t, filepath.Join(dir, "docs", "reference-rows.json"), `[{"path": "a/s.txt", "covers": []}]`)
 	noCandidates(t, dir)
-	t.Setenv("DOCS_REFERENCE", filepath.Join(dir, "absent"))
 	t.Chdir(dir)
 	var stdout, stderr bytes.Buffer
-	if err := app.Manifest([]string{"extra"}, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "usage: manifest") {
-		t.Errorf("Manifest(extra) = %v, want its usage", err)
+	for _, args := range [][]string{{"extra"}, {"--copy"}} {
+		if err := app.Manifest(args, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "usage: manifest") && !strings.Contains(stderr.String(), "-copy") {
+			t.Errorf("Manifest(%v) = %v, want it refused", args, err)
+		}
 	}
-	if err := app.Manifest(nil, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "DOCS_REFERENCE") {
-		t.Errorf("Manifest without a reference = %v, want DOCS_REFERENCE named", err)
+	if err := app.Manifest(nil, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "docs/reference-rows.json") || !strings.Contains(err.Error(), "covers") {
+		t.Errorf("Manifest with an unknown reference field = %v, want docs/reference-rows.json and the field named", err)
 	}
 	if stdout.Len() != 0 {
 		t.Errorf("Manifest wrote %q despite its error", stdout.String())

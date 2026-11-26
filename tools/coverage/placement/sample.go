@@ -145,7 +145,7 @@ type prober struct {
 
 func (p *prober) probe(ctx context.Context, s sample, entry manifestEntry) (idset.Set, idset.Set, *facts, error) {
 	rel := s.Path
-	path := filepath.Join(p.Docs, rel)
+	path := filepath.Join(p.Root, rel)
 	library := idset.New(s.Library...)
 	ext := pyExt(rel)
 	traits, features := idset.Set{}, idset.Set{}

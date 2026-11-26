@@ -176,30 +176,6 @@ func TestDisposeLetsABreakingSampleLeaveOnlyWhenItsCoversAreHeld(t *testing.T) {
 	}
 }
 
-func TestPlaceSetsTraitsAndFeatures(t *testing.T) {
-	coverage := parse(t, []string{entry("a", []string{"kind:x"}, 1, true, "")}, `[]`)
-	placement := []disposition.Placement{{Path: "a", Traits: []string{"trait:t.v"}, Features: []string{"feature:f"}}}
-	if err := disposition.Place(coverage, placement); err != nil {
-		t.Fatal(err)
-	}
-	a := coverage.Samples[0]
-	if got := strings.Join(slices.Concat(a.Library, a.Traits, a.Features), " "); got != "kind:x trait:t.v feature:f" {
-		t.Errorf("placed = %q, want the library kept and the traits and features set", got)
-	}
-}
-
-func TestPlaceRefusesAMismatchedPlacement(t *testing.T) {
-	for name, placement := range map[string][]disposition.Placement{
-		"missing": {},
-		"extra":   {{Path: "a"}, {Path: "z"}},
-	} {
-		coverage := parse(t, []string{entry("a", []string{"kind:x"}, 1, true, "")}, `[]`)
-		if err := disposition.Place(coverage, placement); err == nil {
-			t.Errorf("%s: Place = nil, want an error", name)
-		}
-	}
-}
-
 const sourced = `{"kind": "sourced", "license_status": "verified"}`
 
 func TestDisposeTrimsForCandidatesAndDropsCandidatesInsideAnother(t *testing.T) {

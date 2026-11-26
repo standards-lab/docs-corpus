@@ -86,7 +86,7 @@
     "id": "vision-reprobe",
     "repository": "docinfer",
     "acceptance": "Re-probe at 1,120 image tokens",
-    "summary": "Vision description at 1,120 image tokens of the PDF pages that came back incomplete at 280.",
+    "summary": "Vision description at 1,120 image tokens of the PDF pages the docinfer run held incomplete, and of those the retired ~/docs runs held incomplete at 280.",
     "needs_truth": false,
     "inputs": [
       "pdf/edge/attachments/embedded-video-avi.pdf",
@@ -101,20 +101,22 @@
       "pdf/scanned/olmocr-bench/old_scans-70.pdf",
       "pdf/scanned/olmocr-bench/old_scans-71.pdf",
       "pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf",
-      "pdf/scanned/olmocr-bench/tables-c8c858692b4b469c2af1fc55edcf6292f6ed_pg4_pg1.pdf"
+      "pdf/scanned/olmocr-bench/tables-c8c858692b4b469c2af1fc55edcf6292f6ed_pg4_pg1.pdf",
+      "pdf/scanned/olmocr-bench/tables-fa18a15c1dbbfcb71b1f1ea1b8f116e24b8a_pg2_pg1.pdf"
     ]
   },
   {
     "id": "vision-confirmation",
     "repository": "docinfer",
     "acceptance": "Confirmation",
-    "summary": "Vision description at the card sampling with oversized images downscaled, on the looping volume pages and the oversized scans.",
+    "summary": "Vision description at the card sampling with oversized images downscaled, on the pages the re-probe left incomplete and the oversized scans.",
     "needs_truth": false,
     "inputs": [
       "pdf/large/cfr-2024-title32-vol1.pdf",
       "pdf/scanned/olmocr-bench/old_scans-69.pdf",
       "pdf/scanned/olmocr-bench/old_scans-70.pdf",
-      "pdf/scanned/olmocr-bench/old_scans-71.pdf"
+      "pdf/scanned/olmocr-bench/old_scans-71.pdf",
+      "pdf/scanned/olmocr-bench/tables-fa18a15c1dbbfcb71b1f1ea1b8f116e24b8a_pg2_pg1.pdf"
     ]
   },
   {

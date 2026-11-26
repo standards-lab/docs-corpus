@@ -18,36 +18,20 @@ import (
 // escaped, and a newline. The candidates it places are those docs/candidates.json records that
 // docs/corpus-placement.json places, with the covers placed there, and the measurements are
 // docs/measurements.json's. A key disposition.Coverage or disposition.Measurement does not define
-// is an error. args are the command line's arguments without the program's name:
-// --placement <file> first sets the traits and features from that place-traits output, as
-// disposition.Place does. It names each gap that may be dropped on stderr. An error writes nothing
-// to stdout.
+// is an error. args are the command line's arguments without the program's name; it takes none.
+// It names each gap that may be dropped on stderr. An error writes nothing to stdout.
 func Dispose(args []string, stdout, stderr io.Writer) error {
 	flags := flag.NewFlagSet("dispose", flag.ContinueOnError)
 	flags.SetOutput(stderr)
-	placementPath := flags.String("placement", "", "a place-traits output whose traits and features replace the data's")
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
 	if flags.NArg() > 0 {
-		return errors.New("usage: dispose [--placement <file>]")
+		return errors.New("usage: dispose")
 	}
 	var coverage disposition.Coverage
 	if err := decodeStrict("docs/coverage.json", &coverage); err != nil {
 		return err
-	}
-	if *placementPath != "" {
-		data, err := os.ReadFile(*placementPath)
-		if err != nil {
-			return err
-		}
-		var placement []disposition.Placement
-		if err := json.Unmarshal(data, &placement); err != nil {
-			return fmt.Errorf("%s: %w", *placementPath, err)
-		}
-		if err := disposition.Place(&coverage, placement); err != nil {
-			return fmt.Errorf("%s: %w", *placementPath, err)
-		}
 	}
 	placed, err := corpusPlaced()
 	if err != nil {

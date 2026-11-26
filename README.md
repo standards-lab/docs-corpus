@@ -5,7 +5,8 @@ documents, messages, images, audio, and video, each with its source, license, gr
 the scenarios it exercises recorded in `MANIFEST.json`. The repository is public from v0.1.0, and
 [`STANDARDS.md`](STANDARDS.md) sets which samples that admits.
 [`docs/coverage.md`](docs/coverage.md) records which scenarios the samples cover and why each one
-is in the corpus.
+is in the corpus. [`docs/baseline.md`](docs/baseline.md) records, for each version, the runs over
+its files that capstone.data-intelligence measures against.
 
 Each version is a git tag, such as v0.1.0, and [`CHANGELOG.md`](CHANGELOG.md) holds each
 version's notes. The payload, the sample files themselves, is the tag's GitHub release assets, one
@@ -43,11 +44,14 @@ adopted, measured, and sourced samples and their files from five sources:
 - the adopted and measured samples in `docs/coverage.json`. A measured sample is one a targeted
   acceptance measurement reads, though another sample covers its scenarios, as
   [docs/coverage.md](docs/coverage.md#measurements) states;
-- `~/docs`' manifest;
+- [`docs/reference-rows.json`](docs/reference-rows.json): the rows of `~/docs`' manifest for the
+  adopted and measured samples and the truth and doc files they link, with each file's facts and
+  provenance. They're an input the manifest is built from, not an inventory of their own, as
+  [docs/coverage.md](docs/coverage.md#reference-rows) states;
 - [`docs/license-readings.json`](docs/license-readings.json): the license of every adopted or
   measured sample, truth file, and doc file, read at its source. Each of those entries records its
   reading's `license_url` and `license_read`, and a reading's `license`, where it has one,
-  replaces the license `~/docs` records;
+  replaces the license its reference row records;
 - `docs/measurements.json`, the measurement list, which gives each file it reads its `measures`;
 - [`docs/sourced.json`](docs/sourced.json), the sourced input list: each measurement input sourced
   outside `~/docs`, with its provenance, its license reading, and its truth files, as
@@ -62,9 +66,9 @@ candidate's license follows from its inputs'. To regenerate the manifest, run:
 mise run manifest > MANIFEST.json
 ```
 
-With `--copy`, it first copies every adopted or measured file it lists from `~/docs`, or
-`$DOCS_REFERENCE`, into place and checks each copy's size and sha256. `mise run fetch-candidates`
-places the sourced candidates, and `mise run generate-candidates` makes the generated ones once.
+It reads nothing outside the repository. `mise run fetch` places the sample files from a
+version's release assets, `mise run fetch-candidates` places the sourced candidates, and
+`mise run generate-candidates` makes the generated ones once.
 
 Git ignores the format directories, so sample files are never committed. Truth and doc files are
 committed with `git add -f`, and [`scripts/check.sh`](scripts/check.sh) enforces both. The

@@ -52,7 +52,7 @@ if [ -f MANIFEST.json ]; then
     if [ "$role" = sample ] && [ -n "$gap" ]; then
       payload="mise run fetch -- <release-url|dir>, or mise run fetch-candidates"
     elif [ "$role" = sample ]; then
-      payload="mise run fetch -- <release-url|dir>, or mise run manifest --copy > MANIFEST.json, or, for a sourced input, fetch it from its url in docs/sourced.json"
+      payload="mise run fetch -- <release-url|dir>, or, for a sourced input, fetch it from its url in docs/sourced.json"
     else
       payload="git checkout -- $path"
     fi
@@ -105,7 +105,7 @@ else
     .vocabulary as $v
     | ([$v.library, $v.trait, $v.feature] | map(keys) | add) as $ids
     | (select((.samples | type) != "array")
-        | "samples: is not an array; list every ~/docs sample there, as scripts/place-library.sh prints them"),
+        | "samples: is not an array; restore docs/coverage.json from git"),
       (select((.gaps | type) != "array")
         | "gaps: is not an array; list the gaps there, or [] when there are none"),
       ($v.library | to_entries[]
@@ -132,7 +132,7 @@ else
         | "samples[\(.key)]: needs a path and a sha256 of 64 hex digits; copy both from its MANIFEST.json entry"),
       (.samples // [] | to_entries[] | .key as $i | (.value.library // [])[]
         | select($v.library[.] == null)
-        | "samples[\($i)].library: \(.) is not a library ID in the vocabulary; rerun scripts/place-library.sh, or define the ID there with its link"),
+        | "samples[\($i)].library: \(.) is not a library ID in the vocabulary; define the ID there with its link"),
       (.samples // [] | group_by(.path)[] | select(length > 1)
         | "samples: \(.[0].path) appears \(length) times; keep one entry per path"),
       (path(.. | objects | select(has("covers"))) as $p
@@ -144,7 +144,7 @@ else
         | .[0] as $field | .[1] as $axis
         | ($s[$field] // [])[]
         | select($v[$axis][.] == null)
-        | "samples[\($i)].\($field): \(.) is not a \($axis) ID in the vocabulary; run mise run place-traits again, or define the ID there with its rule"),
+        | "samples[\($i)].\($field): \(.) is not a \($axis) ID in the vocabulary; define the ID there with its rule"),
       (.samples // [] | to_entries[] | .key as $i
         | (.value.judged // {}) | keys[]
         | select(IN($ids[]) | not)
@@ -313,41 +313,6 @@ else
     report "$coverage" "$problems"
   else
     err "$coverage: jq could not check its gaps; each gap needs an id, covers, and a candidate, and docs/candidates.json must be a JSON array"
-  fi
-
-  reference=${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json
-  if [ -n "${DOCS_REFERENCE:-}" ] && [ ! -f "$reference" ]; then
-    err "$reference: missing; point DOCS_REFERENCE at a directory with MANIFEST.json, or unset it"
-  elif [ -f "$reference" ]; then
-    if problems=$(jq -r --slurpfile reference "$reference" '
-      (.samples // [] | map({key: .path, value: .sha256}) | from_entries) as $listed
-      | ($reference[0].files | map(select(.role == "sample") | {key: .path, value: .sha256}) | from_entries) as $expected
-      | ($expected | to_entries[]
-          | if $listed[.key] == null then
-              "samples: \(.key) is a sample in \($ref) but missing; add it, as scripts/place-library.sh prints it"
-            elif $listed[.key] != .value then
-              "samples: \(.key) has sha256 \($listed[.key]), but \($ref) has \(.value); rerun scripts/place-library.sh and take its sha256"
-            else empty end),
-        ($listed | keys[] | select($expected[.] == null)
-          | "samples: \(.) is not a sample in \($ref); remove its entry"),
-        (($reference[0].files | map({key: .path, value: .}) | from_entries) as $files
-        | (.samples // [])[] as $s | $files[$s.path] // empty
-        | (. as $e | ["format", "bytes", "license_status", "redistributable"][]
-            | select($s[.] != $e[.])
-            | "\($s.path).\(.): \($s[.] | tojson) differs from \($ref)\u0027s \($e[.] | tojson); copy it from there"),
-          (select((.sensitive != null or .local_only != null) != ($s.sensitive == true))
-            | "\($s.path).sensitive: \($ref) marks it \(if .sensitive != null or .local_only != null then "sensitive or local_only; set sensitive to true" else "neither sensitive nor local_only; remove sensitive" end)"),
-          (($s.truth + $s.docs)[] | select($files[.] == null)
-            | "\($s.path): \(.) is not a file in \($ref); link only its truth and doc files")),
-      ([(.samples // [])[] | .truth[], .docs[]] + [(.docs_without_sample // [])[].path]) as $linked
-      | ($reference[0].files[] | select(.role == "truth" or .role == "doc") | .path
-          | select(IN($linked[]) | not)
-          | "\(.): a \($ref) truth or doc file no sample links; add it to its sample\u0027s truth or docs, or to docs_without_sample with its handling")
-    ' --arg ref "$reference" "$coverage"); then
-      report "$coverage" "$problems"
-    else
-      err "$coverage: jq could not compare it with $reference; both must be JSON, the reference with a files array"
-    fi
   fi
 fi
 
@@ -519,6 +484,8 @@ if [ -f MANIFEST.json ]; then
         | "\(.path): an adopted or measured sample without license_url and license_read; read its license at its source, add the reading to docs/license-readings.json, and \($regenerate)"),
       (.files[] | select(.role != "sample" and ((.license_url // "") == "" or (.license_read // "") == ""))
         | "\(.path): a \(.role) file without license_url and license_read; read its license at its source, add the reading to docs/license-readings.json, and \($regenerate)"),
+      (.files[] | select(.url != null and ((.url | type) != "string" or (.url | test("^\\s*$")) or (.url | contains("not recorded"))))
+        | "\(.path).url: \(.url | tojson) records no URL; record the URL it was fetched from in its row in docs/reference-rows.json, its entry in docs/sourced.json, or its gap\u0027s candidate in docs/coverage.json, and \($regenerate)"),
       (.files[] | .path as $p | (.covers // [])[] | select(IN($ids[]) | not)
         | "\($p).covers: \(.) is not in docs/coverage.json\u0027s vocabulary; place the sample with an ID the vocabulary defines, or define it there, then \($regenerate)"),
       ($samples[] | select($in_git[.path])
@@ -610,7 +577,7 @@ if [ -f MANIFEST.json ]; then
     err "MANIFEST.json: jq could not check it against $coverage; $regenerate"
   fi
 
-  if [ -f "${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json" ] && ! go run ./tools/coverage/cmd/manifest | cmp -s - MANIFEST.json; then
+  if ! go run ./tools/coverage/cmd/manifest | cmp -s - MANIFEST.json; then
     err "MANIFEST.json: differs from what mise run manifest prints, and it is never edited by hand; $regenerate"
   fi
 fi
