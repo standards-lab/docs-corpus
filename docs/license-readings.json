@@ -805,7 +805,8 @@
   },
   {
     "path": "pdf/born-digital/dodm-5200-01.pdf",
-    "license_url": "https://www.law.cornell.edu/uscode/text/17/105",
+    "license": "US government work (17 USC 105), cleared for public release",
+    "license_url": "https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodm/520001m_vol2.pdf",
     "license_read": "2026-11-26"
   },
   {
