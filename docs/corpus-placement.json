@@ -165,6 +165,19 @@
     ]
   },
   {
+    "path": "audio/long/ami-es2002a-mix-headset.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.multi-speaker",
+      "trait:audio.multi-window",
+      "trait:audio.spontaneous"
+    ]
+  },
+  {
     "path": "audio/long/ami-es2002d-mix-headset.mp3",
     "covers": [
       "capability:embeddings",
@@ -192,7 +205,316 @@
     ]
   },
   {
+    "path": "audio/short/fleurs-ar/fleurs-ar-eg-1730.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-ar/fleurs-ar-eg-1993.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-ar/fleurs-ar-eg-1995.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-hi/fleurs-hi_in-1601.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-hi/fleurs-hi_in-1602.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-hi/fleurs-hi_in-1608.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-ja/fleurs-ja_jp-1519.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-ja/fleurs-ja_jp-1607.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-ja/fleurs-ja_jp-1608.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-ru/fleurs-ru_ru-1554.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-ru/fleurs-ru_ru-1614.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-ru/fleurs-ru_ru-1634.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-zh/fleurs-cmn_hans_cn-1579.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-zh/fleurs-cmn_hans_cn-1581.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/fleurs-zh/fleurs-cmn_hans_cn-1605.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.non-english"
+    ]
+  },
+  {
+    "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0000.flac",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:flac",
+      "route:audio"
+    ]
+  },
+  {
+    "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0001.flac",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:flac",
+      "route:audio"
+    ]
+  },
+  {
+    "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0002.flac",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:flac",
+      "route:audio"
+    ]
+  },
+  {
+    "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0003.flac",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:flac",
+      "route:audio"
+    ]
+  },
+  {
+    "path": "audio/short/minds14-es/minds14-es-ES-0.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.narrowband",
+      "trait:audio.non-english",
+      "trait:audio.spontaneous"
+    ]
+  },
+  {
+    "path": "audio/short/minds14-es/minds14-es-ES-1.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.narrowband",
+      "trait:audio.non-english",
+      "trait:audio.spontaneous"
+    ]
+  },
+  {
+    "path": "audio/short/minds14-es/minds14-es-ES-2.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.narrowband",
+      "trait:audio.non-english",
+      "trait:audio.spontaneous"
+    ]
+  },
+  {
     "path": "audio/short/minds14-fr/minds14-fr-FR-0.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.narrowband",
+      "trait:audio.non-english",
+      "trait:audio.spontaneous"
+    ]
+  },
+  {
+    "path": "audio/short/minds14-fr/minds14-fr-FR-1.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.narrowband",
+      "trait:audio.non-english",
+      "trait:audio.spontaneous"
+    ]
+  },
+  {
+    "path": "audio/short/minds14-fr/minds14-fr-FR-2.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.narrowband",
+      "trait:audio.non-english",
+      "trait:audio.spontaneous"
+    ]
+  },
+  {
+    "path": "audio/short/minds14-ko/minds14-ko-KR-0.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.narrowband",
+      "trait:audio.non-english",
+      "trait:audio.spontaneous"
+    ]
+  },
+  {
+    "path": "audio/short/minds14-ko/minds14-ko-KR-1.wav",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "kind:wav",
+      "route:audio",
+      "trait:audio.narrowband",
+      "trait:audio.non-english",
+      "trait:audio.spontaneous"
+    ]
+  },
+  {
+    "path": "audio/short/minds14-ko/minds14-ko-KR-2.wav",
     "covers": [
       "capability:embeddings",
       "capability:extraction",
@@ -833,6 +1155,15 @@
     ]
   },
   {
+    "path": "office/macro-template/simple.poi.xlsb",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "kind:zip",
+      "route:office"
+    ]
+  },
+  {
     "path": "office/macro-template/xlm-macro.poi.xlsm",
     "covers": [
       "capability:embeddings",
@@ -873,6 +1204,42 @@
       "trait:script.hebrew",
       "trait:script.kana",
       "trait:script.mixed"
+    ]
+  },
+  {
+    "path": "office/odf/calc-odf13.ods",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "kind:odf",
+      "route:office"
+    ]
+  },
+  {
+    "path": "office/odf/draw-odf13.odg",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "kind:odf",
+      "route:office"
+    ]
+  },
+  {
+    "path": "office/odf/impress-odf13.odp",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "kind:odf",
+      "route:office"
+    ]
+  },
+  {
+    "path": "office/odf/writer-odf13.odt",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "kind:odf",
+      "route:office"
     ]
   },
   {
@@ -1199,6 +1566,40 @@
     ]
   },
   {
+    "path": "pdf/born-digital/dodm-5200-01.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:scale.many-pages"
+    ]
+  },
+  {
+    "path": "pdf/edge/attachments/embedded-video-avi.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:pdf-embeddedfile",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/edge/attachments/file-attachment-annotation.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:pdf-embeddedfile",
+      "kind:pdf",
+      "route:document",
+      "route:unrouted"
+    ]
+  },
+  {
     "path": "pdf/edge/attachments/file-attachment.pdf",
     "covers": [
       "capability:embeddings",
@@ -1210,6 +1611,39 @@
       "kind:pdf",
       "route:document",
       "route:unrouted"
+    ]
+  },
+  {
+    "path": "pdf/edge/encrypted/encryption-nocopy.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:pdf-encrypt",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/edge/encrypted/encryption-notextaccess.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:pdf-encrypt",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/edge/encrypted/encryption-openpassword.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:pdf-encrypt",
+      "kind:pdf",
+      "route:document"
     ]
   },
   {
@@ -1225,6 +1659,27 @@
     ]
   },
   {
+    "path": "pdf/edge/encrypted/unicode-password-baseline.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/edge/encrypted/unicode-password-corrigendum5.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:pdf-encrypt",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
     "path": "pdf/edge/encrypted/unicode-passwords-corrigendum5.md",
     "covers": [
       "capability:embeddings",
@@ -1232,6 +1687,16 @@
       "route:text",
       "trait:script.hangul",
       "trait:script.mixed"
+    ]
+  },
+  {
+    "path": "pdf/edge/fonts/no-fonts-embedded.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document"
     ]
   },
   {
@@ -1272,12 +1737,134 @@
     ]
   },
   {
+    "path": "pdf/edge/malformed/corruption-one-byte-missing.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/edge/malformed/dialect-dict-is-stream.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:text-layer.none"
+    ]
+  },
+  {
+    "path": "pdf/edge/malformed/dual-startxref.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
     "path": "pdf/edge/malformed/header-no-version-info.pdf",
     "covers": [
       "capability:embeddings",
       "capability:extraction",
       "check:signature-mismatch",
       "route:text",
+      "trait:text-layer.none"
+    ]
+  },
+  {
+    "path": "pdf/edge/malformed/javascript.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:pdf-javascript",
+      "check:pdf-js",
+      "check:pdf-openaction",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/edge/malformed/no-document-catalog.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/edge/malformed/no-page-contents.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:text-layer.none"
+    ]
+  },
+  {
+    "path": "pdf/edge/malformed/utf16le-test.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/edge/pdfa/balloon-a1b-jp2k.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:text-layer.none"
+    ]
+  },
+  {
+    "path": "pdf/edge/pdfa/embedded-lucinda-sans-pdfa-1a.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:pdf-openaction",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/edge/pdfa/pdfa1b-filters-fail.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/edge/pdfa/pdfa3b-embedded-files-fail.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "capability:vision",
+      "check:pdf-embeddedfile",
+      "kind:pdf",
+      "kind:wav",
+      "route:audio",
+      "route:document",
       "trait:text-layer.none"
     ]
   },
@@ -1312,6 +1899,27 @@
     ]
   },
   {
+    "path": "pdf/edge/tagged/pdfua1-annotations-pass.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/edge/tagged/pdfua1-text-pass.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "check:pdf-openaction",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
     "path": "pdf/large/cfr-2024-title32-vol1.pdf",
     "covers": [
       "capability:embeddings",
@@ -1338,6 +1946,48 @@
     ]
   },
   {
+    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-bg.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:script.cyrillic"
+    ]
+  },
+  {
+    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-el.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:script.greek"
+    ]
+  },
+  {
+    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-en.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-pl.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
     "path": "pdf/multilang/multilang-table.pdf",
     "covers": [
       "capability:embeddings",
@@ -1355,6 +2005,151 @@
     ]
   },
   {
+    "path": "pdf/scanned/olmocr-bench/multi_column-013a3686ef75b4150c07d3ebc510ca2455d6_page_6_pg1.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:multi-column",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/multi_column-0925342e1efabb7957efa34203f65d3cbc4d_page_6_pg1.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:multi-column",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/multi_column-09f90a8fad0997f7cf454cbcbe79cab3bc0f_page_1_pg1.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:multi-column",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/multi_column-0a2b678b6c6825364a5a18154dd59064922e_page_8_pg1.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:multi-column",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/multi_column-0b128decb905a38700baf486672b8634c308_page_4_pg1.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:multi-column",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/multi_column-0e5f0c3447c4f1335b330d58b5e14d6f15b1_page_8_pg1.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:multi-column",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-15.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:scan.degraded",
+      "trait:scan.printed",
+      "trait:text-layer.none"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-17.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:scan.degraded",
+      "trait:scan.printed",
+      "trait:text-layer.none"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-30.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:scan.degraded",
+      "trait:scan.handwriting",
+      "trait:text-layer.none"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-31.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:scan.degraded",
+      "trait:scan.printed",
+      "trait:text-layer.none"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-4.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:scan.degraded",
+      "trait:scan.handwriting",
+      "trait:scan.printed",
+      "trait:text-layer.none"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-46.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:scan.degraded",
+      "trait:scan.handwriting",
+      "trait:text-layer.none"
+    ]
+  },
+  {
     "path": "pdf/scanned/olmocr-bench/old_scans-5.pdf",
     "covers": [
       "capability:embeddings",
@@ -1364,6 +2159,32 @@
       "route:document",
       "trait:scan.degraded",
       "trait:scan.handwriting",
+      "trait:scan.printed",
+      "trait:text-layer.none"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-63.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:scan.degraded",
+      "trait:scan.printed",
+      "trait:text-layer.none"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-64.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:scan.degraded",
       "trait:scan.printed",
       "trait:text-layer.none"
     ]
@@ -1383,6 +2204,54 @@
     ]
   },
   {
+    "path": "pdf/scanned/olmocr-bench/old_scans-70.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:scan.degraded",
+      "trait:scan.printed",
+      "trait:text-layer.none"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-71.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "kind:pdf",
+      "route:document",
+      "trait:scan.degraded",
+      "trait:scan.printed",
+      "trait:text-layer.none"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/tables-033c1efd2c0e15b829f9e9164f0e7bc1fecf_pg5_pg1.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:tables",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/tables-0953927d7a3f032c46a2e6d0ead837398a0b_pg20.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:tables",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
     "path": "pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf",
     "covers": [
       "capability:embeddings",
@@ -1393,6 +2262,39 @@
       "route:document",
       "trait:scan.printed",
       "trait:text-layer.ocr"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/tables-4c77cbf4de004721c9da33c7f3843716c9a6_pg4_pg1.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:tables",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/tables-c8c858692b4b469c2af1fc55edcf6292f6ed_pg4_pg1.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:tables",
+      "kind:pdf",
+      "route:document"
+    ]
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/tables-fa18a15c1dbbfcb71b1f1ea1b8f116e24b8a_pg2_pg1.pdf",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:vision",
+      "feature:tables",
+      "kind:pdf",
+      "route:document"
     ]
   },
   {

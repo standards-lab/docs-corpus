@@ -1,5 +1,50 @@
 [
   {
+    "path": "audio/long/ami-es2002a-mix-headset.wav",
+    "license_url": "https://groups.inf.ed.ac.uk/ami/corpus/license.shtml",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/long/ami-es2002a-truth/ES2002a.A.segments.xml",
+    "license_url": "https://groups.inf.ed.ac.uk/ami/corpus/license.shtml",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/long/ami-es2002a-truth/ES2002a.A.words.xml",
+    "license_url": "https://groups.inf.ed.ac.uk/ami/corpus/license.shtml",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/long/ami-es2002a-truth/ES2002a.B.segments.xml",
+    "license_url": "https://groups.inf.ed.ac.uk/ami/corpus/license.shtml",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/long/ami-es2002a-truth/ES2002a.B.words.xml",
+    "license_url": "https://groups.inf.ed.ac.uk/ami/corpus/license.shtml",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/long/ami-es2002a-truth/ES2002a.C.segments.xml",
+    "license_url": "https://groups.inf.ed.ac.uk/ami/corpus/license.shtml",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/long/ami-es2002a-truth/ES2002a.C.words.xml",
+    "license_url": "https://groups.inf.ed.ac.uk/ami/corpus/license.shtml",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/long/ami-es2002a-truth/ES2002a.D.segments.xml",
+    "license_url": "https://groups.inf.ed.ac.uk/ami/corpus/license.shtml",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/long/ami-es2002a-truth/ES2002a.D.words.xml",
+    "license_url": "https://groups.inf.ed.ac.uk/ami/corpus/license.shtml",
+    "license_read": "2026-11-26"
+  },
+  {
     "path": "audio/long/librivox-stella-maberly.m4b",
     "license_url": "https://archive.org/details/statement_of_stella_maberly_1910_librivox",
     "license_read": "2026-11-25"
@@ -10,14 +55,189 @@
     "license_read": "2026-11-25"
   },
   {
+    "path": "audio/short/fleurs-ar/fleurs-ar-eg-1730.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-ar/fleurs-ar-eg-1993.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-ar/fleurs-ar-eg-1995.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-ar/fleurs-ar-eg.truth.json",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-hi/fleurs-hi_in-1601.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-hi/fleurs-hi_in-1602.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-hi/fleurs-hi_in-1608.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-hi/fleurs-hi_in.truth.json",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-ja/fleurs-ja_jp-1519.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-ja/fleurs-ja_jp-1607.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-ja/fleurs-ja_jp-1608.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-ja/fleurs-ja_jp.truth.json",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-ru/fleurs-ru_ru-1554.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-ru/fleurs-ru_ru-1614.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-ru/fleurs-ru_ru-1634.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-ru/fleurs-ru_ru.truth.json",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-zh/fleurs-cmn_hans_cn-1579.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-zh/fleurs-cmn_hans_cn-1581.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-zh/fleurs-cmn_hans_cn-1605.wav",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/fleurs-zh/fleurs-cmn_hans_cn.truth.json",
+    "license_url": "https://huggingface.co/datasets/google/fleurs",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0000.flac",
+    "license_url": "https://huggingface.co/datasets/openslr/librispeech_asr",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0001.flac",
+    "license_url": "https://huggingface.co/datasets/openslr/librispeech_asr",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0002.flac",
+    "license_url": "https://huggingface.co/datasets/openslr/librispeech_asr",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0003.flac",
+    "license_url": "https://huggingface.co/datasets/openslr/librispeech_asr",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/librispeech/librispeech-dev-clean.truth.json",
+    "license_url": "https://huggingface.co/datasets/openslr/librispeech_asr",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/minds14-es/minds14-es-ES-0.wav",
+    "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/minds14-es/minds14-es-ES-1.wav",
+    "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/minds14-es/minds14-es-ES-2.wav",
+    "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/minds14-es/minds14-es-ES.truth.json",
+    "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
+    "license_read": "2026-11-26"
+  },
+  {
     "path": "audio/short/minds14-fr/minds14-fr-FR-0.wav",
     "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
     "license_read": "2026-11-25"
   },
   {
+    "path": "audio/short/minds14-fr/minds14-fr-FR-1.wav",
+    "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/minds14-fr/minds14-fr-FR-2.wav",
+    "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
+    "license_read": "2026-11-26"
+  },
+  {
     "path": "audio/short/minds14-fr/minds14-fr-FR.truth.json",
     "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
     "license_read": "2026-11-25"
+  },
+  {
+    "path": "audio/short/minds14-ko/minds14-ko-KR-0.wav",
+    "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/minds14-ko/minds14-ko-KR-1.wav",
+    "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/minds14-ko/minds14-ko-KR-2.wav",
+    "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "audio/short/minds14-ko/minds14-ko-KR.truth.json",
+    "license_url": "https://huggingface.co/datasets/PolyAI/minds14",
+    "license_read": "2026-11-26"
   },
   {
     "path": "email/eml/cpython/cpython.LICENSE",
@@ -343,9 +563,34 @@
     "license_read": "2026-11-25"
   },
   {
+    "path": "office/macro-template/simple.poi.xlsb",
+    "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
+    "license_read": "2026-11-26"
+  },
+  {
     "path": "office/macro-template/xlm-macro.poi.xlsm",
     "license_url": "https://github.com/apache/poi/blob/6327f056ba3cfdae326a0261a236460592b80f5c/legal/LICENSE",
     "license_read": "2026-11-25"
+  },
+  {
+    "path": "office/odf/calc-odf13.ods",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "office/odf/draw-odf13.odg",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "office/odf/impress-odf13.odp",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "office/odf/writer-odf13.odt",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
+    "license_read": "2026-11-26"
   },
   {
     "path": "office/realworld/SOURCES.md",
@@ -559,14 +804,56 @@
     "license_read": "2026-11-25"
   },
   {
+    "path": "pdf/born-digital/dodm-5200-01.pdf",
+    "license_url": "https://www.law.cornell.edu/uscode/text/17/105",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/attachments/embedded-video-avi.pdf",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/readme.md",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/attachments/file-attachment-annotation.pdf",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/readme.md",
+    "license_read": "2026-11-26"
+  },
+  {
     "path": "pdf/edge/attachments/file-attachment.pdf",
     "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/readme.md",
     "license_read": "2026-11-25"
   },
   {
+    "path": "pdf/edge/encrypted/encryption-nocopy.pdf",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/readme.md",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/encrypted/encryption-notextaccess.pdf",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/readme.md",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/encrypted/encryption-openpassword.pdf",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/readme.md",
+    "license_read": "2026-11-26"
+  },
+  {
     "path": "pdf/edge/encrypted/simple-open-password.pdf",
     "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
     "license_read": "2026-11-25"
+  },
+  {
+    "path": "pdf/edge/encrypted/unicode-password-baseline.pdf",
+    "license": "CC-BY-4.0",
+    "license_url": "https://github.com/pdf-association/safedocs/blob/68f730ab8c39204844112c499c5707b79878533b/NOTICE.txt",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/encrypted/unicode-password-corrigendum5.pdf",
+    "license": "CC-BY-4.0",
+    "license_url": "https://github.com/pdf-association/safedocs/blob/68f730ab8c39204844112c499c5707b79878533b/NOTICE.txt",
+    "license_read": "2026-11-26"
   },
   {
     "path": "pdf/edge/encrypted/unicode-passwords-corrigendum5.md",
@@ -579,6 +866,11 @@
     "license": "CC-BY-4.0",
     "license_url": "https://github.com/pdf-association/safedocs/blob/68f730ab8c39204844112c499c5707b79878533b/NOTICE.txt",
     "license_read": "2026-11-25"
+  },
+  {
+    "path": "pdf/edge/fonts/no-fonts-embedded.pdf",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/readme.md",
+    "license_read": "2026-11-26"
   },
   {
     "path": "pdf/edge/forms/isartor-interactive-form.pdf",
@@ -597,9 +889,68 @@
     "license_read": "2026-11-25"
   },
   {
+    "path": "pdf/edge/malformed/corruption-one-byte-missing.pdf",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/readme.md",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/malformed/dialect-dict-is-stream.pdf",
+    "license": "CC-BY-4.0",
+    "license_url": "https://github.com/pdf-association/safedocs/blob/68f730ab8c39204844112c499c5707b79878533b/NOTICE.txt",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/malformed/dual-startxref.pdf",
+    "license": "CC-BY-4.0",
+    "license_url": "https://github.com/pdf-association/safedocs/blob/68f730ab8c39204844112c499c5707b79878533b/NOTICE.txt",
+    "license_read": "2026-11-26"
+  },
+  {
     "path": "pdf/edge/malformed/header-no-version-info.pdf",
     "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
     "license_read": "2026-11-25"
+  },
+  {
+    "path": "pdf/edge/malformed/javascript.pdf",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/readme.md",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/malformed/no-document-catalog.pdf",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/malformed/no-page-contents.pdf",
+    "license": "CC-BY-4.0",
+    "license_url": "https://github.com/pdf-association/safedocs/blob/68f730ab8c39204844112c499c5707b79878533b/NOTICE.txt",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/malformed/utf16le-test.pdf",
+    "license": "CC-BY-4.0",
+    "license_url": "https://github.com/pdf-association/safedocs/blob/68f730ab8c39204844112c499c5707b79878533b/NOTICE.txt",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/pdfa/balloon-a1b-jp2k.pdf",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/pdfCabinetOfHorrors/readme.md",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/pdfa/embedded-lucinda-sans-pdfa-1a.pdf",
+    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/pdfa/pdfa1b-filters-fail.pdf",
+    "license_url": "https://github.com/veraPDF/veraPDF-corpus/blob/bb75f4f0073d9350dfd058c0162a367e6fadf25e/README.md",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/pdfa/pdfa3b-embedded-files-fail.pdf",
+    "license_url": "https://github.com/veraPDF/veraPDF-corpus/blob/bb75f4f0073d9350dfd058c0162a367e6fadf25e/README.md",
+    "license_read": "2026-11-26"
   },
   {
     "path": "pdf/edge/pdfa/pdfa3b-embedded-files-pass.pdf",
@@ -622,6 +973,16 @@
     "license_read": "2026-11-25"
   },
   {
+    "path": "pdf/edge/tagged/pdfua1-annotations-pass.pdf",
+    "license_url": "https://github.com/veraPDF/veraPDF-corpus/blob/bb75f4f0073d9350dfd058c0162a367e6fadf25e/README.md",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/edge/tagged/pdfua1-text-pass.pdf",
+    "license_url": "https://github.com/veraPDF/veraPDF-corpus/blob/bb75f4f0073d9350dfd058c0162a367e6fadf25e/README.md",
+    "license_read": "2026-11-26"
+  },
+  {
     "path": "pdf/edge/verapdf.README.md",
     "license_url": "https://github.com/veraPDF/veraPDF-corpus/blob/bb75f4f0073d9350dfd058c0162a367e6fadf25e/README.md",
     "license_read": "2026-11-25"
@@ -637,14 +998,139 @@
     "license_read": "2026-11-25"
   },
   {
+    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-bg.html",
+    "license_url": "https://publications.europa.eu/resource/celex/32011D0833",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-bg.pdf",
+    "license_url": "https://publications.europa.eu/resource/celex/32011D0833",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-el.html",
+    "license_url": "https://publications.europa.eu/resource/celex/32011D0833",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-el.pdf",
+    "license_url": "https://publications.europa.eu/resource/celex/32011D0833",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-en.html",
+    "license_url": "https://publications.europa.eu/resource/celex/32011D0833",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-en.pdf",
+    "license_url": "https://publications.europa.eu/resource/celex/32011D0833",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-pl.html",
+    "license_url": "https://publications.europa.eu/resource/celex/32011D0833",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-pl.pdf",
+    "license_url": "https://publications.europa.eu/resource/celex/32011D0833",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/multi_column-013a3686ef75b4150c07d3ebc510ca2455d6_page_6_pg1.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/multi_column-0925342e1efabb7957efa34203f65d3cbc4d_page_6_pg1.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/multi_column-09f90a8fad0997f7cf454cbcbe79cab3bc0f_page_1_pg1.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/multi_column-0a2b678b6c6825364a5a18154dd59064922e_page_8_pg1.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/multi_column-0b128decb905a38700baf486672b8634c308_page_4_pg1.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/multi_column-0e5f0c3447c4f1335b330d58b5e14d6f15b1_page_8_pg1.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/multi_column.truth.jsonl",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-15.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-17.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-30.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-31.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-4.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-46.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
     "path": "pdf/scanned/olmocr-bench/old_scans-5.pdf",
     "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
     "license_read": "2026-11-25"
   },
   {
+    "path": "pdf/scanned/olmocr-bench/old_scans-63.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-64.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
     "path": "pdf/scanned/olmocr-bench/old_scans-69.pdf",
     "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
     "license_read": "2026-11-25"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-70.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/old_scans-71.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
   },
   {
     "path": "pdf/scanned/olmocr-bench/old_scans.truth.jsonl",
@@ -657,9 +1143,34 @@
     "license_read": "2026-11-25"
   },
   {
+    "path": "pdf/scanned/olmocr-bench/tables-033c1efd2c0e15b829f9e9164f0e7bc1fecf_pg5_pg1.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/tables-0953927d7a3f032c46a2e6d0ead837398a0b_pg20.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
     "path": "pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf",
     "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
     "license_read": "2026-11-25"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/tables-4c77cbf4de004721c9da33c7f3843716c9a6_pg4_pg1.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/tables-c8c858692b4b469c2af1fc55edcf6292f6ed_pg4_pg1.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
+  },
+  {
+    "path": "pdf/scanned/olmocr-bench/tables-fa18a15c1dbbfcb71b1f1ea1b8f116e24b8a_pg2_pg1.pdf",
+    "license_url": "https://huggingface.co/datasets/allenai/olmOCR-bench",
+    "license_read": "2026-11-26"
   },
   {
     "path": "pdf/scanned/real/stella-maberly-1896-ia-scan.pdf",

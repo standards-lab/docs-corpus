@@ -1,0 +1,31 @@
+{
+ "dataset": "google/fleurs",
+ "config": "ar_eg",
+ "split": "test",
+ "license": "CC-BY-4.0",
+ "source": "https://huggingface.co/datasets/google/fleurs",
+ "via": "datasets-server rows API (decoded audio assets)",
+ "items": [
+  {
+   "file": "fleurs-ar-eg-1993.wav",
+   "text": "تشكلت في المحيط الأطلسي اليوم عاشر عاصفة مُسماة لموسم الأعاصير الأطلسية العاصفة شبه الاستوائية جيري",
+   "speaker_id": null,
+   "gender": 1,
+   "source_row": 0
+  },
+  {
+   "file": "fleurs-ar-eg-1730.wav",
+   "text": "تغادر الحافلات المحطة الداخلية بين المناطق عبر النهر في خلال اليوم على الرغم من أن معظمها وخاصة المتجهة منها إلى الشرق وجاكار/بومثانج تغادر بين 06:30 و 07:30",
+   "speaker_id": null,
+   "gender": 1,
+   "source_row": 1
+  },
+  {
+   "file": "fleurs-ar-eg-1995.wav",
+   "text": "يتمُّ دعم التعلُّم التفاعليّ في البرنامج داخليًا ويهدف إلى طرح الأسئلة والتحفيز وشرح الإجراءاتِ التي قد يكون من الصعب على الطالب التعامل معها بمفرده",
+   "speaker_id": null,
+   "gender": 1,
+   "source_row": 2
+  }
+ ]
+}

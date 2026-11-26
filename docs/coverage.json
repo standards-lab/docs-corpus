@@ -700,7 +700,7 @@
     "command": "scripts/place-library.sh"
   },
   "corpus_placement": {
-    "run": "01a215d3-a327-7953-875c-763abbf5dbeb",
+    "run": "01a217f1-f29c-7721-8d39-8c35190273c5",
     "docproc": "docproc v0.9.0 (46aebf1a0e61c2dd8ce054ec12b558d8fda3477a), cmd/docproc v0.2.7",
     "docproc_command": "docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/docproc-final/corpus",
     "command": "mise run place-traits --corpus"
@@ -972,8 +972,7 @@
         "audio/long/ami-es2002a-truth/ES2002a.D.words.xml"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "video/ami-es2002d/ami-es2002d-mix-headset.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/long/earnings21-4330115.mp3",
@@ -1211,8 +1210,7 @@
         "audio/short/fleurs-ar/fleurs-ar-eg.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-ar/fleurs-ar-eg-1993.wav",
@@ -1239,8 +1237,7 @@
         "audio/short/fleurs-ar/fleurs-ar-eg.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-ar/fleurs-ar-eg-1995.wav",
@@ -1267,8 +1264,7 @@
         "audio/short/fleurs-ar/fleurs-ar-eg.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-hi/fleurs-hi_in-1601.wav",
@@ -1295,8 +1291,7 @@
         "audio/short/fleurs-hi/fleurs-hi_in.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-hi/fleurs-hi_in-1602.wav",
@@ -1323,8 +1318,7 @@
         "audio/short/fleurs-hi/fleurs-hi_in.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-hi/fleurs-hi_in-1608.wav",
@@ -1351,8 +1345,7 @@
         "audio/short/fleurs-hi/fleurs-hi_in.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-ja/fleurs-ja_jp-1519.wav",
@@ -1379,8 +1372,7 @@
         "audio/short/fleurs-ja/fleurs-ja_jp.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-ja/fleurs-ja_jp-1607.wav",
@@ -1407,8 +1399,7 @@
         "audio/short/fleurs-ja/fleurs-ja_jp.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-ja/fleurs-ja_jp-1608.wav",
@@ -1435,8 +1426,7 @@
         "audio/short/fleurs-ja/fleurs-ja_jp.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-ru/fleurs-ru_ru-1554.wav",
@@ -1463,8 +1453,7 @@
         "audio/short/fleurs-ru/fleurs-ru_ru.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-ru/fleurs-ru_ru-1614.wav",
@@ -1491,8 +1480,7 @@
         "audio/short/fleurs-ru/fleurs-ru_ru.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-ru/fleurs-ru_ru-1634.wav",
@@ -1519,8 +1507,7 @@
         "audio/short/fleurs-ru/fleurs-ru_ru.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-zh/fleurs-cmn_hans_cn-1579.wav",
@@ -1547,8 +1534,7 @@
         "audio/short/fleurs-zh/fleurs-cmn_hans_cn.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-zh/fleurs-cmn_hans_cn-1581.wav",
@@ -1575,8 +1561,7 @@
         "audio/short/fleurs-zh/fleurs-cmn_hans_cn.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/fleurs-zh/fleurs-cmn_hans_cn-1605.wav",
@@ -1603,8 +1588,7 @@
         "audio/short/fleurs-zh/fleurs-cmn_hans_cn.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0000.flac",
@@ -1626,8 +1610,7 @@
         "audio/short/librispeech/librispeech-dev-clean.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/tika/testFLAC_commentAndNativePicture.flac"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0001.flac",
@@ -1649,8 +1632,7 @@
         "audio/short/librispeech/librispeech-dev-clean.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/tika/testFLAC_commentAndNativePicture.flac"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0002.flac",
@@ -1672,8 +1654,7 @@
         "audio/short/librispeech/librispeech-dev-clean.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/tika/testFLAC_commentAndNativePicture.flac"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0003.flac",
@@ -1695,8 +1676,7 @@
         "audio/short/librispeech/librispeech-dev-clean.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/tika/testFLAC_commentAndNativePicture.flac"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/minds14-es/minds14-es-ES-0.wav",
@@ -1726,8 +1706,7 @@
         "audio/short/minds14-es/minds14-es-ES.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/minds14-es/minds14-es-ES-1.wav",
@@ -1757,8 +1736,7 @@
         "audio/short/minds14-es/minds14-es-ES.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/minds14-es/minds14-es-ES-2.wav",
@@ -1788,8 +1766,7 @@
         "audio/short/minds14-es/minds14-es-ES.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/minds14-fr/minds14-fr-FR-0.wav",
@@ -1849,8 +1826,7 @@
         "audio/short/minds14-fr/minds14-fr-FR.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/minds14-fr/minds14-fr-FR-2.wav",
@@ -1880,8 +1856,7 @@
         "audio/short/minds14-fr/minds14-fr-FR.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/minds14-ko/minds14-ko-KR-0.wav",
@@ -1911,8 +1886,7 @@
         "audio/short/minds14-ko/minds14-ko-KR.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/minds14-ko/minds14-ko-KR-1.wav",
@@ -1942,8 +1916,7 @@
         "audio/short/minds14-ko/minds14-ko-KR.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/minds14-ko/minds14-ko-KR-2.wav",
@@ -1973,8 +1946,7 @@
         "audio/short/minds14-ko/minds14-ko-KR.truth.json"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "audio/short/minds14-fr/minds14-fr-FR-0.wav"
+      "disposition": "measure"
     },
     {
       "path": "audio/short/phrase.wav",
@@ -6530,8 +6502,7 @@
         "office/realworld/licenses/poi.LICENSE",
         "office/realworld/licenses/poi.NOTICE"
       ],
-      "disposition": "trim",
-      "trimmed_for": "office/realworld/xlsx/copy-rows.xlsx"
+      "disposition": "measure"
     },
     {
       "path": "office/macro-template/test-ppt.poi.ppsx",
@@ -6660,8 +6631,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "office/multilang/multilang-table.odt"
+      "disposition": "measure"
     },
     {
       "path": "office/odf/draw-odf13.odg",
@@ -6680,8 +6650,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "office/multilang/multilang-table.odt"
+      "disposition": "measure"
     },
     {
       "path": "office/odf/formulas.libreoffice.ods",
@@ -6722,8 +6691,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "office/multilang/multilang-table.odt"
+      "disposition": "measure"
     },
     {
       "path": "office/odf/slides.libreoffice.odp",
@@ -6786,8 +6754,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "office/multilang/multilang-table.odt"
+      "disposition": "measure"
     },
     {
       "path": "office/realworld/docx/chart-column.docx",
@@ -8576,8 +8543,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/large/cfr-2024-title32-vol1.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/born-digital/mgrs-field-report.pdf",
@@ -8684,8 +8650,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/verapdf-corpus/veraPDF test suite 6-4-2-t01-fail-a.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/attachments/file-attachment-annotation.pdf",
@@ -8707,8 +8672,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/edge/attachments/file-attachment.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/attachments/file-attachment.pdf",
@@ -8753,8 +8717,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/edge/encrypted/simple-open-password.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/encrypted/encryption-notextaccess.pdf",
@@ -8775,8 +8738,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/edge/encrypted/simple-open-password.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/encrypted/encryption-openpassword.pdf",
@@ -8797,8 +8759,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/edge/encrypted/simple-open-password.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/encrypted/simple-open-password.pdf",
@@ -8844,8 +8805,7 @@
         "pdf/edge/safedocs.LICENSE",
         "pdf/edge/safedocs.NOTICE"
       ],
-      "disposition": "trim",
-      "trimmed_for": "email/msg/tika/testMSG_att_msg.msg"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/encrypted/unicode-password-corrigendum5.pdf",
@@ -8870,8 +8830,7 @@
         "pdf/edge/safedocs.LICENSE",
         "pdf/edge/safedocs.NOTICE"
       ],
-      "disposition": "trim",
-      "trimmed_for": "pdf/edge/encrypted/simple-open-password.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/encrypted/unicode-passwords-corrigendum5.md",
@@ -8916,8 +8875,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "email/msg/tika/testMSG_att_msg.msg"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/forms/isartor-interactive-form.pdf",
@@ -9014,8 +8972,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "email/msg/tika/testMSG_att_msg.msg"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/malformed/dialect-dict-is-stream.pdf",
@@ -9040,8 +8997,7 @@
         "pdf/edge/safedocs.LICENSE",
         "pdf/edge/safedocs.NOTICE"
       ],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-5.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/malformed/dual-startxref.pdf",
@@ -9064,8 +9020,7 @@
         "pdf/edge/safedocs.LICENSE",
         "pdf/edge/safedocs.NOTICE"
       ],
-      "disposition": "trim",
-      "trimmed_for": "email/msg/tika/testMSG_att_msg.msg"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/malformed/header-no-version-info.pdf",
@@ -9109,8 +9064,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/edge/signed/digitally-signed-3d-portfolio.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/malformed/no-document-catalog.pdf",
@@ -9130,8 +9084,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "email/msg/tika/testMSG_att_msg.msg"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/malformed/no-page-contents.pdf",
@@ -9156,8 +9109,7 @@
         "pdf/edge/safedocs.LICENSE",
         "pdf/edge/safedocs.NOTICE"
       ],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-5.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/malformed/utf16le-test.pdf",
@@ -9180,8 +9132,7 @@
         "pdf/edge/safedocs.LICENSE",
         "pdf/edge/safedocs.NOTICE"
       ],
-      "disposition": "trim",
-      "trimmed_for": "email/msg/tika/testMSG_att_msg.msg"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/pdfa/balloon-a1b-jp2k.pdf",
@@ -9203,8 +9154,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-5.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/pdfa/embedded-lucinda-sans-pdfa-1a.pdf",
@@ -9225,8 +9175,7 @@
       "redistributable": true,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/edge/encrypted/simple-open-password.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/pdfa/pdfa1b-filters-fail.pdf",
@@ -9248,8 +9197,7 @@
       "docs": [
         "pdf/edge/verapdf.README.md"
       ],
-      "disposition": "trim",
-      "trimmed_for": "email/msg/tika/testMSG_att_msg.msg"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/pdfa/pdfa3b-embedded-files-fail.pdf",
@@ -9277,8 +9225,7 @@
       "docs": [
         "pdf/edge/verapdf.README.md"
       ],
-      "disposition": "trim",
-      "trimmed_for": "pdf/edge/pdfa/pdfa3b-embedded-files-pass.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/pdfa/pdfa3b-embedded-files-pass.pdf",
@@ -9354,8 +9301,7 @@
       "docs": [
         "pdf/edge/verapdf.README.md"
       ],
-      "disposition": "trim",
-      "trimmed_for": "email/msg/tika/testMSG_att_msg.msg"
+      "disposition": "measure"
     },
     {
       "path": "pdf/edge/tagged/pdfua1-text-pass.pdf",
@@ -9378,8 +9324,7 @@
       "docs": [
         "pdf/edge/verapdf.README.md"
       ],
-      "disposition": "trim",
-      "trimmed_for": "pdf/edge/encrypted/simple-open-password.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/large/cfr-2024-title32-vol1.pdf",
@@ -9434,8 +9379,7 @@
         "pdf/multilang/eurlex-32011D0833/decision-2011-833-bg.html"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "archive/mixed-bundle.7z"
+      "disposition": "measure"
     },
     {
       "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-el.pdf",
@@ -9459,8 +9403,7 @@
         "pdf/multilang/eurlex-32011D0833/decision-2011-833-el.html"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/multilang/multilang-table.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-en.pdf",
@@ -9482,8 +9425,7 @@
         "pdf/multilang/eurlex-32011D0833/decision-2011-833-en.html"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "email/msg/tika/testMSG_att_msg.msg"
+      "disposition": "measure"
     },
     {
       "path": "pdf/multilang/eurlex-32011D0833/decision-2011-833-pl.pdf",
@@ -9505,8 +9447,7 @@
         "pdf/multilang/eurlex-32011D0833/decision-2011-833-pl.html"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "email/msg/tika/testMSG_att_msg.msg"
+      "disposition": "measure"
     },
     {
       "path": "pdf/multilang/multilang-rtl.pdf",
@@ -9652,8 +9593,7 @@
         "pdf/scanned/olmocr-bench/multi_column.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-69.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/multi_column-0925342e1efabb7957efa34203f65d3cbc4d_page_6_pg1.pdf",
@@ -9680,8 +9620,7 @@
         "pdf/scanned/olmocr-bench/multi_column.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-69.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/multi_column-09f90a8fad0997f7cf454cbcbe79cab3bc0f_page_1_pg1.pdf",
@@ -9708,8 +9647,7 @@
         "pdf/scanned/olmocr-bench/multi_column.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-69.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/multi_column-0a2b678b6c6825364a5a18154dd59064922e_page_8_pg1.pdf",
@@ -9736,8 +9674,7 @@
         "pdf/scanned/olmocr-bench/multi_column.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-69.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/multi_column-0b128decb905a38700baf486672b8634c308_page_4_pg1.pdf",
@@ -9764,8 +9701,7 @@
         "pdf/scanned/olmocr-bench/multi_column.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-69.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/multi_column-0e5f0c3447c4f1335b330d58b5e14d6f15b1_page_8_pg1.pdf",
@@ -9792,8 +9728,7 @@
         "pdf/scanned/olmocr-bench/multi_column.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-69.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/old_scans-15.pdf",
@@ -9823,8 +9758,7 @@
         "pdf/scanned/olmocr-bench/old_scans.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-5.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/old_scans-17.pdf",
@@ -9854,8 +9788,7 @@
         "pdf/scanned/olmocr-bench/old_scans.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-5.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/old_scans-30.pdf",
@@ -9885,8 +9818,7 @@
         "pdf/scanned/olmocr-bench/old_scans.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-5.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/old_scans-31.pdf",
@@ -9916,8 +9848,7 @@
         "pdf/scanned/olmocr-bench/old_scans.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-5.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/old_scans-4.pdf",
@@ -9949,8 +9880,7 @@
         "pdf/scanned/olmocr-bench/old_scans.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-5.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/old_scans-46.pdf",
@@ -9980,8 +9910,7 @@
         "pdf/scanned/olmocr-bench/old_scans.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-5.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/old_scans-5.pdf",
@@ -10043,8 +9972,7 @@
         "pdf/scanned/olmocr-bench/old_scans.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-5.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/old_scans-64.pdf",
@@ -10074,8 +10002,7 @@
         "pdf/scanned/olmocr-bench/old_scans.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-5.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/old_scans-69.pdf",
@@ -10138,8 +10065,7 @@
         "pdf/scanned/olmocr-bench/old_scans.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-5.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/old_scans-71.pdf",
@@ -10169,8 +10095,7 @@
         "pdf/scanned/olmocr-bench/old_scans.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/old_scans-5.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/tables-033c1efd2c0e15b829f9e9164f0e7bc1fecf_pg5_pg1.pdf",
@@ -10197,8 +10122,7 @@
         "pdf/scanned/olmocr-bench/table_tests.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/tables-0953927d7a3f032c46a2e6d0ead837398a0b_pg20.pdf",
@@ -10225,8 +10149,7 @@
         "pdf/scanned/olmocr-bench/table_tests.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf",
@@ -10284,8 +10207,7 @@
         "pdf/scanned/olmocr-bench/table_tests.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/tables-c8c858692b4b469c2af1fc55edcf6292f6ed_pg4_pg1.pdf",
@@ -10312,8 +10234,7 @@
         "pdf/scanned/olmocr-bench/table_tests.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/olmocr-bench/tables-fa18a15c1dbbfcb71b1f1ea1b8f116e24b8a_pg2_pg1.pdf",
@@ -10340,8 +10261,7 @@
         "pdf/scanned/olmocr-bench/table_tests.truth.jsonl"
       ],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "pdf/scanned/olmocr-bench/tables-26076dc369efd78b3087643cc7153509bd18_pg3_pg1.pdf"
+      "disposition": "measure"
     },
     {
       "path": "pdf/scanned/real/stella-maberly-1896-ia-scan.pdf",

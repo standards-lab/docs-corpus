@@ -1,0 +1,31 @@
+{
+ "dataset": "google/fleurs",
+ "config": "ja_jp",
+ "split": "validation",
+ "license": "CC-BY-4.0",
+ "source": "https://huggingface.co/datasets/google/fleurs",
+ "via": "datasets-server rows API (decoded audio assets)",
+ "items": [
+  {
+   "file": "fleurs-ja_jp-1519.wav",
+   "text": "多くの場合 海外のギャップイヤーコースに入学することで 帰国後に実際に大学に進学しやすくなります",
+   "speaker_id": null,
+   "gender": 0,
+   "source_row": 0
+  },
+  {
+   "file": "fleurs-ja_jp-1608.wav",
+   "text": "私は妹やその友人とはぐれてしまったのですが 途中で車椅子に乗った障害者が2人いて 飛び越えて車椅子を押している人たちがいました とアルマン ヴェルサーチさんは語っています",
+   "speaker_id": null,
+   "gender": 0,
+   "source_row": 1
+  },
+  {
+   "file": "fleurs-ja_jp-1607.wav",
+   "text": "興味をそそられる村を30分ほど散策するのは価値があります",
+   "speaker_id": null,
+   "gender": 0,
+   "source_row": 2
+  }
+ ]
+}

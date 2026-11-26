@@ -1,0 +1,38 @@
+{
+ "dataset": "openslr/librispeech_asr",
+ "config": "clean",
+ "split": "validation",
+ "license": "CC-BY-4.0",
+ "source": "https://huggingface.co/datasets/openslr/librispeech_asr",
+ "via": "datasets-server rows API (decoded audio assets)",
+ "items": [
+  {
+   "file": "librispeech-dev-clean-2277-149896-0000.flac",
+   "text": "HE WAS IN A FEVERED STATE OF MIND OWING TO THE BLIGHT HIS WIFE'S ACTION THREATENED TO CAST UPON HIS ENTIRE FUTURE",
+   "speaker_id": 2277,
+   "gender": null,
+   "source_row": 0
+  },
+  {
+   "file": "librispeech-dev-clean-2277-149896-0001.flac",
+   "text": "HE WOULD HAVE TO PAY HER THE MONEY WHICH SHE WOULD NOW REGULARLY DEMAND OR THERE WOULD BE TROUBLE IT DID NOT MATTER WHAT HE DID",
+   "speaker_id": 2277,
+   "gender": null,
+   "source_row": 1
+  },
+  {
+   "file": "librispeech-dev-clean-2277-149896-0002.flac",
+   "text": "HURSTWOOD WALKED THE FLOOR MENTALLY ARRANGING THE CHIEF POINTS OF HIS SITUATION",
+   "speaker_id": 2277,
+   "gender": null,
+   "source_row": 2
+  },
+  {
+   "file": "librispeech-dev-clean-2277-149896-0003.flac",
+   "text": "HE ALSO THOUGHT OF HIS MANAGERIAL POSITION",
+   "speaker_id": 2277,
+   "gender": null,
+   "source_row": 3
+  }
+ ]
+}
