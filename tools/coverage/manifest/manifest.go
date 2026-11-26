@@ -293,7 +293,7 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 	}
 	placedCovers := make(map[string][]string, len(placed))
 	for _, p := range placed {
-		placedCovers[p.Path] = p.Covers
+		placedCovers[p.Path] = slices.Compact(slices.Sorted(slices.Values(p.Covers)))
 	}
 	errs = append(errs, addCandidates(files, coverage.Gaps, candidates, placedCovers)...)
 	errs = append(errs, addSourced(files, sourced, placedCovers, measurements)...)
@@ -349,6 +349,7 @@ func addSourced(files map[string]File, sourced []Sourced, covers map[string][]st
 			Sha256:          s.Sha256,
 			Bytes:           s.Bytes,
 			Format:          s.Format,
+			Covers:          covers[s.Path],
 			Truth:           make([]Truth, 0, len(s.Truth)),
 			Docs:            []string{},
 			Source:          s.Source,
@@ -358,9 +359,6 @@ func addSourced(files map[string]File, sourced []Sourced, covers map[string][]st
 			LicenseRead:     s.LicenseRead,
 			LicenseStatus:   "verified",
 			Redistributable: true,
-		}
-		if ids, ok := covers[s.Path]; ok {
-			f.Covers = slices.Compact(slices.Sorted(slices.Values(ids)))
 		}
 		if len(s.Truth) == 0 {
 			f.TruthNote = "a sourced input, which records no truth"
@@ -487,6 +485,7 @@ func candidateEntry(c Candidate, from disposition.Candidate, placed []string) Fi
 		Sha256:           c.Sha256,
 		Bytes:            c.Bytes,
 		Format:           c.Format,
+		Covers:           placed,
 		Truth:            []Truth{},
 		Docs:             []string{},
 		Source:           c.Source,
@@ -505,9 +504,6 @@ func candidateEntry(c Candidate, from disposition.Candidate, placed []string) Fi
 	}
 	if from.Kind == "sourced" {
 		f.TruthNote = "a sourced candidate, which inherits no truth"
-	}
-	if placed != nil {
-		f.Covers = slices.Compact(slices.Sorted(slices.Values(placed)))
 	}
 	return f
 }
