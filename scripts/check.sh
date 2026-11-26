@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Checks the tools/coverage Go module, then the corpus files against MANIFEST.json once it is
-# present, the coverage data, and MANIFEST.json against the coverage data and git, and runs
-# lint-context and lint-references. Writes nothing but Go's caches.
+# present, the coverage data, the measurement list against the coverage data, and MANIFEST.json
+# against the coverage data, the measurement list, and git, and runs lint-context and
+# lint-references. Writes nothing but Go's caches.
 # See docs/coverage.md
 # See architecture/standards/go-elemental/principles/release-and-ci.md
 set -euo pipefail
@@ -75,13 +76,6 @@ if [ -f MANIFEST.json ]; then
         echo x
       done | grep -q x && fail=1
   fi
-
-  while read -r duplicate; do
-    err "samples share a format and scenarios: $duplicate; trim all but one with mise run dispose, then mise run manifest > MANIFEST.json"
-  done < <(jq -r '
-    [.files[] | select(.role == "sample")
-      | {key: ([.format] + ((.covers // []) | sort) | join(" ")), path}]
-    | group_by(.key)[] | select(length > 1) | map(.path) | join(", ")' MANIFEST.json)
 fi
 
 stop_if_failed() {
@@ -96,9 +90,9 @@ report() {
   local problem
   while read -r problem; do
     if [ -n "$problem" ]; then
-      err "$coverage: $problem"
+      err "$1: $problem"
     fi
-  done <<<"$1"
+  done <<<"$2"
 }
 
 coverage=${COVERAGE:-docs/coverage.json}
@@ -160,7 +154,7 @@ else
             or (.reason | type) != "string" or .reason == "")
         | "samples[\($i)].breaks: \(.standard | tojson) needs the opening of a STANDARDS.md bullet, verbatim, as standard, and a reason")
   ' --rawfile standards STANDARDS.md "$coverage"); then
-    report "$problems"
+    report "$coverage" "$problems"
   else
     err "$coverage: jq could not read it; it must be JSON with a vocabulary of library, trait, and feature objects"
   fi
@@ -218,6 +212,9 @@ else
                 ([$adopted[] | select(.path != $for and (. as $a | $by[$path] | within($a)) and rank < ($by[$for] | rank))][0].path // empty)
                 | "\($path): \(.) also covers its scenarios and wins the tie-break over \($for); name \(.)"
               end
+          elif .disposition == "measure" then
+            select(has("trimmed_for") or has("gap"))
+            | "\(.path): a measured sample names no trimmed_for or gap; remove them"
           elif .disposition == "replace" then
             if has("trimmed_for") then "\(.path): a replace names no trimmed_for; remove it"
             elif $gaps[.gap // ""] == null then "\(.path): gap \(.gap) is not in .gaps; add it there with the covers it must exercise"
@@ -225,13 +222,15 @@ else
               "\(.path): gap \(.gap)\u0027s covers lack \(covers - $gaps[.gap].covers | join(", ")); add them to the gap or name a gap that has them"
             else empty end
           else
-            "\(.path): has no disposition; set disposition to adopt, trim with trimmed_for, or replace with gap"
+            "\(.path): has no disposition; set disposition to adopt, trim with trimmed_for, replace with gap, or measure"
           end),
       ($samples[] | select(.disposition != "trim" and (.breaks // []) != [])
         | "\(.path): breaks \(.breaks[0].standard | tojson), so it is trimmed; run mise run dispose"),
       ($adopted[]
         | select(.redistributable != true or .sensitive == true)
         | "\(.path): is adopted but \(if .sensitive == true then "sensitive" else "not redistributable" end); replace it with a gap, or trim it for an adopted sample that covers it"),
+      ($samples[] | select(.disposition == "measure" and (.redistributable != true or .sensitive == true))
+        | "\(.path): is measured but \(if .sensitive == true then "sensitive" else "not redistributable" end); remove it from docs/measurements.json, then run mise run dispose"),
       ($adopted | group_by([.format, covers])[] | select(length > 1)
         | "\(map(.path) | join(", ")): adopted samples share a format and covers; keep the one the tie-break prefers and trim the rest for it"),
       ($adopted[] as $a | $adopted[]
@@ -248,7 +247,7 @@ else
             "gaps.\(.id).covered_by: \($by_path)\u0027s covers lack \(.covers - ($by[$by_path] | covers) | join(", ")); run mise run dispose"
           else empty end)
   ' --slurpfile fetched docs/candidates.json --slurpfile placed docs/corpus-placement.json "$coverage"); then
-    report "$problems"
+    report "$coverage" "$problems"
   else
     err "$coverage: jq could not check its dispositions; each sample needs library, traits, features, and disposition fields, and docs/candidates.json and docs/corpus-placement.json must be JSON arrays"
   fi
@@ -310,7 +309,7 @@ else
         | select(IN($exercised[]) | not) | select(IN($gapped[]) | not)
         | "vocabulary: \(.) is exercised by no adopted sample and is in no gap\u0027s covers; adopt a sample that exercises it, or add it to a gap\u0027s covers")
   ' --slurpfile fetched docs/candidates.json "$coverage"); then
-    report "$problems"
+    report "$coverage" "$problems"
   else
     err "$coverage: jq could not check its gaps; each gap needs an id, covers, and a candidate, and docs/candidates.json must be a JSON array"
   fi
@@ -344,11 +343,74 @@ else
           | select(IN($linked[]) | not)
           | "\(.): a \($ref) truth or doc file no sample links; add it to its sample\u0027s truth or docs, or to docs_without_sample with its handling")
     ' --arg ref "$reference" "$coverage"); then
-      report "$problems"
+      report "$coverage" "$problems"
     else
       err "$coverage: jq could not compare it with $reference; both must be JSON, the reference with a files array"
     fi
   fi
+fi
+
+stop_if_failed
+
+measurements=${MEASUREMENTS:-docs/measurements.json}
+if [ ! -f "$measurements" ]; then
+  err "$measurements: missing; restore docs/measurements.json from git, or point MEASUREMENTS at the measurement list"
+elif problems=$(jq -r --slurpfile coverage "$coverage" '
+  def text: type == "string" and . != "";
+  def name($i): if (.id? | text) then .id else "[\($i)]" end;
+  ($coverage[0].samples // []) as $samples
+  | ($samples | map({key: .path, value: .}) | from_entries) as $by_path
+  | ($samples | map(.path as $p | .truth[]? | {key: ., value: $p}) | group_by(.key)
+      | map({key: .[0].key, value: map(.value)}) | from_entries) as $truth_of
+  | if type != "array" then
+      "is not an array; list each measurement there as an object, or [] when there are none"
+    else
+      (to_entries[] | .key as $i | .value
+        | if type != "object" then
+            "[\($i)]: is not an object; give each measurement its id, repository, acceptance, summary, needs_truth, and inputs"
+          else
+            name($i) as $m | (.needs_truth == true) as $needs_truth
+            | (select((.id | text) | not)
+                | "\($m): needs an id; give each measurement an id of its own"),
+              (keys[] | select(IN("id", "repository", "acceptance", "summary", "needs_truth", "inputs") | not)
+                | "\($m).\(.): is not a measurement field; remove it, since MANIFEST.json and docs/coverage.json hold its inputs\u0027 facts"),
+              (select((.repository | IN("docproc", "docinfer")) and (.acceptance | text) | not)
+                | "\($m): needs its acceptance section; set repository to docproc or docinfer, and acceptance to the heading of the docs/acceptance.md section it reruns"),
+              (select((.summary | text) | not)
+                | "\($m): needs a one-line summary; say what it measures"),
+              (select(.needs_truth | type != "boolean")
+                | "\($m).needs_truth: is not true or false; say whether its inputs need truth"),
+              (if (.inputs | type) != "array" or .inputs == [] or any(.inputs[]; text | not) then
+                "\($m): needs its inputs; list the corpus paths it reads, each a sample or truth file in docs/coverage.json"
+              else
+                .inputs[] as $p | $by_path[$p] as $s | ($truth_of[$p] // [] | map($by_path[.])) as $owners
+                | if $s == null and $owners == [] then
+                    "\($m).inputs: \($p) is neither a sample nor a truth file in docs/coverage.json; name an input by its path there"
+                  else
+                    (select(($s != null and $s.redistributable != true) or ($s == null and all($owners[]; .redistributable != true)))
+                      | "\($m).inputs: \($p) is not redistributable; remove it, and measure a redistributable input instead"),
+                    (select($s.sensitive == true or any($owners[]; .sensitive == true))
+                      | "\($m).inputs: \($p) is sensitive; remove it, and measure an input that is not"),
+                    ($s.breaks[0]? // empty
+                      | "\($m).inputs: \($p) breaks \(.standard | tojson); remove it, and measure an input that breaks no standard"),
+                    (select($needs_truth and $owners == [] and ($s.truth // []) == [])
+                      | "\($m).inputs: \($p) has no truth, and \($m) needs truth; measure an input whose docs/coverage.json entry lists its truth")
+                  end
+              end)
+          end),
+      (map(.id? | select(text)) | group_by(.)[] | select(length > 1)
+        | "\(.[0]) appears \(length) times; give each measurement its own id"),
+      ([.[] | objects | .inputs | arrays[]] as $listed
+        | $samples[]
+        | select((.disposition == "measure" and (IN(.path; $listed[]) | not))
+            or (.disposition == "trim" and IN(.path; $listed[])
+              and .redistributable == true and .sensitive != true and (.breaks // []) == []))
+        | "\(.path): \(if .disposition == "measure" then "disposed measure, but no measurement lists it" else "a measurement lists it, but it is trimmed" end); run mise run dispose")
+    end
+' "$measurements"); then
+  report "$measurements" "$problems"
+else
+  err "$measurements: jq could not read it; it must be a JSON array of measurements, or [] when there are none"
 fi
 
 stop_if_failed
@@ -361,10 +423,15 @@ if [ -f MANIFEST.json ]; then
     def covers: (.library + (.traits // []) + (.features // [])) | unique;
     ($coverage[0].vocabulary | [.library, .trait, .feature] | map(keys) | add) as $ids
     | ($coverage[0].samples | map(select(.disposition == "adopt") | {key: .path, value: covers}) | from_entries) as $adopted
+    | ($coverage[0].samples | map(select(.disposition == "measure") | {key: .path, value: covers}) | from_entries) as $measured
+    | ($measurements[0] | map(.id)) as $measurement_ids
+    | ($measurements[0] | map(.id as $id | .inputs | unique[] | {key: ., value: $id}) | group_by(.key)
+        | map({key: .[0].key, value: map(.value) | sort}) | from_entries) as $read_by
     | ($coverage[0].gaps | map({key: .id, value: .}) | from_entries) as $gaps
     | ([$coverage[0].gaps[] | select(.candidate.kind == "generated") | .candidate.inputs[]?]) as $inputs
     | ($tracked | map({key: ., value: true}) | from_entries) as $in_git
     | [.files[] | select(.role == "sample")] as $samples
+    | [$samples[] | select($measured[.path] == null)] as $kept
     | (.files | map({key: .path, value: .}) | from_entries) as $by_path
     | (select(.version != 1)
         | "MANIFEST.json: version is \(.version | tojson), not 1; \($regenerate)"),
@@ -373,7 +440,7 @@ if [ -f MANIFEST.json ]; then
       (.files[] | select(.role != "sample" and .license_status == "reported")
         | "\(.path): a \(.role) file whose license is only reported; read it at its source, add the reading to docs/license-readings.json, and \($regenerate)"),
       ($samples[] | select((has("gap") | not) and ((.license_url // "") == "" or (.license_read // "") == ""))
-        | "\(.path): an adopted sample without license_url and license_read; read its license at its source, add the reading to docs/license-readings.json, and \($regenerate)"),
+        | "\(.path): an adopted or measured sample without license_url and license_read; read its license at its source, add the reading to docs/license-readings.json, and \($regenerate)"),
       (.files[] | select(.role != "sample" and ((.license_url // "") == "" or (.license_read // "") == ""))
         | "\(.path): a \(.role) file without license_url and license_read; read its license at its source, add the reading to docs/license-readings.json, and \($regenerate)"),
       (.files[] | .path as $p | (.covers // [])[] | select(IN($ids[]) | not)
@@ -382,14 +449,29 @@ if [ -f MANIFEST.json ]; then
         | "\(.path): a sample file is tracked by git, but samples are release assets; run git rm --cached -- \(.path | @sh)"),
       (.files[] | select(.role != "sample" and ($in_git[.path] | not))
         | "\(.path): a \(.role) file is not tracked by git; run git add -f -- \(.path | @sh)"),
-      ($samples[] | select(has("gap") | not) | select($adopted[.path] == null)
-        | "\(.path): a sample that is not adopted in docs/coverage.json; \($regenerate)"),
+      ($samples[] | select(has("gap") | not) | select($adopted[.path] == null and $measured[.path] == null)
+        | "\(.path): a sample that is neither adopted nor measured in docs/coverage.json; \($regenerate)"),
       ($samples | map(.path)) as $listed
-      | ($adopted | keys[] | select(IN($listed[]) | not)
-        | "\(.): adopted in docs/coverage.json but not a sample in MANIFEST.json; \($regenerate)"),
-      ($samples[] | select($adopted[.path] != null and ((.covers // []) | unique) != $adopted[.path])
+      | ($adopted + $measured | to_entries[] | select(IN(.key; $listed[]) | not)
+        | "\(.key): \(if $measured[.key] != null then "measured" else "adopted" end) in docs/coverage.json but not a sample in MANIFEST.json; \($regenerate)"),
+      ($samples[] | (($adopted + $measured)[.path]) as $c | select($c != null and ((.covers // []) | unique) != $c)
         | "\(.path): covers differ from docs/coverage.json\u0027s; \($regenerate)"),
-      ($samples[] as $outer | $samples[]
+      ($kept | map({key: ([.format] + ((.covers // []) | sort) | join(" ")), path})
+        | group_by(.key)[] | select(length > 1) | map(.path) | join(", ")
+        | "samples share a format and scenarios: \(.); trim all but one with mise run dispose, then \($regenerate)"),
+      (.files[] | select(has("measures")) | .path as $p | .measures
+        | if type != "array" or . == [] or any(.[]; type != "string") then
+            "\($p).measures: is not a non-empty array of measurement ids; \($regenerate)"
+          elif any(.[]; IN($measurement_ids[]) | not) then
+            "\($p).measures: \(map(select(IN($measurement_ids[]) | not)) | join(", ")) is no measurement in docs/measurements.json; \($regenerate)"
+          elif . != ($read_by[$p] // []) then
+            "\($p).measures: \(join(", ")) differs from the measurements that list it in docs/measurements.json, \($read_by[$p] // [] | join(", ")); \($regenerate)"
+          else empty end),
+      (.files[] | select((has("measures") | not) and $read_by[.path] != null)
+        | "\(.path): read by \($read_by[.path] | join(", ")) in docs/measurements.json, but it has no measures; \($regenerate)"),
+      ($read_by | keys[] | select($by_path[.] == null)
+        | "docs/measurements.json: \(.) is read by \($read_by[.] | join(", ")), but is no file in MANIFEST.json; if it is a truth file, also list a sample that owns it, then run mise run dispose, then \($regenerate)"),
+      ($kept[] as $outer | $kept[]
         | select(.path != $outer.path and (((.covers // []) - ($outer.covers // [])) == [])
             and ((.format == $outer.format and ((.covers // []) | unique) == (($outer.covers // []) | unique)) | not)
             and (IN(.path; $inputs[]) | not))
@@ -430,7 +512,7 @@ if [ -f MANIFEST.json ]; then
             .value | keys[] | select(IN($ids[]) | not)
             | "docs/judged.json: \($p): \(.) is not in docs/coverage.json\u0027s vocabulary; judge an ID the vocabulary defines"
           end)
-  ' --slurpfile judged docs/judged.json --slurpfile placed docs/corpus-placement.json MANIFEST.json); then
+  ' --slurpfile judged docs/judged.json --slurpfile placed docs/corpus-placement.json --slurpfile measurements "$measurements" MANIFEST.json); then
     while read -r problem; do
       if [ -n "$problem" ]; then
         err "$problem"

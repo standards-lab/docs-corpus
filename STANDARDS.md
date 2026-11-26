@@ -3,9 +3,13 @@
 The judgement calls the standards-reviewer applies, beyond what `scripts/check.sh` enforces.
 
 - A sample stays only while it exercises a scenario in the underlying libraries that no other
-  sample covers. A generated sample's recorded inputs are the exception: they stay beside it, as
+  sample covers. There are two exceptions. A generated sample's recorded inputs stay beside it, as
   msg_36.eml does beside email-8 and old_scans-69.pdf beside pdf-2, because a generated sample must
-  be rebuildable from v0.1.0.
+  be rebuildable from v0.1.0. A measurement input, a redistributable file that a measurement in
+  [`docs/measurements.json`](docs/measurements.json) reads, stays while that measurement lists it,
+  even when another sample covers its scenarios, because the measurement reruns over it. It is
+  still realistic and sourced, and its license is still read at its source, as the standards below
+  require.
 - A sample's content is realistic: real-language text and images at the density and count a real
   document of its kind holds. Filler (pseudo-words, random characters, repeated or templated
   pages) and timing or stress inputs stay out of the corpus, which measures accuracy, where a

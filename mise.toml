@@ -28,7 +28,7 @@ description = "Print docs/coverage.json with every sample's disposition derived 
 run = "go run ./tools/coverage/cmd/dispose"
 
 [tasks.manifest]
-description = "Print MANIFEST.json from docs/coverage.json, docs/license-readings.json, and ~/docs' manifest with tools/coverage's manifest; --copy first copies every file it lists from ~/docs into place"
+description = "Print MANIFEST.json from docs/coverage.json, docs/license-readings.json, docs/measurements.json, and ~/docs' manifest with tools/coverage's manifest; --copy first copies every file it lists from ~/docs into place"
 run = "go run ./tools/coverage/cmd/manifest"
 
 [tasks.pack]

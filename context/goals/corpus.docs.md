@@ -10,10 +10,36 @@
 2. [x] curate
 3. [x] docproc-final
 4. [x] snapshot
-5. [ ] baseline
+5. [x] measurement-set
+6. [ ] truth
+7. [ ] snapshot-2
+8. [ ] baseline
 
 ## Decisions
 
+- truth: writes the seven measurements' entries first, then copies about 80 inputs with
+  `mise run manifest --copy`; ~/docs and `~/runs/docs-corpus/docproc-final/{docs,corpus}` are
+  deleted only after truth merges.
+- baseline: waits for v1.ai.hosting's acceptance to merge; runs on the laptop over every file in
+  v0.2.0's areas; docinfer goes through the gateway's `docinfer` key at the caps acceptance leaves;
+  a run with any Azure fallback is rerun.
+- baseline: records `docs/baseline.md`, one section per tag, the raw runs in
+  `~/runs/docs-corpus/baseline/<tag>`; it releases no tag of its own.
+- baseline: replaces both acceptance pages' whole-corpus run sections with the v0.2.0 runs and
+  reruns PDF page text, the vision re-probe, and its confirmation; the other targeted sections
+  stay, dated to the retired ~/docs pool, their reruns a backlog goal. This overrides
+  docproc-final's "as they closed" for those sections.
+- baseline: rewrites docproc's STANDARDS.md ~/docs gloss, puts the testdata READMEs' origins in the
+  past tense, corrects sevenzip's testdata README, reruns payload-measurement; commits docinfer's
+  `~/runs/docinfer/tools` scripts; rebuilds ai-hosting's bench dense pages from its docproc run.
+- baseline: deletes ~/docs outright, with no archive, and every run built from it, once a workspace
+  grep finds nothing live reading them; the closed spikes stay as they closed.
+- baseline: held gotenberg at 9.10.1-libreoffice: 9.10.2 changes nothing docproc uses, and
+  docproc releases after v0.9.0 go to a later corpus goal.
+- baseline: supplies the v0.2.0 times that the data-intelligence pending edit states inline.
+- baseline: before removing ~/docs, commits the ~/docs manifest rows the corpus's samples need,
+  so `mise run manifest` regenerates without ~/docs, and retires `place-library`, `place-traits`
+  without `--corpus`, and the check's ~/docs comparisons (round 1, question 9).
 - snapshot: gb10-2 holds the verified v0.1.0 checkout at `~/docs-corpus` (tag commit `8873b89`),
   cloned anonymously and fetched from the release; its check ended "All checks passed."
 - snapshot: the release assets are uploaded while private; docs-corpus goes public with its
@@ -24,9 +50,6 @@
   (archive-8, pdf-7, `archive/high-ratio-200mb.zip`, `text/json/deeply-nested-64.json`) and
   `text/csv/tab-separated.tsv` (real city names, random values); it rejects scale, stress, and
   timing inputs whose content is templated, random, or pseudo-words.
-- docproc-final: place-library and `place-traits --corpus` reread the placements' runs, in
-  `~/runs/docs-corpus/docproc-final/docs` and `.../corpus`, so baseline keeps them until v0.1.0
-  is final.
 - plan: docproc releases after v0.9.0, docproc-coverage's last, go to a later corpus goal.
 - curate: the vocabulary's links stay pinned to docproc `48216e1`; an ID a newer run adds links to
   that run's release.
@@ -40,14 +63,12 @@
   acceptable in the public corpus when it ships unmodified with its license.
 - review: `mise run place-traits` then `mise run dispose` rebuild coverage.json; a later task
   changes placements or dispositions through them, never by hand.
-- plan: ~/docs is never changed. It is the reference for a corpus built from scratch in
-  docs-corpus.
+- plan: ~/docs is never changed before baseline removes it. It is the reference for a corpus
+  built from scratch in docs-corpus.
 - plan: snapshot publishes one release, v0.1.0, from the set docproc-final re-curated.
   docs-corpus stays private until then, and snapshot makes it public.
 - plan: acceptance runs cite the release tag, such as v0.1.0; `MANIFEST.json`'s `version` is the
   schema version, 1, not a release.
-- plan: once docs-corpus v0.1.0 is final, the baseline task reruns docproc and docinfer over it,
-  repoints the acceptance citations, and removes ~/docs.
 - plan: the corpus has no size cap.
 
 ## Pending edits
@@ -55,27 +76,36 @@
 - coordinator · `context/docs-corpus.md`: add the corpus note. It says that docs-corpus holds the
   real workloads' corpus: redistributable samples in ten format areas, each with its source,
   license, truth, and scenarios in `MANIFEST.json`. It says how the corpus changes: a goal's task
-  adds, replaces, or drops samples under docs-corpus's STANDARDS.md, regenerates the manifest and
-  coverage with its `mise` tasks, never by hand, and releases the change under a new version tag,
-  since a released tag is never re-cut. It says how the corpus is shared: the repository is public,
-  each version tag's release assets hold the sample files, one tar per format area, from v0.1.0,
-  and `mise run fetch` places them in a checkout once each matches the manifest. It says that
-  gb10-2 holds the verified v0.1.0 checkout at `~/docs-corpus`. It links to docs-corpus's
-  [README.md](https://github.com/standards-lab/docs-corpus/blob/main/README.md) and
-  [docs/coverage.md](https://github.com/standards-lab/docs-corpus/blob/main/docs/coverage.md)
-  rather than restating the manifest, the fetch, the scenarios, or the gaps. `context/README.md`'s
-  Notes gains, after `data-intelligence.md`: "- `docs-corpus.md` — the real workloads' corpus: what
-  it holds, how it changes, how it is shared, and the verified checkout on gb10-2."
+  adds, replaces, or drops samples under docs-corpus's STANDARDS.md, and releases the change under
+  a new version tag, since a released tag is never re-cut. A sample stays when it exercises a
+  scenario no other sample covers, or when a measurement in `docs/measurements.json` reads it. The
+  manifest and coverage are never edited by hand: its `mise` tasks regenerate them, without
+  `~/docs`, which baseline removed. It says how the corpus is shared: the repository is public, each version
+  tag's release assets hold the sample files, one tar per format area, from v0.1.0, and
+  `mise run fetch` places them in a checkout once each matches the manifest. It says that gb10-2
+  holds the verified v0.2.0 checkout at `~/docs-corpus`, and that docs-corpus's `docs/baseline.md`
+  records docproc's and docinfer's baseline runs over it. It links to docs-corpus's
+  [README.md](https://github.com/standards-lab/docs-corpus/blob/main/README.md),
+  [docs/coverage.md](https://github.com/standards-lab/docs-corpus/blob/main/docs/coverage.md), and
+  [docs/baseline.md](https://github.com/standards-lab/docs-corpus/blob/main/docs/baseline.md)
+  rather than restating the manifest, the fetch, the scenarios, the gaps, the measurements, or the
+  times. `context/README.md`'s Notes gains, after `data-intelligence.md`: "- `docs-corpus.md` —
+  the real workloads' corpus: what it holds, how it changes, how it is shared, the verified
+  checkout on gb10-2, and the baseline."
 - coordinator · `references.md`, the docs-corpus entry: replace its last sentence, "It is built
   from scratch, with the local pool at `~/docs` as its reference, and becomes public when v1 is
-  published.", with "It is built from scratch, with the local pool at `~/docs` as its reference.
+  published.", with "It was built from scratch, with the local pool at `~/docs` as its reference.
   The repository is public, and its files are release assets from v0.1.0."
-- coordinator · `roadmap/corpus.docs.toml`: replace "v1" with v0.1.0 in `criteria` ("docs-corpus
-  v0.1.0 is tagged with its release assets, and its check passes over it.", "Every sample in
-  v0.1.0 exercises a library scenario no other sample covers.", "gb10-2 holds a verified fetch of
-  v0.1.0.", "docproc's and docinfer's runs over v0.1.0 are the capstone's baseline, their
-  acceptance cites v0.1.0, and ~/docs is removed."), in `[tasks.snapshot]`'s summary ("Tags
-  v0.1.0, publishes …") and proof ("A fresh fetch at v0.1.0 on gb10-2 passes the check."), and in
-  `[tasks.baseline]`'s summary ("Runs `docproc` and `docinfer` over v0.1.0 …, repoints docproc's
-  and docinfer's acceptance citations to v0.1.0, and removes ~/docs."); also the goal's `summary`
-  ("Once v0.1.0's reruns repoint …") and `[tasks.snapshot]`'s name ("Snapshot v0.1.0").
+- coordinator · `context/data-intelligence.md`: replace the integration root's "the acceptance run
+  over ~/docs (592 files, 1.7 GB), measured against docinfer's baseline: 6.0 h, and a 3.1 s rerun"
+  with the acceptance run over docs-corpus v0.2.0, measured against the v0.2.0 times stated inline
+  and linking docs-corpus's
+  [docs/baseline.md](https://github.com/standards-lab/docs-corpus/blob/main/docs/baseline.md);
+  replace v1.ai.hosting's "a ~/docs-scale run" with "a run over docs-corpus v0.2.0".
+  `roadmap/capstone.data-intelligence.toml`: replace the summary's "the ~/docs acceptance run" with
+  "the acceptance run over docs-corpus v0.2.0, measured against its baseline".
+- coordinator · `roadmap/corpus-measurement-reruns.toml`: create the backlog goal (repos docproc
+  and docinfer): rerun the targeted acceptance sections that baseline leaves dated to the retired
+  `~/docs` pool (docproc's Word error rate, PDF pages in shared gs processes, Peak memory, and the
+  office-and-mail run; docinfer's Transcription) over docs-corpus's measurement inputs, and cite
+  the docs-corpus tag in each. `roadmap/index.toml`: add it to `backlog`.

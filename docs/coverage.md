@@ -57,6 +57,9 @@ one disposition in `.samples`, its `disposition` field:
   sample.
 - **replace**: the sample can't be adopted, and a gap entry takes over its scenarios. `gap` names
   that gap.
+- **measure**: a measurement in [`measurements.json`](measurements.json) lists the sample, and an
+  adopted sample already covers its scenarios. It stays in the corpus for that measurement, as
+  [Measurements](#measurements) states, and names no `trimmed_for` or `gap`.
 
 Following [`STANDARDS.md`](../STANDARDS.md), a sample is trimmed when one adopted sample's covers
 contain all of its covers, whatever that sample's format. No two
@@ -78,6 +81,13 @@ Only a redistributable sample that isn't sensitive is adopted. Any other sample 
 adopted sample covers all of its scenarios, and replaced otherwise. The gap candidates in the
 corpus count as adopted samples for trims, so a trim can name a candidate, as
 [Candidates in the corpus](#candidates-in-the-corpus) states.
+
+A listed sample that would be trimmed is measured instead, and a listed sample with a scenario no
+other sample covers stays adopted. A measured sample doesn't count as adopted: no trim or gap's
+`covered_by` names it, and the check counts it toward no vocabulary ID's coverage. Every other
+sample's disposition, and every gap, is therefore the same as without the list. A listed sample
+that isn't redistributable, is sensitive, or has a break can't be measured, and `dispose` fails
+naming it.
 
 ### Breaks
 
@@ -383,30 +393,78 @@ To count the dispositions and gaps, run:
 jq '(.samples | group_by(.disposition) | map({(.[0].disposition): length}) | add) + {gaps: (.gaps | length)}' docs/coverage.json
 ```
 
+## Measurements
+
+[`measurements.json`](measurements.json) is the measurement list: the targeted acceptance
+measurements in docproc and docinfer that rerun over corpus inputs. It is written by hand, and is
+empty. A measurement input is a `~/docs` sample, or a truth file, that a listed measurement reads.
+As [`STANDARDS.md`](../STANDARDS.md) allows, it stays in the corpus while a measurement lists it,
+even when another sample covers its scenarios. The list is the only way a sample enters the corpus
+for a measurement: `dispose` gives a listed sample it would otherwise trim the `measure`
+disposition.
+
+The list is a JSON array, `[]` when it is empty, with one object per measurement:
+
+- `id`: the measurement's own id.
+- `repository`: `docproc` or `docinfer`, the repository whose acceptance it reruns.
+- `acceptance`: the heading of the section it reruns in that repository's `docs/acceptance.md`,
+  such as `Word error rate`.
+- `summary`: one line saying what it measures.
+- `needs_truth`: `true` when its inputs need truth, else `false`.
+- `inputs`: the corpus paths it reads, each a sample's `path` in [`coverage.json`](coverage.json)
+  or a truth file a sample there lists in its `truth`.
+
+An entry names its inputs by path and holds no other facts about them: the manifest and
+`coverage.json` hold those. `scripts/check.sh` reads `docs/measurements.json`, or the copy the
+`MEASUREMENTS` environment variable names, after the coverage data passes. It fails when:
+
+- the file is missing, isn't JSON, or isn't an array, or an entry isn't an object;
+- an entry lacks its id, or two entries share an id;
+- an entry has a field other than these six;
+- an entry lacks its repository or its acceptance section, its summary, or a boolean
+  `needs_truth`;
+- an entry lists no inputs, or an input that isn't a path;
+- an input is neither a sample nor a truth file in `coverage.json`;
+- an input isn't redistributable, is sensitive, or carries a break. A truth file takes these facts
+  from the samples that list it: it isn't redistributable when none of them is, and it is
+  sensitive when one of them is;
+- a measurement that needs truth lists a sample without truth;
+- a sample is measured but no measurement lists it, or a measurement lists a sample that is
+  trimmed though it could be measured.
+
+Each failure message names its fix.
+
 ## The manifest
 
-[`MANIFEST.json`](../MANIFEST.json) lists each adopted sample and each candidate in the corpus,
-with its `covers`: its `library`, `traits`, and `features` IDs together, sorted. It also lists
-the truth and doc files the samples link, as [README.md](../README.md#the-manifest) describes.
-`mise run manifest` builds it from this data, so the inventory and the scenario index agree.
+[`MANIFEST.json`](../MANIFEST.json) lists each adopted or measured sample and each candidate in
+the corpus, with its `covers`: its `library`, `traits`, and `features` IDs together, sorted. It
+also lists the truth and doc files the samples link, as [README.md](../README.md#the-manifest)
+describes. Each sample or truth file a measurement reads names, in `measures`, the ids of the
+measurements in [`measurements.json`](measurements.json) that list it. `mise run manifest` builds
+it from this data and the measurement list, so the inventory and the scenario index agree.
 `scripts/check.sh` checks the manifest before the data. It fails when:
 
 - a listed file is missing, or its size or sha256 differs from its entry;
-- a file under a format directory isn't listed;
-- two samples share a format and covers.
+- a file under a format directory isn't listed.
 
-After the data passes, it checks the manifest against the data and git. It fails when:
+After the data and the measurement list pass, it checks the manifest against them and git. It
+fails when:
 
 - the manifest's `version` isn't 1, or an entry's role isn't sample, truth, or doc;
-- an adopted sample lacks `license_url` or `license_read`, the reading of its license at its
-  source that [`docs/license-readings.json`](license-readings.json) records;
+- an adopted or measured sample lacks `license_url` or `license_read`, the reading of its license
+  at its source that [`docs/license-readings.json`](license-readings.json) records;
 - an entry's `covers` ID isn't in the vocabulary;
 - git tracks a sample file, or doesn't track a truth or doc file;
-- a manifest sample that isn't a candidate isn't adopted in this data, or an adopted sample here
-  isn't a sample in the manifest;
-- an adopted sample's covers differ from its covers in this data;
-- a sample's covers lie inside another sample's, whatever the format, unless a generated
-  candidate lists it in its `inputs`, as [`STANDARDS.md`](../STANDARDS.md) allows;
+- a manifest sample that isn't a candidate is neither adopted nor measured in this data, or an
+  adopted or measured sample here isn't a sample in the manifest;
+- an adopted or measured sample's covers differ from its covers in this data;
+- two samples that aren't measured share a format and covers;
+- an entry's `measures` isn't a non-empty list of ids in the measurement list, or differs from the
+  sorted ids of the measurements that list its path;
+- a file a measurement lists has no `measures`, or isn't in the manifest;
+- a sample that isn't measured has covers that lie inside another such sample's, whatever the
+  format, unless a generated candidate lists it in its `inputs`, as
+  [`STANDARDS.md`](../STANDARDS.md) allows;
 - a candidate's gap has no sourced or generated candidate, or is `covered_by` another sample;
 - a candidate's provenance differs from its gap's candidate's;
 - a sourced candidate has truth, or a generated one has truth that isn't its inputs';
@@ -453,10 +511,11 @@ variable names. It fails when:
   no inputs, or an input that isn't an adopted sample;
 - an unavailable candidate lacks what was searched or the reason;
 - a vocabulary ID is exercised by no adopted sample and is in no gap's covers;
-- an adopted sample isn't redistributable or is sensitive;
+- an adopted or measured sample isn't redistributable or is sensitive;
 - two adopted samples share a format and a covers set, or one adopted sample's covers lie inside
   another's or equal another's that wins the tie-breaks. The candidates in the corpus count as
-  adopted samples here, and a generated candidate's inputs are exempt;
+  adopted samples here, a generated candidate's inputs are exempt, and measured samples are
+  skipped;
 - a gap's `covered_by` names neither an adopted sample nor a candidate in the corpus, or one whose
   covers lack the gap's;
 - a `~/docs` sample is missing from `.samples`, or its entry's sha256 differs from the manifest's;

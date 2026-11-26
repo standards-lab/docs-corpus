@@ -16,8 +16,9 @@ import (
 // Dispose reads docs/coverage.json, relative to the working directory, and writes it to stdout
 // with every disposition derived by disposition.Dispose, indented by two spaces, with no HTML
 // escaped, and a newline. The candidates it places are those docs/candidates.json records that
-// docs/corpus-placement.json places, with the covers placed there. A key disposition.Coverage does
-// not define is an error. args are the command line's arguments without the program's name:
+// docs/corpus-placement.json places, with the covers placed there, and the measurements are
+// docs/measurements.json's. A key disposition.Coverage or disposition.Measurement does not define
+// is an error. args are the command line's arguments without the program's name:
 // --placement <file> first sets the traits and features from that place-traits output, as
 // disposition.Place does. It names each gap that may be dropped on stderr. An error writes nothing
 // to stdout.
@@ -52,7 +53,11 @@ func Dispose(args []string, stdout, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
-	droppable, err := disposition.Dispose(&coverage, placed)
+	var measurements []disposition.Measurement
+	if err := decodeStrict("docs/measurements.json", &measurements); err != nil {
+		return err
+	}
+	droppable, err := disposition.Dispose(&coverage, placed, measurements)
 	if err != nil {
 		return err
 	}

@@ -7,8 +7,10 @@
 //     [LibraryPlacement], [CorpusPlacement], [Sample]s and the [Break]s of a standard each
 //     records, [Gap]s and their [Candidate]s, and [DocWithoutSample]s; [FedBy] is a capability's
 //     routes.
+//   - [Measurement] is one entry of docs/measurements.json, the measurement list.
 //   - [Dispose] derives the dispositions in the coverage data, with the gap candidates the
-//     corpus placement places, as [Placed] values, trims each sample that records a [Break], and
+//     corpus placement places, as [Placed] values, trims each sample that records a [Break],
+//     gives the measure disposition to each sample a [Measurement] lists that it would trim, and
 //     splits each gap a candidate's covers don't confirm.
 //   - [Placement] is one element of place-traits' output, and [Place] sets the data's traits and
 //     features from it.

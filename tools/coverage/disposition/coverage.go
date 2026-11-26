@@ -107,7 +107,7 @@ type Sample struct {
 	Truth []string `json:"truth"`
 	// Docs are its doc files' paths.
 	Docs []string `json:"docs"`
-	// Disposition is adopt, trim, or replace.
+	// Disposition is adopt, trim, replace, or measure.
 	Disposition string `json:"disposition"`
 	// TrimmedFor, for a trim, is the adopted sample that covers it.
 	TrimmedFor string `json:"trimmed_for,omitempty"`
@@ -202,4 +202,21 @@ type Placed struct {
 	Covers []string
 	// TruthFrom, for a generated candidate, is the input whose truth it inherits unchanged.
 	TruthFrom string
+}
+
+// Measurement is one entry of docs/measurements.json: a targeted acceptance measurement in docproc
+// or docinfer that reruns over corpus inputs.
+type Measurement struct {
+	// ID names it.
+	ID string `json:"id"`
+	// Repository is docproc or docinfer, the repository whose acceptance it reruns.
+	Repository string `json:"repository"`
+	// Acceptance is the heading of the acceptance section it reruns in that repository.
+	Acceptance string `json:"acceptance"`
+	// Summary is one line saying what it measures.
+	Summary string `json:"summary"`
+	// NeedsTruth is whether its inputs need truth.
+	NeedsTruth bool `json:"needs_truth"`
+	// Inputs are the corpus paths it reads, each a sample's path or a truth file a sample lists.
+	Inputs []string `json:"inputs"`
 }

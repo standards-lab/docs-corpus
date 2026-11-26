@@ -5,6 +5,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -27,6 +28,7 @@ func noCandidates(t *testing.T, dir string) {
 	t.Helper()
 	write(t, filepath.Join(dir, "docs", "candidates.json"), `[]`)
 	write(t, filepath.Join(dir, "docs", "corpus-placement.json"), `[]`)
+	write(t, filepath.Join(dir, "docs", "measurements.json"), `[]`)
 }
 
 func TestDisposeWritesTheDisposedData(t *testing.T) {
@@ -65,6 +67,7 @@ func TestDisposeWithCandidatesTrimsForThemAndSplitsTheirGaps(t *testing.T) {
 	write(t, filepath.Join(dir, "docs", "candidates.json"), `[{"gap": "g1", "path": "x/c", "source": "s", "sha256": "h", "bytes": 2, "format": "f", "format_by": "file-5"},
 		{"gap": "g9", "path": "x/unplaced", "source": "s", "sha256": "h", "bytes": 2, "format": "f", "format_by": "file-5"}]`)
 	write(t, filepath.Join(dir, "docs", "corpus-placement.json"), `[{"path": "x/c", "covers": ["kind:x", "kind:y"]}]`)
+	write(t, filepath.Join(dir, "docs", "measurements.json"), `[]`)
 	t.Chdir(dir)
 	var stdout, stderr bytes.Buffer
 	if err := app.Dispose(nil, &stdout, &stderr); err != nil {
@@ -74,6 +77,34 @@ func TestDisposeWithCandidatesTrimsForThemAndSplitsTheirGaps(t *testing.T) {
 		if !strings.Contains(stdout.String(), want) {
 			t.Errorf("stdout = %s\nwant it to contain %s", stdout.String(), want)
 		}
+	}
+}
+
+func TestDisposeMeasuresTheListedSamples(t *testing.T) {
+	dir := t.TempDir()
+	noCandidates(t, dir)
+	sample := func(path string, bytes int) string {
+		return `{"path": "` + path + `", "library": ["kind:x"], "traits": [], "features": [], "bytes": ` + strconv.Itoa(bytes) +
+			`, "license_status": "n/a", "redistributable": true, "truth": [], "docs": []}`
+	}
+	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [`+sample("a", 1)+`, `+sample("b", 2)+`], "gaps": []}`)
+	measurement := `{"id": "m", "repository": "docproc", "acceptance": "A", "summary": "s", "needs_truth": false, "inputs": ["b"]`
+	write(t, filepath.Join(dir, "docs", "measurements.json"), `[`+measurement+`}]`)
+	t.Chdir(dir)
+	var stdout, stderr bytes.Buffer
+	if err := app.Dispose(nil, &stdout, &stderr); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(stdout.String(), `"disposition": "measure"`) {
+		t.Errorf("stdout = %s\nwant b disposed measure", stdout.String())
+	}
+	write(t, filepath.Join(dir, "docs", "measurements.json"), `[`+measurement+`, "extra": 1}]`)
+	stdout.Reset()
+	if err := app.Dispose(nil, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "extra") {
+		t.Errorf("Dispose = %v, want an error naming the unknown field", err)
+	}
+	if stdout.Len() != 0 {
+		t.Errorf("Dispose wrote %q despite its error", stdout.String())
 	}
 }
 
@@ -322,6 +353,38 @@ func TestManifestWritesTheInventoryAndCopiesItsFiles(t *testing.T) {
 	}
 	if data, err := os.ReadFile(filepath.Join(dir, "a", "s.txt")); err != nil || string(data) != "abc" {
 		t.Errorf("a/s.txt = %q, %v, want it copied", data, err)
+	}
+}
+
+func TestManifestNamesTheMeasurementsThatReadAFile(t *testing.T) {
+	dir, docs := t.TempDir(), t.TempDir()
+	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [{"path": "a/s.txt", "sha256": "h",
+		"library": ["kind:x"], "traits": [], "features": [], "format": "text/plain", "bytes": 3, "license_status": "reported",
+		"redistributable": true, "truth": [], "docs": [], "disposition": "measure"}], "gaps": []}`)
+	write(t, filepath.Join(dir, "docs", "license-readings.json"), `[]`)
+	noCandidates(t, dir)
+	measurement := `{"id": "m", "repository": "docproc", "acceptance": "A", "summary": "s", "needs_truth": false, "inputs": ["a/s.txt"]`
+	write(t, filepath.Join(dir, "docs", "measurements.json"), `[`+measurement+`}]`)
+	write(t, filepath.Join(docs, "MANIFEST.json"), `{"files": [{"path": "a/s.txt", "sha256": "h", "bytes": 3, "format": "text/plain",
+		"role": "sample", "truth": "none: a timing input"}]}`)
+	t.Setenv("DOCS_REFERENCE", docs)
+	t.Chdir(dir)
+	var stdout, stderr bytes.Buffer
+	if err := app.Manifest(nil, &stdout, &stderr); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(stdout.String(), `"measures": [
+        "m"
+      ]`) {
+		t.Errorf("stdout = %s\nwant a/s.txt to name measurement m", stdout.String())
+	}
+	write(t, filepath.Join(dir, "docs", "measurements.json"), `[`+measurement+`, "extra": 1}]`)
+	stdout.Reset()
+	if err := app.Manifest(nil, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "extra") {
+		t.Errorf("Manifest with an unknown measurement field = %v, want it refused", err)
+	}
+	if stdout.Len() != 0 {
+		t.Errorf("Manifest wrote %q despite its error", stdout.String())
 	}
 }
 
