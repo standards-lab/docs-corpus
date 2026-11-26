@@ -45,8 +45,9 @@ The judgement calls the standards-reviewer applies, beyond what `scripts/check.s
   `tools/coverage/probe` adapter that finds its tool and checks its version at startup, and runs
   it under the caller's context.
 - `architecture/standards/go-elemental/principles/tests-and-docs.md`: `tools/coverage`'s unit
-  tier is black-box and hermetic. A test that reads `~/docs` or the coverage data skips when that
-  data is absent, and each package's `doc.go` documents its API.
+  tier is black-box and hermetic. A test that reads the coverage data skips when that data is
+  absent, a test that reads samples reads the checkout's fetched samples and skips when they
+  aren't fetched, and each package's `doc.go` documents its API.
 - `architecture/standards/go-elemental/principles/release-and-ci.md`: `scripts/check.sh` runs the
   Go gates for `tools/coverage`, with Go and golangci-lint pinned in [`mise.toml`](mise.toml).
 - `architecture/standards/go-elemental/principles/dependencies.md`: `tools/coverage` takes the

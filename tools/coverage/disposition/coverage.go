@@ -178,16 +178,6 @@ type DocWithoutSample struct {
 	Handling string `json:"handling"`
 }
 
-// Placement is one element of place-traits' output: a sample's traits and features.
-type Placement struct {
-	// Path is the sample's path.
-	Path string `json:"path"`
-	// Traits are its trait IDs.
-	Traits []string `json:"traits"`
-	// Features are its feature IDs.
-	Features []string `json:"features"`
-}
-
 // Placed is a gap candidate as the corpus placement placed it: its gap, path, size, and the input
 // whose truth it inherits, as docs/candidates.json records them, and its covers, as place-traits
 // --corpus prints them.

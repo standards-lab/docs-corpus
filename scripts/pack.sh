@@ -33,7 +33,7 @@ while IFS=$'\t' read -r path bytes sha gap; do
   if [ -n "$gap" ]; then
     restore="restore it with mise run fetch-candidates"
   else
-    restore="restore it with mise run manifest --copy > MANIFEST.json"
+    restore="restore it with mise run fetch -- <release-url|dir>, or, for a sourced input, fetch it from its url in docs/sourced.json"
   fi
   if [ ! -f "$path" ]; then
     err "$path: in MANIFEST.json but missing; $restore"

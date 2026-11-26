@@ -12,6 +12,4 @@
 //     corpus placement places, as [Placed] values, trims each sample that records a [Break],
 //     gives the measure disposition to each sample a [Measurement] lists that it would trim, and
 //     splits each gap a candidate's covers don't confirm.
-//   - [Placement] is one element of place-traits' output, and [Place] sets the data's traits and
-//     features from it.
 package disposition
