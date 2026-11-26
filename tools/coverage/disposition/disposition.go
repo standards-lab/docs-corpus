@@ -145,16 +145,15 @@ func Dispose(coverage *Coverage, placed []Placed) ([]string, error) {
 		}
 	}
 
-	gaps := map[string]*Gap{}
-	for i := range coverage.Gaps {
-		gaps[coverage.Gaps[i].ID] = &coverage.Gaps[i]
-	}
 	inCorpus := idset.Set{}
 	for _, s := range corpus {
 		inCorpus.Add(s.entry.Path)
 	}
+	gaps := map[string]*Gap{}
 	for i := range coverage.Gaps {
-		if g := &coverage.Gaps[i]; !inCorpus[g.CoveredBy] {
+		g := &coverage.Gaps[i]
+		gaps[g.ID] = g
+		if !inCorpus[g.CoveredBy] {
 			g.CoveredBy = ""
 		}
 	}

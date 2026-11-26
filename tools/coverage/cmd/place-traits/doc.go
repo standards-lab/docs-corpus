@@ -10,8 +10,8 @@
 // With --corpus, it places the samples the repository's MANIFEST.json lists instead, from
 // docproc's run over the corpus, read from $RUNS, default
 // ~/runs/docs-corpus/docproc-final/corpus/runs, with the judged IDs docs/judged.json records for
-// samples docs/coverage.json doesn't list, and prints each one's covers. With --facts, each element also has the probes' findings. It writes nothing
-// outside a temporary directory.
+// samples docs/coverage.json doesn't list, and prints each one's covers. With --facts, each
+// element also has the probes' findings. It writes nothing outside a temporary directory.
 //
 // See docs/coverage.md
 package main
