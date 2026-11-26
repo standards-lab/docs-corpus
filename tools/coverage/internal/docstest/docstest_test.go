@@ -35,12 +35,16 @@ func TestCoverageReadsTheCoverageData(t *testing.T) {
 }
 
 func TestSamplesAreTheCoverageDataSamplesTheManifestLists(t *testing.T) {
+	paths := map[string]bool{}
 	for _, s := range docstest.Samples(t) {
-		if s.Path == "email/eml/cpython/msg_36.eml" {
-			return
-		}
+		paths[s.Path] = true
 	}
-	t.Error("Samples lacks email/eml/cpython/msg_36.eml, an adopted sample")
+	if !paths["email/eml/cpython/msg_36.eml"] {
+		t.Error("Samples lacks email/eml/cpython/msg_36.eml, an adopted sample")
+	}
+	if paths["archive/high-ratio-200mb.zip"] {
+		t.Error("Samples has archive/high-ratio-200mb.zip, a replaced sample MANIFEST.json doesn't list")
+	}
 }
 
 func TestPathFindsAFetchedSampleInTheCheckout(t *testing.T) {
