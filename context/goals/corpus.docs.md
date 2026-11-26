@@ -1,8 +1,8 @@
 # goal · corpus.docs
 
-- **State:** idle
-- **Task:** none
-- **Branch:** none
+- **State:** building
+- **Task:** snapshot-2
+- **Branch:** snapshot-2
 
 ## Tasks
 
@@ -15,6 +15,56 @@
 7. [x] sourcing
 8. [ ] snapshot-2
 9. [ ] baseline
+
+## Task brief · snapshot-2
+
+**Problem**
+
+v0.1.0 is the only release, and nothing since is released: 81 samples (80 measured plus DVIDS
+882019), 22 truth files, nine measurements, the sourced-input list, two sourcing judgement calls,
+and 101 new license readings. Baseline needs v0.2.0 released, its files public release assets, and
+a verified checkout on gb10-2.
+
+**Behaviors**
+1. The changelog's unreleased section becomes v0.2.0, dated the release day; its link references
+   compare from v0.2.0.
+2. The v0.2.0 section opens, as v0.1.0's does, with the release's size: 210 samples in ten format
+   areas, 81 of them new. It also counts the 101 new license readings.
+3. The manifest's schema version stays 1, and the check passes.
+4. Packing v0.2.0 gives ten area tars, each under 2 GiB (video about 896 MB).
+5. A rehearsal on gb10-2 of the branch with the packed tars fetches every sample and passes the
+   check; it is removed afterwards.
+6. Tag v0.2.0, annotated "docs-corpus v0.2.0", sits on the merge commit; its release carries the
+   ten tars, its notes the v0.2.0 changelog section with links pinned to the tag.
+7. gb10-2's `~/docs-corpus` is a fresh anonymous clone at v0.2.0, fetched from the release, and
+   its check ends "All checks passed." without ~/docs.
+
+**Test seams**
+- The check, on the laptop and on gb10-2; pack's per-area sizes; fetch's placed-sample count.
+
+**Slices**
+1. Changelog: behaviors 1–3, with the check passing.
+2. Pack and rehearse: behaviors 4–5, in scratch only; commits nothing.
+3. Ship, after acceptance: behaviors 6–7, then a Decision recording the verified v0.2.0 checkout in
+   place of snapshot's v0.1.0 line.
+
+**Out of scope**
+
+New samples or manifest content changes; a CI release workflow; baseline's runs; the coordinator's
+pending edits; retiring ~/docs.
+
+**Door**
+
+One-way: the v0.2.0 tag and its public release assets, since a released tag is never re-cut and
+the repository is public. Replacing gb10-2's checkout is two-way (v0.1.0 refetches); the changelog
+edit is two-way.
+
+**Release**
+- `v0.2.0` at docs-corpus.
+
+## Progress
+
+slices 0/2 committed · standards — · spec — · editor —
 
 ## Decisions
 
