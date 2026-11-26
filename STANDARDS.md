@@ -18,7 +18,17 @@ The judgement calls the standards-reviewer applies, beyond what `scripts/check.s
 - A sample is sourced or generated, with its source or generating command recorded; none is
   constructed by hand.
 - A sample is in the repository only when its license, read at its source, lets it be
-  redistributed, because the repository is public from v0.1.0 ([`README.md`](README.md)).
+  redistributed, because the repository is public from v0.1.0 ([`README.md`](README.md)). A
+  reading at the source is the publisher's own statement at the source's own URL: its license,
+  its reuse policy, or the document's releasability paragraph. A statute, a mirror, or an
+  aggregator's page is not a reading at the source.
+- A sourced file is sought first in government publications, which are realistic and free to
+  redistribute: US federal works (17 USC 105), from govinfo.gov first for documents and DVIDS
+  first for video, and EU documents under Decision 2011/833/EU. A US government document is
+  redistributable only when it is cleared for public release (Distribution Statement A). In a
+  government document, a contractor's work, or third-party material the publisher credits or
+  flags, has its license read like any other; the publisher's unqualified release of the finished
+  work stands as the reading for the rest.
 - A sample file is a release asset, never committed to git, as [`README.md`](README.md) states.
 - `architecture/principles/context-architecture.md`: the manifest is the inventory's one home, and
   [`docs/coverage.json`](docs/coverage.json) is the scenario vocabulary's.
