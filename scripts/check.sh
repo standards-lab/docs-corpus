@@ -153,8 +153,13 @@ else
       (.samples // [] | to_entries[] | .key as $i
         | (.value.judged // {}) | keys[]
         | select(IN($ids[]) | not)
-        | "samples[\($i)].judged: \(.) is not in the vocabulary; judge an ID the vocabulary defines")
-  ' "$coverage"); then
+        | "samples[\($i)].judged: \(.) is not in the vocabulary; judge an ID the vocabulary defines"),
+      (($standards | gsub("\\s+"; " ")) as $rules
+        | .samples // [] | to_entries[] | .key as $i | (.value.breaks // [])[]
+        | select((.standard | type) != "string" or .standard == "" or (.standard as $std | $rules | contains($std) | not)
+            or (.reason | type) != "string" or .reason == "")
+        | "samples[\($i)].breaks: \(.standard | tojson) needs the opening of a STANDARDS.md bullet, verbatim, as standard, and a reason")
+  ' --rawfile standards STANDARDS.md "$coverage"); then
     report "$problems"
   else
     err "$coverage: jq could not read it; it must be JSON with a vocabulary of library, trait, and feature objects"
@@ -188,6 +193,7 @@ else
     | ($samples | map(select(.disposition == "adopt")) + $candidates) as $adopted
     | ($samples + $candidates | map({key: .path, value: .}) | from_entries) as $by
     | ((.gaps // []) | map({key: .id, value: .}) | from_entries) as $gaps
+    | ([$adopted[] | covers[]] + [(.gaps // [])[].covers[]?] | unique) as $held
     | ($samples[]
         | select((.format | type) != "string" or (.bytes | type) != "number" or (.license_status | type) != "string"
             or (.redistributable | type) != "boolean" or (.truth | type) != "array" or (.docs | type) != "array")
@@ -199,6 +205,11 @@ else
           elif .disposition == "trim" then
             .path as $path | covers as $c | rank as $r | .trimmed_for as $for
             | if has("gap") then "\($path): a trim names no gap; remove it"
+              elif $for == null and (.breaks // []) != [] then
+                ([$adopted[] | select(.path != $path and (. as $a | $by[$path] | within($a)))] | min_by(rank).path // empty
+                  | "\($path): \(.) covers its scenarios; name it in trimmed_for"),
+                ($c - $held | select(. != [])
+                  | "\($path): breaks a standard, and no other sample or gap holds \(join(", ")); research a candidate and add the gap")
               elif $by[$for // ""].disposition != "adopt" then
                 "\($path): trimmed_for \($for) is not an adopted sample; name the adopted sample that covers its scenarios"
               elif (within($by[$for]) | not) then
@@ -216,6 +227,8 @@ else
           else
             "\(.path): has no disposition; set disposition to adopt, trim with trimmed_for, or replace with gap"
           end),
+      ($samples[] | select(.disposition != "trim" and (.breaks // []) != [])
+        | "\(.path): breaks \(.breaks[0].standard | tojson), so it is trimmed; run mise run dispose"),
       ($adopted[]
         | select(.redistributable != true or .sensitive == true)
         | "\(.path): is adopted but \(if .sensitive == true then "sensitive" else "not redistributable" end); replace it with a gap, or trim it for an adopted sample that covers it"),

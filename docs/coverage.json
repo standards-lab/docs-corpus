@@ -712,8 +712,8 @@
       "redistributable": false,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "text/epub/lorem-ipsum.epub"
+      "disposition": "replace",
+      "gap": "archive-12"
     },
     {
       "path": "archive/mixed-bundle.7z",
@@ -889,8 +889,8 @@
       "redistributable": false,
       "truth": [],
       "docs": [],
-      "disposition": "trim",
-      "trimmed_for": "archive/tika/testZipEncrypted.zip"
+      "disposition": "replace",
+      "gap": "archive-1"
     },
     {
       "path": "archive/zip-in-zip.zip",
@@ -2167,7 +2167,8 @@
       "docs": [
         "email/eml/cpython/cpython.LICENSE"
       ],
-      "disposition": "adopt"
+      "disposition": "trim",
+      "trimmed_for": "email/mimekit/jwz.mbox"
     },
     {
       "path": "email/eml/cpython/msg_08.eml",
@@ -2329,7 +2330,7 @@
         "email/eml/cpython/cpython.LICENSE"
       ],
       "disposition": "trim",
-      "trimmed_for": "email/eml/cpython/msg_07.eml"
+      "trimmed_for": "email/mimekit/jwz.mbox"
     },
     {
       "path": "email/eml/cpython/msg_14.eml",
@@ -2375,7 +2376,8 @@
       "docs": [
         "email/eml/cpython/cpython.LICENSE"
       ],
-      "disposition": "adopt"
+      "disposition": "trim",
+      "trimmed_for": "email/mimekit/jwz.mbox"
     },
     {
       "path": "email/eml/cpython/msg_16.eml",
@@ -2401,7 +2403,8 @@
       "docs": [
         "email/eml/cpython/cpython.LICENSE"
       ],
-      "disposition": "adopt"
+      "disposition": "trim",
+      "trimmed_for": "email/mimekit/jwz.mbox"
     },
     {
       "path": "email/eml/cpython/msg_17.eml",
@@ -2531,7 +2534,8 @@
       "docs": [
         "email/eml/cpython/cpython.LICENSE"
       ],
-      "disposition": "adopt"
+      "disposition": "trim",
+      "trimmed_for": "email/mimekit/jwz.mbox"
     },
     {
       "path": "email/eml/cpython/msg_23.eml",
@@ -2596,7 +2600,7 @@
         "email/eml/cpython/cpython.LICENSE"
       ],
       "disposition": "trim",
-      "trimmed_for": "email/mbox/many-messages.mbox"
+      "trimmed_for": "email/mimekit/jwz.mbox"
     },
     {
       "path": "email/eml/cpython/msg_26.eml",
@@ -2988,7 +2992,7 @@
         "email/eml/cpython/cpython.LICENSE"
       ],
       "disposition": "trim",
-      "trimmed_for": "email/mbox/many-messages.mbox"
+      "trimmed_for": "email/mimekit/jwz.mbox"
     },
     {
       "path": "email/eml/cpython/msg_44.eml",
@@ -4603,6 +4607,12 @@
       "bytes": 648,
       "license_status": "verified",
       "redistributable": true,
+      "breaks": [
+        {
+          "standard": "A sample is sourced or generated",
+          "reason": "written by hand, with no source or generating command; image-8's sourced web-platform-tests SVG takes over its covers"
+        }
+      ],
       "truth": [],
       "docs": [],
       "disposition": "trim",
@@ -8080,6 +8090,12 @@
       "bytes": 161469274,
       "license_status": "verified",
       "redistributable": true,
+      "breaks": [
+        {
+          "standard": "A sample's content is realistic",
+          "reason": "onenote.rs's generated timing section, the OneDrive copy of Large Desktop.one: page after page of printouts of lpdf's generated test PDFs (image_heavy, text_heavy, mixed), the pseudo-word pages that made 1,998 of Large Desktop.one's 4,718 image events and 1,158 of its 1,260 vision loops in docinfer's acceptance"
+        }
+      ],
       "truth": [],
       "docs": [
         "onenote/sources.json"
@@ -10761,9 +10777,15 @@
       "bytes": 133601,
       "license_status": "verified",
       "redistributable": true,
+      "breaks": [
+        {
+          "standard": "A sample's content is realistic",
+          "reason": "calibre's Lorem ipsum test book from openpreserve's format corpus: its text is Lorem ipsum pseudo-Latin throughout, pseudo-words a model reads as noise"
+        }
+      ],
       "truth": [],
       "docs": [],
-      "disposition": "adopt"
+      "disposition": "trim"
     },
     {
       "path": "text/json/config.json",
@@ -12082,14 +12104,9 @@
         "trait:scale.many-entries"
       ],
       "candidate": {
-        "kind": "generated",
-        "command": "d=$(mktemp -d) && split -n 1000 -a 4 -d --additional-suffix=.txt text/csv/tab-separated.tsv \"$d/part-\" && bsdtar --format=zip -cf archive/many-entries.zip -C \"$d\" .",
-        "inputs": [
-          "text/csv/tab-separated.tsv"
-        ],
-        "generator": "GNU coreutils 9.12 split; bsdtar 3.8.11 (libarchive 3.8.11)",
-        "generator_license": "GPL-3.0-or-later (coreutils); BSD-2-Clause",
-        "fit": "Fair: 1,000 text entries of about four bytes each, split from one adopted TSV, plus the directory entry, in a ZIP of about 180 KiB; it tests the entry count, not their content."
+        "kind": "unavailable",
+        "searched": "archive-11's generated candidate, archive/many-entries.zip, made by d=$(mktemp -d) && split -n 1000 -a 4 -d --additional-suffix=.txt text/csv/tab-separated.tsv \"$d/part-\" && bsdtar --format=zip -cf archive/many-entries.zip -C \"$d\" .: 1,000 text entries of about four bytes each split from text/csv/tab-separated.tsv; no replacement was searched for",
+        "reason": "that candidate broke STANDARDS.md's realistic-content standard and left the corpus: its entries are fragments that test the entry count, not content a real archive holds; no archive of many entries that each hold realistic content is known"
       }
     },
     {
@@ -12372,14 +12389,9 @@
         "trait:scale.large-sheet"
       ],
       "candidate": {
-        "kind": "sourced",
-        "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testRecordSizeExceeded.xlsx",
-        "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
-        "license": "Apache-2.0",
-        "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
-        "license_status": "verified",
-        "license_read": "2026-11-24",
-        "fit": "Fair: Tika's 12 MB workbook, one sheet of 200,000 rows by 15 columns of inline strings, 328 MB of sheet XML, so its Markdown passes 256 KiB many times over; heavy to process."
+        "kind": "unavailable",
+        "searched": "office-8's sourced candidate, office/tika/testRecordSizeExceeded.xlsx, fetched from https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testRecordSizeExceeded.xlsx: one sheet of 200,000 rows by 15 columns whose every cell reads \"Repetitive content pattern N for compression test row M\"; no replacement was searched for",
+        "reason": "that candidate broke STANDARDS.md's realistic-content standard and left the corpus: its cells are templated text for a record-size stress test, not the data a real workbook holds; no openly licensed workbook of realistic data past 256 KiB of Markdown is known"
       }
     },
     {
@@ -12559,17 +12571,9 @@
         "trait:scale.many-messages"
       ],
       "candidate": {
-        "kind": "generated",
-        "command": "go run ./tools/coverage/cmd/generate mbox email/mbox/many-messages.mbox email/eml/cpython/msg_07.eml email/eml/cpython/msg_15.eml email/eml/cpython/msg_16.eml email/eml/cpython/msg_22.eml",
-        "inputs": [
-          "email/eml/cpython/msg_07.eml",
-          "email/eml/cpython/msg_15.eml",
-          "email/eml/cpython/msg_16.eml",
-          "email/eml/cpython/msg_22.eml"
-        ],
-        "generator": "Go 1.27.4: github.com/standards-lab/docs-corpus/tools/coverage/cmd/generate",
-        "generator_license": "Apache-2.0",
-        "fit": "Fair: exactly 1,000 messages, the four adopted CPython test messages repeated in turn, about 3.4 MB; it tests the count, and its From lines carry the time it was made."
+        "kind": "unavailable",
+        "searched": "email-5's generated candidate, email/mbox/many-messages.mbox, made by go run ./tools/coverage/cmd/generate mbox email/mbox/many-messages.mbox email/eml/cpython/msg_07.eml email/eml/cpython/msg_15.eml email/eml/cpython/msg_16.eml email/eml/cpython/msg_22.eml: 1,000 messages, four adopted CPython test messages repeated in turn; no replacement was searched for",
+        "reason": "that candidate broke STANDARDS.md's realistic-content standard and left the corpus: its messages repeat four in turn to test the count, not the distinct messages a real mailbox holds; no mailbox of many distinct real messages is known"
       }
     },
     {
@@ -12775,6 +12779,19 @@
         "license_status": "verified",
         "license_read": "2026-11-25",
         "fit": "Good: a 735-byte web-platform-tests reftest whose root svg has an onload handler, with an inline script, two html:script elements naming files, and html:link hrefs to a Bugzilla URL and a reference file; no foreignObject. It takes over the hand-written image/vector/script-bearing.svg's covers."
+      }
+    },
+    {
+      "id": "archive-12",
+      "covers": [
+        "kind:zip",
+        "route:archive",
+        "route:unrouted"
+      ],
+      "candidate": {
+        "kind": "unavailable",
+        "searched": "the corpus's adopted samples and candidates, once text/epub/lorem-ipsum.epub, the one adopted sample whose covers held archive/high-ratio-200mb.zip's, broke STANDARDS.md's realistic-content standard and was trimmed; no replacement was searched for",
+        "reason": "archive/high-ratio-200mb.zip is not redistributable, and no kept sample is a ZIP that docproc opens as an archive with a member it leaves unrouted"
       }
     }
   ],

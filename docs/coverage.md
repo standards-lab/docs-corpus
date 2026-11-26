@@ -79,6 +79,23 @@ adopted sample covers all of its scenarios, and replaced otherwise. The gap cand
 corpus count as adopted samples for trims, so a trim can name a candidate, as
 [Candidates in the corpus](#candidates-in-the-corpus) states.
 
+### Breaks
+
+A sample that breaks a standard in [`STANDARDS.md`](../STANDARDS.md) records the break in its
+entry's `breaks`, a list with one object per standard it breaks:
+
+- `standard`: the opening of the standard's bullet, verbatim, such as `A sample's content is
+  realistic`;
+- `reason`: how the sample breaks it, from what its source record or the file shows.
+
+A sample with a break is trimmed, never adopted or replaced, whatever its other facts.
+`trimmed_for` names the sample the tie-breaks prefer among those in the corpus whose covers
+contain its own, and is absent when none does. Each of its covers must still be another corpus
+sample's or a gap's; `dispose` stops, naming the covers, when one isn't, so a break never loses a
+scenario silently. The disposition follows from the break: it is never set by hand. For example,
+`onenote/large/Large OneDrive.one` records that its pages are printouts of generated test PDFs,
+and `image/vector/script-bearing.svg` that it was written by hand.
+
 The [`dispose`](../tools/coverage/cmd/dispose/doc.go) command of the Go module `tools/coverage`
 derives every disposition by these rules, the covers of each gap a replace names, as
 [Gaps](#gaps) states, and each candidate's place in the corpus, as
@@ -234,10 +251,10 @@ a `candidate`. A replaced sample names the gap whose covers contain its own. Rep
 need the same covers, or covers inside another replaced sample's, share one gap; where several
 replaced samples' covers contain a sample's, it shares the gap of the one the tie-breaks prefer.
 A gap for scenarios no sample exercised groups the IDs one candidate file can exercise together.
-A gap also holds the covers of an adopted sample that breaks [`STANDARDS.md`](../STANDARDS.md),
-such as one constructed by hand, so that its candidate takes them over. For example, image-8's
-gap holds the covers of the hand-written `image/vector/script-bearing.svg`, and once image-8's
-sourced SVG is in the corpus, `dispose` trims the hand-written file.
+A gap also holds the covers of a sample that breaks [`STANDARDS.md`](../STANDARDS.md) and that
+no other sample covers, so that its candidate takes them over. For example, image-8's gap holds
+the covers of the hand-written `image/vector/script-bearing.svg`, whose `breaks` record it, and
+image-8's sourced SVG is in the corpus in its place.
 
 The data stores no list of samples per scenario: it follows from the placements. To print each
 scenario with the adopted samples that exercise it, or with the gaps that cover it, run:
@@ -272,7 +289,17 @@ Each gap names one candidate, its `candidate` object, of one of three kinds, its
   scenarios until a candidate turns up.
 
 Each sourced or generated candidate also has a `fit` line: a rating, Good or Fair, then its
-quality and how it exercises the gap's covers.
+quality and how it exercises the gap's covers. A candidate meets
+[`STANDARDS.md`](../STANDARDS.md)'s realistic-content standard, and its fit line shows it; a
+generated candidate's fit line says how its content is realistic: the sourced real text, images,
+speech, or scans its inputs give it.
+
+A candidate that breaks a standard leaves the corpus: its rows leave
+[`candidates.json`](candidates.json), [`judged.json`](judged.json), and, through the tools,
+[`corpus-placement.json`](corpus-placement.json) and the manifest, and its file leaves the working
+copy. Its gap stays open: its candidate becomes unavailable, `searched` naming the candidate that
+left and how it was made or fetched, and `reason` the standard it broke and why, as archive-11,
+email-5, and office-8 record. No replacement is searched for until a later task takes the gap up.
 
 `dispose` writes two fields to record what the corpus placement found, as
 [Candidates in the corpus](#candidates-in-the-corpus) states:
@@ -398,6 +425,10 @@ variable names. It fails when:
 - a sample lacks its path or sha256, or two entries in `.samples` share a path;
 - a sample lacks a tie-break fact, `format`, `truth`, or `docs`;
 - a sample has no disposition, or has fields of another disposition;
+- a break's `standard` isn't the opening of a [`STANDARDS.md`](../STANDARDS.md) bullet, or it
+  has no `reason`;
+- a sample with a break isn't trimmed, its trim leaves out a sample in the corpus whose covers
+  contain its own, or one of its covers is no other adopted sample's, candidate's, or gap's;
 - a trim names a sample that isn't adopted, one whose covers don't contain its own, or one another
   adopted sample beats on the tie-breaks;
 - a replace names a gap that doesn't exist, or one whose covers don't contain its own;

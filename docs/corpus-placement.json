@@ -33,21 +33,6 @@
     ]
   },
   {
-    "path": "archive/many-entries.zip",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "kind:zip",
-      "route:archive",
-      "route:text",
-      "trait:scale.many-entries",
-      "trait:script.arabic",
-      "trait:script.cyrillic",
-      "trait:script.greek",
-      "trait:script.mixed"
-    ]
-  },
-  {
     "path": "archive/mixed-bundle.7z",
     "covers": [
       "capability:embeddings",
@@ -226,54 +211,6 @@
     ]
   },
   {
-    "path": "email/eml/cpython/msg_07.eml",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "capability:vision",
-      "feature:attachments",
-      "kind:gif",
-      "route:nested",
-      "route:vision"
-    ]
-  },
-  {
-    "path": "email/eml/cpython/msg_15.eml",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "check:signature-mismatch",
-      "route:nested",
-      "route:unrouted",
-      "trait:charset.declared"
-    ]
-  },
-  {
-    "path": "email/eml/cpython/msg_16.eml",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "feature:embedded-messages",
-      "feature:hyperlinks",
-      "route:nested",
-      "route:unrouted",
-      "trait:charset.declared"
-    ]
-  },
-  {
-    "path": "email/eml/cpython/msg_22.eml",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "capability:vision",
-      "feature:attachments",
-      "feature:inline-images",
-      "kind:jpeg",
-      "route:nested",
-      "route:vision"
-    ]
-  },
-  {
     "path": "email/eml/cpython/msg_26.eml",
     "covers": [
       "capability:embeddings",
@@ -396,27 +333,6 @@
     "covers": [
       "kind:ost",
       "route:unrouted"
-    ]
-  },
-  {
-    "path": "email/mbox/many-messages.mbox",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "capability:vision",
-      "check:signature-mismatch",
-      "feature:attachments",
-      "feature:embedded-messages",
-      "feature:hyperlinks",
-      "feature:inline-images",
-      "kind:gif",
-      "kind:jpeg",
-      "kind:mbox",
-      "route:nested",
-      "route:unrouted",
-      "route:vision",
-      "trait:charset.declared",
-      "trait:scale.many-messages"
     ]
   },
   {
@@ -1159,16 +1075,6 @@
     ]
   },
   {
-    "path": "office/tika/testRecordSizeExceeded.xlsx",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "kind:zip",
-      "route:office",
-      "trait:scale.large-sheet"
-    ]
-  },
-  {
     "path": "onenote/interop/SUT/Encryption.one",
     "covers": [
       "capability:embeddings",
@@ -1648,20 +1554,6 @@
       "route:text",
       "trait:charset.legacy-other",
       "trait:script.arabic"
-    ]
-  },
-  {
-    "path": "text/epub/lorem-ipsum.epub",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "capability:vision",
-      "kind:jpeg",
-      "kind:zip",
-      "route:archive",
-      "route:text",
-      "route:unrouted",
-      "route:vision"
     ]
   },
   {

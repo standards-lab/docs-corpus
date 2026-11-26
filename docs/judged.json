@@ -10,9 +10,6 @@
     "trait:scan.camera": "a phone photo (EXIF moto g pure) of a crumpled receipt on a dark table, with perspective, folds, and uneven light, seen rendered",
     "trait:scan.printed": "the receipt's printed thermal text, a Hofer store's item lines, totals, and QR code, seen rendered"
   },
-  "office/tika/testRecordSizeExceeded.xlsx": {
-    "trait:scale.large-sheet": "docproc run 01a21395-b7af-757b-a26b-ff420b19fe23 wrote its one worksheet, Sheet, as sheet/1 Markdown of 189,422,492 bytes, past 256 KiB, and docproc-ooxml split it across 1,988 rows lines of the sheet/1 record, 328,577,613 bytes, holding rows 1 to 200,000"
-  },
   "pdf/scanned/scanned-tables.pdf": {
     "feature:multi-column": "page 1, seen rendered, is The Alpha of June 1, 1881, a newspaper page set in two columns",
     "feature:tables": "page 2, seen rendered, is a journal page holding Tables 2, 3, and 4",

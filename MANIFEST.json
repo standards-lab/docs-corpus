@@ -87,39 +87,6 @@
       "gap": "archive-10"
     },
     {
-      "path": "archive/many-entries.zip",
-      "role": "sample",
-      "sha256": "af9e4c65cd007209d917a9f2891cf26f9a9d926a589cb4e6a17367b1dd0a8c7d",
-      "bytes": 184358,
-      "format": "application/zip",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "kind:zip",
-        "route:archive",
-        "route:text",
-        "trait:scale.many-entries",
-        "trait:script.arabic",
-        "trait:script.cyrillic",
-        "trait:script.greek",
-        "trait:script.mixed"
-      ],
-      "truth": [],
-      "truth_note": "a generated candidate, which inherits no input's truth unchanged",
-      "docs": [],
-      "source": "generated",
-      "license": "Apache-2.0",
-      "license_status": "verified",
-      "redistributable": true,
-      "command": "d=$(mktemp -d) && split -n 1000 -a 4 -d --additional-suffix=.txt text/csv/tab-separated.tsv \"$d/part-\" && bsdtar --format=zip -cf archive/many-entries.zip -C \"$d\" .",
-      "inputs": [
-        "text/csv/tab-separated.tsv"
-      ],
-      "generator": "GNU coreutils 9.12 split; bsdtar 3.8.11 (libarchive 3.8.11)",
-      "generator_license": "GPL-3.0-or-later (coreutils); BSD-2-Clause",
-      "gap": "archive-11"
-    },
-    {
       "path": "archive/mixed-bundle.7z",
       "role": "sample",
       "sha256": "d3f621bf131398e3ca6a577b038193ca68df371ec96b300f23128c227c1b671f",
@@ -560,114 +527,6 @@
       "redistributable": true
     },
     {
-      "path": "email/eml/cpython/msg_07.eml",
-      "role": "sample",
-      "sha256": "8358092b45c8631df6466a2e4dc23278263b2dd2ba5765e99caba47c304dd3b5",
-      "bytes": 5227,
-      "format": "text/plain",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "capability:vision",
-        "feature:attachments",
-        "kind:gif",
-        "route:nested",
-        "route:vision"
-      ],
-      "truth": [],
-      "docs": [
-        "email/eml/cpython/cpython.LICENSE"
-      ],
-      "source": "cpython",
-      "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_07.txt",
-      "license": "PSF-2.0",
-      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-      "license_read": "2026-11-25",
-      "license_status": "verified",
-      "redistributable": true
-    },
-    {
-      "path": "email/eml/cpython/msg_15.eml",
-      "role": "sample",
-      "sha256": "8f1c4f13d767b8a4d55fe9a377c3ff20cfd7e77b9b9da12e1df9772c1f685f27",
-      "bytes": 1306,
-      "format": "message/rfc822",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "check:signature-mismatch",
-        "route:nested",
-        "route:unrouted",
-        "trait:charset.declared"
-      ],
-      "truth": [],
-      "docs": [
-        "email/eml/cpython/cpython.LICENSE"
-      ],
-      "source": "cpython",
-      "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_15.txt",
-      "license": "PSF-2.0",
-      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-      "license_read": "2026-11-25",
-      "license_status": "verified",
-      "redistributable": true
-    },
-    {
-      "path": "email/eml/cpython/msg_16.eml",
-      "role": "sample",
-      "sha256": "fbb4ae9e31ddd26e43b7c051041bb3d9d6bebd418a858da67268920bc672afb9",
-      "bytes": 5203,
-      "format": "message/rfc822",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "feature:embedded-messages",
-        "feature:hyperlinks",
-        "route:nested",
-        "route:unrouted",
-        "trait:charset.declared"
-      ],
-      "truth": [],
-      "docs": [
-        "email/eml/cpython/cpython.LICENSE"
-      ],
-      "source": "cpython",
-      "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_16.txt",
-      "license": "PSF-2.0",
-      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-      "license_read": "2026-11-25",
-      "license_status": "verified",
-      "redistributable": true
-    },
-    {
-      "path": "email/eml/cpython/msg_22.eml",
-      "role": "sample",
-      "sha256": "4367f6ef8398e92de819ccd8e4938c819c2b24aa08f06cdcc0266bb0ec37eb08",
-      "bytes": 1894,
-      "format": "text/plain",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "capability:vision",
-        "feature:attachments",
-        "feature:inline-images",
-        "kind:jpeg",
-        "route:nested",
-        "route:vision"
-      ],
-      "truth": [],
-      "docs": [
-        "email/eml/cpython/cpython.LICENSE"
-      ],
-      "source": "cpython",
-      "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_22.txt",
-      "license": "PSF-2.0",
-      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-      "license_read": "2026-11-25",
-      "license_status": "verified",
-      "redistributable": true
-    },
-    {
       "path": "email/eml/cpython/msg_26.eml",
       "role": "sample",
       "sha256": "46c391e25d3f2fa622d5781a27553176648270768435295a235a760bf725752f",
@@ -1018,48 +877,6 @@
       "license_status": "verified",
       "redistributable": true,
       "gap": "email-6"
-    },
-    {
-      "path": "email/mbox/many-messages.mbox",
-      "role": "sample",
-      "sha256": "56264831602257459e33df1b036bc1548ab2274ae8ada9cce743ff44e8acb51c",
-      "bytes": 3452500,
-      "format": "application/mbox",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "capability:vision",
-        "check:signature-mismatch",
-        "feature:attachments",
-        "feature:embedded-messages",
-        "feature:hyperlinks",
-        "feature:inline-images",
-        "kind:gif",
-        "kind:jpeg",
-        "kind:mbox",
-        "route:nested",
-        "route:unrouted",
-        "route:vision",
-        "trait:charset.declared",
-        "trait:scale.many-messages"
-      ],
-      "truth": [],
-      "truth_note": "a generated candidate, which inherits no input's truth unchanged",
-      "docs": [],
-      "source": "generated",
-      "license": "PSF-2.0",
-      "license_status": "verified",
-      "redistributable": true,
-      "command": "go run ./tools/coverage/cmd/generate mbox email/mbox/many-messages.mbox email/eml/cpython/msg_07.eml email/eml/cpython/msg_15.eml email/eml/cpython/msg_16.eml email/eml/cpython/msg_22.eml",
-      "inputs": [
-        "email/eml/cpython/msg_07.eml",
-        "email/eml/cpython/msg_15.eml",
-        "email/eml/cpython/msg_16.eml",
-        "email/eml/cpython/msg_22.eml"
-      ],
-      "generator": "Go 1.27.4: github.com/standards-lab/docs-corpus/tools/coverage/cmd/generate",
-      "generator_license": "Apache-2.0",
-      "gap": "email-5"
     },
     {
       "path": "email/mimekit/jwz.mbox",
@@ -3268,32 +3085,6 @@
       "gap": "office-6"
     },
     {
-      "path": "office/tika/testRecordSizeExceeded.xlsx",
-      "role": "sample",
-      "sha256": "d0b6d457f7e1bb6fd48fb725fdc192ad91233f87b9db195cdf2fa8ef2963ccff",
-      "bytes": 12364136,
-      "format": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "kind:zip",
-        "route:office",
-        "trait:scale.large-sheet"
-      ],
-      "truth": [],
-      "truth_note": "a sourced candidate, which inherits no truth",
-      "docs": [],
-      "source": "tika",
-      "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testRecordSizeExceeded.xlsx",
-      "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
-      "license": "Apache-2.0",
-      "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
-      "license_read": "2026-11-24",
-      "license_status": "verified",
-      "redistributable": true,
-      "gap": "office-8"
-    },
-    {
       "path": "onenote/content.json",
       "role": "truth",
       "sha256": "c2858e411e9eaae2c65371b2202453a027093e154824f9215fcd8be0eaa0d857",
@@ -4605,33 +4396,6 @@
       "url": "generated: gen_text.py (seed 42)",
       "license": "Apache-2.0",
       "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
-      "license_read": "2026-11-25",
-      "license_status": "verified",
-      "redistributable": true
-    },
-    {
-      "path": "text/epub/lorem-ipsum.epub",
-      "role": "sample",
-      "sha256": "e559fa369cfc751becfa4f8434cf186790a3ef57bbd2fb2973beb41deff1dd60",
-      "bytes": 133601,
-      "format": "application/epub+zip",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "capability:vision",
-        "kind:jpeg",
-        "kind:zip",
-        "route:archive",
-        "route:text",
-        "route:unrouted",
-        "route:vision"
-      ],
-      "truth": [],
-      "docs": [],
-      "source": "openpreserve",
-      "url": "https://raw.githubusercontent.com/openpreserve/format-corpus/366f068cec399d0cdfd61fa473de3ab6dc858098/ebooks/calibre%200.9.0/lorem-ipsum.epub",
-      "license": "CC0-1.0",
-      "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
       "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true

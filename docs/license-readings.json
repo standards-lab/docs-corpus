@@ -25,26 +25,6 @@
     "license_read": "2026-11-25"
   },
   {
-    "path": "email/eml/cpython/msg_07.eml",
-    "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
-    "path": "email/eml/cpython/msg_15.eml",
-    "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
-    "path": "email/eml/cpython/msg_16.eml",
-    "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
-    "path": "email/eml/cpython/msg_22.eml",
-    "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
     "path": "email/eml/cpython/msg_26.eml",
     "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
     "license_read": "2026-11-25"
@@ -743,11 +723,6 @@
     "path": "text/encodings/windows-1256-arabic.txt",
     "license": "Apache-2.0",
     "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
-    "path": "text/epub/lorem-ipsum.epub",
-    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
     "license_read": "2026-11-25"
   },
   {

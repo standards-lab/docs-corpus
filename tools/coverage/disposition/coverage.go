@@ -97,6 +97,8 @@ type Sample struct {
 	Redistributable bool `json:"redistributable"`
 	// Sensitive is whether the manifest marks it sensitive or local_only.
 	Sensitive bool `json:"sensitive,omitempty"`
+	// Breaks are the STANDARDS.md standards it breaks, each with its reason.
+	Breaks []Break `json:"breaks,omitempty"`
 	// Truth are its truth files' paths.
 	Truth []string `json:"truth"`
 	// Docs are its doc files' paths.
@@ -107,6 +109,14 @@ type Sample struct {
 	TrimmedFor string `json:"trimmed_for,omitempty"`
 	// Gap, for a replace, is the gap that replaces it.
 	Gap string `json:"gap,omitempty"`
+}
+
+// Break is a STANDARDS.md standard a sample breaks.
+type Break struct {
+	// Standard is the opening of the standard's STANDARDS.md bullet, verbatim.
+	Standard string `json:"standard"`
+	// Reason is how the sample breaks it.
+	Reason string `json:"reason"`
 }
 
 // Gap is a set of scenarios no adopted sample exercises.

@@ -134,6 +134,66 @@ func TestDisposeNeverInventsAGap(t *testing.T) {
 	}
 }
 
+const breaks = `, "breaks": [{"standard": "A sample's content is realistic", "reason": "filler"}]`
+
+func TestDisposeTrimsASampleThatBreaksAStandard(t *testing.T) {
+	coverage := parse(t, []string{
+		entry("big", []string{"kind:x", "kind:y", "kind:z"}, 9, true, breaks+`, "disposition": "adopt"`),
+		entry("held", []string{"kind:x", "kind:y"}, 1, true, breaks),
+		entry("twin", []string{"kind:x", "kind:y", "kind:z"}, 20, true, breaks+`, "disposition": "trim", "trimmed_for": "big"`),
+		entry("x", []string{"kind:x", "kind:y"}, 5, true, ""),
+		entry("z", []string{"kind:z"}, 5, true, ""),
+	}, `[]`)
+	if _, err := disposition.Dispose(coverage, nil); err != nil {
+		t.Fatal(err)
+	}
+	want := []string{"big trim", "held trim x", "twin trim", "x adopt", "z adopt"}
+	if got := dispositions(coverage); !slices.Equal(got, want) {
+		t.Errorf("dispositions = %q, want %q", got, want)
+	}
+	if got := coverage.Samples[0].Breaks; len(got) != 1 || got[0].Reason != "filler" {
+		t.Errorf("big breaks = %+v, want its break kept", got)
+	}
+}
+
+func TestDisposeLetsABreakingSampleLeaveOnlyWhenItsCoversAreHeld(t *testing.T) {
+	cases := []struct {
+		name, gaps string
+		ok         bool
+	}{
+		{"a gap holds the rest", `[{"id": "g1", "covers": ["kind:z"], "candidate": {"kind": "unavailable"}}]`, true},
+		{"nothing holds kind:z", `[]`, false},
+	}
+	for _, c := range cases {
+		coverage := parse(t, []string{
+			entry("bad", []string{"kind:x", "kind:z"}, 9, true, breaks),
+			entry("x", []string{"kind:x"}, 5, true, ""),
+		}, c.gaps)
+		_, err := disposition.Dispose(coverage, nil)
+		if c.ok && err != nil {
+			t.Errorf("%s: Dispose = %v, want nil", c.name, err)
+		}
+		if !c.ok && (err == nil || !strings.Contains(err.Error(), "kind:z")) {
+			t.Errorf("%s: Dispose = %v, want an error naming kind:z", c.name, err)
+		}
+	}
+}
+
+func TestDisposeWritesBreaksOnlyWhereRecorded(t *testing.T) {
+	coverage := parse(t, []string{entry("bad", []string{"kind:x"}, 9, true, breaks), entry("x", []string{"kind:x"}, 5, true, "")}, `[]`)
+	if _, err := disposition.Dispose(coverage, nil); err != nil {
+		t.Fatal(err)
+	}
+	data, err := json.Marshal(coverage.Samples)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := string(data); !strings.Contains(got, `"breaks":[{"standard":"A sample's content is realistic","reason":"filler"}]`) ||
+		strings.Count(got, `"breaks"`) != 1 {
+		t.Errorf("samples = %s, want bad's breaks written and none on x", got)
+	}
+}
+
 func TestPlaceSetsTraitsAndFeatures(t *testing.T) {
 	coverage := parse(t, []string{entry("a", []string{"kind:x"}, 1, true, "")}, `[]`)
 	placement := []disposition.Placement{{Path: "a", Traits: []string{"trait:t.v"}, Features: []string{"feature:f"}}}
