@@ -1,6 +1,7 @@
 # The corpus' tools and its tasks.
 # See docs/coverage.md
 [settings]
+activate_aggressive = true
 task.run_auto_install = false
 
 [tools]

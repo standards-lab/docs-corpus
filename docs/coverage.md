@@ -223,8 +223,9 @@ probe findings.
 `place-traits` and ImageMagick's EMF and WMF delegate use the host's. `place-traits` stops at
 startup, naming the tool and the fix, when a probe is not on `PATH` or is older than the version
 its [adapter](../tools/coverage/probe/doc.go) in the `probe` package accepts. Each adapter accepts
-nothing older than the version `mise.toml` pins, so on a host whose `PATH` puts older system tools
-ahead of mise's installs, run `place-traits` with mise's tool paths first on `PATH`.
+nothing older than the version `mise.toml` pins. `mise.toml` sets `activate_aggressive`, so mise
+puts its installs ahead of older system tools on `PATH` even on a host that reorders `PATH` after
+mise activates.
 
 ## Corpus placement
 
@@ -356,9 +357,8 @@ Nothing regenerates a recorded candidate, and its bytes are never edited, so the
 manifest's sha256 pin what was made. Generation is not byte-reproducible: archives and the mbox
 carry the time they were made.
 
-Run it with mise's pinned tools first on `PATH`, since the host's may be older: bsdtar from
-`conda:libarchive`, ffmpeg from `conda:ffmpeg`, magick from ImageMagick, qpdf, and Go, each from
-`mise where <tool>`'s `bin`. pandoc, Ghostscript, LibreOffice, iconv, and coreutils are unpinned
+It runs mise's pinned tools ahead of the host's, as `activate_aggressive` sets: bsdtar from
+`conda:libarchive`, ffmpeg from `conda:ffmpeg`, magick from ImageMagick, qpdf, and Go. pandoc, Ghostscript, LibreOffice, iconv, and coreutils are unpinned
 and run as the host installs them. The candidate's `generator` in `.gaps` records the versions
 that ran, and the manifest carries it.
 
