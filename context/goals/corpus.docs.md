@@ -1,6 +1,6 @@
 # goal · corpus.docs
 
-- **State:** building
+- **State:** brief ready
 - **Task:** docproc-final
 - **Branch:** docproc-final
 
