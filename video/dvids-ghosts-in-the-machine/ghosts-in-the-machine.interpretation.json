@@ -1,0 +1,217 @@
+{
+  "video": "video/dvids-ghosts-in-the-machine/ghosts-in-the-machine-1920x1080.mp4",
+  "dvids": 882019,
+  "about": "This key collects published readings of the first Ghosts in the Machine video, attributes the official account as the publisher's own reading rather than ground truth, records no timestamps, and paraphrases the copyrighted outlets rather than quoting them.",
+  "sources": [
+    {
+      "id": "army-mil",
+      "outlet": "U.S. Army (army.mil)",
+      "author": "Sgt. 1st Class Tim Beery",
+      "date": "2024-05-06",
+      "url": "https://www.army.mil/article/276015",
+      "kind": "official",
+      "reuse": "public domain",
+      "note": "The publisher's own account of both Ghosts in the Machine videos, titled 'Ghosts in the Machine: Irregular recruitment for an irregular force'; the same text is on DVIDS at https://www.dvidshub.net/news/469482. It is the publisher's reading, not ground truth, and only its passages about the first video are used."
+    },
+    {
+      "id": "vice",
+      "outlet": "Vice",
+      "author": "Matthew Gault",
+      "date": "2022-05-16",
+      "url": "https://www.vice.com/en/article/armys-new-recruitment-ad-looks-like-a-terrifying-video-game-cutscene/",
+      "kind": "outlet",
+      "reuse": "all rights reserved",
+      "note": "A news article; its readings are paraphrased, never quoted."
+    },
+    {
+      "id": "task-and-purpose",
+      "outlet": "Task & Purpose",
+      "author": "Haley Britzky",
+      "date": "2022-05-13",
+      "url": "https://taskandpurpose.com/news/what-is-psyops-army/",
+      "kind": "outlet",
+      "reuse": "all rights reserved",
+      "note": "A news article that reports Col. Chris Stangle, commander of the 4th Psychological Operations Group, on the video; its readings are paraphrased, never quoted."
+    },
+    {
+      "id": "military-times",
+      "outlet": "Military Times",
+      "author": "Rachel Nostrant",
+      "date": "2022-05-17",
+      "url": "https://www.militarytimes.com/news/your-military/2022/05/17/foreboding-army-psyops-recruitment-video-shows-whos-pulling-the-strings/",
+      "kind": "outlet",
+      "reuse": "all rights reserved",
+      "note": "Published as news in the Your Military section and not labeled opinion, but its readings of the video are partly the reporter's opinion; its readings are paraphrased, never quoted."
+    }
+  ],
+  "elements": [
+    {
+      "id": "pulling-the-strings",
+      "element": "Text asks whether the viewer has ever wondered who is pulling the strings.",
+      "cue": "text",
+      "readings": [
+        {
+          "source": "vice",
+          "reading": "The question plays on young people's unspoken worries and doubts about the world, and the ad implies the 4th PSYOP Group is its answer, holding out hidden knowledge and the means to use it.",
+          "locator": "the two closing paragraphs, beginning 'Even in a world of streaming' and 'The answer implicit in the ad'"
+        },
+        {
+          "source": "task-and-purpose",
+          "reading": "The question is the single thing the unsettling recruiting pitch puts to its viewers.",
+          "locator": "first paragraph"
+        },
+        {
+          "source": "military-times",
+          "reading": "The video's message is to join Army PSYOP and become the unseen hand that controls world affairs, above all the Chinese and Russian governments.",
+          "locator": "headline, and the third paragraph, beginning 'The recruiting video, which was published'"
+        }
+      ],
+      "disagreement": null
+    },
+    {
+      "id": "sun-tzu-opening",
+      "element": "A quotation attributed to Sun Tzu's Art of War, shown as text.",
+      "cue": "text",
+      "readings": [
+        {
+          "source": "military-times",
+          "reading": "The video starts with a Sun Tzu quotation from the Art of War before cycling through cities, a forest, a black-and-white cartoon, and 20th-century wars and speeches.",
+          "locator": "second paragraph, beginning 'The video kicks off'"
+        },
+        {
+          "source": "vice",
+          "reading": "Vice describes the start differently, as the camera moving through pine woods to a cartoon ghost fixed to a twig while words float over a song, and does not mention the quotation.",
+          "locator": "first paragraph, beginning 'It feels like a lost cutscene'"
+        }
+      ],
+      "disagreement": "Military Times says the video opens with the Sun Tzu quotation; Vice describes its opening as pine woods and a cartoon ghost on a twig and does not mention the quotation."
+    },
+    {
+      "id": "ghosts",
+      "element": "A cartoon ghost on a twig in the woods, a 1930s-style cartoon ghost, and, after the text 'We are everywhere', a cartoon ghost dancing on a television set on fire.",
+      "cue": [
+        "visual",
+        "text"
+      ],
+      "readings": [
+        {
+          "source": "vice",
+          "reading": "The ghosts come amid a fast jumble of images, the dancing ghost on the burning set follows the line 'We are everywhere', and together the song, images, and message build a slowly growing dread.",
+          "locator": "first paragraph, and the paragraphs beginning 'As first spotted by Task & Purpose' and 'We are everywhere'"
+        },
+        {
+          "source": "military-times",
+          "reading": "The video links all its footage to the notion of being a ghost.",
+          "locator": "second paragraph, beginning 'The video kicks off'"
+        },
+        {
+          "source": "army-mil",
+          "reading": "The publisher reports that the dancing ghost drew internal pushback because it is not the Psychological Operations Command's logo or crest, which is a knight chess piece, and that this made it harder to stamp the video as an Army product: 'There were little things we got pushback on like the dancing ghost.'",
+          "locator": "paragraph beginning 'There were little things we got pushback on'"
+        }
+      ],
+      "disagreement": "The outlets read the ghosts as part of the video's eerie mood and its notion of being a ghost; the official account treats the dancing ghost only as a departure from the command's knight crest that drew internal pushback, and gives it no meaning."
+    },
+    {
+      "id": "archival-footage",
+      "element": "Archival cartoons and radio from world events, 20th-century conflicts and speeches, Chinese troops marching, and a train car.",
+      "cue": [
+        "visual",
+        "audio"
+      ],
+      "readings": [
+        {
+          "source": "vice",
+          "reading": "A train car and marching Chinese troops are among the images that arrive in a rapid jumble while the music builds.",
+          "locator": "first paragraph, beginning 'It feels like a lost cutscene'"
+        },
+        {
+          "source": "task-and-purpose",
+          "reading": "The old cartoons and radio clips of world events combine into something that draws the viewer in while disturbing them, far darker and tenser than the Army's usual television recruiting ads.",
+          "locator": "third paragraph, beginning 'Complete with eerie whistling'"
+        },
+        {
+          "source": "military-times",
+          "reading": "The footage cycles between present-day cities and 20th-century wars and speeches, all linked to the notion of being a ghost.",
+          "locator": "second paragraph, beginning 'The video kicks off'"
+        },
+        {
+          "source": "military-times",
+          "reading": "Because the video refers so often to Russia and China, the reporter suggests it may itself be a psychological operation aimed at audiences abroad; this is the reporter's opinion.",
+          "locator": "fifth paragraph, beginning 'Given the number of references'"
+        }
+      ],
+      "disagreement": "Only Military Times reads the Russia and China references as possibly aimed at foreign audiences, and it offers that as its reporter's opinion."
+    },
+    {
+      "id": "masked-soldiers",
+      "element": "Soldiers in white masks walking through woods, with eerie whistling and music that builds.",
+      "cue": [
+        "visual",
+        "audio"
+      ],
+      "readings": [
+        {
+          "source": "vice",
+          "reading": "American soldiers wearing white masks in the woods are among the images shown while the music grows in intensity, and the whole leaves the viewer with a slowly growing dread.",
+          "locator": "first paragraph, and the paragraph beginning 'As first spotted by Task & Purpose'"
+        },
+        {
+          "source": "task-and-purpose",
+          "reading": "Background whistling and suspense music make the video dark and tense, far from the Army's usual, sometimes corny television commercials.",
+          "locator": "third paragraph, beginning 'Complete with eerie whistling'"
+        }
+      ],
+      "disagreement": null
+    },
+    {
+      "id": "not-showing-the-shark",
+      "element": "The video never shows what a PSYOP soldier does, and keeps the threat out of sight.",
+      "cue": "visual",
+      "readings": [
+        {
+          "source": "army-mil",
+          "reading": "The publisher says the team took inspiration from the 1975 film Jaws, building suspense from danger kept out of sight, and quotes the officer it calls Gray: 'We took the ethos that we don't show the shark.'",
+          "locator": "paragraphs beginning 'Thought provocation is the driving factor' and 'We took the ethos'"
+        },
+        {
+          "source": "task-and-purpose",
+          "reading": "Col. Chris Stangle says the artist modeled the video on the restraint Jaws showed with its shark, aiming to convey how the craft feels when it succeeds rather than depict a PSYOP soldier's work.",
+          "locator": "fifth and sixth paragraphs, beginning 'Col. Chris Stangle' and 'Drawing on this approach'"
+        }
+      ],
+      "disagreement": null
+    },
+    {
+      "id": "ghosts-in-the-machine-psywar",
+      "element": "Text lines 'Warfare is evolving' and 'And all the world's a stage', and the closing lines 'A feeling in the dark. A message in the stars. Ghosts in the machine. What, are we?' and the word 'PSYWAR'.",
+      "cue": "text",
+      "readings": [
+        {
+          "source": "vice",
+          "reading": "Vice gives the lines from 'A feeling in the dark' to 'PSYWAR' as the words that follow the dancing ghost, among the images and message it says build a growing dread.",
+          "locator": "paragraphs beginning 'As first spotted by Task & Purpose' and 'We are everywhere'"
+        },
+        {
+          "source": "task-and-purpose",
+          "reading": "Task & Purpose ends on the stage line, after reporting Stangle's view that psychological operations happen everywhere, every day, and that PSYOP works behind the scenes and goes unmentioned when it succeeds.",
+          "locator": "last paragraph, beginning 'As the video says', and the paragraphs beginning 'Throughout the world, Stangle said' and 'The point of psychological operations'"
+        }
+      ],
+      "disagreement": null
+    },
+    {
+      "id": "props",
+      "element": "Props including a mannequin head, a cassette tape, and Army challenge coins, in scenes shot in woods.",
+      "cue": "visual",
+      "readings": [
+        {
+          "source": "army-mil",
+          "reading": "The publisher says both videos were made in-house, mostly from original scenes shot in the woods around Fort Liberty with some purchased stock footage and sound effects, and that props such as a mannequin head, a cassette tape, and Army challenge coins gave them a professional look; it says this of both videos, not of the first alone.",
+          "locator": "paragraph beginning 'Gray and his team produced both videos in-house'"
+        }
+      ],
+      "disagreement": "None, but no source says what the props mean; the official account says only why they were used."
+    }
+  ]
+}

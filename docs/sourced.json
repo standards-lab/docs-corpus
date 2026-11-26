@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "path": "video/dvids-ghosts-in-the-machine/ghosts-in-the-machine-1920x1080.mp4",
+    "source": "DVIDS",
+    "url": "https://www.dvidshub.net/video/882019/ghosts-machine",
+    "license": "Public domain (US government work, 17 USC 105; DVIDS: 'must comply with the restrictions shown on https://www.dvidshub.net/about/copyright')",
+    "license_url": "https://www.dvidshub.net/video/882019/ghosts-machine",
+    "license_read": "2026-11-26",
+    "format": "video/x-m4v",
+    "bytes": 108307406,
+    "sha256": "fd847081a66e4112d13f75f349e84604c575194dda7b2622ad6bd92f04f591f6",
+    "truth": [
+      {
+        "path": "video/dvids-ghosts-in-the-machine/ghosts-in-the-machine.interpretation.json",
+        "sha256": "25ce30c5cb516ef11e588b8ebd038d17dba85e33345d3a7244d5e39c34d2d5cf",
+        "bytes": 11877,
+        "format": "application/json",
+        "license": "Apache-2.0",
+        "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
+        "license_read": "2026-11-26"
+      }
+    ]
+  }
+]

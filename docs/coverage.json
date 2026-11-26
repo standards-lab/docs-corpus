@@ -700,7 +700,7 @@
     "command": "scripts/place-library.sh"
   },
   "corpus_placement": {
-    "run": "01a217f1-f29c-7721-8d39-8c35190273c5",
+    "run": "01a2184e-4adf-7c96-b3a8-8f3e7d23a7c2",
     "docproc": "docproc v0.9.0 (46aebf1a0e61c2dd8ce054ec12b558d8fda3477a), cmd/docproc v0.2.7",
     "docproc_command": "docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/docproc-final/corpus",
     "command": "mise run place-traits --corpus"
