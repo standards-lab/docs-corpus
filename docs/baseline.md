@@ -4,13 +4,14 @@ The reference that capstone.data-intelligence measures against: the runs made ov
 tag's files, one section per tag. A tag's files are those its `MANIFEST.json` lists, and
 [coverage.md](coverage.md) records the scenarios they cover. Each tag's runs are kept outside the
 repository, in the run directory `~/runs/docs-corpus/baseline/<tag>`. Every figure below comes from
-the run's own records: its manifest, its record, and the summary docproc printed.
+the run's own records: docproc's manifest, record, and printed summary; docinfer's manifests, logs,
+and the gateway's request log.
 
 ## v0.2.0
 
 The run directory is `~/runs/docs-corpus/baseline/v0.2.0`. It holds docproc's run directory,
 `docproc/`, the summary docproc printed, `docproc-run.stdout`, its empty `docproc-run.stderr`, and
-the binaries that ran, `bin/`.
+the binaries that ran, `bin/`. docinfer's runs over it are in `docinfer/`.
 
 ### docproc
 
@@ -90,3 +91,69 @@ content was already recorded in this run, from another file or from a part insid
 | text | 8 | 2 | 0 | 1 | 0 | 0 | 11 |
 | video | 22 | 0 | 0 | 0 | 0 | 0 | 22 |
 | **Total** | 274 | 7 | 6 | 5 | 4 | 3 | 299 |
+
+### docinfer
+
+docinfer read docproc's run of the 299 files in **8,330.5 s (2.3 h)**. Its rerun, every result
+answered from the first run's, took **1.4 s**.
+
+| | |
+| --- | --- |
+| Run | `01a218e4-ddaa-7101-949b-0c9030a50690` |
+| Rerun | `01a21964-5204-75c7-9d78-7f13ce1279db` |
+| docproc run | `01a218c9-8847-7ec5-b98e-cf5803c6a989`, the run [above](#docproc) |
+| docinfer | `v0.3.0-6-gbef66ff` (`bef66ff13b6aef3e229cb1779613cf250e14c52c`), with go-ai v0.5.0 and docproc v0.9.0, built with go1.27.4 |
+| cmd/docinfer | `v0.2.1-0.20261126172518-bef66ff13b6a` |
+| Started | 2026-11-26T17:26:21.866080994Z |
+| Ended | 2026-11-26T19:45:11.719706414Z |
+| Wall time | 8,330.5 s |
+| Rerun started | 2026-11-26T19:45:34.724375053Z |
+| Rerun wall time | 1.4 s |
+
+Both runs exited 0. The wall times are the ones `time` measured around each run, in
+`docinfer/acceptance/logs/run-1.log` and `run-2.log`; the starts and ends are the runs' manifests'.
+
+**Machine.** The laptop, as for docproc.
+
+**Configuration.** Both runs read `docinfer/acceptance/config/config.json`, which docinfer's
+`acceptance/run.sh` wrote, and sent through the model gateway at `http://gb10-2:3000` with its
+`docinfer` key, each capability at its alias's `/<alias>/v1`. Every other setting was
+cmd/docinfer's starting value.
+
+| Capability | Alias | Row | Served model | In flight |
+| --- | --- | --- | --- | --- |
+| vision | `vision` | `gb10-2:8001` | `nvidia/Gemma-4-26B-A4B-NVFP4` | 32 |
+| transcription, chat mode | `audio` | `framework:8002` | `google/gemma-4-E4B-it` | 48 |
+| embeddings, 1,024 dimensions | `embedding` | `framework-2:8003` | `intfloat/multilingual-e5-large` | 16 |
+
+The command, from a docinfer checkout at `bef66ff`, run twice:
+
+```sh
+acceptance/run.sh --work ~/runs/docs-corpus/baseline/v0.2.0/docinfer/acceptance --docproc ~/runs/docs-corpus/baseline/v0.2.0/docproc --vision 32 --audio 48 --embedding 16
+```
+
+**Outcomes.** The counts each run printed. The rerun sent no request and held every result, with
+the same outcomes.
+
+| Capability | Items | Outcomes | Requests |
+| --- | --- | --- | --- |
+| vision | 2,558 images | 2,551 described, 6 incomplete, 1 refused, 0 failed | 2,454 |
+| transcription | 1,055 windows | 1,054 transcribed, 1 incomplete, 0 refused, 0 failed; 56 transcripts | 1,043 |
+| embeddings | 1,964 texts and 299 metadata | 18,814 embedded, 0 rejected | 5,001 |
+
+Each run counted 299 inputs, 6,068 outputs, 18,814 chunks, and 2 failures: the refused image and
+the incomplete window.
+
+**The Azure check.** No request was answered by Azure. The check read the gateway's request log,
+the `request_logs` table in its Postgres on gb10-2: the rows whose user is `docinfer`, from each
+run's start to its end, by alias, provider, upstream endpoint, and HTTP status. The run's
+8,502 rows all name the provider `custom` and their alias's row, none `azure`; the rerun has none.
+
+docinfer's acceptance page holds the findings: what the incomplete and refused items are, the
+covered runes, and the vision reruns over this tag
+([docs-corpus v0.2.0](https://github.com/standards-lab/docinfer/blob/main/docs/acceptance.md#docs-corpus-v020)).
+
+**Run directory.** `~/runs/docs-corpus/baseline/v0.2.0/docinfer`: the run and its rerun in
+`acceptance/`, with the binary that ran in `bin/`, the build in `BUILD.txt`, the configuration in
+`config/`, the logs in `logs/`, and the runs' directory in `out/`; the vision re-probe in
+`reprobe/`, and its confirmation in `confirm/`.

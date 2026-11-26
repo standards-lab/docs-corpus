@@ -6895,7 +6895,9 @@
       "license_status": "verified",
       "redistributable": true,
       "measures": [
-        "shared-gs"
+        "shared-gs",
+        "vision-confirmation",
+        "vision-reprobe"
       ]
     },
     {
