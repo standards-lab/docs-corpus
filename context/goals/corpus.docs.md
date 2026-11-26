@@ -132,6 +132,7 @@ slices 6/7 committed (1 ab8b982, 2 f4715ec, 3 ai-hosting a0dd635, 4 docproc f600
 - slice 1, decided without the architect: removed `manifest --copy` and `dispose --placement`, whose only inputs were ~/docs and the retired placement mode.
 - slice 6, decided without the architect: `jwz.mbox` stays off `vision-reprobe`; as an adopted gap candidate it is outside the measurement contract (samples and sourced inputs), and it stays in the corpus regardless.
 - order: the reviews and the editor run before slice 7, so the one-way removal comes last; the removal waits on the architect's go-ahead.
+- escalation, slice 7: does the closed, archived spike-ai-pipeline-processing (still reads ~/docs) block the removal? no, exempt as it closed. Delete the list (17.1 GB, no archive)? yes.
 
 ## Decisions
 
