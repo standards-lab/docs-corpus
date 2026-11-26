@@ -93,7 +93,7 @@ func TestDisposeReproducesTheCoverageData(t *testing.T) {
 	}
 }
 
-func TestDisposeWritesSortedIDsEmptyListsAndUnescapedText(t *testing.T) {
+func TestDisposeWritesSortedIDsEmptyListsBreaksAndUnescapedText(t *testing.T) {
 	dir := t.TempDir()
 	noCandidates(t, dir)
 	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"vocabulary": {
@@ -103,7 +103,10 @@ func TestDisposeWritesSortedIDsEmptyListsAndUnescapedText(t *testing.T) {
 		"corpus_placement": {"run": "r2", "docproc": "v", "docproc_command": "d", "command": "c2"},
 		"samples": [{"path": "a", "sha256": "s", "library": ["kind:a"], "traits": [], "features": [],
 			"judged": {"feature:b": "seen", "feature:a": "Q&A <b>"}, "format": "f", "bytes": 1,
-			"license_status": "n/a", "redistributable": true, "truth": [], "docs": [], "disposition": "trim", "trimmed_for": "z"}],
+			"license_status": "n/a", "redistributable": true, "truth": [], "docs": [], "disposition": "trim", "trimmed_for": "z"},
+			{"path": "b", "sha256": "s", "library": ["kind:a"], "traits": [], "features": [], "format": "f", "bytes": 2,
+			"license_status": "n/a", "redistributable": true, "breaks": [{"standard": "A sample's content is realistic", "reason": "filler"}],
+			"truth": [], "docs": [], "disposition": "adopt"}],
 		"gaps": [], "docs_without_sample": []}`)
 	t.Chdir(dir)
 	var stdout, stderr bytes.Buffer
@@ -164,6 +167,29 @@ func TestDisposeWritesSortedIDsEmptyListsAndUnescapedText(t *testing.T) {
       "truth": [],
       "docs": [],
       "disposition": "adopt"
+    },
+    {
+      "path": "b",
+      "sha256": "s",
+      "library": [
+        "kind:a"
+      ],
+      "traits": [],
+      "features": [],
+      "format": "f",
+      "bytes": 2,
+      "license_status": "n/a",
+      "redistributable": true,
+      "breaks": [
+        {
+          "standard": "A sample's content is realistic",
+          "reason": "filler"
+        }
+      ],
+      "truth": [],
+      "docs": [],
+      "disposition": "trim",
+      "trimmed_for": "a"
     }
   ],
   "gaps": [],

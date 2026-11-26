@@ -151,9 +151,6 @@ func TestDisposeTrimsASampleThatBreaksAStandard(t *testing.T) {
 	if got := dispositions(coverage); !slices.Equal(got, want) {
 		t.Errorf("dispositions = %q, want %q", got, want)
 	}
-	if got := coverage.Samples[0].Breaks; len(got) != 1 || got[0].Reason != "filler" {
-		t.Errorf("big breaks = %+v, want its break kept", got)
-	}
 }
 
 func TestDisposeLetsABreakingSampleLeaveOnlyWhenItsCoversAreHeld(t *testing.T) {
@@ -176,21 +173,6 @@ func TestDisposeLetsABreakingSampleLeaveOnlyWhenItsCoversAreHeld(t *testing.T) {
 		if !c.ok && (err == nil || !strings.Contains(err.Error(), "kind:z")) {
 			t.Errorf("%s: Dispose = %v, want an error naming kind:z", c.name, err)
 		}
-	}
-}
-
-func TestDisposeWritesBreaksOnlyWhereRecorded(t *testing.T) {
-	coverage := parse(t, []string{entry("bad", []string{"kind:x"}, 9, true, breaks), entry("x", []string{"kind:x"}, 5, true, "")}, `[]`)
-	if _, err := disposition.Dispose(coverage, nil); err != nil {
-		t.Fatal(err)
-	}
-	data, err := json.Marshal(coverage.Samples)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if got := string(data); !strings.Contains(got, `"breaks":[{"standard":"A sample's content is realistic","reason":"filler"}]`) ||
-		strings.Count(got, `"breaks"`) != 1 {
-		t.Errorf("samples = %s, want bad's breaks written and none on x", got)
 	}
 }
 
@@ -252,8 +234,7 @@ func TestDisposeTrimsForCandidatesAndDropsCandidatesInsideAnother(t *testing.T) 
 func TestDisposeClearsACoveredByNamingASampleThatLeftTheCorpus(t *testing.T) {
 	coverage := parse(t, []string{
 		entry("a", []string{"kind:x", "kind:y"}, 1, true, ""),
-		entry("big", []string{"kind:x", "kind:y", "kind:z"}, 9, true,
-			`, "breaks": [{"standard": "A sample's content is realistic", "reason": "filler"}]`),
+		entry("big", []string{"kind:x", "kind:y", "kind:z"}, 9, true, breaks),
 	}, `[{"id": "g1", "covers": ["kind:z"], "covered_by": "big", "candidate": `+sourced+`},
 		{"id": "g2", "covers": ["kind:x"], "covered_by": "a", "candidate": `+sourced+`},
 		{"id": "g3", "covers": ["kind:y"], "covered_by": "gone", "candidate": `+sourced+`}]`)
