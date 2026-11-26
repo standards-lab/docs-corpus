@@ -24,7 +24,8 @@ versioned corpus in this repository, public from v0.1.0 ([README.md](../README.m
 - **Measurement list** (built): `docs/measurements.json`, written by hand, lists the targeted
   acceptance measurements in docproc and docinfer that rerun over corpus inputs, each naming its
   acceptance section by its heading and the inputs it reads. A `~/docs` sample that a measurement
-  lists, and that would otherwise be trimmed, is disposed `measure` and stays in the corpus ([docs/coverage.md](../docs/coverage.md#measurements)).
+  lists, and that would otherwise be trimmed, is disposed `measure` and stays in the corpus
+  ([docs/coverage.md](../docs/coverage.md#measurements)).
 - **Distribution** (built): `mise run pack` writes one uncompressed tar of sample files per format
   area, and `mise run fetch` reads the tars from a release URL or a directory and places the files
   once every one matches the manifest's size and sha256
