@@ -2,21 +2,22 @@
 
 The versioned, curated corpus that the Standards Lab workspace's real workloads run over: sample
 documents, messages, images, audio, and video, each with its source, license, ground truth, and
-the scenarios it exercises recorded in `MANIFEST.json`. The repository is public from v1, and
+the scenarios it exercises recorded in `MANIFEST.json`. The repository is public from v0.1.0, and
 [`STANDARDS.md`](STANDARDS.md) sets which samples that admits.
 [`docs/coverage.md`](docs/coverage.md) records which scenarios the samples cover and why each one
 is in the corpus.
 
-Each version is a git tag. The payload, the sample files themselves, is the tag's GitHub release
-assets, one archive per format area, as [Distribution](#distribution) describes. Git holds the
-manifest, the truth files, the docs, the coverage, and the check. The repository uses no Git LFS.
+Each version is a git tag, such as v0.1.0, and [`CHANGELOG.md`](CHANGELOG.md) holds each
+version's notes. The payload, the sample files themselves, is the tag's GitHub release assets, one
+archive per format area, as [Distribution](#distribution) describes. Git holds the manifest, the
+truth files, the docs, the coverage, and the check. The repository uses no Git LFS.
 
 ## The manifest
 
-`MANIFEST.json` is the inventory. It has `version: 1` and one entry per corpus file, whose `role`
-is `sample`, or `truth` or `doc` for a file a sample links. Files sit under the format directories
-`archive/`, `audio/`, `email/`, `exec/`, `image/`, `office/`, `onenote/`, `pdf/`, `text/`, and
-`video/`. An adopted sample keeps the path it had in `~/docs`, a sourced gap candidate sits at
+`MANIFEST.json` is the inventory. Its `version`, 1, is the manifest's schema version, not a
+release. It has one entry per corpus file, whose `role` is `sample`, or `truth` or `doc` for a file
+a sample links. Files sit under the format directories `archive/`, `audio/`, `email/`, `exec/`,
+`image/`, `office/`, `onenote/`, `pdf/`, `text/`, and `video/`. An adopted sample keeps the path it had in `~/docs`, a sourced gap candidate sits at
 `<area>/<source>/<name>`, and a generated one at the path its command writes, as
 [docs/coverage.md](docs/coverage.md#candidates-in-the-corpus) states.
 
