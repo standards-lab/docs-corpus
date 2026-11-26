@@ -13,7 +13,7 @@
 5. [x] measurement-set
 6. [x] truth
 7. [x] sourcing
-8. [ ] snapshot-2
+8. [x] snapshot-2
 9. [ ] baseline
 
 ## Decisions
@@ -56,8 +56,6 @@
   without `--corpus`, and the check's ~/docs comparisons (round 1, question 9).
 - snapshot: gb10-2 holds the verified v0.1.0 checkout at `~/docs-corpus` (tag commit `8873b89`),
   cloned anonymously and fetched from the release; its check ended "All checks passed."
-- snapshot: the release assets are uploaded while private; docs-corpus goes public with its
-  history unchanged, then gb10-2 fetches anonymously into `~/docs-corpus`, kept for baseline.
 - docproc-final: docproc's acceptance and the onenote spike's findings stay as they closed; both
   are closed out, so their citations of the timing sections are not edited.
 - docproc-final: the realistic-content standard admits limit checks whose content is real
@@ -70,17 +68,12 @@
 - curate: the candidates for archive-1, archive-2, archive-3, and archive-5 reuse `~/docs` paths
   (`archive/mixed-bundle.7z`, `.tar.gz`, `.tar.zst`, `archive/zip-in-zip.zip`) with different
   content, so baseline must not compare v0.1.0 runs with `~/docs` runs by path alone.
-- curate: 24 samples and 26 truth and doc entries record `license_url`
-  https://github.com/standards-lab/docs-corpus/blob/main/LICENSE, which resolves only once curate
-  merges and LICENSE is on main; snapshot relies on it.
 - review: a copyleft fixture, such as onenote-1's AGPL-3.0-or-later test.onepkg from Joplin, is
   acceptable in the public corpus when it ships unmodified with its license.
 - review: `mise run place-traits` then `mise run dispose` rebuild coverage.json; a later task
   changes placements or dispositions through them, never by hand.
 - plan: ~/docs is never changed before baseline removes it. It is the reference for a corpus
   built from scratch in docs-corpus.
-- plan: snapshot publishes one release, v0.1.0, from the set docproc-final re-curated.
-  docs-corpus stays private until then, and snapshot makes it public.
 - plan: acceptance runs cite the release tag, such as v0.1.0; `MANIFEST.json`'s `version` is the
   schema version, 1, not a release.
 - plan: the corpus has no size cap.

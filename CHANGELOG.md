@@ -7,6 +7,15 @@ over, are documented here. The format follows
 
 ## [Unreleased]
 
+## [v0.2.0] - 2026-11-26
+
+The second release holds 210 samples in the same ten format areas, 81 of them new: 80 measured
+samples, which docproc's and docinfer's targeted acceptance measurements rerun over, and DVIDS
+882019, the first sourced input. It adds 22 truth files, for 58 in all, and 101 license readings,
+for 250 in all.
+No v0.1.0 sample file is removed or changed. The sample files are again the release's assets, one
+uncompressed `<area>.tar` per format area.
+
 ### Added
 
 - [`docs/measurements.json`](docs/measurements.json), the hand-written measurement list:
@@ -37,6 +46,8 @@ over, are documented here. The format follows
   host tools.
 - The LibriSpeech, LibriVox, and Bush speech readings are taken at their publishers rather than at
   a mirror or aggregator.
+- `docs/license-readings.json` gains 101 readings, for the measured samples' and their truth's
+  `~/docs` paths in `audio`, `office`, and `pdf`.
 
 ## [v0.1.0] - 2026-11-26
 
@@ -55,5 +66,6 @@ area, which `mise run fetch` downloads and verifies against the manifest before 
 - One `<area>.tar` release asset per format area, written by `mise run pack` and placed by
   `mise run fetch`.
 
-[Unreleased]: https://github.com/standards-lab/docs-corpus/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/standards-lab/docs-corpus/compare/v0.2.0...HEAD
+[v0.2.0]: https://github.com/standards-lab/docs-corpus/releases/tag/v0.2.0
 [v0.1.0]: https://github.com/standards-lab/docs-corpus/releases/tag/v0.1.0
