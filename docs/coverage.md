@@ -79,6 +79,23 @@ adopted sample covers all of its scenarios, and replaced otherwise. The gap cand
 corpus count as adopted samples for trims, so a trim can name a candidate, as
 [Candidates in the corpus](#candidates-in-the-corpus) states.
 
+### Breaks
+
+A sample that breaks a standard in [`STANDARDS.md`](../STANDARDS.md) records the break in its
+entry's `breaks`, a list with one object per standard it breaks:
+
+- `standard`: the opening of the standard's bullet, verbatim, such as `A sample's content is
+  realistic`;
+- `reason`: how the sample breaks it, from what its source record or the file shows.
+
+`dispose` trims a sample with a break, whatever its other facts, so its disposition is never set
+by hand. `trimmed_for` names the sample the tie-breaks prefer among those in the corpus whose
+covers contain its own, and is absent when none does. Each of its covers must still be another
+corpus sample's or a gap's; `dispose` stops, naming the covers, when one isn't, so a break never
+loses a scenario silently. For example,
+`onenote/large/Large OneDrive.one` records that its pages are printouts of generated test PDFs,
+and `image/vector/script-bearing.svg` that it was written by hand.
+
 The [`dispose`](../tools/coverage/cmd/dispose/doc.go) command of the Go module `tools/coverage`
 derives every disposition by these rules, the covers of each gap a replace names, as
 [Gaps](#gaps) states, and each candidate's place in the corpus, as
@@ -119,10 +136,21 @@ Each entry in `.samples` has the sample's `path` and `sha256`, from `~/docs/MANI
 `library`: the library IDs the sample exercises. Every `~/docs` sample has an entry, even one with
 an empty `library`.
 
-The placements come from docproc's kept run over `~/docs`. `.library_placement` in
-[`coverage.json`](coverage.json) records the run's ID and the command that produced them. The
-command is a script that runs one jq program over the run's `record.jsonl`. A sample's library IDs
-are what the run observed for that file:
+The placements come from docproc's run over `~/docs`, made by the docproc release the corpus
+targets. `.library_placement` in [`coverage.json`](coverage.json) records the run's ID, the
+`docproc` release that made it, the `docproc_command` that ran it, and the `command` that placed
+the IDs. The run reads `~/docs` and writes only its run directory, outside the repository. To make
+it, put docproc's tools on `PATH` as [Corpus placement](#corpus-placement) states, install
+`cmd/docproc` v0.2.7, the command of docproc v0.9.0, and run:
+
+```sh
+GOBIN=<dir> go install github.com/standards-lab/docproc/cmd/docproc@v0.2.7
+<dir>/docproc run --out ~/runs/docs-corpus/docproc-final/docs ~/docs
+```
+
+Record the run's ID, from the summary's last line, in `.library_placement`. The placing command
+is a script that runs one jq program over the run's `record.jsonl`. A sample's library IDs are
+what the run observed for that file:
 
 - Every event of the file's input counts. That includes the parts docproc found inside the file,
   such as archive members, attachments, and embedded files, so their IDs go to the top-level sample.
@@ -137,8 +165,8 @@ To rerun the command and compare its output with the data, run this from the rep
 scripts/place-library.sh | cmp - <(jq '.samples | map({path, sha256, library})' docs/coverage.json)
 ```
 
-The script reads the run from `${RUNS:-$HOME/runs/docproc/final/runs}` and the manifest from
-`${DOCS_REFERENCE:-$HOME/docs}`. It writes nothing.
+The script reads the run from `${RUNS:-$HOME/runs/docs-corpus/docproc-final/docs/runs}` and the
+manifest from `${DOCS_REFERENCE:-$HOME/docs}`. It writes nothing.
 
 ## Trait and feature placement
 
@@ -196,24 +224,24 @@ run's ID, the docproc release that made it, the `docproc_command` that ran it fr
 root, and the `command` that places the covers.
 
 `mise run place-traits --corpus` places every sample `MANIFEST.json` lists, reading its file from
-the working copy and the run from `${RUNS:-$HOME/runs/docs-corpus/curate/runs}`. For each sample,
-it takes the library IDs from that run by the rules of [Library placement](#library-placement),
-adds the trait and feature IDs [`place-traits`](#trait-and-feature-placement) probes and the
-`judged` IDs of the sample's entry in `.samples`, and prints the sample's `covers`. A candidate
-has no entry in `.samples`, so its judged IDs, each with its evidence, are in
-[`judged.json`](judged.json), keyed by its path. The command's output is committed as
-[`corpus-placement.json`](corpus-placement.json), and the manifest takes each candidate's covers
-from it.
+the working copy and the run from `${RUNS:-$HOME/runs/docs-corpus/docproc-final/corpus/runs}`. For
+each sample, it takes the library IDs from that run by the rules of
+[Library placement](#library-placement), adds the trait and feature IDs
+[`place-traits`](#trait-and-feature-placement) probes and the `judged` IDs of the sample's entry in
+`.samples`, and prints the sample's `covers`. A candidate has no entry in `.samples`, so its judged
+IDs, each with its evidence, are in [`judged.json`](judged.json), keyed by its path. The command's
+output is committed as [`corpus-placement.json`](corpus-placement.json), and the manifest takes
+each candidate's covers from it.
 
 To make the run, put docproc's tools on `PATH`, as docproc's README states for its release:
 `docproc-ooxml`, `docproc-mail`, and `docproc-onenote` from their release tags, the real `7zz`
 binary rather than mise's shim, and docker for `soffice`'s pinned image. Then install
-`cmd/docproc` v0.2.3, the command of docproc v0.5.0, outside the repository, and run it from the
+`cmd/docproc` v0.2.7, the command of docproc v0.9.0, outside the repository, and run it from the
 repository root with the run directory outside it:
 
 ```sh
-GOBIN=<dir> go install github.com/standards-lab/docproc/cmd/docproc@v0.2.3
-<dir>/docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/curate
+GOBIN=<dir> go install github.com/standards-lab/docproc/cmd/docproc@v0.2.7
+<dir>/docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/docproc-final/corpus
 ```
 
 Record the run's ID, from the summary's last line, in `.corpus_placement`. A run into the same
@@ -234,10 +262,10 @@ a `candidate`. A replaced sample names the gap whose covers contain its own. Rep
 need the same covers, or covers inside another replaced sample's, share one gap; where several
 replaced samples' covers contain a sample's, it shares the gap of the one the tie-breaks prefer.
 A gap for scenarios no sample exercised groups the IDs one candidate file can exercise together.
-A gap also holds the covers of an adopted sample that breaks [`STANDARDS.md`](../STANDARDS.md),
-such as one constructed by hand, so that its candidate takes them over. For example, image-8's
-gap holds the covers of the hand-written `image/vector/script-bearing.svg`, and once image-8's
-sourced SVG is in the corpus, `dispose` trims the hand-written file.
+A gap also holds the covers of a sample that breaks [`STANDARDS.md`](../STANDARDS.md) and that
+no other sample covers, so that its candidate takes them over. For example, image-8's gap holds
+the covers of the hand-written `image/vector/script-bearing.svg`, whose `breaks` record it, and
+image-8's sourced SVG is in the corpus in its place.
 
 The data stores no list of samples per scenario: it follows from the placements. To print each
 scenario with the adopted samples that exercise it, or with the gaps that cover it, run:
@@ -272,7 +300,16 @@ Each gap names one candidate, its `candidate` object, of one of three kinds, its
   scenarios until a candidate turns up.
 
 Each sourced or generated candidate also has a `fit` line: a rating, Good or Fair, then its
-quality and how it exercises the gap's covers.
+quality and how it exercises the gap's covers. The fit line also shows that the candidate meets
+[`STANDARDS.md`](../STANDARDS.md)'s realistic-content standard; a generated candidate's names the
+sourced real text, images, speech, or scans its inputs give its content.
+
+A candidate that breaks a standard leaves the corpus: its rows leave
+[`candidates.json`](candidates.json), [`judged.json`](judged.json), and, through the tools,
+[`corpus-placement.json`](corpus-placement.json) and the manifest, and its file leaves the working
+copy. Its gap stays open, with an unavailable candidate whose `searched` names the candidate that
+left and how it was made or fetched, and whose `reason` names the standard it broke and why, as
+archive-11, email-5, and office-8 record. No replacement is searched for until a later task takes the gap up.
 
 `dispose` writes two fields to record what the corpus placement found, as
 [Candidates in the corpus](#candidates-in-the-corpus) states:
@@ -337,7 +374,8 @@ when every input's is, and it is redistributable only when every input is.
   gap's `covered_by` names that sample.
 
 A candidate the placement doesn't list, as one that left the corpus, keeps its gap's record as it
-stands.
+stands, but for a `covered_by` that names a sample no longer in the corpus: `dispose` clears it,
+so `mise run fetch-candidates` fetches the candidate again and the next corpus run places it.
 
 To count the dispositions and gaps, run:
 
@@ -398,6 +436,10 @@ variable names. It fails when:
 - a sample lacks its path or sha256, or two entries in `.samples` share a path;
 - a sample lacks a tie-break fact, `format`, `truth`, or `docs`;
 - a sample has no disposition, or has fields of another disposition;
+- a break's `standard` isn't the opening of a [`STANDARDS.md`](../STANDARDS.md) bullet, or it
+  has no `reason`;
+- a sample with a break isn't trimmed, its trim leaves out a sample in the corpus whose covers
+  contain its own, or one of its covers is no other adopted sample's, candidate's, or gap's;
 - a trim names a sample that isn't adopted, one whose covers don't contain its own, or one another
   adopted sample beats on the tie-breaks;
 - a replace names a gap that doesn't exist, or one whose covers don't contain its own;

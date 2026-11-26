@@ -93,17 +93,20 @@ func TestDisposeReproducesTheCoverageData(t *testing.T) {
 	}
 }
 
-func TestDisposeWritesSortedIDsEmptyListsAndUnescapedText(t *testing.T) {
+func TestDisposeWritesSortedIDsEmptyListsBreaksAndUnescapedText(t *testing.T) {
 	dir := t.TempDir()
 	noCandidates(t, dir)
 	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"vocabulary": {
 		"library": {"kind:z": {"identifier": "Z", "link": "l"}, "kind:a": {"identifier": "A", "link": "l"}},
 		"trait": {}, "feature": {"feature:b": {"rule": "x"}, "feature:a": {"rule": "Q&A > 1"}}},
-		"library_placement": {"run": "r", "command": "c"},
+		"library_placement": {"run": "r", "docproc": "v", "docproc_command": "d", "command": "c"},
 		"corpus_placement": {"run": "r2", "docproc": "v", "docproc_command": "d", "command": "c2"},
 		"samples": [{"path": "a", "sha256": "s", "library": ["kind:a"], "traits": [], "features": [],
 			"judged": {"feature:b": "seen", "feature:a": "Q&A <b>"}, "format": "f", "bytes": 1,
-			"license_status": "n/a", "redistributable": true, "truth": [], "docs": [], "disposition": "trim", "trimmed_for": "z"}],
+			"license_status": "n/a", "redistributable": true, "truth": [], "docs": [], "disposition": "trim", "trimmed_for": "z"},
+			{"path": "b", "sha256": "s", "library": ["kind:a"], "traits": [], "features": [], "format": "f", "bytes": 2,
+			"license_status": "n/a", "redistributable": true, "breaks": [{"standard": "A sample's content is realistic", "reason": "filler"}],
+			"truth": [], "docs": [], "disposition": "adopt"}],
 		"gaps": [], "docs_without_sample": []}`)
 	t.Chdir(dir)
 	var stdout, stderr bytes.Buffer
@@ -134,6 +137,8 @@ func TestDisposeWritesSortedIDsEmptyListsAndUnescapedText(t *testing.T) {
   },
   "library_placement": {
     "run": "r",
+    "docproc": "v",
+    "docproc_command": "d",
     "command": "c"
   },
   "corpus_placement": {
@@ -162,6 +167,29 @@ func TestDisposeWritesSortedIDsEmptyListsAndUnescapedText(t *testing.T) {
       "truth": [],
       "docs": [],
       "disposition": "adopt"
+    },
+    {
+      "path": "b",
+      "sha256": "s",
+      "library": [
+        "kind:a"
+      ],
+      "traits": [],
+      "features": [],
+      "format": "f",
+      "bytes": 2,
+      "license_status": "n/a",
+      "redistributable": true,
+      "breaks": [
+        {
+          "standard": "A sample's content is realistic",
+          "reason": "filler"
+        }
+      ],
+      "truth": [],
+      "docs": [],
+      "disposition": "trim",
+      "trimmed_for": "a"
     }
   ],
   "gaps": [],

@@ -6,6 +6,11 @@ The judgement calls the standards-reviewer applies, beyond what `scripts/check.s
   sample covers. A generated sample's recorded inputs are the exception: they stay beside it, as
   msg_36.eml does beside email-8 and old_scans-69.pdf beside pdf-2, because a generated sample must
   be rebuildable from v1.
+- A sample's content is realistic: real-language text and images at the density and count a real
+  document of its kind holds. Filler (pseudo-words, random characters, repeated or templated
+  pages) and timing or stress inputs stay out of the corpus, which measures accuracy, where a
+  model's output on filler is noise. A generated sample draws its content from sourced real text
+  and images, never from a random-word generator.
 - A sample is sourced or generated, with its source or generating command recorded; none is
   constructed by hand.
 - A sample is in the repository only when its license, read at its source, lets it be

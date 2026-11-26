@@ -140,7 +140,7 @@ func checkSchema(dir string) error {
 	path := filepath.Join(dir, "rundir.json")
 	data, err := os.ReadFile(path)
 	if errors.Is(err, fs.ErrNotExist) {
-		return fmt.Errorf("run: %s holds no rundir.json, so it is no schema %q run directory; run docproc v0.5.0 or later again to write one: %w",
+		return fmt.Errorf("run: %s holds no rundir.json, so it is no schema %q run directory; run docproc v0.9.0 again to write one: %w",
 			dir, schema, err)
 	}
 	if err != nil {

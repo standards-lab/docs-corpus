@@ -8,12 +8,15 @@
       "bytes": 435200,
       "format": "application/x-tar",
       "covers": [
+        "capability:embeddings",
+        "capability:extraction",
         "check:archive-absolute-path",
         "check:archive-device",
         "check:archive-hardlink",
         "check:archive-symlink",
         "kind:tar",
         "route:archive",
+        "route:text",
         "route:unrouted"
       ],
       "truth": [],
@@ -36,6 +39,8 @@
       "bytes": 4096,
       "format": "application/x-tar",
       "covers": [
+        "capability:embeddings",
+        "capability:extraction",
         "check:archive-absolute-path",
         "check:archive-traversal",
         "check:double-extension",
@@ -43,7 +48,7 @@
         "check:signature-mismatch",
         "kind:tar",
         "route:archive",
-        "route:unrouted"
+        "route:text"
       ],
       "truth": [],
       "truth_note": "a generated candidate, which inherits no input's truth unchanged",
@@ -85,39 +90,6 @@
       "license_status": "verified",
       "redistributable": true,
       "gap": "archive-10"
-    },
-    {
-      "path": "archive/many-entries.zip",
-      "role": "sample",
-      "sha256": "af9e4c65cd007209d917a9f2891cf26f9a9d926a589cb4e6a17367b1dd0a8c7d",
-      "bytes": 184358,
-      "format": "application/zip",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "kind:zip",
-        "route:archive",
-        "route:text",
-        "trait:scale.many-entries",
-        "trait:script.arabic",
-        "trait:script.cyrillic",
-        "trait:script.greek",
-        "trait:script.mixed"
-      ],
-      "truth": [],
-      "truth_note": "a generated candidate, which inherits no input's truth unchanged",
-      "docs": [],
-      "source": "generated",
-      "license": "Apache-2.0",
-      "license_status": "verified",
-      "redistributable": true,
-      "command": "d=$(mktemp -d) && split -n 1000 -a 4 -d --additional-suffix=.txt text/csv/tab-separated.tsv \"$d/part-\" && bsdtar --format=zip -cf archive/many-entries.zip -C \"$d\" .",
-      "inputs": [
-        "text/csv/tab-separated.tsv"
-      ],
-      "generator": "GNU coreutils 9.12 split; bsdtar 3.8.11 (libarchive 3.8.11)",
-      "generator_license": "GPL-3.0-or-later (coreutils); BSD-2-Clause",
-      "gap": "archive-11"
     },
     {
       "path": "archive/mixed-bundle.7z",
@@ -546,6 +518,33 @@
       "gap": "audio-2"
     },
     {
+      "path": "audio/wikimedia-commons/George_W._Bush_Speech_-_September_12,_2001.ogg",
+      "role": "sample",
+      "sha256": "76f6a8cd7a9661ff75bcfd0c24c1f044598af8b01c2ed11455e75d4c6aebe513",
+      "bytes": 822907,
+      "format": "audio/ogg",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "kind:ogg",
+        "route:audio",
+        "trait:audio.multi-window"
+      ],
+      "truth": [],
+      "truth_note": "a sourced candidate, which inherits no truth",
+      "docs": [],
+      "source": "wikimedia-commons",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/ca/George_W._Bush_Speech_-_September_12%2C_2001.ogg",
+      "ref": "Commons file revision 1302598461, sha1 6235b48d45fb873a2e6e521ffbec7be9d3f36310",
+      "license": "Public domain (PD-USGov-POTUS)",
+      "license_url": "https://commons.wikimedia.org/wiki/File:George_W._Bush_Speech_-_September_12,_2001.ogg",
+      "license_read": "2026-11-25",
+      "license_status": "verified",
+      "redistributable": true,
+      "gap": "audio-3"
+    },
+    {
       "path": "email/eml/cpython/cpython.LICENSE",
       "role": "doc",
       "sha256": "b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231",
@@ -553,114 +552,6 @@
       "format": "text/plain",
       "source": "cpython",
       "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-      "license": "PSF-2.0",
-      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-      "license_read": "2026-11-25",
-      "license_status": "verified",
-      "redistributable": true
-    },
-    {
-      "path": "email/eml/cpython/msg_07.eml",
-      "role": "sample",
-      "sha256": "8358092b45c8631df6466a2e4dc23278263b2dd2ba5765e99caba47c304dd3b5",
-      "bytes": 5227,
-      "format": "text/plain",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "capability:vision",
-        "feature:attachments",
-        "kind:gif",
-        "route:nested",
-        "route:vision"
-      ],
-      "truth": [],
-      "docs": [
-        "email/eml/cpython/cpython.LICENSE"
-      ],
-      "source": "cpython",
-      "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_07.txt",
-      "license": "PSF-2.0",
-      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-      "license_read": "2026-11-25",
-      "license_status": "verified",
-      "redistributable": true
-    },
-    {
-      "path": "email/eml/cpython/msg_15.eml",
-      "role": "sample",
-      "sha256": "8f1c4f13d767b8a4d55fe9a377c3ff20cfd7e77b9b9da12e1df9772c1f685f27",
-      "bytes": 1306,
-      "format": "message/rfc822",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "check:signature-mismatch",
-        "route:nested",
-        "route:unrouted",
-        "trait:charset.declared"
-      ],
-      "truth": [],
-      "docs": [
-        "email/eml/cpython/cpython.LICENSE"
-      ],
-      "source": "cpython",
-      "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_15.txt",
-      "license": "PSF-2.0",
-      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-      "license_read": "2026-11-25",
-      "license_status": "verified",
-      "redistributable": true
-    },
-    {
-      "path": "email/eml/cpython/msg_16.eml",
-      "role": "sample",
-      "sha256": "fbb4ae9e31ddd26e43b7c051041bb3d9d6bebd418a858da67268920bc672afb9",
-      "bytes": 5203,
-      "format": "message/rfc822",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "feature:embedded-messages",
-        "feature:hyperlinks",
-        "route:nested",
-        "route:unrouted",
-        "trait:charset.declared"
-      ],
-      "truth": [],
-      "docs": [
-        "email/eml/cpython/cpython.LICENSE"
-      ],
-      "source": "cpython",
-      "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_16.txt",
-      "license": "PSF-2.0",
-      "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-      "license_read": "2026-11-25",
-      "license_status": "verified",
-      "redistributable": true
-    },
-    {
-      "path": "email/eml/cpython/msg_22.eml",
-      "role": "sample",
-      "sha256": "4367f6ef8398e92de819ccd8e4938c819c2b24aa08f06cdcc0266bb0ec37eb08",
-      "bytes": 1894,
-      "format": "text/plain",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "capability:vision",
-        "feature:attachments",
-        "feature:inline-images",
-        "kind:jpeg",
-        "route:nested",
-        "route:vision"
-      ],
-      "truth": [],
-      "docs": [
-        "email/eml/cpython/cpython.LICENSE"
-      ],
-      "source": "cpython",
-      "url": "https://raw.githubusercontent.com/python/cpython/069aac92c8c40e53b6931a4d31029c5c7bef0c15/Lib/test/test_email/data/msg_22.txt",
       "license": "PSF-2.0",
       "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
       "license_read": "2026-11-25",
@@ -706,8 +597,7 @@
         "feature:attachments",
         "feature:embedded-messages",
         "route:nested",
-        "route:text",
-        "route:unrouted"
+        "route:text"
       ],
       "truth": [],
       "docs": [
@@ -734,8 +624,7 @@
         "feature:embedded-messages",
         "feature:rights-managed",
         "route:nested",
-        "route:text",
-        "route:unrouted"
+        "route:text"
       ],
       "truth": [],
       "truth_note": "a generated candidate, which inherits no input's truth unchanged",
@@ -1020,48 +909,6 @@
       "gap": "email-6"
     },
     {
-      "path": "email/mbox/many-messages.mbox",
-      "role": "sample",
-      "sha256": "56264831602257459e33df1b036bc1548ab2274ae8ada9cce743ff44e8acb51c",
-      "bytes": 3452500,
-      "format": "application/mbox",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "capability:vision",
-        "check:signature-mismatch",
-        "feature:attachments",
-        "feature:embedded-messages",
-        "feature:hyperlinks",
-        "feature:inline-images",
-        "kind:gif",
-        "kind:jpeg",
-        "kind:mbox",
-        "route:nested",
-        "route:unrouted",
-        "route:vision",
-        "trait:charset.declared",
-        "trait:scale.many-messages"
-      ],
-      "truth": [],
-      "truth_note": "a generated candidate, which inherits no input's truth unchanged",
-      "docs": [],
-      "source": "generated",
-      "license": "PSF-2.0",
-      "license_status": "verified",
-      "redistributable": true,
-      "command": "go run ./tools/coverage/cmd/generate mbox email/mbox/many-messages.mbox email/eml/cpython/msg_07.eml email/eml/cpython/msg_15.eml email/eml/cpython/msg_16.eml email/eml/cpython/msg_22.eml",
-      "inputs": [
-        "email/eml/cpython/msg_07.eml",
-        "email/eml/cpython/msg_15.eml",
-        "email/eml/cpython/msg_16.eml",
-        "email/eml/cpython/msg_22.eml"
-      ],
-      "generator": "Go 1.27.4: github.com/standards-lab/docs-corpus/tools/coverage/cmd/generate",
-      "generator_license": "Apache-2.0",
-      "gap": "email-5"
-    },
-    {
       "path": "email/mimekit/jwz.mbox",
       "role": "sample",
       "sha256": "e154b9ae81694acdf150bbfe8b067b2761525094167fa0b824ae8ce741aadfcd",
@@ -1092,7 +939,9 @@
         "route:vision",
         "route:vision-converted",
         "trait:charset.declared",
+        "trait:script.han",
         "trait:script.hebrew",
+        "trait:script.kana",
         "trait:script.mixed"
       ],
       "truth": [],
@@ -1120,7 +969,6 @@
         "feature:attachments",
         "feature:tnef-part",
         "route:nested",
-        "route:unrouted",
         "trait:charset.declared"
       ],
       "truth": [],
@@ -1574,9 +1422,12 @@
       "bytes": 990,
       "format": "text/x-shellscript",
       "covers": [
+        "capability:embeddings",
+        "capability:extraction",
         "check:executable",
+        "check:polyglot",
         "kind:shebang",
-        "route:unrouted"
+        "route:text"
       ],
       "truth": [],
       "truth_note": "a sourced candidate, which inherits no truth",
@@ -3268,32 +3119,6 @@
       "gap": "office-6"
     },
     {
-      "path": "office/tika/testRecordSizeExceeded.xlsx",
-      "role": "sample",
-      "sha256": "d0b6d457f7e1bb6fd48fb725fdc192ad91233f87b9db195cdf2fa8ef2963ccff",
-      "bytes": 12364136,
-      "format": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "kind:zip",
-        "route:office",
-        "trait:scale.large-sheet"
-      ],
-      "truth": [],
-      "truth_note": "a sourced candidate, which inherits no truth",
-      "docs": [],
-      "source": "tika",
-      "url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/tika-parsers/tika-parsers-standard/tika-parsers-standard-modules/tika-parser-microsoft-module/src/test/resources/test-documents/testRecordSizeExceeded.xlsx",
-      "ref": "823ec17c0817ffcb09fba3a6905abcdeb4373031",
-      "license": "Apache-2.0",
-      "license_url": "https://raw.githubusercontent.com/apache/tika/823ec17c0817ffcb09fba3a6905abcdeb4373031/LICENSE.txt",
-      "license_read": "2026-11-24",
-      "license_status": "verified",
-      "redistributable": true,
-      "gap": "office-8"
-    },
-    {
       "path": "onenote/content.json",
       "role": "truth",
       "sha256": "c2858e411e9eaae2c65371b2202453a027093e154824f9215fcd8be0eaa0d857",
@@ -3394,6 +3219,44 @@
       "redistributable": true
     },
     {
+      "path": "onenote/interop/SUT/OneWithFileData.one",
+      "role": "sample",
+      "sha256": "26ec59da7bb81c48e8f41554d06d381b53f88166727eed231baa665d9833266e",
+      "bytes": 30336,
+      "format": "application/onenote",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "feature:embedded-objects",
+        "kind:onestore",
+        "kind:zip",
+        "route:office",
+        "route:onenote"
+      ],
+      "truth": [
+        {
+          "path": "onenote/content.json",
+          "note": "content fields in onenote/content.json"
+        },
+        {
+          "path": "onenote/sections.json",
+          "note": "entry \"interop/SUT/OneWithFileData.one\""
+        }
+      ],
+      "docs": [
+        "onenote/interop/LICENSE",
+        "onenote/interop/sources.json",
+        "onenote/sources.json"
+      ],
+      "source": "interop-testsuites",
+      "url": "https://github.com/OfficeDev/Interop-TestSuites/blob/fe87ed3253de01804a2ae6e1d0015943da6023f8/FileSyncandWOPI/Setup/SUT/OneWithFileData.one",
+      "license": "MIT; interop/LICENSE",
+      "license_url": "https://github.com/OfficeDev/Interop-TestSuites/blob/fe87ed3253de01804a2ae6e1d0015943da6023f8/LICENSE",
+      "license_read": "2026-11-25",
+      "license_status": "verified",
+      "redistributable": true
+    },
+    {
       "path": "onenote/interop/sources.json",
       "role": "doc",
       "sha256": "6d61acb8bc8833f5bbffa0a13c4c1a061a9c64d777489211b47b6ad620787589",
@@ -3405,6 +3268,39 @@
       "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
+    },
+    {
+      "path": "onenote/joplin/Printout.one",
+      "role": "sample",
+      "sha256": "f8816eae444a180aea95204323ba303e5e10208754bacce55206862cafbc69ed",
+      "bytes": 39960,
+      "format": "application/onenote",
+      "covers": [
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:vision",
+        "check:signature-mismatch",
+        "feature:embedded-objects",
+        "feature:pictures",
+        "kind:onestore",
+        "kind:pdf",
+        "kind:png",
+        "route:document",
+        "route:onenote",
+        "route:vision"
+      ],
+      "truth": [],
+      "truth_note": "a sourced candidate, which inherits no truth",
+      "docs": [],
+      "source": "joplin",
+      "url": "https://raw.githubusercontent.com/laurent22/joplin/aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6/packages/onenote-converter/test-data/Printout.one",
+      "ref": "aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6",
+      "license": "MPL-2.0",
+      "license_url": "https://raw.githubusercontent.com/laurent22/joplin/aa1d39fa36ceae2a1398babdbcd7c92f4d90b9c6/packages/onenote-converter/LICENSE",
+      "license_read": "2026-11-24",
+      "license_status": "verified",
+      "redistributable": true,
+      "gap": "onenote-2"
     },
     {
       "path": "onenote/joplin/test.onepkg",
@@ -3435,70 +3331,6 @@
       "license_status": "verified",
       "redistributable": true,
       "gap": "onenote-1"
-    },
-    {
-      "path": "onenote/large/Large Desktop.one",
-      "role": "sample",
-      "sha256": "0a568f02de8bdc4196dfad97ce2ecac04456efd9376c275ff67af412a4604668",
-      "bytes": 112965624,
-      "format": "application/onenote",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "capability:vision",
-        "check:signature-mismatch",
-        "feature:embedded-objects",
-        "feature:pictures",
-        "kind:onestore",
-        "kind:pdf",
-        "kind:png",
-        "route:document",
-        "route:onenote",
-        "route:vision",
-        "trait:scale.large-file"
-      ],
-      "truth": [],
-      "truth_note": "a timing input; spike-ai-pipeline-onenote docs/findings/onenote-cli.md records its read (1 section, 1 page)",
-      "docs": [
-        "onenote/sources.json"
-      ],
-      "source": "onenote.rs",
-      "url": "https://media.githubusercontent.com/media/msiemens/onenote.rs/727389a674665dc07e0c31818cd4b54b64b9c684/crates/parser/tests/samples/Large%20Desktop.one",
-      "license": "MPL-2.0; onenote-rs/LICENSE",
-      "license_url": "https://github.com/msiemens/onenote.rs/blob/727389a674665dc07e0c31818cd4b54b64b9c684/LICENSE",
-      "license_read": "2026-11-25",
-      "license_status": "verified",
-      "redistributable": true
-    },
-    {
-      "path": "onenote/large/LargeData.one",
-      "role": "sample",
-      "sha256": "034d91a640d655a522efda1d98de4ec4c952aaa02e5ad59f7c35537ccf9c2ba1",
-      "bytes": 11288928,
-      "format": "application/onenote",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "feature:embedded-objects",
-        "feature:pictures",
-        "kind:onestore",
-        "kind:zip",
-        "route:office",
-        "route:onenote",
-        "route:unrouted"
-      ],
-      "truth": [],
-      "truth_note": "a timing input; spike-ai-pipeline-onenote docs/findings/onenote-cli.md records its read (1 section, 1 page)",
-      "docs": [
-        "onenote/sources.json"
-      ],
-      "source": "interop-testsuites",
-      "url": "https://raw.githubusercontent.com/OfficeDev/Interop-TestSuites/fe87ed3253de01804a2ae6e1d0015943da6023f8/FileSyncandWOPI/Setup/SUT/LargeData.one",
-      "license": "MIT; interop/LICENSE",
-      "license_url": "https://github.com/OfficeDev/Interop-TestSuites/blob/fe87ed3253de01804a2ae6e1d0015943da6023f8/LICENSE",
-      "license_read": "2026-11-25",
-      "license_status": "verified",
-      "redistributable": true
     },
     {
       "path": "onenote/onenote-rs/LICENSE",
@@ -3826,8 +3658,10 @@
       "bytes": 622,
       "format": "text/plain",
       "covers": [
+        "capability:embeddings",
+        "capability:extraction",
         "check:signature-mismatch",
-        "route:unrouted",
+        "route:text",
         "trait:text-layer.none"
       ],
       "truth": [],
@@ -4444,9 +4278,7 @@
       "bytes": 376,
       "format": "application/octet-stream",
       "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "route:text",
+        "route:unrouted",
         "trait:charset.utf-16-no-bom",
         "trait:script.han",
         "trait:script.kana"
@@ -4605,33 +4437,6 @@
       "url": "generated: gen_text.py (seed 42)",
       "license": "Apache-2.0",
       "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
-      "license_read": "2026-11-25",
-      "license_status": "verified",
-      "redistributable": true
-    },
-    {
-      "path": "text/epub/lorem-ipsum.epub",
-      "role": "sample",
-      "sha256": "e559fa369cfc751becfa4f8434cf186790a3ef57bbd2fb2973beb41deff1dd60",
-      "bytes": 133601,
-      "format": "application/epub+zip",
-      "covers": [
-        "capability:embeddings",
-        "capability:extraction",
-        "capability:vision",
-        "kind:jpeg",
-        "kind:zip",
-        "route:archive",
-        "route:text",
-        "route:unrouted",
-        "route:vision"
-      ],
-      "truth": [],
-      "docs": [],
-      "source": "openpreserve",
-      "url": "https://raw.githubusercontent.com/openpreserve/format-corpus/366f068cec399d0cdfd61fa473de3ab6dc858098/ebooks/calibre%200.9.0/lorem-ipsum.epub",
-      "license": "CC0-1.0",
-      "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
       "license_read": "2026-11-25",
       "license_status": "verified",
       "redistributable": true
@@ -4971,7 +4776,12 @@
       "bytes": 256413203,
       "format": "video/mpeg",
       "covers": [
-        "route:unrouted",
+        "capability:embeddings",
+        "capability:extraction",
+        "capability:transcription",
+        "capability:vision",
+        "kind:mpeg-ps",
+        "route:video",
         "trait:audio.multi-window",
         "trait:audio.noisy",
         "trait:scale.large-file"
@@ -4998,8 +4808,9 @@
         "capability:embeddings",
         "capability:extraction",
         "capability:transcription",
-        "kind:ogg",
-        "route:audio",
+        "capability:vision",
+        "kind:ogg-video",
+        "route:video",
         "trait:audio.multi-window",
         "trait:audio.noisy"
       ],

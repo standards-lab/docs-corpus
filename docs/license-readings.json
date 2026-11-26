@@ -25,26 +25,6 @@
     "license_read": "2026-11-25"
   },
   {
-    "path": "email/eml/cpython/msg_07.eml",
-    "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
-    "path": "email/eml/cpython/msg_15.eml",
-    "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
-    "path": "email/eml/cpython/msg_16.eml",
-    "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
-    "path": "email/eml/cpython/msg_22.eml",
-    "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
     "path": "email/eml/cpython/msg_26.eml",
     "license_url": "https://github.com/python/cpython/blob/069aac92c8c40e53b6931a4d31029c5c7bef0c15/LICENSE",
     "license_read": "2026-11-25"
@@ -535,19 +515,14 @@
     "license_read": "2026-11-25"
   },
   {
+    "path": "onenote/interop/SUT/OneWithFileData.one",
+    "license_url": "https://github.com/OfficeDev/Interop-TestSuites/blob/fe87ed3253de01804a2ae6e1d0015943da6023f8/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
     "path": "onenote/interop/sources.json",
     "license": "Apache-2.0",
     "license_url": "https://github.com/JaimeStill/spike-ai-pipeline-onenote/blob/8ea6b2df4236c23ed1da6d37c73ed8479dd75f82/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
-    "path": "onenote/large/Large Desktop.one",
-    "license_url": "https://github.com/msiemens/onenote.rs/blob/727389a674665dc07e0c31818cd4b54b64b9c684/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
-    "path": "onenote/large/LargeData.one",
-    "license_url": "https://github.com/OfficeDev/Interop-TestSuites/blob/fe87ed3253de01804a2ae6e1d0015943da6023f8/LICENSE",
     "license_read": "2026-11-25"
   },
   {
@@ -743,11 +718,6 @@
     "path": "text/encodings/windows-1256-arabic.txt",
     "license": "Apache-2.0",
     "license_url": "https://github.com/standards-lab/docs-corpus/blob/main/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
-    "path": "text/epub/lorem-ipsum.epub",
-    "license_url": "https://github.com/openpreserve/format-corpus/blob/366f068cec399d0cdfd61fa473de3ab6dc858098/README.md",
     "license_read": "2026-11-25"
   },
   {

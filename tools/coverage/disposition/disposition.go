@@ -80,12 +80,19 @@ func (s *sample) dispose(disposition, trimmedFor, gap string) {
 // candidate lists in its inputs stays whatever covers it. A gap whose candidate's covers lack some of its covers keeps the ones
 // they confirm, and the rest become its open gap, id <gap>-open, split_from naming it, whose
 // candidate is unavailable until its searched and reason are recorded; the open gap goes once the
-// candidate confirms them all. A gap whose candidate placed doesn't list keeps its covers,
-// covered_by, and open gap as they are.
+// candidate confirms them all. A gap whose candidate placed doesn't list keeps its covers and
+// open gap as they are, and its covered_by while that names a sample still in the corpus; a
+// covered_by naming a sample that left the corpus is cleared, so its candidate is fetched again.
+//
+// A sample whose Breaks record a standard it breaks is trimmed, never adopted or replaced:
+// trimmed_for names the sample the tie-break prefers among those in the corpus whose covers
+// contain its own, and is absent when none does. Each of its covers must be another corpus
+// sample's or a gap's.
 //
 // It returns the gaps no replace names whose covers adopted samples all exercise, which may be
-// dropped. A group of replaced samples that names no gap, or names two, a placed candidate whose
-// gap has no sourced or generated candidate, and an open gap's id taken by another gap are errors.
+// dropped. A group of replaced samples that names no gap, or names two, a breaking sample with a
+// cover no other corpus sample or gap holds, a placed candidate whose gap has no sourced or
+// generated candidate, and an open gap's id taken by another gap are errors.
 func Dispose(coverage *Coverage, placed []Placed) ([]string, error) {
 	samples := make([]*sample, len(coverage.Samples))
 	for i := range coverage.Samples {
@@ -104,15 +111,31 @@ func Dispose(coverage *Coverage, placed []Placed) ([]string, error) {
 
 	var eligible []*sample
 	for _, s := range samples {
-		if s.entry.Redistributable && !s.entry.Sensitive {
+		if s.entry.Redistributable && !s.entry.Sensitive && len(s.entry.Breaks) == 0 {
 			eligible = append(eligible, s)
 		}
 	}
 	adopted := kept(eligible, inputs)
 	corpus := kept(slices.Concat(eligible, candidates), inputs)
 	var replaced []*sample
+	held := idset.Set{}
+	for _, s := range corpus {
+		held.Merge(s.set)
+	}
+	for _, g := range coverage.Gaps {
+		held.Add(g.Covers...)
+	}
 	for _, s := range samples {
 		switch {
+		case len(s.entry.Breaks) > 0:
+			if unheld := slices.DeleteFunc(slices.Clone(s.covers), func(id string) bool { return held[id] }); len(unheld) > 0 {
+				return nil, fmt.Errorf("%s: breaks %q, and no other sample or gap holds %s; research a candidate and add the gap", s.entry.Path, s.entry.Breaks[0].Standard, strings.Join(unheld, ", "))
+			}
+			trimmedFor := ""
+			if h := holder(s, corpus); h != nil {
+				trimmedFor = h.entry.Path
+			}
+			s.dispose("trim", trimmedFor, "")
 		case !slices.ContainsFunc(adopted, func(t *sample) bool { return within(s, t) }):
 			replaced = append(replaced, s)
 		case slices.Contains(corpus, s):
@@ -122,9 +145,17 @@ func Dispose(coverage *Coverage, placed []Placed) ([]string, error) {
 		}
 	}
 
+	inCorpus := idset.Set{}
+	for _, s := range corpus {
+		inCorpus.Add(s.entry.Path)
+	}
 	gaps := map[string]*Gap{}
 	for i := range coverage.Gaps {
-		gaps[coverage.Gaps[i].ID] = &coverage.Gaps[i]
+		g := &coverage.Gaps[i]
+		gaps[g.ID] = g
+		if !inCorpus[g.CoveredBy] {
+			g.CoveredBy = ""
+		}
 	}
 	for _, c := range candidates {
 		g := gaps[c.gap]

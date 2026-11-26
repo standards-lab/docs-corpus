@@ -52,10 +52,14 @@ type Rule struct {
 	Rule string `json:"rule"`
 }
 
-// LibraryPlacement is the docproc run the library IDs were placed from.
+// LibraryPlacement is the docproc run over ~/docs the library IDs were placed from.
 type LibraryPlacement struct {
 	// Run is the run's ID.
 	Run string `json:"run"`
+	// Docproc is the docproc release that ran, with its commit and its command module's version.
+	Docproc string `json:"docproc"`
+	// DocprocCommand is the docproc command that made the run.
+	DocprocCommand string `json:"docproc_command"`
 	// Command is the command that placed them.
 	Command string `json:"command"`
 }
@@ -97,6 +101,8 @@ type Sample struct {
 	Redistributable bool `json:"redistributable"`
 	// Sensitive is whether the manifest marks it sensitive or local_only.
 	Sensitive bool `json:"sensitive,omitempty"`
+	// Breaks are the STANDARDS.md standards it breaks, each with its reason.
+	Breaks []Break `json:"breaks,omitempty"`
 	// Truth are its truth files' paths.
 	Truth []string `json:"truth"`
 	// Docs are its doc files' paths.
@@ -107,6 +113,14 @@ type Sample struct {
 	TrimmedFor string `json:"trimmed_for,omitempty"`
 	// Gap, for a replace, is the gap that replaces it.
 	Gap string `json:"gap,omitempty"`
+}
+
+// Break is a STANDARDS.md standard a sample breaks.
+type Break struct {
+	// Standard is the opening of the standard's STANDARDS.md bullet, verbatim.
+	Standard string `json:"standard"`
+	// Reason is how the sample breaks it.
+	Reason string `json:"reason"`
 }
 
 // Gap is a set of scenarios no adopted sample exercises.

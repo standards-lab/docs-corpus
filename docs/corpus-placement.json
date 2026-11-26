@@ -2,18 +2,23 @@
   {
     "path": "archive/cpython/testtar.tar",
     "covers": [
+      "capability:embeddings",
+      "capability:extraction",
       "check:archive-absolute-path",
       "check:archive-device",
       "check:archive-hardlink",
       "check:archive-symlink",
       "kind:tar",
       "route:archive",
+      "route:text",
       "route:unrouted"
     ]
   },
   {
     "path": "archive/edge/entry-names.tar",
     "covers": [
+      "capability:embeddings",
+      "capability:extraction",
       "check:archive-absolute-path",
       "check:archive-traversal",
       "check:double-extension",
@@ -21,7 +26,7 @@
       "check:signature-mismatch",
       "kind:tar",
       "route:archive",
-      "route:unrouted"
+      "route:text"
     ]
   },
   {
@@ -30,21 +35,6 @@
       "check:tar-unreadable",
       "kind:tar",
       "route:archive"
-    ]
-  },
-  {
-    "path": "archive/many-entries.zip",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "kind:zip",
-      "route:archive",
-      "route:text",
-      "trait:scale.many-entries",
-      "trait:script.arabic",
-      "trait:script.cyrillic",
-      "trait:script.greek",
-      "trait:script.mixed"
     ]
   },
   {
@@ -226,51 +216,14 @@
     ]
   },
   {
-    "path": "email/eml/cpython/msg_07.eml",
+    "path": "audio/wikimedia-commons/George_W._Bush_Speech_-_September_12,_2001.ogg",
     "covers": [
       "capability:embeddings",
       "capability:extraction",
-      "capability:vision",
-      "feature:attachments",
-      "kind:gif",
-      "route:nested",
-      "route:vision"
-    ]
-  },
-  {
-    "path": "email/eml/cpython/msg_15.eml",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "check:signature-mismatch",
-      "route:nested",
-      "route:unrouted",
-      "trait:charset.declared"
-    ]
-  },
-  {
-    "path": "email/eml/cpython/msg_16.eml",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "feature:embedded-messages",
-      "feature:hyperlinks",
-      "route:nested",
-      "route:unrouted",
-      "trait:charset.declared"
-    ]
-  },
-  {
-    "path": "email/eml/cpython/msg_22.eml",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "capability:vision",
-      "feature:attachments",
-      "feature:inline-images",
-      "kind:jpeg",
-      "route:nested",
-      "route:vision"
+      "capability:transcription",
+      "kind:ogg",
+      "route:audio",
+      "trait:audio.multi-window"
     ]
   },
   {
@@ -293,8 +246,7 @@
       "feature:attachments",
       "feature:embedded-messages",
       "route:nested",
-      "route:text",
-      "route:unrouted"
+      "route:text"
     ]
   },
   {
@@ -306,8 +258,7 @@
       "feature:embedded-messages",
       "feature:rights-managed",
       "route:nested",
-      "route:text",
-      "route:unrouted"
+      "route:text"
     ]
   },
   {
@@ -399,27 +350,6 @@
     ]
   },
   {
-    "path": "email/mbox/many-messages.mbox",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "capability:vision",
-      "check:signature-mismatch",
-      "feature:attachments",
-      "feature:embedded-messages",
-      "feature:hyperlinks",
-      "feature:inline-images",
-      "kind:gif",
-      "kind:jpeg",
-      "kind:mbox",
-      "route:nested",
-      "route:unrouted",
-      "route:vision",
-      "trait:charset.declared",
-      "trait:scale.many-messages"
-    ]
-  },
-  {
     "path": "email/mimekit/jwz.mbox",
     "covers": [
       "capability:embeddings",
@@ -446,7 +376,9 @@
       "route:vision",
       "route:vision-converted",
       "trait:charset.declared",
+      "trait:script.han",
       "trait:script.hebrew",
+      "trait:script.kana",
       "trait:script.mixed"
     ]
   },
@@ -458,7 +390,6 @@
       "feature:attachments",
       "feature:tnef-part",
       "route:nested",
-      "route:unrouted",
       "trait:charset.declared"
     ]
   },
@@ -569,9 +500,12 @@
   {
     "path": "exec/cpython/exe_with_zip",
     "covers": [
+      "capability:embeddings",
+      "capability:extraction",
       "check:executable",
+      "check:polyglot",
       "kind:shebang",
-      "route:unrouted"
+      "route:text"
     ]
   },
   {
@@ -1159,16 +1093,6 @@
     ]
   },
   {
-    "path": "office/tika/testRecordSizeExceeded.xlsx",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "kind:zip",
-      "route:office",
-      "trait:scale.large-sheet"
-    ]
-  },
-  {
     "path": "onenote/interop/SUT/Encryption.one",
     "covers": [
       "capability:embeddings",
@@ -1194,21 +1118,19 @@
     ]
   },
   {
-    "path": "onenote/joplin/test.onepkg",
+    "path": "onenote/interop/SUT/OneWithFileData.one",
     "covers": [
       "capability:embeddings",
       "capability:extraction",
-      "capability:vision",
-      "feature:ink",
-      "feature:section-groups",
-      "kind:mscf",
-      "kind:svg",
-      "route:onenote",
-      "route:vision-converted"
+      "feature:embedded-objects",
+      "kind:onestore",
+      "kind:zip",
+      "route:office",
+      "route:onenote"
     ]
   },
   {
-    "path": "onenote/large/Large Desktop.one",
+    "path": "onenote/joplin/Printout.one",
     "covers": [
       "capability:embeddings",
       "capability:extraction",
@@ -1221,22 +1143,21 @@
       "kind:png",
       "route:document",
       "route:onenote",
-      "route:vision",
-      "trait:scale.large-file"
+      "route:vision"
     ]
   },
   {
-    "path": "onenote/large/LargeData.one",
+    "path": "onenote/joplin/test.onepkg",
     "covers": [
       "capability:embeddings",
       "capability:extraction",
-      "feature:embedded-objects",
-      "feature:pictures",
-      "kind:onestore",
-      "kind:zip",
-      "route:office",
+      "capability:vision",
+      "feature:ink",
+      "feature:section-groups",
+      "kind:mscf",
+      "kind:svg",
       "route:onenote",
-      "route:unrouted"
+      "route:vision-converted"
     ]
   },
   {
@@ -1353,8 +1274,10 @@
   {
     "path": "pdf/edge/malformed/header-no-version-info.pdf",
     "covers": [
+      "capability:embeddings",
+      "capability:extraction",
       "check:signature-mismatch",
-      "route:unrouted",
+      "route:text",
       "trait:text-layer.none"
     ]
   },
@@ -1584,9 +1507,7 @@
   {
     "path": "text/encodings/utf16be-nobom.txt",
     "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "route:text",
+      "route:unrouted",
       "trait:charset.utf-16-no-bom",
       "trait:script.han",
       "trait:script.kana"
@@ -1648,20 +1569,6 @@
       "route:text",
       "trait:charset.legacy-other",
       "trait:script.arabic"
-    ]
-  },
-  {
-    "path": "text/epub/lorem-ipsum.epub",
-    "covers": [
-      "capability:embeddings",
-      "capability:extraction",
-      "capability:vision",
-      "kind:jpeg",
-      "kind:zip",
-      "route:archive",
-      "route:text",
-      "route:unrouted",
-      "route:vision"
     ]
   },
   {
@@ -1733,7 +1640,12 @@
   {
     "path": "video/prelinger-duck-and-cover/duck-and-cover-mpeg2.mpeg",
     "covers": [
-      "route:unrouted",
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "capability:vision",
+      "kind:mpeg-ps",
+      "route:video",
       "trait:audio.multi-window",
       "trait:audio.noisy",
       "trait:scale.large-file"
@@ -1745,8 +1657,9 @@
       "capability:embeddings",
       "capability:extraction",
       "capability:transcription",
-      "kind:ogg",
-      "route:audio",
+      "capability:vision",
+      "kind:ogg-video",
+      "route:video",
       "trait:audio.multi-window",
       "trait:audio.noisy"
     ]

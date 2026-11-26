@@ -7,7 +7,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 run=$(jq -er '.library_placement.run' docs/coverage.json)
-dir=${RUNS:-$HOME/runs/docproc/final/runs}/$run
+dir=${RUNS:-$HOME/runs/docs-corpus/docproc-final/docs/runs}/$run
 manifest=${DOCS_REFERENCE:-$HOME/docs}/MANIFEST.json
 
 jq -n \
