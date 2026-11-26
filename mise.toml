@@ -11,7 +11,7 @@ golangci-lint = "2.15.0"
 "conda:poppler" = "26.11.0"
 "conda:qpdf" = "12.4.2"
 "conda:ffmpeg" = "9.1.0"
-"github:ImageMagick/ImageMagick" = { version = "7.1.2-36", asset_pattern = "ImageMagick-*-portable-Q16-HDRI-linux-x64.tar.xz" }
+"github:ImageMagick/ImageMagick" = { version = "7.1.2-36", platforms = { linux-x64 = { asset_pattern = "ImageMagick-*-portable-Q16-HDRI-linux-x64.tar.xz" }, linux-arm64 = { asset_pattern = "ImageMagick-*-portable-Q16-HDRI-linux-arm64.tar.xz" } } }
 "conda:uchardet" = "0.0.8"
 "conda:libarchive" = "3.8.11"
 
