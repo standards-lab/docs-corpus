@@ -83,10 +83,11 @@ corpus count as adopted samples for trims, so a trim can name a candidate, as
 [Candidates in the corpus](#candidates-in-the-corpus) states.
 
 A listed sample that would be trimmed is measured instead, and a listed sample with a scenario no
-other sample covers stays adopted. A measured sample counts as no adopted sample: no trim names it,
-no gap's `covered_by` does, and the check counts it toward no vocabulary ID's coverage, so every
-other disposition, and every gap, is the one the list's absence gives. A listed sample that isn't redistributable, is
-sensitive, or has a break can't be measured, and `dispose` fails naming it.
+other sample covers stays adopted. A measured sample doesn't count as adopted: no trim or gap's
+`covered_by` names it, and the check counts it toward no vocabulary ID's coverage. Every other
+sample's disposition, and every gap, is therefore the same as without the list. A listed sample
+that isn't redistributable, is sensitive, or has a break can't be measured, and `dispose` fails
+naming it.
 
 ### Breaks
 
@@ -395,12 +396,12 @@ jq '(.samples | group_by(.disposition) | map({(.[0].disposition): length}) | add
 ## Measurements
 
 [`measurements.json`](measurements.json) is the measurement list: the targeted acceptance
-measurements in docproc and docinfer that rerun over corpus inputs. It is written by hand, and
-none is listed yet. A measurement input is a `~/docs` sample, or a truth file, that a listed
-measurement reads. As [`STANDARDS.md`](../STANDARDS.md) allows, it stays in the corpus while a
-measurement lists it, even when another sample covers its scenarios. The list is the only way a
-sample enters the corpus for a measurement: `dispose` gives such a sample the `measure`
-disposition, where it would otherwise be trimmed.
+measurements in docproc and docinfer that rerun over corpus inputs. It is written by hand, and is
+empty. A measurement input is a `~/docs` sample, or a truth file, that a listed measurement reads.
+As [`STANDARDS.md`](../STANDARDS.md) allows, it stays in the corpus while a measurement lists it,
+even when another sample covers its scenarios. The list is the only way a sample enters the corpus
+for a measurement: `dispose` gives a listed sample it would otherwise trim the `measure`
+disposition.
 
 The list is a JSON array, `[]` when it is empty, with one object per measurement:
 

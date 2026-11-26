@@ -40,8 +40,8 @@ measurement reads has no `measures`.
 The manifest is generated, never edited by hand. `mise run manifest` builds it from four sources
 for the adopted and measured samples and their files:
 
-- the adopted samples in `docs/coverage.json`, and the samples disposed `measure` there, which a
-  targeted acceptance measurement reruns over though another sample covers their scenarios, as
+- the adopted and measured samples in `docs/coverage.json`. A measured sample is one a targeted
+  acceptance measurement reads, though another sample covers its scenarios, as
   [docs/coverage.md](docs/coverage.md#measurements) states;
 - `~/docs`' manifest;
 - [`docs/license-readings.json`](docs/license-readings.json): the license of every adopted or
@@ -60,8 +60,8 @@ mise run manifest > MANIFEST.json
 ```
 
 With `--copy`, it first copies every adopted or measured file it lists from `~/docs`, or
-`$DOCS_REFERENCE`, into place and checks each copy's size and sha256. `mise run fetch-candidates` places the sourced
-candidates, and `mise run generate-candidates` makes the generated ones once.
+`$DOCS_REFERENCE`, into place and checks each copy's size and sha256. `mise run fetch-candidates`
+places the sourced candidates, and `mise run generate-candidates` makes the generated ones once.
 
 Git ignores the format directories, so sample files are never committed. Truth and doc files are
 committed with `git add -f`, and [`scripts/check.sh`](scripts/check.sh) enforces both. The
