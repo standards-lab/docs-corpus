@@ -1,8 +1,8 @@
 # goal · corpus.docs
 
-- **State:** building
-- **Task:** measurement-set
-- **Branch:** measurement-set
+- **State:** idle
+- **Task:** none
+- **Branch:** none
 
 ## Tasks
 
@@ -10,88 +10,13 @@
 2. [x] curate
 3. [x] docproc-final
 4. [x] snapshot
-5. [ ] measurement-set
+5. [x] measurement-set
 6. [ ] truth
 7. [ ] snapshot-2
 8. [ ] baseline
 
-## Task brief · measurement-set
-
-**Problem**
-
-Acceptance measurements in docproc and docinfer, such as word error rate, PDF page text and the
-vision re-probe, ran over ~/docs inputs that the coverage review trimmed only because they repeat an
-adopted sample's scenarios. Baseline removes ~/docs, and after that those measurements can't be
-rerun. Every rule that admits a sample today requires a scenario no other sample covers: the
-standards, the disposition rules, the check and the goal criterion. The corpus needs a second,
-narrower way in: an input that a named measurement reads.
-
-**Behaviors**
-1. The standards admit a measurement input: a redistributable, realistic, sourced file that a
-   listed measurement reads. It stays while that measurement lists it, even when another sample
-   covers its scenarios. Its license is still read at its source.
-2. The measurement list is a hand-written file of its own, empty in this task. Each entry has:
-   - a unique id;
-   - the repository and the acceptance section it reruns;
-   - a one-line summary of what it measures;
-   - whether its inputs need truth;
-   - its inputs, as corpus paths. An input may be a sample or a truth file.
-3. The check fails on a measurement list that:
-   - is malformed;
-   - repeats an id;
-   - has an entry without its acceptance section or inputs;
-   - names an input the coverage data doesn't know;
-   - names an input that is not redistributable, is sensitive, or carries a break;
-   - names an input without truth in a measurement that needs truth.
-4. `dispose` gives the `measure` disposition to a listed sample it would otherwise trim. A listed
-   sample with a unique scenario stays `adopt`. A `measure` sample never trims another sample, is
-   never trimmed, and counts toward no gap or vocabulary coverage. A listed sample that `dispose`
-   can't keep is an error that names it.
-5. The manifest lists every `measure` sample with its truth and doc files. Every entry a
-   measurement reads names the ids of the measurements that read it in an optional `measures`
-   field. An entry that no measurement reads has no `measures`. The schema version stays 1.
-6. The check's covers rules skip `measure` samples. Those rules are: shared format and covers,
-   covers inside another sample's, and equal covers that lose the tie-break. The license-reading,
-   redistributability, git-tracking and payload rules apply to `measure` samples as to any other.
-7. The coverage page, the README's manifest section, the working context and the changelog's
-   Unreleased section describe the `measure` disposition, the list and `measures`.
-8. With the list empty, `dispose` and `manifest` reproduce the committed coverage data and manifest
-   unchanged.
-
-**Test seams**
-- `dispose` and the manifest builder, on fixture coverage data and fixture measurement lists.
-- The check, over the repository.
-
-**Slices**
-1. The standard and the list: the standards bullet, the empty measurement list, the check's rules
-   for the list, and the coverage page's section on the list.
-2. The `measure` disposition:
-   - `dispose` reads the list and derives `measure`, with tests.
-   - The check accepts `measure` and exempts it from the covers rules for adopted samples.
-   - The coverage page's Dispositions section describes it.
-3. `measures` in the manifest:
-   - The builder lists `measure` samples and writes `measures`, with tests.
-   - The check's manifest rules handle the field.
-   - The README, context and changelog describe it.
-
-**Out of scope**
-
-Adding any input, writing the seven measurements' entries, license readings, placement reruns and
-the release. These belong to `truth` and `snapshot-2`.
-
-**Door**
-
-Two-way. Nothing is tagged, and the change stays unreleased until `snapshot-2`.
-
-## Progress
-
-slices 0/3 committed · standards — · spec — · editor —
-
 ## Decisions
 
-- measurement-set: MANIFEST.json stays schema version 1; `measures` is an optional field.
-- measurement-set: the hand-written list is `docs/measurements.json`; the `measure` disposition
-  goes only to a listed input `dispose` would otherwise trim.
 - truth: writes the seven measurements' entries first, then copies about 80 inputs with
   `mise run manifest --copy`; ~/docs and `~/runs/docs-corpus/docproc-final/{docs,corpus}` are
   deleted only after truth merges.
@@ -111,9 +36,10 @@ slices 0/3 committed · standards — · spec — · editor —
   grep finds nothing live reading them; the closed spikes stay as they closed.
 - baseline: held gotenberg at 9.10.1-libreoffice: 9.10.2 changes nothing docproc uses, and
   docproc releases after v0.9.0 go to a later corpus goal.
-- baseline: data-intelligence.md gives the v0.2.0 times inline, linking `docs/baseline.md`; the
-  same edit updates its "~/docs-scale" line and capstone.data-intelligence.toml's summary.
-
+- baseline: supplies the v0.2.0 times that the data-intelligence pending edit states inline.
+- baseline: before removing ~/docs, commits the ~/docs manifest rows the corpus's samples need,
+  so `mise run manifest` regenerates without ~/docs, and retires `place-library`, `place-traits`
+  without `--corpus`, and the check's ~/docs comparisons (round 1, question 9).
 - snapshot: gb10-2 holds the verified v0.1.0 checkout at `~/docs-corpus` (tag commit `8873b89`),
   cloned anonymously and fetched from the release; its check ended "All checks passed."
 - snapshot: the release assets are uploaded while private; docs-corpus goes public with its
@@ -150,18 +76,36 @@ slices 0/3 committed · standards — · spec — · editor —
 - coordinator · `context/docs-corpus.md`: add the corpus note. It says that docs-corpus holds the
   real workloads' corpus: redistributable samples in ten format areas, each with its source,
   license, truth, and scenarios in `MANIFEST.json`. It says how the corpus changes: a goal's task
-  adds, replaces, or drops samples under docs-corpus's STANDARDS.md, regenerates the manifest and
-  coverage with its `mise` tasks, never by hand, and releases the change under a new version tag,
-  since a released tag is never re-cut. It says how the corpus is shared: the repository is public,
-  each version tag's release assets hold the sample files, one tar per format area, from v0.1.0,
-  and `mise run fetch` places them in a checkout once each matches the manifest. It says that
-  gb10-2 holds the verified v0.1.0 checkout at `~/docs-corpus`. It links to docs-corpus's
-  [README.md](https://github.com/standards-lab/docs-corpus/blob/main/README.md) and
-  [docs/coverage.md](https://github.com/standards-lab/docs-corpus/blob/main/docs/coverage.md)
-  rather than restating the manifest, the fetch, the scenarios, or the gaps. `context/README.md`'s
-  Notes gains, after `data-intelligence.md`: "- `docs-corpus.md` — the real workloads' corpus: what
-  it holds, how it changes, how it is shared, and the verified checkout on gb10-2."
+  adds, replaces, or drops samples under docs-corpus's STANDARDS.md, and releases the change under
+  a new version tag, since a released tag is never re-cut. A sample stays when it exercises a
+  scenario no other sample covers, or when a measurement in `docs/measurements.json` reads it. The
+  manifest and coverage are never edited by hand: its `mise` tasks regenerate them, without
+  `~/docs`, which baseline removed. It says how the corpus is shared: the repository is public, each version
+  tag's release assets hold the sample files, one tar per format area, from v0.1.0, and
+  `mise run fetch` places them in a checkout once each matches the manifest. It says that gb10-2
+  holds the verified v0.2.0 checkout at `~/docs-corpus`, and that docs-corpus's `docs/baseline.md`
+  records docproc's and docinfer's baseline runs over it. It links to docs-corpus's
+  [README.md](https://github.com/standards-lab/docs-corpus/blob/main/README.md),
+  [docs/coverage.md](https://github.com/standards-lab/docs-corpus/blob/main/docs/coverage.md), and
+  [docs/baseline.md](https://github.com/standards-lab/docs-corpus/blob/main/docs/baseline.md)
+  rather than restating the manifest, the fetch, the scenarios, the gaps, the measurements, or the
+  times. `context/README.md`'s Notes gains, after `data-intelligence.md`: "- `docs-corpus.md` —
+  the real workloads' corpus: what it holds, how it changes, how it is shared, the verified
+  checkout on gb10-2, and the baseline."
 - coordinator · `references.md`, the docs-corpus entry: replace its last sentence, "It is built
   from scratch, with the local pool at `~/docs` as its reference, and becomes public when v1 is
-  published.", with "It is built from scratch, with the local pool at `~/docs` as its reference.
+  published.", with "It was built from scratch, with the local pool at `~/docs` as its reference.
   The repository is public, and its files are release assets from v0.1.0."
+- coordinator · `context/data-intelligence.md`: replace the integration root's "the acceptance run
+  over ~/docs (592 files, 1.7 GB), measured against docinfer's baseline: 6.0 h, and a 3.1 s rerun"
+  with the acceptance run over docs-corpus v0.2.0, measured against the v0.2.0 times stated inline
+  and linking docs-corpus's
+  [docs/baseline.md](https://github.com/standards-lab/docs-corpus/blob/main/docs/baseline.md);
+  replace v1.ai.hosting's "a ~/docs-scale run" with "a run over docs-corpus v0.2.0".
+  `roadmap/capstone.data-intelligence.toml`: replace the summary's "the ~/docs acceptance run" with
+  "the acceptance run over docs-corpus v0.2.0, measured against its baseline".
+- coordinator · `roadmap/corpus-measurement-reruns.toml`: create the backlog goal (repos docproc
+  and docinfer): rerun the targeted acceptance sections that baseline leaves dated to the retired
+  `~/docs` pool (docproc's Word error rate, PDF pages in shared gs processes, Peak memory, and the
+  office-and-mail run; docinfer's Transcription) over docs-corpus's measurement inputs, and cite
+  the docs-corpus tag in each. `roadmap/index.toml`: add it to `backlog`.
