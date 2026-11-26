@@ -57,6 +57,9 @@ one disposition in `.samples`, its `disposition` field:
   sample.
 - **replace**: the sample can't be adopted, and a gap entry takes over its scenarios. `gap` names
   that gap.
+- **measure**: a measurement in [`measurements.json`](measurements.json) lists the sample, and an
+  adopted sample already covers its scenarios. It stays in the corpus for that measurement, as
+  [Measurements](#measurements) states, and names no `trimmed_for` or `gap`.
 
 Following [`STANDARDS.md`](../STANDARDS.md), a sample is trimmed when one adopted sample's covers
 contain all of its covers, whatever that sample's format. No two
@@ -78,6 +81,12 @@ Only a redistributable sample that isn't sensitive is adopted. Any other sample 
 adopted sample covers all of its scenarios, and replaced otherwise. The gap candidates in the
 corpus count as adopted samples for trims, so a trim can name a candidate, as
 [Candidates in the corpus](#candidates-in-the-corpus) states.
+
+A listed sample that would be trimmed is measured instead, and a listed sample with a scenario no
+other sample covers stays adopted. A measured sample counts as no adopted sample: no trim names it,
+no gap's `covered_by` does, and the check counts it toward no vocabulary ID's coverage, so every
+other disposition, and every gap, is the one the list's absence gives. A listed sample that isn't redistributable, is
+sensitive, or has a break can't be measured, and `dispose` fails naming it.
 
 ### Breaks
 
@@ -418,7 +427,9 @@ An entry names its inputs by path and holds no other facts about them: the manif
 - an input isn't redistributable, is sensitive, or carries a break. A truth file takes these facts
   from the samples that list it: it isn't redistributable when none of them is, and it is
   sensitive when one of them is;
-- a measurement that needs truth lists a sample without truth.
+- a measurement that needs truth lists a sample without truth;
+- a sample is measured but no measurement lists it, or a measurement lists a sample that is
+  trimmed though it could be measured.
 
 Each failure message names its fix.
 
@@ -492,10 +503,11 @@ variable names. It fails when:
   no inputs, or an input that isn't an adopted sample;
 - an unavailable candidate lacks what was searched or the reason;
 - a vocabulary ID is exercised by no adopted sample and is in no gap's covers;
-- an adopted sample isn't redistributable or is sensitive;
+- an adopted or measured sample isn't redistributable or is sensitive;
 - two adopted samples share a format and a covers set, or one adopted sample's covers lie inside
   another's or equal another's that wins the tie-breaks. The candidates in the corpus count as
-  adopted samples here, and a generated candidate's inputs are exempt;
+  adopted samples here, a generated candidate's inputs are exempt, and measured samples are
+  skipped;
 - a gap's `covered_by` names neither an adopted sample nor a candidate in the corpus, or one whose
   covers lack the gap's;
 - a `~/docs` sample is missing from `.samples`, or its entry's sha256 differs from the manifest's;

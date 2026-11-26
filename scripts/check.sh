@@ -218,6 +218,9 @@ else
                 ([$adopted[] | select(.path != $for and (. as $a | $by[$path] | within($a)) and rank < ($by[$for] | rank))][0].path // empty)
                 | "\($path): \(.) also covers its scenarios and wins the tie-break over \($for); name \(.)"
               end
+          elif .disposition == "measure" then
+            select(has("trimmed_for") or has("gap"))
+            | "\(.path): a measured sample names no trimmed_for or gap; remove them"
           elif .disposition == "replace" then
             if has("trimmed_for") then "\(.path): a replace names no trimmed_for; remove it"
             elif $gaps[.gap // ""] == null then "\(.path): gap \(.gap) is not in .gaps; add it there with the covers it must exercise"
@@ -225,13 +228,15 @@ else
               "\(.path): gap \(.gap)\u0027s covers lack \(covers - $gaps[.gap].covers | join(", ")); add them to the gap or name a gap that has them"
             else empty end
           else
-            "\(.path): has no disposition; set disposition to adopt, trim with trimmed_for, or replace with gap"
+            "\(.path): has no disposition; set disposition to adopt, trim with trimmed_for, replace with gap, or measure"
           end),
       ($samples[] | select(.disposition != "trim" and (.breaks // []) != [])
         | "\(.path): breaks \(.breaks[0].standard | tojson), so it is trimmed; run mise run dispose"),
       ($adopted[]
         | select(.redistributable != true or .sensitive == true)
         | "\(.path): is adopted but \(if .sensitive == true then "sensitive" else "not redistributable" end); replace it with a gap, or trim it for an adopted sample that covers it"),
+      ($samples[] | select(.disposition == "measure" and (.redistributable != true or .sensitive == true))
+        | "\(.path): is measured but \(if .sensitive == true then "sensitive" else "not redistributable" end); remove it from docs/measurements.json, then run mise run dispose"),
       ($adopted | group_by([.format, covers])[] | select(length > 1)
         | "\(map(.path) | join(", ")): adopted samples share a format and covers; keep the one the tie-break prefers and trim the rest for it"),
       ($adopted[] as $a | $adopted[]
@@ -400,7 +405,13 @@ elif problems=$(jq -r --slurpfile coverage "$coverage" '
               end)
           end),
       (map(.id? | select(text)) | group_by(.)[] | select(length > 1)
-        | "\(.[0]) appears \(length) times; give each measurement its own id")
+        | "\(.[0]) appears \(length) times; give each measurement its own id"),
+      ([.[] | objects | .inputs | arrays[]] as $listed
+        | $samples[]
+        | select((.disposition == "measure" and (IN(.path; $listed[]) | not))
+            or (.disposition == "trim" and IN(.path; $listed[])
+              and .redistributable == true and .sensitive != true and (.breaks // []) == []))
+        | "\(.path): \(if .disposition == "measure" then "disposed measure, but no measurement lists it" else "a measurement lists it, but it is trimmed" end); run mise run dispose")
     end
 ' "$measurements"); then
   report "$measurements" "$problems"

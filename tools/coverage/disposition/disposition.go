@@ -89,14 +89,26 @@ func (s *sample) dispose(disposition, trimmedFor, gap string) {
 // contain its own, and is absent when none does. Each of its covers must be another corpus
 // sample's or a gap's.
 //
+// measurements are the measurement list. A sample a measurement lists in its inputs is measured:
+// where it would be trimmed, its disposition is measure, with no trimmed_for, and a sample with a
+// scenario of its own stays adopted. A measured sample is never another's trimmed_for or a gap's
+// covered_by, so the other samples, the gaps, and the gaps that may be dropped are those the list's
+// absence gives. An input that is no sample's path is a truth file, and changes no
+// disposition.
+//
 // It returns the gaps no replace names whose covers adopted samples all exercise, which may be
 // dropped. A group of replaced samples that names no gap, or names two, a breaking sample with a
 // cover no other corpus sample or gap holds, a placed candidate whose gap has no sourced or
-// generated candidate, and an open gap's id taken by another gap are errors.
-func Dispose(coverage *Coverage, placed []Placed) ([]string, error) {
+// generated candidate, an open gap's id taken by another gap, and a measured sample that isn't
+// redistributable, is sensitive, or breaks a standard are errors.
+func Dispose(coverage *Coverage, placed []Placed, measurements []Measurement) ([]string, error) {
 	samples := make([]*sample, len(coverage.Samples))
 	for i := range coverage.Samples {
 		samples[i] = readSample(&coverage.Samples[i])
+	}
+	measured, err := readMeasured(coverage.Samples, measurements)
+	if err != nil {
+		return nil, err
 	}
 	inputs := idset.Set{}
 	for _, g := range coverage.Gaps {
@@ -140,6 +152,8 @@ func Dispose(coverage *Coverage, placed []Placed) ([]string, error) {
 			replaced = append(replaced, s)
 		case slices.Contains(corpus, s):
 			s.dispose("adopt", "", "")
+		case measured[s.entry.Path]:
+			s.dispose("measure", "", "")
 		default:
 			s.dispose("trim", holder(s, corpus).entry.Path, "")
 		}
@@ -205,6 +219,36 @@ func Dispose(coverage *Coverage, placed []Placed) ([]string, error) {
 		}
 	}
 	return droppable, split(coverage, candidates)
+}
+
+func readMeasured(entries []Sample, measurements []Measurement) (idset.Set, error) {
+	samples := map[string]*Sample{}
+	for i := range entries {
+		samples[entries[i].Path] = &entries[i]
+	}
+	measured := idset.Set{}
+	for _, m := range measurements {
+		for _, path := range m.Inputs {
+			s, ok := samples[path]
+			if !ok {
+				continue
+			}
+			var unkept string
+			switch {
+			case !s.Redistributable:
+				unkept = "it is not redistributable"
+			case s.Sensitive:
+				unkept = "it is sensitive"
+			case len(s.Breaks) > 0:
+				unkept = fmt.Sprintf("it breaks %q", s.Breaks[0].Standard)
+			}
+			if unkept != "" {
+				return nil, fmt.Errorf("%s: measurement %s lists it, but %s, so it can't stay in the corpus; measure another input", path, m.ID, unkept)
+			}
+			measured.Add(path)
+		}
+	}
+	return measured, nil
 }
 
 func inherited(inputs []string, samples map[string]*Sample) (string, bool) {
