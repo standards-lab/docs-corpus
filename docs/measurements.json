@@ -222,5 +222,16 @@
       "video/prelinger-duck-and-cover/duck-and-cover-mpeg2.mpeg",
       "video/prelinger-duck-and-cover/duck-and-cover-theora.ogv"
     ]
+  },
+  {
+    "id": "video-interpretation",
+    "repository": "docinfer",
+    "acceptance": "Video interpretation",
+    "summary": "Interpretation of a video's subtext and subversive elements against its published readings.",
+    "needs_truth": true,
+    "inputs": [
+      "video/dvids-ghosts-in-the-machine/ghosts-in-the-machine-1920x1080.mp4",
+      "video/dvids-ghosts-in-the-machine/ghosts-in-the-machine.interpretation.json"
+    ]
   }
 ]

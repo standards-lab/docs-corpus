@@ -700,7 +700,7 @@
     "command": "scripts/place-library.sh"
   },
   "corpus_placement": {
-    "run": "01a217f1-f29c-7721-8d39-8c35190273c5",
+    "run": "01a2184e-4adf-7c96-b3a8-8f3e7d23a7c2",
     "docproc": "docproc v0.9.0 (46aebf1a0e61c2dd8ce054ec12b558d8fda3477a), cmd/docproc v0.2.7",
     "docproc_command": "docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/docproc-final/corpus",
     "command": "mise run place-traits --corpus"
@@ -12770,10 +12770,10 @@
         "kind": "sourced",
         "url": "https://upload.wikimedia.org/wikipedia/commons/c/ca/George_W._Bush_Speech_-_September_12%2C_2001.ogg",
         "ref": "Commons file revision 1302598461, sha1 6235b48d45fb873a2e6e521ffbec7be9d3f36310",
-        "license": "Public domain (PD-USGov-POTUS)",
-        "license_url": "https://commons.wikimedia.org/wiki/File:George_W._Bush_Speech_-_September_12,_2001.ogg",
+        "license": "Public domain (US government work; NARA: archived White House websites hold public domain records)",
+        "license_url": "https://www.archives.gov/presidential-records/research/archived-white-house-websites",
         "license_status": "verified",
-        "license_read": "2026-11-25",
+        "license_read": "2026-11-26",
         "fit": "Good: George W. Bush's statement on the morning of September 12, 2001, a 192-second mono Vorbis recording of one speaker reading real English prose, as its Commons captions transcribe it; public domain as a work of the US President in his official duties."
       }
     }

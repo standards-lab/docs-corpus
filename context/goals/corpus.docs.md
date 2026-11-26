@@ -12,11 +12,17 @@
 4. [x] snapshot
 5. [x] measurement-set
 6. [x] truth
-7. [ ] snapshot-2
-8. [ ] baseline
+7. [x] sourcing
+8. [ ] snapshot-2
+9. [ ] baseline
 
 ## Decisions
 
+- sourcing: DVIDS 882019 is in the corpus as the input of `video-interpretation`, alongside the
+  NASA ISS mp4, to measure the interpretation of subtext. Its stock footage and Danica Dora song
+  are unflagged by DVIDS and stand under its unqualified release.
+- sourcing: the video's interpretation key is sourced, never authored: a revision adds or rewords
+  published readings only, and neither the architect nor a session adds its own interpretation.
 - truth: baseline updates a measurement's `acceptance` when it renames or replaces that heading,
   since the check doesn't match headings.
 - baseline: when it commits the ~/docs manifest rows, corrects dodm-5200-01's `url` from the
@@ -42,9 +48,6 @@
 - baseline: deletes ~/docs outright, with no archive, and every run built from it, including
   `~/runs/docs-corpus/docproc-final/{docs,corpus}`, only after truth merges and a workspace grep
   finds nothing live reading them; the closed spikes stay as they closed.
-- baseline: `mise run place-traits` fails on the laptop, because mise puts the older system
-  ffprobe, magick, and bsdtar first on PATH; run, as truth did,
-  `PATH=$(mise bin-paths | tr '\n' ':')$PATH go run ./tools/coverage/cmd/place-traits --corpus`.
 - baseline: held gotenberg at 9.10.1-libreoffice: 9.10.2 changes nothing docproc uses, and
   docproc releases after v0.9.0 go to a later corpus goal.
 - baseline: supplies the v0.2.0 times that the data-intelligence pending edit states inline.
@@ -119,4 +122,10 @@
   and docinfer): rerun the targeted acceptance sections that baseline leaves dated to the retired
   `~/docs` pool (docproc's "Word error rate", "PDF pages in shared gs processes", "Peak memory",
   and "The office-and-mail ~/docs run"; docinfer's "Transcription") over docs-corpus's measurement
-  inputs, and cite the docs-corpus tag in each. `roadmap/index.toml`: add it to `backlog`.
+  inputs, and cite the docs-corpus tag in each; and write docinfer's "Video interpretation"
+  acceptance section, which runs the `video-interpretation` measurement over DVIDS 882019 and
+  judges the run against its interpretation key. `roadmap/index.toml`: add it to `backlog`.
+- coordinator · `roadmap/corpus-olmocr-provenance.toml`: create the backlog goal (repo
+  docs-corpus): review the third-party documents inside olmOCR-bench, read today under the
+  dataset's ODC-BY license, against STANDARDS.md's reading rule. `roadmap/index.toml`: add it to
+  `backlog`.

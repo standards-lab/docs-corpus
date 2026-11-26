@@ -2511,6 +2511,19 @@
     ]
   },
   {
+    "path": "video/dvids-ghosts-in-the-machine/ghosts-in-the-machine-1920x1080.mp4",
+    "covers": [
+      "capability:embeddings",
+      "capability:extraction",
+      "capability:transcription",
+      "capability:vision",
+      "kind:mp4",
+      "route:video",
+      "trait:audio.multi-window",
+      "trait:scale.large-file"
+    ]
+  },
+  {
     "path": "video/nasa-iss-inflight-pittsburgh/nasa-iss-inflight-pittsburgh-640x360.mp4",
     "covers": [
       "capability:embeddings",
