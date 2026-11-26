@@ -153,7 +153,7 @@ func TestLoadRefusesARunDirectoryWithNoRundirJSON(t *testing.T) {
 	write(t, filepath.Join(runs, "r1", "manifest.json"), `{"inputs": ["/in"]}`)
 	write(t, filepath.Join(runs, "r1", "record.jsonl"), "")
 	_, err := run.Load(runs, "r1")
-	if err == nil || !strings.Contains(err.Error(), "no rundir.json") || !strings.Contains(err.Error(), "docproc v0.5.0") {
+	if err == nil || !strings.Contains(err.Error(), "no rundir.json") || !strings.Contains(err.Error(), "docproc v0.9.0") {
 		t.Errorf("Load of a run directory with no rundir.json = %v, want an error naming it and the docproc to run again", err)
 	}
 }
