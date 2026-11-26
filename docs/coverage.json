@@ -12770,10 +12770,10 @@
         "kind": "sourced",
         "url": "https://upload.wikimedia.org/wikipedia/commons/c/ca/George_W._Bush_Speech_-_September_12%2C_2001.ogg",
         "ref": "Commons file revision 1302598461, sha1 6235b48d45fb873a2e6e521ffbec7be9d3f36310",
-        "license": "Public domain (PD-USGov-POTUS)",
-        "license_url": "https://commons.wikimedia.org/wiki/File:George_W._Bush_Speech_-_September_12,_2001.ogg",
+        "license": "Public domain (US government work; NARA: archived White House websites hold public domain records)",
+        "license_url": "https://www.archives.gov/presidential-records/research/archived-white-house-websites",
         "license_status": "verified",
-        "license_read": "2026-11-25",
+        "license_read": "2026-11-26",
         "fit": "Good: George W. Bush's statement on the morning of September 12, 2001, a 192-second mono Vorbis recording of one speaker reading real English prose, as its Commons captions transcribe it; public domain as a work of the US President in his official duties."
       }
     }

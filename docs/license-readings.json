@@ -46,13 +46,14 @@
   },
   {
     "path": "audio/long/librivox-stella-maberly.m4b",
-    "license_url": "https://archive.org/details/statement_of_stella_maberly_1910_librivox",
-    "license_read": "2026-11-25"
+    "license": "Public domain (LibriVox: recordings are Public Domain in the USA; 1896 text)",
+    "license_url": "https://librivox.org/the-statement-of-stella-maberly-by-f-anstey/",
+    "license_read": "2026-11-26"
   },
   {
     "path": "audio/long/librivox-stella-maberly.truth-approx.txt",
     "license_url": "https://archive.org/details/statementofstell00anst",
-    "license_read": "2026-11-25"
+    "license_read": "2026-11-26"
   },
   {
     "path": "audio/short/fleurs-ar/fleurs-ar-eg-1730.wav",
@@ -156,27 +157,27 @@
   },
   {
     "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0000.flac",
-    "license_url": "https://huggingface.co/datasets/openslr/librispeech_asr",
+    "license_url": "https://www.openslr.org/12",
     "license_read": "2026-11-26"
   },
   {
     "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0001.flac",
-    "license_url": "https://huggingface.co/datasets/openslr/librispeech_asr",
+    "license_url": "https://www.openslr.org/12",
     "license_read": "2026-11-26"
   },
   {
     "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0002.flac",
-    "license_url": "https://huggingface.co/datasets/openslr/librispeech_asr",
+    "license_url": "https://www.openslr.org/12",
     "license_read": "2026-11-26"
   },
   {
     "path": "audio/short/librispeech/librispeech-dev-clean-2277-149896-0003.flac",
-    "license_url": "https://huggingface.co/datasets/openslr/librispeech_asr",
+    "license_url": "https://www.openslr.org/12",
     "license_read": "2026-11-26"
   },
   {
     "path": "audio/short/librispeech/librispeech-dev-clean.truth.json",
-    "license_url": "https://huggingface.co/datasets/openslr/librispeech_asr",
+    "license_url": "https://www.openslr.org/12",
     "license_read": "2026-11-26"
   },
   {
@@ -1176,7 +1177,7 @@
   {
     "path": "pdf/scanned/real/stella-maberly-1896-ia-scan.pdf",
     "license_url": "https://archive.org/details/statementofstell00anst",
-    "license_read": "2026-11-25"
+    "license_read": "2026-11-26"
   },
   {
     "path": "text/csv/tab-separated.tsv",
@@ -1295,17 +1296,17 @@
   {
     "path": "video/prelinger-duck-and-cover/duck-and-cover-divx.avi",
     "license_url": "https://archive.org/details/DuckandC1951",
-    "license_read": "2026-11-25"
+    "license_read": "2026-11-26"
   },
   {
     "path": "video/prelinger-duck-and-cover/duck-and-cover-mpeg2.mpeg",
     "license_url": "https://archive.org/details/DuckandC1951",
-    "license_read": "2026-11-25"
+    "license_read": "2026-11-26"
   },
   {
     "path": "video/prelinger-duck-and-cover/duck-and-cover-theora.ogv",
     "license_url": "https://archive.org/details/DuckandC1951",
-    "license_read": "2026-11-25"
+    "license_read": "2026-11-26"
   },
   {
     "path": "video/tears-of-steel/copyright.txt",
