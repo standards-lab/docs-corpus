@@ -1,8 +1,8 @@
 # goal · corpus.docs
 
-- **State:** idle
-- **Task:** none
-- **Branch:** none
+- **State:** building
+- **Task:** docproc-final
+- **Branch:** docproc-final
 
 ## Tasks
 
@@ -47,8 +47,9 @@ set is re-curated once, against docproc-coverage's final release.
 - The check's verdict over the working copy; dispose, manifest, and place-traits output.
 
 **Slices**
-1. The release: docproc built at it, the run reader for its schema, and the vocabulary's new IDs.
-   It needs docproc-coverage synced; until then BUILD escalates and hands off.
+1. The release: docproc built at its tags (v0.9.0, cmd/docproc/v0.2.7, and the require tags), the
+   run reader for its schema, and the vocabulary's new IDs. The tags are released, so the slice
+   runs before docproc-coverage's coordinator sync; only the coordinator note waits on that sync.
 2. The review refresh over ~/docs: new run, placements, dispositions, adopted and trimmed samples
    moved in or out with their readings (behaviors 2, 3).
 3. The corpus re-placement: new run, gap covers edited to the release, open gaps rechecked,
@@ -65,8 +66,14 @@ set is re-curated once, against docproc-coverage's final release.
 
 Two-way: nothing is tagged or published, and the repository stays private.
 
+## Progress
+
+slices 0/4 committed · standards — · spec — · editor —
+
 ## Decisions
 
+- docproc-final: started on docproc-coverage's released tags before that goal's coordinator
+  sync; only the coordinator note waits on the sync.
 - plan: docproc-final re-curates the set once, against docproc-coverage's final release, after
   that goal syncs; releases after it go to a later corpus goal. Until then the corpus placement
   pins docproc v0.5.0 (cmd/docproc v0.2.3).
