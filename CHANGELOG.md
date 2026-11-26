@@ -2,16 +2,16 @@
 
 All notable changes to docs-corpus, the corpus the Standards Lab workspace's real workloads run
 over, are documented here. The format follows
-[Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Each release's section is headed by the
-version its `vX.Y.Z` tag carries, and is the release's notes.
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Each release's section is headed by its
+`vX.Y.Z` tag and holds the release's notes.
 
 ## [Unreleased]
 
 ## [v0.1.0] - 2026-11-26
 
-The first release of the corpus: 129 samples in ten format areas, `archive`, `audio`, `email`,
-`exec`, `image`, `office`, `onenote`, `pdf`, `text`, and `video`, each with its source, license,
-truth, and covers recorded in [`MANIFEST.json`](MANIFEST.json), whose schema `version` is 1.
+The first release holds 129 samples in ten format areas: `archive`, `audio`, `email`, `exec`,
+`image`, `office`, `onenote`, `pdf`, `text`, and `video`. [`MANIFEST.json`](MANIFEST.json), whose
+schema `version` is 1, records each sample's source, license, truth, and covers.
 [`docs/coverage.md`](docs/coverage.md) records the scenarios the samples cover and why each one is
 in the corpus. The sample files are the release's assets, one uncompressed `<area>.tar` per format
 area, which `mise run fetch` downloads and verifies against the manifest before it places them.

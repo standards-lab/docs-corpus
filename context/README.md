@@ -23,8 +23,8 @@ versioned corpus in this repository, public from v0.1.0 ([README.md](../README.m
 - **Distribution** (built): `mise run pack` writes one uncompressed tar of sample files per format
   area, and `mise run fetch` reads the tars from a release URL or a directory and places the files
   once every one matches the manifest's size and sha256
-  ([README.md](../README.md#distribution)), and the tars are published as the release assets of
-  each version's tag, from v0.1.0 ([CHANGELOG.md](../CHANGELOG.md)).
+  ([README.md](../README.md#distribution)). From v0.1.0, the tars are each version tag's release
+  assets ([CHANGELOG.md](../CHANGELOG.md)).
 - **Baseline** (planned): docproc's and docinfer's run over each version, the reference timings
   capstone.data-intelligence measures against.
 - **Check** (built): the Go gates for [tools/coverage](../tools/coverage), from build to
