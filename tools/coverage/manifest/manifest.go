@@ -156,6 +156,50 @@ type Candidate struct {
 	TruthFrom string `json:"truth_from,omitempty"`
 }
 
+// Sourced is a measurement input sourced outside the reference docs, as docs/sourced.json records
+// it: the file a measurement reads, with its provenance, its license read at its source, and its
+// truth files.
+type Sourced struct {
+	// Path is its path from the repository root.
+	Path string `json:"path"`
+	// Source names the collection or publisher it comes from.
+	Source string `json:"source"`
+	// URL is where it was fetched.
+	URL string `json:"url"`
+	// License is its license, as read at its source.
+	License string `json:"license"`
+	// LicenseURL is where the license was read.
+	LicenseURL string `json:"license_url"`
+	// LicenseRead is the date the license was read, YYYY-MM-DD.
+	LicenseRead string `json:"license_read"`
+	// Format is its media type, as file -b --mime-type reports it.
+	Format string `json:"format"`
+	// Bytes is its size.
+	Bytes int64 `json:"bytes"`
+	// Sha256 is its content's SHA-256, in hex.
+	Sha256 string `json:"sha256"`
+	// Truth are its truth files.
+	Truth []SourcedTruth `json:"truth"`
+}
+
+// SourcedTruth is one of a sourced input's truth files, with its own facts and license reading.
+type SourcedTruth struct {
+	// Path is its path from the repository root.
+	Path string `json:"path"`
+	// Sha256 is its content's SHA-256, in hex.
+	Sha256 string `json:"sha256"`
+	// Bytes is its size.
+	Bytes int64 `json:"bytes"`
+	// Format is its media type, as file -b --mime-type reports it.
+	Format string `json:"format"`
+	// License is its license, as read at its source.
+	License string `json:"license"`
+	// LicenseURL is where the license was read.
+	LicenseURL string `json:"license_url"`
+	// LicenseRead is the date the license was read, YYYY-MM-DD.
+	LicenseRead string `json:"license_read"`
+}
+
 // Placed is one sample's covers, an element of place-traits --corpus's output.
 type Placed struct {
 	// Path is the sample's path.
@@ -173,8 +217,10 @@ type Placed struct {
 // samples or sourced candidates, has its inputs' distinct licenses, in input order joined by "; ",
 // a license status that is verified when every input's is, otherwise the first input's that isn't,
 // is redistributable when every input is, and has the truth of the input its TruthFrom names, or
-// none. Each file a measurement in measurements lists in its inputs names that measurement's id in
-// its Measures.
+// none. Each sourced input in sourced is a sample with its recorded facts and provenance, its
+// covers in placed, or none when placed lacks it, a verified license, redistributable, and its
+// truth files, each a truth file with its own facts and reading. Each file a measurement in
+// measurements lists in its inputs names that measurement's id in its Measures.
 //
 // A file the reference lacks, a sample whose sha256 differs from the reference's, a path that is
 // both a sample and a truth or doc file, a reading for a path that is neither an adopted or
@@ -182,8 +228,9 @@ type Placed struct {
 // whose gap isn't covered_by another sample, a recorded file for a gap that has no sourced or
 // generated candidate, a candidate at another file's path, a generated candidate whose input is
 // neither an adopted sample nor a sourced candidate it lists, a TruthFrom on a sourced candidate or
-// naming no input, and a measurement input that is no file of the manifest are errors.
-func Build(coverage disposition.Coverage, reference Reference, readings []Reading, candidates []Candidate, placed []Placed, measurements []disposition.Measurement) (Manifest, error) {
+// naming no input, a sourced input or one of its truth files at another file's path, a sourced
+// input no measurement lists, and a measurement input that is no file of the manifest are errors.
+func Build(coverage disposition.Coverage, reference Reference, readings []Reading, candidates []Candidate, placed []Placed, measurements []disposition.Measurement, sourced []Sourced) (Manifest, error) {
 	byPath := make(map[string]ReferenceFile, len(reference.Files))
 	for _, f := range reference.Files {
 		byPath[f.Path] = f
@@ -244,7 +291,12 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 		}
 		files[r.Path] = f
 	}
-	errs = append(errs, addCandidates(files, coverage.Gaps, candidates, placed)...)
+	placedCovers := make(map[string][]string, len(placed))
+	for _, p := range placed {
+		placedCovers[p.Path] = p.Covers
+	}
+	errs = append(errs, addCandidates(files, coverage.Gaps, candidates, placedCovers)...)
+	errs = append(errs, addSourced(files, sourced, placedCovers, measurements)...)
 	errs = append(errs, addMeasures(files, measurements)...)
 	if err := errors.Join(errs...); err != nil {
 		return Manifest{}, err
@@ -278,11 +330,69 @@ func addMeasures(files map[string]File, measurements []disposition.Measurement) 
 	return errs
 }
 
-func addCandidates(files map[string]File, gaps []disposition.Gap, candidates []Candidate, placed []Placed) []error {
-	covers := make(map[string][]string, len(placed))
-	for _, p := range placed {
-		covers[p.Path] = p.Covers
+func addSourced(files map[string]File, sourced []Sourced, covers map[string][]string, measurements []disposition.Measurement) []error {
+	listed := map[string]bool{}
+	for _, m := range measurements {
+		for _, path := range m.Inputs {
+			listed[path] = true
+		}
 	}
+	var errs []error
+	for _, s := range sourced {
+		if !listed[s.Path] {
+			errs = append(errs, fmt.Errorf("%s: a sourced input no measurement lists; list it in a measurement's inputs in docs/measurements.json, or remove it from docs/sourced.json", s.Path))
+			continue
+		}
+		f := File{
+			Path:            s.Path,
+			Role:            "sample",
+			Sha256:          s.Sha256,
+			Bytes:           s.Bytes,
+			Format:          s.Format,
+			Truth:           make([]Truth, 0, len(s.Truth)),
+			Docs:            []string{},
+			Source:          s.Source,
+			URL:             s.URL,
+			License:         s.License,
+			LicenseURL:      s.LicenseURL,
+			LicenseRead:     s.LicenseRead,
+			LicenseStatus:   "verified",
+			Redistributable: true,
+		}
+		if ids, ok := covers[s.Path]; ok {
+			f.Covers = slices.Compact(slices.Sorted(slices.Values(ids)))
+		}
+		if len(s.Truth) == 0 {
+			f.TruthNote = "a sourced input, which records no truth"
+		}
+		rows := []File{f}
+		for _, t := range s.Truth {
+			rows[0].Truth = append(rows[0].Truth, Truth{Path: t.Path})
+			rows = append(rows, File{
+				Path:            t.Path,
+				Role:            "truth",
+				Sha256:          t.Sha256,
+				Bytes:           t.Bytes,
+				Format:          t.Format,
+				License:         t.License,
+				LicenseURL:      t.LicenseURL,
+				LicenseRead:     t.LicenseRead,
+				LicenseStatus:   "verified",
+				Redistributable: true,
+			})
+		}
+		for _, r := range rows {
+			if _, ok := files[r.Path]; ok {
+				errs = append(errs, fmt.Errorf("%s: a sourced input's %s file at another file's path; give it a path of its own in docs/sourced.json", r.Path, r.Role))
+				continue
+			}
+			files[r.Path] = r
+		}
+	}
+	return errs
+}
+
+func addCandidates(files map[string]File, gaps []disposition.Gap, candidates []Candidate, covers map[string][]string) []error {
 	fetched := make(map[string]bool, len(candidates))
 	byGap := make(map[string]disposition.Gap, len(gaps))
 	for _, g := range gaps {

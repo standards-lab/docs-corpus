@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Checks the tools/coverage Go module, then the corpus files against MANIFEST.json once it is
-# present, the coverage data, the measurement list against the coverage data, and MANIFEST.json
-# against the coverage data, the measurement list, and git, and runs lint-context and
-# lint-references. Writes nothing but Go's caches.
+# present, the coverage data, the sourced input list, the measurement list against the coverage
+# data and the sourced input list, and MANIFEST.json against the coverage data, the measurement
+# list, the sourced input list, and git, and runs lint-context and lint-references. Writes nothing
+# but Go's caches.
 # See docs/coverage.md
 # See architecture/standards/go-elemental/principles/release-and-ci.md
 set -euo pipefail
@@ -51,7 +52,7 @@ if [ -f MANIFEST.json ]; then
     if [ "$role" = sample ] && [ -n "$gap" ]; then
       payload="mise run fetch -- <release-url|dir>, or mise run fetch-candidates"
     elif [ "$role" = sample ]; then
-      payload="mise run fetch -- <release-url|dir>, or mise run manifest --copy > MANIFEST.json"
+      payload="mise run fetch -- <release-url|dir>, or mise run manifest --copy > MANIFEST.json, or, for a sourced input, fetch it from its url in docs/sourced.json"
     else
       payload="git checkout -- $path"
     fi
@@ -72,7 +73,7 @@ if [ -f MANIFEST.json ]; then
       <(find "${existing_areas[@]}" -type f | sort) \
       <(jq -r '.files[].path' MANIFEST.json | sort) |
       while read -r path; do
-        echo "FAIL: $path: not in MANIFEST.json; remove it, or adopt it in docs/coverage.json and regenerate with mise run manifest > MANIFEST.json" >&2
+        echo "FAIL: $path: not in MANIFEST.json; remove it, or adopt it in docs/coverage.json or record it in docs/sourced.json, and regenerate with mise run manifest > MANIFEST.json" >&2
         echo x
       done | grep -q x && fail=1
   fi
@@ -352,13 +353,80 @@ fi
 
 stop_if_failed
 
+sourced=${SOURCED:-docs/sourced.json}
+if [ ! -f "$sourced" ]; then
+  err "$sourced: missing; restore docs/sourced.json from git, or point SOURCED at the sourced input list"
+elif problems=$(jq -r --slurpfile coverage "$coverage" --slurpfile candidates docs/candidates.json '
+  def text: type == "string" and . != "";
+  def name($i): if (.path? | text) then .path else "[\($i)]" end;
+  def facts($m; $fields):
+    (keys[] | select(IN($fields[]) | not)
+      | "\($m).\(.): is not a field here; remove it, and record only \($fields | join(", "))"),
+    (select((.path | text) | not)
+      | "\($m): needs its path; give the corpus path the file is placed at"),
+    (select((.sha256 | type) != "string" or (.sha256 | test("^[0-9a-f]{64}$") | not))
+      | "\($m): needs its sha256 of 64 hex digits; record sha256sum\u0027s output for the file"),
+    (select((.bytes | type) != "number" or .bytes < 1 or .bytes != (.bytes | floor))
+      | "\($m): needs its bytes, a positive integer; record the file\u0027s size"),
+    (select((.format | text) | not)
+      | "\($m): needs its format; record what file -b --mime-type reports for it"),
+    (select((.license | text) | not)
+      | "\($m): needs its license; record the license read at its source"),
+    (select((.license_url | text) and (.license_url | startswith("https://")) | not)
+      | "\($m): needs its license_url, the https URL its license was read at; read it at its source, as STANDARDS.md states"),
+    (select((.license_read | type) != "string" or (.license_read | test("^[0-9]{4}-[0-9]{2}-[0-9]{2}$") | not))
+      | "\($m): needs its license_read, the YYYY-MM-DD date its license was read; read it at its source and record the date");
+  (($coverage[0].samples // [] | map(.path, .truth[]?, .docs[]?)) + [$coverage[0].docs_without_sample[]?.path]) as $docs_paths
+  | [$candidates[0][]?.path] as $candidate_paths
+  | if type != "array" then
+      "is not an array; list each sourced input there as an object, or [] when there are none"
+    else
+      (to_entries[] | .key as $i | .value
+        | if type != "object" then
+            "[\($i)]: is not an object; give each sourced input its path, source, url, license, license_url, license_read, format, bytes, sha256, and truth"
+          else
+            name($i) as $m
+            | facts($m; ["path", "source", "url", "license", "license_url", "license_read", "format", "bytes", "sha256", "truth"]),
+              (select((.source | text) | not)
+                | "\($m): needs its source; name the collection or publisher it comes from"),
+              (select((.url | text) and (.url | startswith("https://")) | not)
+                | "\($m): needs its url, the https URL it is fetched from"),
+              (if (.truth | type) != "array" then
+                "\($m).truth: is not an array; list its truth files, or [] when it has none"
+              else
+                (.truth | to_entries[] | .key as $j | .value
+                  | if type != "object" then
+                      "\($m).truth[\($j)]: is not an object; give each truth file its path, sha256, bytes, format, license, license_url, and license_read"
+                    else
+                      facts("\($m).truth[\($j)]"; ["path", "sha256", "bytes", "format", "license", "license_url", "license_read"])
+                    end)
+              end)
+          end),
+      ([.[] | objects | .path, (.truth | arrays[] | objects | .path) | select(text)] as $paths
+        | ($paths | group_by(.)[] | select(length > 1)
+            | "\(.[0]) appears \(length) times; give each sourced input and truth file a path of its own"),
+          ($paths[] | select(IN($docs_paths[]))
+            | "\(.): is a ~/docs path in docs/coverage.json; place the sourced file at a path of its own"),
+          ($paths[] | select(IN($candidate_paths[]))
+            | "\(.): is a candidate\u0027s path in docs/candidates.json; place the sourced file at a path of its own"))
+    end
+' "$sourced"); then
+  report "$sourced" "$problems"
+else
+  err "$sourced: jq could not read it; it must be a JSON array of sourced inputs, or [] when there are none"
+fi
+
+stop_if_failed
+
 measurements=${MEASUREMENTS:-docs/measurements.json}
 if [ ! -f "$measurements" ]; then
   err "$measurements: missing; restore docs/measurements.json from git, or point MEASUREMENTS at the measurement list"
-elif problems=$(jq -r --slurpfile coverage "$coverage" '
+elif problems=$(jq -r --slurpfile coverage "$coverage" --slurpfile sourced "$sourced" '
   def text: type == "string" and . != "";
   def name($i): if (.id? | text) then .id else "[\($i)]" end;
   ($coverage[0].samples // []) as $samples
+  | ($sourced[0] | map({key: .path, value: .}) | from_entries) as $sourced_by_path
+  | ($sourced[0] | map(.path as $p | .truth[] | {key: .path, value: $p}) | from_entries) as $sourced_truth_of
   | ($samples | map({key: .path, value: .}) | from_entries) as $by_path
   | ($samples | map(.path as $p | .truth[]? | {key: ., value: $p}) | group_by(.key)
       | map({key: .[0].key, value: map(.value)}) | from_entries) as $truth_of
@@ -381,11 +449,15 @@ elif problems=$(jq -r --slurpfile coverage "$coverage" '
               (select(.needs_truth | type != "boolean")
                 | "\($m).needs_truth: is not true or false; say whether its inputs need truth"),
               (if (.inputs | type) != "array" or .inputs == [] or any(.inputs[]; text | not) then
-                "\($m): needs its inputs; list the corpus paths it reads, each a sample or truth file in docs/coverage.json"
+                "\($m): needs its inputs; list the corpus paths it reads, each a sample or truth file in docs/coverage.json, or a sourced input or truth file in docs/sourced.json"
               else
                 .inputs[] as $p | $by_path[$p] as $s | ($truth_of[$p] // [] | map($by_path[.])) as $owners
-                | if $s == null and $owners == [] then
-                    "\($m).inputs: \($p) is neither a sample nor a truth file in docs/coverage.json; name an input by its path there"
+                | $sourced_by_path[$p] as $src
+                | if $src != null or $sourced_truth_of[$p] != null then
+                    (select($needs_truth and $src != null and $src.truth == [])
+                      | "\($m).inputs: \($p) has no truth, and \($m) needs truth; record its truth files in docs/sourced.json, or measure another input")
+                  elif $s == null and $owners == [] then
+                    "\($m).inputs: \($p) is neither a sample nor a truth file in docs/coverage.json, nor a sourced input or truth file in docs/sourced.json; name an input by its path there, or record it in docs/sourced.json"
                   else
                     (select(($s != null and $s.redistributable != true) or ($s == null and all($owners[]; .redistributable != true)))
                       | "\($m).inputs: \($p) is not redistributable; remove it, and measure a redistributable input instead"),
@@ -405,7 +477,10 @@ elif problems=$(jq -r --slurpfile coverage "$coverage" '
         | select((.disposition == "measure" and (IN(.path; $listed[]) | not))
             or (.disposition == "trim" and IN(.path; $listed[])
               and .redistributable == true and .sensitive != true and (.breaks // []) == []))
-        | "\(.path): \(if .disposition == "measure" then "disposed measure, but no measurement lists it" else "a measurement lists it, but it is trimmed" end); run mise run dispose")
+        | "\(.path): \(if .disposition == "measure" then "disposed measure, but no measurement lists it" else "a measurement lists it, but it is trimmed" end); run mise run dispose"),
+      ([.[] | objects | .inputs | arrays[]] as $listed
+        | $sourced[0][] | select(IN(.path; $listed[]) | not)
+        | "\(.path): a sourced input in docs/sourced.json that no measurement lists; list it in a measurement\u0027s inputs, or remove it from docs/sourced.json")
     end
 ' "$measurements"); then
   report "$measurements" "$problems"
@@ -431,7 +506,8 @@ if [ -f MANIFEST.json ]; then
     | ([$coverage[0].gaps[] | select(.candidate.kind == "generated") | .candidate.inputs[]?]) as $inputs
     | ($tracked | map({key: ., value: true}) | from_entries) as $in_git
     | [.files[] | select(.role == "sample")] as $samples
-    | [$samples[] | select($measured[.path] == null)] as $kept
+    | ($sourced[0] | map({key: .path, value: .}) | from_entries) as $sourced_by_path
+    | [$samples[] | select($measured[.path] == null and $sourced_by_path[.path] == null)] as $kept
     | (.files | map({key: .path, value: .}) | from_entries) as $by_path
     | (select(.version != 1)
         | "MANIFEST.json: version is \(.version | tojson), not 1; \($regenerate)"),
@@ -449,8 +525,20 @@ if [ -f MANIFEST.json ]; then
         | "\(.path): a sample file is tracked by git, but samples are release assets; run git rm --cached -- \(.path | @sh)"),
       (.files[] | select(.role != "sample" and ($in_git[.path] | not))
         | "\(.path): a \(.role) file is not tracked by git; run git add -f -- \(.path | @sh)"),
-      ($samples[] | select(has("gap") | not) | select($adopted[.path] == null and $measured[.path] == null)
-        | "\(.path): a sample that is neither adopted nor measured in docs/coverage.json; \($regenerate)"),
+      ($samples[] | select(has("gap") | not) | select($adopted[.path] == null and $measured[.path] == null and $sourced_by_path[.path] == null)
+        | "\(.path): a sample that is neither adopted nor measured in docs/coverage.json, nor a sourced input in docs/sourced.json; \($regenerate)"),
+      ($sourced[0][] | . as $src
+        | ([{path, role: "sample", sha256, bytes, format, source, url, license, license_url, license_read,
+              license_status: "verified", redistributable: true, truth: [.truth[] | {path}]}]
+           + [.truth[] | {path, role: "truth", sha256, bytes, format, license, license_url, license_read,
+              license_status: "verified", redistributable: true}])[]
+        | . as $want | $by_path[.path] as $f
+        | if $f == null then
+            "\(.path): a sourced input\u0027s \(.role) file in docs/sourced.json, but not in MANIFEST.json; \($regenerate)"
+          else
+            (keys_unsorted[] | select($f[.] != $want[.])
+              | "\($want.path).\(.): differs from its sourced input in docs/sourced.json, \($src.path); never edit it here, \($regenerate)")
+          end),
       ($samples | map(.path)) as $listed
       | ($adopted + $measured | to_entries[] | select(IN(.key; $listed[]) | not)
         | "\(.key): \(if $measured[.key] != null then "measured" else "adopted" end) in docs/coverage.json but not a sample in MANIFEST.json; \($regenerate)"),
@@ -512,7 +600,7 @@ if [ -f MANIFEST.json ]; then
             .value | keys[] | select(IN($ids[]) | not)
             | "docs/judged.json: \($p): \(.) is not in docs/coverage.json\u0027s vocabulary; judge an ID the vocabulary defines"
           end)
-  ' --slurpfile judged docs/judged.json --slurpfile placed docs/corpus-placement.json --slurpfile measurements "$measurements" MANIFEST.json); then
+  ' --slurpfile judged docs/judged.json --slurpfile placed docs/corpus-placement.json --slurpfile measurements "$measurements" --slurpfile sourced "$sourced" MANIFEST.json); then
     while read -r problem; do
       if [ -n "$problem" ]; then
         err "$problem"

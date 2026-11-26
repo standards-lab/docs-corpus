@@ -217,6 +217,7 @@ type Measurement struct {
 	Summary string `json:"summary"`
 	// NeedsTruth is whether its inputs need truth.
 	NeedsTruth bool `json:"needs_truth"`
-	// Inputs are the corpus paths it reads, each a sample's path or a truth file a sample lists.
+	// Inputs are the corpus paths it reads, each a sample's path, a truth file a sample lists, or a
+	// sourced input or truth file docs/sourced.json records.
 	Inputs []string `json:"inputs"`
 }

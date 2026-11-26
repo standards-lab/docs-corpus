@@ -29,6 +29,7 @@ func noCandidates(t *testing.T, dir string) {
 	write(t, filepath.Join(dir, "docs", "candidates.json"), `[]`)
 	write(t, filepath.Join(dir, "docs", "corpus-placement.json"), `[]`)
 	write(t, filepath.Join(dir, "docs", "measurements.json"), `[]`)
+	write(t, filepath.Join(dir, "docs", "sourced.json"), `[]`)
 }
 
 func TestDisposeWritesTheDisposedData(t *testing.T) {
@@ -385,6 +386,49 @@ func TestManifestNamesTheMeasurementsThatReadAFile(t *testing.T) {
 	}
 	if stdout.Len() != 0 {
 		t.Errorf("Manifest wrote %q despite its error", stdout.String())
+	}
+}
+
+func TestManifestAdmitsAListedSourcedInputAndLeavesItOutOfTheCopy(t *testing.T) {
+	dir, docs := t.TempDir(), t.TempDir()
+	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [], "gaps": []}`)
+	write(t, filepath.Join(dir, "docs", "license-readings.json"), `[]`)
+	noCandidates(t, dir)
+	write(t, filepath.Join(dir, "docs", "corpus-placement.json"), `[{"path": "video/d/v.mp4", "covers": ["kind:x"]}]`)
+	measurement := `[{"id": "m", "repository": "docinfer", "acceptance": "A", "summary": "s", "needs_truth": true, "inputs": ["video/d/v.mp4"]}]`
+	write(t, filepath.Join(dir, "docs", "measurements.json"), measurement)
+	sourced := `{"path": "video/d/v.mp4", "source": "dvids", "url": "https://example.org/v", "license": "Public domain",
+		"license_url": "https://example.org/c", "license_read": "2026-11-26", "format": "video/mp4", "bytes": 3, "sha256": "h",
+		"truth": [{"path": "video/d/v.key.json", "sha256": "k", "bytes": 2, "format": "application/json", "license": "Apache-2.0",
+		"license_url": "https://example.org/l", "license_read": "2026-11-26"}]`
+	write(t, filepath.Join(dir, "docs", "sourced.json"), `[`+sourced+`}]`)
+	write(t, filepath.Join(docs, "MANIFEST.json"), `{"files": []}`)
+	t.Setenv("DOCS_REFERENCE", docs)
+	t.Chdir(dir)
+	var stdout, stderr bytes.Buffer
+	if err := app.Manifest([]string{"--copy"}, &stdout, &stderr); err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{`"path": "video/d/v.mp4"`, `"path": "video/d/v.key.json"`, `"role": "truth"`, `"kind:x"`, `"measures": [
+        "m"
+      ]`} {
+		if !strings.Contains(stdout.String(), want) {
+			t.Errorf("stdout = %s\nwant it to contain %s", stdout.String(), want)
+		}
+	}
+	for _, c := range []struct{ name, measurements, sourced, want string }{
+		{"unlisted", `[]`, `[` + sourced + `}]`, "a sourced input no measurement lists"},
+		{"unknown field", measurement, `[` + sourced + `, "extra": 1}]`, "extra"},
+	} {
+		write(t, filepath.Join(dir, "docs", "measurements.json"), c.measurements)
+		write(t, filepath.Join(dir, "docs", "sourced.json"), c.sourced)
+		stdout.Reset()
+		if err := app.Manifest(nil, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), c.want) {
+			t.Errorf("%s: Manifest = %v, want an error containing %q", c.name, err, c.want)
+		}
+		if stdout.Len() != 0 {
+			t.Errorf("%s: Manifest wrote %q despite its error", c.name, stdout.String())
+		}
 	}
 }
 

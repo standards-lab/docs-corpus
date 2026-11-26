@@ -93,8 +93,8 @@ func (s *sample) dispose(disposition, trimmedFor, gap string) {
 // where it would be trimmed, its disposition is measure, with no trimmed_for, and a sample with a
 // scenario of its own stays adopted. A measured sample is never another's trimmed_for or a gap's
 // covered_by, so the other samples, the gaps, and the gaps that may be dropped are those the list's
-// absence gives. An input that is no sample's path is a truth file, and changes no
-// disposition.
+// absence gives. An input that is no sample's path is a truth file or a sourced input, and changes
+// no disposition.
 //
 // It returns the gaps no replace names whose covers adopted samples all exercise, which may be
 // dropped. A group of replaced samples that names no gap, or names two, a breaking sample with a

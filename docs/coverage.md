@@ -397,7 +397,8 @@ jq '(.samples | group_by(.disposition) | map({(.[0].disposition): length}) | add
 
 [`measurements.json`](measurements.json) is the measurement list: the targeted acceptance
 measurements in docproc and docinfer that rerun over corpus inputs. It is written by hand. A
-measurement input is a `~/docs` sample, or a truth file, that a listed measurement reads. As
+measurement input is a `~/docs` sample, or a truth file, that a listed measurement reads, or a
+[sourced input](#sourced-inputs) or one of its truth files. As
 [`STANDARDS.md`](../STANDARDS.md) allows, it stays in the corpus while a measurement lists it, even
 when another sample covers its scenarios. The list is the only way a sample enters the corpus for a
 measurement: `dispose` gives a listed sample it would otherwise trim the `measure` disposition.
@@ -411,7 +412,8 @@ The list is a JSON array, `[]` when it is empty, with one object per measurement
 - `summary`: one line saying what it measures.
 - `needs_truth`: `true` when its inputs need truth, else `false`.
 - `inputs`: the corpus paths it reads, each a sample's `path` in [`coverage.json`](coverage.json)
-  or a truth file a sample there lists in its `truth`.
+  or a truth file a sample there lists in its `truth`, or a sourced input's `path` or truth file
+  in [`sourced.json`](sourced.json).
 
 An entry names its inputs by path and holds no other facts about them: the manifest and
 `coverage.json` hold those. `scripts/check.sh` reads `docs/measurements.json`, or the copy the
@@ -423,24 +425,76 @@ An entry names its inputs by path and holds no other facts about them: the manif
 - an entry lacks its repository or its acceptance section, its summary, or a boolean
   `needs_truth`;
 - an entry lists no inputs, or an input that isn't a path;
-- an input is neither a sample nor a truth file in `coverage.json`;
+- an input is neither a sample nor a truth file in `coverage.json`, nor a sourced input or truth
+  file in `sourced.json`;
 - an input isn't redistributable, is sensitive, or carries a break. A truth file takes these facts
   from the samples that list it: it isn't redistributable when none of them is, and it is
   sensitive when one of them is;
-- a measurement that needs truth lists a sample without truth;
+- a measurement that needs truth lists a sample or sourced input without truth;
 - a sample is measured but no measurement lists it, or a measurement lists a sample that is
-  trimmed though it could be measured.
+  trimmed though it could be measured;
+- a sourced input is one no measurement lists.
 
+Each failure message names its fix.
+
+## Sourced inputs
+
+A sourced input is a measurement input sourced outside `~/docs`: a file fetched from its publisher
+for a measurement to read, with the truth files the measurement needs. Once `~/docs` is gone, it
+is how a measurement input enters the corpus. [`sourced.json`](sourced.json), written by hand,
+records each one. It is a JSON array, `[]` when it is empty, with one object per sourced input:
+
+- `path`: its corpus path, under its format directory.
+- `source`: the collection or publisher it comes from.
+- `url`: the https URL it is fetched from.
+- `license`, `license_url`, and `license_read`: its license, read at its source as
+  [`STANDARDS.md`](../STANDARDS.md) states, the https URL it was read at, and the date it was read.
+- `format`: its media type, as `file -b --mime-type` reports it.
+- `bytes` and `sha256`: its size and its content's SHA-256.
+- `truth`: its truth files, `[]` when it has none. Each records its own `path`, `sha256`, `bytes`,
+  `format`, `license`, `license_url`, and `license_read`. A truth file the corpus writes itself is
+  the corpus's own work, read at
+  [its LICENSE](https://github.com/standards-lab/docs-corpus/blob/main/LICENSE).
+
+A measurement lists a sourced input, and any of its truth files, by path, like any input. `mise run
+manifest` lists the sourced input as a sample with these facts, its covers from
+[`corpus-placement.json`](corpus-placement.json), a verified license, and redistributable, and each
+truth file as a truth file; each names its measurements in `measures`. `place-traits --corpus`
+places it as it places every sample the manifest lists, so its covers come from the docproc run
+over the corpus. Like a measured sample, it is exempt from the covers rules: it may share a format
+and covers with another sample, and its covers may lie inside another's. `docs/coverage.json`
+doesn't list it, so `dispose` gives it no disposition, and it changes no other sample's. Its file
+is a release asset like every sample's, and its truth files are committed. `mise run manifest
+--copy` copies neither from `~/docs`.
+
+`scripts/check.sh` reads `docs/sourced.json`, or the copy the `SOURCED` environment variable
+names, after the coverage data passes and before the measurement list. It fails when:
+
+- the file is missing, isn't JSON, or isn't an array, or an entry or a truth file isn't an object;
+- an entry or a truth file has a field other than its own;
+- an entry lacks its path, source, https url, license, https license URL, the date its license
+  was read, its format, a positive `bytes`, a 64-hex `sha256`, or a `truth` array, or a truth file
+  lacks any of its fields;
+- two paths in the list are the same;
+- a path is a `~/docs` path in `coverage.json`: a sample's, a file one links, or a
+  `docs_without_sample` entry's;
+- a path is a candidate's in [`candidates.json`](candidates.json).
+
+The measurement list's check fails a sourced input no measurement lists, and
+[the manifest's](#the-manifest) fails a sourced input or truth file whose manifest entry is missing
+or differs from its record. The manifest's other rules apply to it as to every sample: its file is
+in place with the manifest's size and sha256, git doesn't track it, and git tracks its truth files.
 Each failure message names its fix.
 
 ## The manifest
 
-[`MANIFEST.json`](../MANIFEST.json) lists each adopted or measured sample and each candidate in
-the corpus, with its `covers`: its `library`, `traits`, and `features` IDs together, sorted. It
-also lists the truth and doc files the samples link, as [README.md](../README.md#the-manifest)
-describes. Each sample or truth file a measurement reads names, in `measures`, the ids of the
+[`MANIFEST.json`](../MANIFEST.json) lists each adopted or measured sample, each candidate in the
+corpus, and each [sourced input](#sourced-inputs), with its `covers`: its `library`, `traits`,
+and `features` IDs together, sorted. It also lists the truth and doc files the samples link, as
+[README.md](../README.md#the-manifest) describes. Each sample or truth file a measurement reads names, in `measures`, the ids of the
 measurements in [`measurements.json`](measurements.json) that list it. `mise run manifest` builds
-it from this data and the measurement list, so the inventory and the scenario index agree.
+it from this data, the measurement list, and the sourced input list, so the inventory and the
+scenario index agree.
 `scripts/check.sh` checks the manifest before the data. It fails when:
 
 - a listed file is missing, or its size or sha256 differs from its entry;
@@ -454,15 +508,17 @@ fails when:
   at its source that [`docs/license-readings.json`](license-readings.json) records;
 - an entry's `covers` ID isn't in the vocabulary;
 - git tracks a sample file, or doesn't track a truth or doc file;
-- a manifest sample that isn't a candidate is neither adopted nor measured in this data, or an
-  adopted or measured sample here isn't a sample in the manifest;
+- a manifest sample that isn't a candidate or a sourced input is neither adopted nor measured in
+  this data, or an adopted or measured sample here isn't a sample in the manifest;
+- a sourced input or one of its truth files isn't in the manifest, or its entry differs from its
+  record in [`sourced.json`](sourced.json);
 - an adopted or measured sample's covers differ from its covers in this data;
-- two samples that aren't measured share a format and covers;
+- two samples that aren't measured or sourced inputs share a format and covers;
 - an entry's `measures` isn't a non-empty list of ids in the measurement list, or differs from the
   sorted ids of the measurements that list its path;
 - a file a measurement lists has no `measures`, or isn't in the manifest;
-- a sample that isn't measured has covers that lie inside another such sample's, whatever the
-  format, unless a generated candidate lists it in its `inputs`, as
+- a sample that isn't measured or a sourced input has covers that lie inside another such
+  sample's, whatever the format, unless a generated candidate lists it in its `inputs`, as
   [`STANDARDS.md`](../STANDARDS.md) allows;
 - a candidate's gap has no sourced or generated candidate, or is `covered_by` another sample;
 - a candidate's provenance differs from its gap's candidate's;
