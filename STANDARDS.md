@@ -5,7 +5,7 @@ The judgement calls the standards-reviewer applies, beyond what `scripts/check.s
 - A sample stays only while it exercises a scenario in the underlying libraries that no other
   sample covers. A generated sample's recorded inputs are the exception: they stay beside it, as
   msg_36.eml does beside email-8 and old_scans-69.pdf beside pdf-2, because a generated sample must
-  be rebuildable from v1.
+  be rebuildable from v0.1.0.
 - A sample's content is realistic: real-language text and images at the density and count a real
   document of its kind holds. Filler (pseudo-words, random characters, repeated or templated
   pages) and timing or stress inputs stay out of the corpus, which measures accuracy, where a
@@ -14,7 +14,7 @@ The judgement calls the standards-reviewer applies, beyond what `scripts/check.s
 - A sample is sourced or generated, with its source or generating command recorded; none is
   constructed by hand.
 - A sample is in the repository only when its license, read at its source, lets it be
-  redistributed, because the repository is public from v1 ([`README.md`](README.md)).
+  redistributed, because the repository is public from v0.1.0 ([`README.md`](README.md)).
 - A sample file is a release asset, never committed to git, as [`README.md`](README.md) states.
 - `architecture/principles/context-architecture.md`: the manifest is the inventory's one home, and
   [`docs/coverage.json`](docs/coverage.json) is the scenario vocabulary's.
