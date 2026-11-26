@@ -128,8 +128,10 @@ the last slice and gated on the grep. Every other slice is two-way.
 
 ## Progress
 
-slices 4/7 committed (1 ab8b982, 2 f4715ec, 3 ai-hosting a0dd635, 4 docproc f600c44, 5 docinfer bef66ff b731a2e; docinfer run 01a218e4-ddaa-7101-949b-0c9030a50690 8,330.5 s, rerun 01a21964-5204-75c7-9d78-7f13ce1279db 1.4 s, no Azure fallback; docproc run 01a218c9-8847-7ec5-b98e-cf5803c6a989, 123.5 s, placement reproduced) · standards — · spec — · editor —
+slices 6/7 committed (1 ab8b982, 2 f4715ec, 3 ai-hosting a0dd635, 4 docproc f600c44, 5 docinfer bef66ff b731a2e, 6 docs-corpus 5af6c90 docinfer 36c73e2 docproc b63cf71; docinfer run 01a218e4-ddaa-7101-949b-0c9030a50690 8,330.5 s, rerun 01a21964-5204-75c7-9d78-7f13ce1279db 1.4 s, no Azure fallback; docproc run 01a218c9-8847-7ec5-b98e-cf5803c6a989, 123.5 s, placement reproduced) · standards — · spec — · editor —
 - slice 1, decided without the architect: removed `manifest --copy` and `dispose --placement`, whose only inputs were ~/docs and the retired placement mode.
+- slice 6, decided without the architect: `jwz.mbox` stays off `vision-reprobe`; as an adopted gap candidate it is outside the measurement contract (samples and sourced inputs), and it stays in the corpus regardless.
+- order: the reviews and the editor run before slice 7, so the one-way removal comes last; the removal waits on the architect's go-ahead.
 
 ## Decisions
 
