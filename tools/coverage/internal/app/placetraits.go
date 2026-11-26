@@ -17,7 +17,7 @@ import (
 // PlaceTraits builds every probe adapter, then writes the covers of every sample the repository's
 // MANIFEST.json lists to stdout, as placement.Placer.Run writes them. It reads the samples from the
 // working directory, docproc's run over the corpus from $RUNS, default
-// ~/runs/docs-corpus/docproc-final/corpus/runs, and the judged IDs docs/judged.json adds. args
+// ~/runs/docs-corpus/baseline/v0.2.0/docproc/runs, and the judged IDs docs/judged.json adds. args
 // are the command line's arguments without the program's name: --corpus is required, and --facts
 // adds the probes' findings. Any other argument, or none, is refused, with flag's usage on stderr
 // for an unknown flag, before any probe adapter is built. An error writes nothing to stdout.
@@ -42,7 +42,7 @@ func PlaceTraits(ctx context.Context, args []string, stdout, stderr io.Writer) e
 	}
 	return placement.Placer{
 		Root:     ".",
-		Runs:     envOr("RUNS", filepath.Join(home, "runs/docs-corpus/docproc-final/corpus/runs")),
+		Runs:     envOr("RUNS", filepath.Join(home, "runs/docs-corpus/baseline/v0.2.0/docproc/runs")),
 		Coverage: "docs/coverage.json",
 		Media: media.Prober{
 			PDFInfo:   tools.PDFInfo,

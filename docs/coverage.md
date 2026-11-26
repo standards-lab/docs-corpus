@@ -208,8 +208,8 @@ run's ID, the docproc release that made it, the `docproc_command` that ran it fr
 root, and the `command` that places the covers.
 
 `mise run place-traits --corpus` places every sample `MANIFEST.json` lists, reading its file from
-the working copy and the run from `${RUNS:-$HOME/runs/docs-corpus/docproc-final/corpus/runs}`. For
-each sample, it takes the library IDs from that run by the rules of
+the working copy and the run from `${RUNS:-$HOME/runs/docs-corpus/baseline/v0.2.0/docproc/runs}`.
+For each sample, it takes the library IDs from that run by the rules of
 [Library placement](#library-placement), adds the trait and feature IDs
 [`place-traits`](#trait-and-feature-placement) probes and the `judged` IDs of the sample's entry in
 `.samples`, and prints the sample's `covers`. A candidate has no entry in `.samples`, so its judged
@@ -225,12 +225,13 @@ repository root with the run directory outside it:
 
 ```sh
 GOBIN=<dir> go install github.com/standards-lab/docproc/cmd/docproc@v0.2.7
-<dir>/docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/docproc-final/corpus
+<dir>/docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/baseline/v0.2.0/docproc
 ```
 
-Record the run's ID, from the summary's last line, in `.corpus_placement`. A run into the same
-run directory replays the parts its index already holds, with outcome `seen` and the first
-outcome under `recorded`; the placement reads the recorded one. To place the covers and compare
+Record the run's ID, from the summary's last line, in `.corpus_placement`.
+[baseline.md](baseline.md#v020) records the run it cites, its machine, and its counts. A run into
+the same run directory replays the parts its index already holds, with outcome `seen` and the
+first outcome under `recorded`; the placement reads the recorded one. To place the covers and compare
 them with the committed placement and the manifest, run this from the repository root:
 
 ```sh

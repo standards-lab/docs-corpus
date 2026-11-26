@@ -5,7 +5,8 @@ documents, messages, images, audio, and video, each with its source, license, gr
 the scenarios it exercises recorded in `MANIFEST.json`. The repository is public from v0.1.0, and
 [`STANDARDS.md`](STANDARDS.md) sets which samples that admits.
 [`docs/coverage.md`](docs/coverage.md) records which scenarios the samples cover and why each one
-is in the corpus.
+is in the corpus. [`docs/baseline.md`](docs/baseline.md) records, for each version, the runs over
+its files that capstone.data-intelligence measures against.
 
 Each version is a git tag, such as v0.1.0, and [`CHANGELOG.md`](CHANGELOG.md) holds each
 version's notes. The payload, the sample files themselves, is the tag's GitHub release assets, one

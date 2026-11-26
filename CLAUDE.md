@@ -7,6 +7,8 @@ The real workloads' corpus, a `context` project managed with the marathon workfl
 - [`context/README.md`](context/README.md): the working context.
 - [`docs/coverage.md`](docs/coverage.md): the scenarios the corpus covers, and the samples that
   cover them.
+- [`docs/baseline.md`](docs/baseline.md): the runs over each tag's files that
+  capstone.data-intelligence measures against.
 - [`STANDARDS.md`](STANDARDS.md): the judgement calls the standards-reviewer applies.
 - [`tools/coverage`](tools/coverage): the Go module that places the samples' traits and features,
   derives their dispositions, and generates candidates; each package's `doc.go` documents it.
