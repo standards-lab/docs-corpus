@@ -1,6 +1,6 @@
 # goal · corpus.docs
 
-- **State:** building
+- **State:** brief ready
 - **Task:** snapshot-2
 - **Branch:** snapshot-2
 
