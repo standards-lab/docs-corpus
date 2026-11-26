@@ -231,8 +231,8 @@ GOBIN=<dir> go install github.com/standards-lab/docproc/cmd/docproc@v0.2.7
 Record the run's ID, from the summary's last line, in `.corpus_placement`.
 [baseline.md](baseline.md#v020) records the run it cites, its machine, and its counts. A run into
 the same run directory replays the parts its index already holds, with outcome `seen` and the
-first outcome under `recorded`; the placement reads the recorded one. To place the covers and compare
-them with the committed placement and the manifest, run this from the repository root:
+first outcome under `recorded`; the placement reads the recorded one. To place the covers and
+compare them with the committed placement and the manifest, run this from the repository root:
 
 ```sh
 mise run place-traits --corpus | cmp - docs/corpus-placement.json
