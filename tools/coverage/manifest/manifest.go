@@ -265,7 +265,7 @@ func addMeasures(files map[string]File, measurements []disposition.Measurement) 
 		for _, path := range m.Inputs {
 			f, ok := files[path]
 			if !ok {
-				errs = append(errs, fmt.Errorf("%s: measurement %s reads it, but it is no file of the manifest", path, m.ID))
+				errs = append(errs, fmt.Errorf("%s: measurement %s reads it, but it is no file of the manifest; list a sample that owns it as well", path, m.ID))
 				continue
 			}
 			if !slices.Contains(f.Measures, m.ID) {

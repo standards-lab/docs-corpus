@@ -470,7 +470,7 @@ if [ -f MANIFEST.json ]; then
       (.files[] | select((has("measures") | not) and $read_by[.path] != null)
         | "\(.path): read by \($read_by[.path] | join(", ")) in docs/measurements.json, but it has no measures; \($regenerate)"),
       ($read_by | keys[] | select($by_path[.] == null)
-        | "docs/measurements.json: \(.) is read by \($read_by[.] | join(", ")), but is no file in MANIFEST.json; run mise run dispose, then \($regenerate)"),
+        | "docs/measurements.json: \(.) is read by \($read_by[.] | join(", ")), but is no file in MANIFEST.json; if it is a truth file, also list a sample that owns it, then run mise run dispose, then \($regenerate)"),
       ($kept[] as $outer | $kept[]
         | select(.path != $outer.path and (((.covers // []) - ($outer.covers // [])) == [])
             and ((.format == $outer.format and ((.covers // []) | unique) == (($outer.covers // []) | unique)) | not)
