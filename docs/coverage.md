@@ -136,10 +136,21 @@ Each entry in `.samples` has the sample's `path` and `sha256`, from `~/docs/MANI
 `library`: the library IDs the sample exercises. Every `~/docs` sample has an entry, even one with
 an empty `library`.
 
-The placements come from docproc's kept run over `~/docs`. `.library_placement` in
-[`coverage.json`](coverage.json) records the run's ID and the command that produced them. The
-command is a script that runs one jq program over the run's `record.jsonl`. A sample's library IDs
-are what the run observed for that file:
+The placements come from docproc's run over `~/docs`, made by the docproc release the corpus
+targets. `.library_placement` in [`coverage.json`](coverage.json) records the run's ID, the
+`docproc` release that made it, the `docproc_command` that ran it, and the `command` that placed
+the IDs. The run reads `~/docs` and writes only its run directory, outside the repository. To make
+it, put docproc's tools on `PATH` as [Corpus placement](#corpus-placement) states, install
+`cmd/docproc` v0.2.7, the command of docproc v0.9.0, and run:
+
+```sh
+GOBIN=<dir> go install github.com/standards-lab/docproc/cmd/docproc@v0.2.7
+<dir>/docproc run --out ~/runs/docs-corpus/docproc-final/docs ~/docs
+```
+
+Record the run's ID, from the summary's last line, in `.library_placement`. The placing command
+is a script that runs one jq program over the run's `record.jsonl`. A sample's library IDs are
+what the run observed for that file:
 
 - Every event of the file's input counts. That includes the parts docproc found inside the file,
   such as archive members, attachments, and embedded files, so their IDs go to the top-level sample.
@@ -154,8 +165,8 @@ To rerun the command and compare its output with the data, run this from the rep
 scripts/place-library.sh | cmp - <(jq '.samples | map({path, sha256, library})' docs/coverage.json)
 ```
 
-The script reads the run from `${RUNS:-$HOME/runs/docproc/final/runs}` and the manifest from
-`${DOCS_REFERENCE:-$HOME/docs}`. It writes nothing.
+The script reads the run from `${RUNS:-$HOME/runs/docs-corpus/docproc-final/docs/runs}` and the
+manifest from `${DOCS_REFERENCE:-$HOME/docs}`. It writes nothing.
 
 ## Trait and feature placement
 
@@ -213,24 +224,24 @@ run's ID, the docproc release that made it, the `docproc_command` that ran it fr
 root, and the `command` that places the covers.
 
 `mise run place-traits --corpus` places every sample `MANIFEST.json` lists, reading its file from
-the working copy and the run from `${RUNS:-$HOME/runs/docs-corpus/curate/runs}`. For each sample,
-it takes the library IDs from that run by the rules of [Library placement](#library-placement),
-adds the trait and feature IDs [`place-traits`](#trait-and-feature-placement) probes and the
-`judged` IDs of the sample's entry in `.samples`, and prints the sample's `covers`. A candidate
-has no entry in `.samples`, so its judged IDs, each with its evidence, are in
-[`judged.json`](judged.json), keyed by its path. The command's output is committed as
-[`corpus-placement.json`](corpus-placement.json), and the manifest takes each candidate's covers
-from it.
+the working copy and the run from `${RUNS:-$HOME/runs/docs-corpus/docproc-final/corpus/runs}`. For
+each sample, it takes the library IDs from that run by the rules of
+[Library placement](#library-placement), adds the trait and feature IDs
+[`place-traits`](#trait-and-feature-placement) probes and the `judged` IDs of the sample's entry in
+`.samples`, and prints the sample's `covers`. A candidate has no entry in `.samples`, so its judged
+IDs, each with its evidence, are in [`judged.json`](judged.json), keyed by its path. The command's
+output is committed as [`corpus-placement.json`](corpus-placement.json), and the manifest takes
+each candidate's covers from it.
 
 To make the run, put docproc's tools on `PATH`, as docproc's README states for its release:
 `docproc-ooxml`, `docproc-mail`, and `docproc-onenote` from their release tags, the real `7zz`
 binary rather than mise's shim, and docker for `soffice`'s pinned image. Then install
-`cmd/docproc` v0.2.3, the command of docproc v0.5.0, outside the repository, and run it from the
+`cmd/docproc` v0.2.7, the command of docproc v0.9.0, outside the repository, and run it from the
 repository root with the run directory outside it:
 
 ```sh
-GOBIN=<dir> go install github.com/standards-lab/docproc/cmd/docproc@v0.2.3
-<dir>/docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/curate
+GOBIN=<dir> go install github.com/standards-lab/docproc/cmd/docproc@v0.2.7
+<dir>/docproc run archive audio email exec image office onenote pdf text video --out ~/runs/docs-corpus/docproc-final/corpus
 ```
 
 Record the run's ID, from the summary's last line, in `.corpus_placement`. A run into the same
@@ -364,7 +375,8 @@ when every input's is, and it is redistributable only when every input is.
   gap's `covered_by` names that sample.
 
 A candidate the placement doesn't list, as one that left the corpus, keeps its gap's record as it
-stands.
+stands, but for a `covered_by` that names a sample no longer in the corpus: `dispose` clears it,
+so `mise run fetch-candidates` fetches the candidate again and the next corpus run places it.
 
 To count the dispositions and gaps, run:
 

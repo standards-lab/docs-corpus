@@ -228,7 +228,7 @@ func TestDisposeTrimsForCandidatesAndDropsCandidatesInsideAnother(t *testing.T) 
 	}, `[{"id": "g1", "covers": ["kind:z"], "candidate": `+sourced+`},
 		{"id": "g2", "covers": ["kind:z"], "candidate": `+sourced+`},
 		{"id": "g3", "covers": ["kind:w"], "candidate": {"kind": "generated", "inputs": ["b"]}},
-		{"id": "g4", "covers": ["kind:v"], "covered_by": "x/kept", "candidate": `+sourced+`}]`)
+		{"id": "g4", "covers": ["kind:v"], "covered_by": "b", "candidate": `+sourced+`}]`)
 	_, err := disposition.Dispose(coverage, []disposition.Placed{
 		{Gap: "g1", Path: "x/one", Bytes: 9, Covers: []string{"kind:x", "kind:y", "kind:z"}},
 		{Gap: "g2", Path: "x/two", Bytes: 1, Covers: []string{"kind:z"}},
@@ -244,7 +244,27 @@ func TestDisposeTrimsForCandidatesAndDropsCandidatesInsideAnother(t *testing.T) 
 	for _, g := range coverage.Gaps {
 		covered = append(covered, g.ID+" "+g.CoveredBy)
 	}
-	if want := []string{"g1 ", "g2 x/one", "g3 ", "g4 x/kept"}; !slices.Equal(covered, want) {
+	if want := []string{"g1 ", "g2 x/one", "g3 ", "g4 b"}; !slices.Equal(covered, want) {
+		t.Errorf("covered_by = %q, want %q", covered, want)
+	}
+}
+
+func TestDisposeClearsACoveredByNamingASampleThatLeftTheCorpus(t *testing.T) {
+	coverage := parse(t, []string{
+		entry("a", []string{"kind:x", "kind:y"}, 1, true, ""),
+		entry("big", []string{"kind:x", "kind:y", "kind:z"}, 9, true,
+			`, "breaks": [{"standard": "A sample's content is realistic", "reason": "filler"}]`),
+	}, `[{"id": "g1", "covers": ["kind:z"], "covered_by": "big", "candidate": `+sourced+`},
+		{"id": "g2", "covers": ["kind:x"], "covered_by": "a", "candidate": `+sourced+`},
+		{"id": "g3", "covers": ["kind:y"], "covered_by": "gone", "candidate": `+sourced+`}]`)
+	if _, err := disposition.Dispose(coverage, nil); err != nil {
+		t.Fatal(err)
+	}
+	var covered []string
+	for _, g := range coverage.Gaps {
+		covered = append(covered, g.ID+" "+g.CoveredBy)
+	}
+	if want := []string{"g1 ", "g2 a", "g3 "}; !slices.Equal(covered, want) {
 		t.Errorf("covered_by = %q, want %q", covered, want)
 	}
 }

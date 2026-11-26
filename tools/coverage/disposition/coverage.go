@@ -52,10 +52,14 @@ type Rule struct {
 	Rule string `json:"rule"`
 }
 
-// LibraryPlacement is the docproc run the library IDs were placed from.
+// LibraryPlacement is the docproc run over ~/docs the library IDs were placed from.
 type LibraryPlacement struct {
 	// Run is the run's ID.
 	Run string `json:"run"`
+	// Docproc is the docproc release that ran, with its commit and its command module's version.
+	Docproc string `json:"docproc"`
+	// DocprocCommand is the docproc command that made the run.
+	DocprocCommand string `json:"docproc_command"`
 	// Command is the command that placed them.
 	Command string `json:"command"`
 }

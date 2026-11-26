@@ -80,8 +80,9 @@ func (s *sample) dispose(disposition, trimmedFor, gap string) {
 // candidate lists in its inputs stays whatever covers it. A gap whose candidate's covers lack some of its covers keeps the ones
 // they confirm, and the rest become its open gap, id <gap>-open, split_from naming it, whose
 // candidate is unavailable until its searched and reason are recorded; the open gap goes once the
-// candidate confirms them all. A gap whose candidate placed doesn't list keeps its covers,
-// covered_by, and open gap as they are.
+// candidate confirms them all. A gap whose candidate placed doesn't list keeps its covers and
+// open gap as they are, and its covered_by while that names a sample still in the corpus; a
+// covered_by naming a sample that left the corpus is cleared, so its candidate is fetched again.
 //
 // A sample whose Breaks record a standard it breaks is trimmed, never adopted or replaced:
 // trimmed_for names the sample the tie-break prefers among those in the corpus whose covers
@@ -147,6 +148,15 @@ func Dispose(coverage *Coverage, placed []Placed) ([]string, error) {
 	gaps := map[string]*Gap{}
 	for i := range coverage.Gaps {
 		gaps[coverage.Gaps[i].ID] = &coverage.Gaps[i]
+	}
+	inCorpus := idset.Set{}
+	for _, s := range corpus {
+		inCorpus.Add(s.entry.Path)
+	}
+	for i := range coverage.Gaps {
+		if g := &coverage.Gaps[i]; !inCorpus[g.CoveredBy] {
+			g.CoveredBy = ""
+		}
 	}
 	for _, c := range candidates {
 		g := gaps[c.gap]

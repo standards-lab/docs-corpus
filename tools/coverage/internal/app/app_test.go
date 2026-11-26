@@ -99,7 +99,7 @@ func TestDisposeWritesSortedIDsEmptyListsAndUnescapedText(t *testing.T) {
 	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"vocabulary": {
 		"library": {"kind:z": {"identifier": "Z", "link": "l"}, "kind:a": {"identifier": "A", "link": "l"}},
 		"trait": {}, "feature": {"feature:b": {"rule": "x"}, "feature:a": {"rule": "Q&A > 1"}}},
-		"library_placement": {"run": "r", "command": "c"},
+		"library_placement": {"run": "r", "docproc": "v", "docproc_command": "d", "command": "c"},
 		"corpus_placement": {"run": "r2", "docproc": "v", "docproc_command": "d", "command": "c2"},
 		"samples": [{"path": "a", "sha256": "s", "library": ["kind:a"], "traits": [], "features": [],
 			"judged": {"feature:b": "seen", "feature:a": "Q&A <b>"}, "format": "f", "bytes": 1,
@@ -134,6 +134,8 @@ func TestDisposeWritesSortedIDsEmptyListsAndUnescapedText(t *testing.T) {
   },
   "library_placement": {
     "run": "r",
+    "docproc": "v",
+    "docproc_command": "d",
     "command": "c"
   },
   "corpus_placement": {

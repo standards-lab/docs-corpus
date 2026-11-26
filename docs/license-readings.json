@@ -515,19 +515,14 @@
     "license_read": "2026-11-25"
   },
   {
+    "path": "onenote/interop/SUT/OneWithFileData.one",
+    "license_url": "https://github.com/OfficeDev/Interop-TestSuites/blob/fe87ed3253de01804a2ae6e1d0015943da6023f8/LICENSE",
+    "license_read": "2026-11-25"
+  },
+  {
     "path": "onenote/interop/sources.json",
     "license": "Apache-2.0",
     "license_url": "https://github.com/JaimeStill/spike-ai-pipeline-onenote/blob/8ea6b2df4236c23ed1da6d37c73ed8479dd75f82/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
-    "path": "onenote/large/Large Desktop.one",
-    "license_url": "https://github.com/msiemens/onenote.rs/blob/727389a674665dc07e0c31818cd4b54b64b9c684/LICENSE",
-    "license_read": "2026-11-25"
-  },
-  {
-    "path": "onenote/large/LargeData.one",
-    "license_url": "https://github.com/OfficeDev/Interop-TestSuites/blob/fe87ed3253de01804a2ae6e1d0015943da6023f8/LICENSE",
     "license_read": "2026-11-25"
   },
   {
