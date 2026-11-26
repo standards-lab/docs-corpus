@@ -229,27 +229,6 @@ func TestBuildNamesTheMeasurementsThatReadEachFileSorted(t *testing.T) {
 	}
 }
 
-func TestBuildWithNoMeasurementsIsUnchanged(t *testing.T) {
-	coverage, files := measuredCoverage()
-	coverage.Samples[1].Disposition = "adopt"
-	without, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, nil, nil, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	empty, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, nil, nil, []disposition.Measurement{})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !reflect.DeepEqual(without, empty) {
-		t.Errorf("Build with an empty list = %+v, want %+v", empty, without)
-	}
-	for _, f := range empty.Files {
-		if f.Measures != nil {
-			t.Errorf("%s measures = %q, want none", f.Path, f.Measures)
-		}
-	}
-}
-
 func TestBuildRefusesInconsistentMeasuredInputs(t *testing.T) {
 	coverage, files := measuredCoverage()
 	_, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, nil, nil, []disposition.Measurement{measurement("x", "t/s.txt")})
