@@ -54,8 +54,9 @@
 - baseline: before removing ~/docs, commits the ~/docs manifest rows the corpus's samples need,
   so `mise run manifest` regenerates without ~/docs, and retires `place-library`, `place-traits`
   without `--corpus`, and the check's ~/docs comparisons (round 1, question 9).
-- snapshot: gb10-2 holds the verified v0.1.0 checkout at `~/docs-corpus` (tag commit `8873b89`),
-  cloned anonymously and fetched from the release; its check ended "All checks passed."
+- snapshot-2: gb10-2 holds the verified v0.2.0 checkout at `~/docs-corpus` (tag commit
+  `ceddd30`), a fresh anonymous clone fetched from the release (210 samples); its check ended "All
+  checks passed." without ~/docs.
 - docproc-final: docproc's acceptance and the onenote spike's findings stay as they closed; both
   are closed out, so their citations of the timing sections are not edited.
 - docproc-final: the realistic-content standard admits limit checks whose content is real
