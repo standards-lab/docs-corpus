@@ -435,28 +435,35 @@ Each failure message names its fix.
 
 ## The manifest
 
-[`MANIFEST.json`](../MANIFEST.json) lists each adopted sample and each candidate in the corpus,
-with its `covers`: its `library`, `traits`, and `features` IDs together, sorted. It also lists
-the truth and doc files the samples link, as [README.md](../README.md#the-manifest) describes.
-`mise run manifest` builds it from this data, so the inventory and the scenario index agree.
+[`MANIFEST.json`](../MANIFEST.json) lists each adopted or measured sample and each candidate in
+the corpus, with its `covers`: its `library`, `traits`, and `features` IDs together, sorted. It
+also lists the truth and doc files the samples link, as [README.md](../README.md#the-manifest)
+describes. Each sample or truth file a measurement reads names, in `measures`, the ids of the
+measurements in [`measurements.json`](measurements.json) that list it. `mise run manifest` builds
+it from this data and the measurement list, so the inventory and the scenario index agree.
 `scripts/check.sh` checks the manifest before the data. It fails when:
 
 - a listed file is missing, or its size or sha256 differs from its entry;
-- a file under a format directory isn't listed;
-- two samples share a format and covers.
+- a file under a format directory isn't listed.
 
-After the data passes, it checks the manifest against the data and git. It fails when:
+After the data and the measurement list pass, it checks the manifest against them and git. It
+fails when:
 
 - the manifest's `version` isn't 1, or an entry's role isn't sample, truth, or doc;
-- an adopted sample lacks `license_url` or `license_read`, the reading of its license at its
-  source that [`docs/license-readings.json`](license-readings.json) records;
+- an adopted or measured sample lacks `license_url` or `license_read`, the reading of its license
+  at its source that [`docs/license-readings.json`](license-readings.json) records;
 - an entry's `covers` ID isn't in the vocabulary;
 - git tracks a sample file, or doesn't track a truth or doc file;
-- a manifest sample that isn't a candidate isn't adopted in this data, or an adopted sample here
-  isn't a sample in the manifest;
-- an adopted sample's covers differ from its covers in this data;
-- a sample's covers lie inside another sample's, whatever the format, unless a generated
-  candidate lists it in its `inputs`, as [`STANDARDS.md`](../STANDARDS.md) allows;
+- a manifest sample that isn't a candidate is neither adopted nor measured in this data, or an
+  adopted or measured sample here isn't a sample in the manifest;
+- an adopted or measured sample's covers differ from its covers in this data;
+- two samples that aren't measured share a format and covers;
+- an entry's `measures` isn't a non-empty list of ids in the measurement list, or differs from the
+  sorted ids of the measurements that list its path;
+- a file a measurement lists has no `measures`, or isn't in the manifest;
+- a sample that isn't measured has covers that lie inside another such sample's, whatever the
+  format, unless a generated candidate lists it in its `inputs`, as
+  [`STANDARDS.md`](../STANDARDS.md) allows;
 - a candidate's gap has no sourced or generated candidate, or is `covered_by` another sample;
 - a candidate's provenance differs from its gap's candidate's;
 - a sourced candidate has truth, or a generated one has truth that isn't its inputs';

@@ -7,6 +7,25 @@ over, are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- [`docs/measurements.json`](docs/measurements.json), the measurement list: the targeted
+  acceptance measurements in docproc and docinfer that rerun over corpus inputs, written by hand
+  and empty for now.
+- The `measure` disposition in `docs/coverage.json`: a `~/docs` sample a measurement lists, which
+  would otherwise be trimmed, stays in the corpus.
+- `measures` in `MANIFEST.json`: each sample or truth file a measurement reads names the ids of
+  the measurements that list it. The field is optional, so the schema `version` stays 1.
+
+### Changed
+
+- `mise run manifest` lists the measured samples, with their truth and doc files, as it lists the
+  adopted ones.
+- `scripts/check.sh` checks the measurement list, accepts measured samples, and checks each
+  entry's `measures` against the list. Two samples that share a format and covers are now caught
+  after the coverage data passes, and a measured sample is exempt, like a generated candidate's
+  inputs, from the rule that no sample's covers lie inside another's.
+
 ## [v0.1.0] - 2026-11-26
 
 The first release holds 129 samples in ten format areas: `archive`, `audio`, `email`, `exec`,

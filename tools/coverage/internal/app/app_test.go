@@ -356,6 +356,38 @@ func TestManifestWritesTheInventoryAndCopiesItsFiles(t *testing.T) {
 	}
 }
 
+func TestManifestNamesTheMeasurementsThatReadAFile(t *testing.T) {
+	dir, docs := t.TempDir(), t.TempDir()
+	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [{"path": "a/s.txt", "sha256": "h",
+		"library": ["kind:x"], "traits": [], "features": [], "format": "text/plain", "bytes": 3, "license_status": "reported",
+		"redistributable": true, "truth": [], "docs": [], "disposition": "measure"}], "gaps": []}`)
+	write(t, filepath.Join(dir, "docs", "license-readings.json"), `[]`)
+	noCandidates(t, dir)
+	measurement := `{"id": "m", "repository": "docproc", "acceptance": "A", "summary": "s", "needs_truth": false, "inputs": ["a/s.txt"]`
+	write(t, filepath.Join(dir, "docs", "measurements.json"), `[`+measurement+`}]`)
+	write(t, filepath.Join(docs, "MANIFEST.json"), `{"files": [{"path": "a/s.txt", "sha256": "h", "bytes": 3, "format": "text/plain",
+		"role": "sample", "truth": "none: a timing input"}]}`)
+	t.Setenv("DOCS_REFERENCE", docs)
+	t.Chdir(dir)
+	var stdout, stderr bytes.Buffer
+	if err := app.Manifest(nil, &stdout, &stderr); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(stdout.String(), `"measures": [
+        "m"
+      ]`) {
+		t.Errorf("stdout = %s\nwant a/s.txt to name measurement m", stdout.String())
+	}
+	write(t, filepath.Join(dir, "docs", "measurements.json"), `[`+measurement+`, "extra": 1}]`)
+	stdout.Reset()
+	if err := app.Manifest(nil, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "extra") {
+		t.Errorf("Manifest with an unknown measurement field = %v, want it refused", err)
+	}
+	if stdout.Len() != 0 {
+		t.Errorf("Manifest wrote %q despite its error", stdout.String())
+	}
+}
+
 func TestManifestRefusesArgumentsAndAMissingReference(t *testing.T) {
 	dir := t.TempDir()
 	write(t, filepath.Join(dir, "docs", "coverage.json"), `{"samples": [], "gaps": []}`)

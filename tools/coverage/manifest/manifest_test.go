@@ -3,6 +3,7 @@ package manifest_test
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -31,7 +32,7 @@ func ref(path, role, truth string) manifest.ReferenceFile {
 
 func build(t *testing.T, samples []disposition.Sample, files []manifest.ReferenceFile, readings []manifest.Reading) manifest.Manifest {
 	t.Helper()
-	m, err := manifest.Build(disposition.Coverage{Samples: samples}, manifest.Reference{Files: files}, readings, nil, nil)
+	m, err := manifest.Build(disposition.Coverage{Samples: samples}, manifest.Reference{Files: files}, readings, nil, nil, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -155,14 +156,110 @@ func TestBuildRefusesInconsistentInputs(t *testing.T) {
 		{"stale sha256", []disposition.Sample{adopted("a.pdf", nil, nil)}, []manifest.ReferenceFile{stale}, nil, "differs from the reference's"},
 		{"missing truth", []disposition.Sample{adopted("a.pdf", []string{"t.json"}, nil)}, []manifest.ReferenceFile{ref("a.pdf", "sample", "")}, nil, "t.json: a truth file the reference manifest lacks"},
 		{"sample as truth", []disposition.Sample{adopted("a.pdf", []string{"b.pdf"}, nil), adopted("b.pdf", nil, nil)},
-			[]manifest.ReferenceFile{ref("a.pdf", "sample", ""), ref("b.pdf", "sample", "")}, nil, "b.pdf: both an adopted sample and a truth file"},
-		{"stray reading", nil, nil, []manifest.Reading{{Path: "x.pdf"}}, "x.pdf: a license reading for a path that is neither an adopted sample nor a file one links"},
+			[]manifest.ReferenceFile{ref("a.pdf", "sample", ""), ref("b.pdf", "sample", "")}, nil, "b.pdf: both a sample and a truth file"},
+		{"stray reading", nil, nil, []manifest.Reading{{Path: "x.pdf"}}, "x.pdf: a license reading for a path that is neither an adopted or measured sample nor a file one links"},
 	}
 	for _, c := range cases {
-		_, err := manifest.Build(disposition.Coverage{Samples: c.samples}, manifest.Reference{Files: c.files}, c.readings, nil, nil)
+		_, err := manifest.Build(disposition.Coverage{Samples: c.samples}, manifest.Reference{Files: c.files}, c.readings, nil, nil, nil)
 		if err == nil || !strings.Contains(err.Error(), c.want) {
 			t.Errorf("%s: Build = %v, want an error containing %q", c.name, err, c.want)
 		}
+	}
+}
+
+func measurement(id string, inputs ...string) disposition.Measurement {
+	return disposition.Measurement{ID: id, Repository: "docproc", Acceptance: "A", Summary: "s", Inputs: inputs}
+}
+
+func measuredCoverage() (disposition.Coverage, []manifest.ReferenceFile) {
+	measured := adopted("m/s.txt", []string{"m/s.truth"}, []string{"m/LICENSE"})
+	measured.Disposition = "measure"
+	trimmed := adopted("t/s.txt", nil, nil)
+	trimmed.Disposition = "trim"
+	return disposition.Coverage{Samples: []disposition.Sample{adopted("a/s.txt", []string{"a/s.truth"}, nil), measured, trimmed}},
+		[]manifest.ReferenceFile{
+			ref("a/s.txt", "sample", "a/s.truth"), ref("a/s.truth", "truth", ""), ref("m/s.txt", "sample", "m/s.truth (all of it)"),
+			ref("m/s.truth", "truth", ""), ref("m/LICENSE", "doc", ""), ref("t/s.txt", "sample", ""),
+		}
+}
+
+func TestBuildListsAMeasuredSampleWithItsTruthAndDocFiles(t *testing.T) {
+	coverage, files := measuredCoverage()
+	m, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, nil, nil, []disposition.Measurement{measurement("x", "m/s.txt")})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, f := range m.Files {
+		got = append(got, f.Path+" "+f.Role)
+	}
+	want := []string{"a/s.truth truth", "a/s.txt sample", "m/LICENSE doc", "m/s.truth truth", "m/s.txt sample"}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("files = %q, want %q", got, want)
+	}
+	s := byPath(m)["m/s.txt"]
+	if !reflect.DeepEqual(s.Truth, []manifest.Truth{{Path: "m/s.truth", Note: "all of it"}}) || !reflect.DeepEqual(s.Docs, []string{"m/LICENSE"}) ||
+		!reflect.DeepEqual(s.Covers, []string{"feature:f", "kind:a", "route:b", "trait:x.y"}) {
+		t.Errorf("measured sample = %+v, want its covers, truth, and docs", s)
+	}
+}
+
+func TestBuildNamesTheMeasurementsThatReadEachFileSorted(t *testing.T) {
+	coverage, files := measuredCoverage()
+	m, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, nil, nil, []disposition.Measurement{
+		measurement("zeta", "m/s.txt", "m/s.truth"), measurement("alpha", "m/s.truth", "a/s.txt", "m/s.truth"),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[string][]string{
+		"a/s.txt": {"alpha"}, "a/s.truth": nil, "m/s.txt": {"zeta"}, "m/s.truth": {"alpha", "zeta"}, "m/LICENSE": nil,
+	}
+	for path, ids := range want {
+		if got := byPath(m)[path].Measures; !reflect.DeepEqual(got, ids) {
+			t.Errorf("%s measures = %q, want %q", path, got, ids)
+		}
+	}
+	data, err := json.Marshal(byPath(m)["a/s.truth"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(data), "measures") {
+		t.Errorf("unread entry = %s, want no measures", data)
+	}
+}
+
+func TestBuildWithNoMeasurementsIsUnchanged(t *testing.T) {
+	coverage, files := measuredCoverage()
+	coverage.Samples[1].Disposition = "adopt"
+	without, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, nil, nil, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	empty, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, nil, nil, []disposition.Measurement{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(without, empty) {
+		t.Errorf("Build with an empty list = %+v, want %+v", empty, without)
+	}
+	for _, f := range empty.Files {
+		if f.Measures != nil {
+			t.Errorf("%s measures = %q, want none", f.Path, f.Measures)
+		}
+	}
+}
+
+func TestBuildRefusesInconsistentMeasuredInputs(t *testing.T) {
+	coverage, files := measuredCoverage()
+	_, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, nil, nil, []disposition.Measurement{measurement("x", "t/s.txt")})
+	if want := "t/s.txt: measurement x reads it, but it is no file of the manifest"; err == nil || !strings.Contains(err.Error(), want) {
+		t.Errorf("Build = %v, want an error containing %q", err, want)
+	}
+	coverage.Samples[1].Sha256 = "other"
+	_, err = manifest.Build(coverage, manifest.Reference{Files: files}, nil, nil, nil, nil)
+	if want := "m/s.txt: sha256 other differs from the reference's"; err == nil || !strings.Contains(err.Error(), want) {
+		t.Errorf("Build = %v, want an error containing %q", err, want)
 	}
 }
 
@@ -180,7 +277,7 @@ var fetched = []manifest.Candidate{{Gap: "g1", Path: "x/c.bin", Source: "suite",
 
 func TestBuildAddsTheFetchedCandidatesWithTheirGapsProvenanceAndPlacedCovers(t *testing.T) {
 	m, err := manifest.Build(candidateCoverage(""), manifest.Reference{}, nil, fetched,
-		[]manifest.Placed{{Path: "x/c.bin", Covers: []string{"route:b", "kind:a", "kind:a"}}, {Path: "elsewhere", Covers: []string{"kind:z"}}})
+		[]manifest.Placed{{Path: "x/c.bin", Covers: []string{"route:b", "kind:a", "kind:a"}}, {Path: "elsewhere", Covers: []string{"kind:z"}}}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -196,14 +293,14 @@ func TestBuildAddsTheFetchedCandidatesWithTheirGapsProvenanceAndPlacedCovers(t *
 }
 
 func TestBuildLeavesAnUnplacedCandidateWithoutCoversAndACoveredOneOut(t *testing.T) {
-	m, err := manifest.Build(candidateCoverage(""), manifest.Reference{}, nil, fetched, nil)
+	m, err := manifest.Build(candidateCoverage(""), manifest.Reference{}, nil, fetched, nil, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if len(m.Files) != 1 || m.Files[0].Covers != nil {
 		t.Errorf("files = %+v, want x/c.bin without covers", m.Files)
 	}
-	m, err = manifest.Build(candidateCoverage("other/sample"), manifest.Reference{}, nil, fetched, nil)
+	m, err = manifest.Build(candidateCoverage("other/sample"), manifest.Reference{}, nil, fetched, nil, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -229,7 +326,7 @@ func TestBuildRefusesInconsistentCandidates(t *testing.T) {
 	for _, c := range cases {
 		coverage := candidateCoverage("")
 		coverage.Samples = c.samples
-		_, err := manifest.Build(coverage, manifest.Reference{Files: c.files}, nil, c.candidates, nil)
+		_, err := manifest.Build(coverage, manifest.Reference{Files: c.files}, nil, c.candidates, nil, nil)
 		if err == nil || !strings.Contains(err.Error(), c.want) {
 			t.Errorf("%s: Build = %v, want an error containing %q", c.name, err, c.want)
 		}
@@ -255,7 +352,7 @@ func TestBuildDerivesAGeneratedCandidatesLicenseAndTruthFromItsInputs(t *testing
 	coverage, files := generatedCoverage()
 	readings := []manifest.Reading{{Path: "in/a.wav", LicenseURL: "https://example.org/l", LicenseRead: "2026-11-25"}}
 	generated := []manifest.Candidate{{Gap: "g3", Path: "out/x.mp3", Source: "generated", Sha256: "h", Bytes: 5, Format: "audio/mpeg", FormatBy: "file-5.48", TruthFrom: "in/a.wav"}}
-	m, err := manifest.Build(coverage, manifest.Reference{Files: files}, readings, generated, nil)
+	m, err := manifest.Build(coverage, manifest.Reference{Files: files}, readings, generated, nil, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -279,7 +376,7 @@ func TestBuildDerivesAGeneratedCandidatesLicenseAndTruthFromItsInputs(t *testing
 		readings = append(readings, r)
 	}
 	files[3].Redistributable = true
-	m, err = manifest.Build(coverage, manifest.Reference{Files: files}, readings, generated, nil)
+	m, err = manifest.Build(coverage, manifest.Reference{Files: files}, readings, generated, nil, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -294,7 +391,7 @@ func TestBuildDerivesAGeneratedCandidatesLicenseFromASourcedCandidateItReads(t *
 	coverage.Gaps = append(coverage.Gaps, candidateCoverage("").Gaps...)
 	coverage.Gaps[0].Candidate.Inputs = []string{"in/b.txt", "x/c.bin"}
 	generated := manifest.Candidate{Gap: "g3", Path: "out/x.mp3", Source: "generated", Sha256: "h", Bytes: 5, Format: "audio/mpeg", FormatBy: "file-5.48"}
-	m, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, []manifest.Candidate{generated, fetched[0]}, nil)
+	m, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, []manifest.Candidate{generated, fetched[0]}, nil, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -304,7 +401,7 @@ func TestBuildDerivesAGeneratedCandidatesLicenseFromASourcedCandidateItReads(t *
 	}
 
 	coverage.Gaps[0].Candidate.Inputs = []string{"in/b.txt", "out/x.mp3"}
-	_, err = manifest.Build(coverage, manifest.Reference{Files: files}, nil, []manifest.Candidate{generated, fetched[0]}, nil)
+	_, err = manifest.Build(coverage, manifest.Reference{Files: files}, nil, []manifest.Candidate{generated, fetched[0]}, nil, nil)
 	if want := "out/x.mp3: its input out/x.mp3 is neither an adopted sample nor a sourced candidate in the corpus"; err == nil || !strings.Contains(err.Error(), want) {
 		t.Errorf("generated input: Build = %v, want an error containing %q", err, want)
 	}
@@ -327,13 +424,13 @@ func TestBuildRefusesInconsistentGeneratedCandidates(t *testing.T) {
 		if c.inputs != nil {
 			coverage.Gaps[0].Candidate.Inputs = c.inputs
 		}
-		_, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, c.candidates, nil)
+		_, err := manifest.Build(coverage, manifest.Reference{Files: files}, nil, c.candidates, nil, nil)
 		if err == nil || !strings.Contains(err.Error(), c.want) {
 			t.Errorf("%s: Build = %v, want an error containing %q", c.name, err, c.want)
 		}
 	}
 	sourced := []manifest.Candidate{{Gap: "g1", Path: "x/c.bin", TruthFrom: "in/a.wav"}}
-	_, err := manifest.Build(candidateCoverage(""), manifest.Reference{}, nil, sourced, nil)
+	_, err := manifest.Build(candidateCoverage(""), manifest.Reference{}, nil, sourced, nil, nil)
 	if want := "x/c.bin: a sourced candidate inherits no truth, but names truth_from in/a.wav"; err == nil || !strings.Contains(err.Error(), want) {
 		t.Errorf("sourced truth_from: Build = %v, want an error containing %q", err, want)
 	}

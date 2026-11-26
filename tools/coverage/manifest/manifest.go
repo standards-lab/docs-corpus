@@ -22,8 +22,8 @@ type Manifest struct {
 
 // File is one corpus file's entry. A sample carries Covers, Truth, and Docs, and TruthNote when
 // it has no truth; a truth or doc file carries none of them. A generated file carries Command,
-// Inputs, Generator, and GeneratorLicense, and a candidate its Gap. Every other field is absent
-// where its source records nothing.
+// Inputs, Generator, and GeneratorLicense, and a candidate its Gap. A file a measurement reads
+// carries Measures. Every other field is absent where its source records nothing.
 type File struct {
 	// Path is its path from the repository root.
 	Path string `json:"path"`
@@ -71,6 +71,8 @@ type File struct {
 	GeneratorLicense string `json:"generator_license,omitempty"`
 	// Gap is the id of the gap a candidate fills.
 	Gap string `json:"gap,omitempty"`
+	// Measures are the ids of the measurements in docs/measurements.json that read it, sorted.
+	Measures []string `json:"measures,omitempty"`
 	// Note is what its source records about it.
 	Note string `json:"note,omitempty"`
 }
@@ -162,24 +164,26 @@ type Placed struct {
 	Covers []string `json:"covers"`
 }
 
-// Build returns the manifest of coverage's adopted samples and the truth and doc files they link,
-// each with the reference's facts and provenance, a sample's covers, and its reading applied, the
-// reading's license replacing the reference's when it names one, and of the candidates recorded
-// for coverage's gaps, but for those whose gap is covered_by another sample. A candidate carries
-// its recorded facts, its gap's candidate's provenance, and its covers in placed, or none when
-// placed lacks it. A sourced candidate has no truth. A generated one, whose inputs are adopted
-// samples or sourced candidates, has its inputs' distinct licenses, in input order joined by "; ", a license status that is verified
-// when every input's is, otherwise the first input's that isn't, is redistributable when every
-// input is, and has the truth of the input its TruthFrom names, or none.
+// Build returns the manifest of coverage's adopted and measured samples and the truth and doc files
+// they link, each with the reference's facts and provenance, a sample's covers, and its reading
+// applied, the reading's license replacing the reference's when it names one, and of the candidates
+// recorded for coverage's gaps, but for those whose gap is covered_by another sample. A candidate
+// carries its recorded facts, its gap's candidate's provenance, and its covers in placed, or none
+// when placed lacks it. A sourced candidate has no truth. A generated one, whose inputs are adopted
+// samples or sourced candidates, has its inputs' distinct licenses, in input order joined by "; ",
+// a license status that is verified when every input's is, otherwise the first input's that isn't,
+// is redistributable when every input is, and has the truth of the input its TruthFrom names, or
+// none. Each file a measurement in measurements lists in its inputs names that measurement's id in
+// its Measures.
 //
 // A file the reference lacks, a sample whose sha256 differs from the reference's, a path that is
-// both a sample and a truth or doc file, a reading for a path that is neither an adopted sample nor
-// a file one links, a sourced or generated candidate with no recorded file whose gap isn't
-// covered_by another sample, a recorded file for a gap that has no sourced or generated
-// candidate, a candidate at another file's path, a generated candidate whose input is neither an
-// adopted sample nor a sourced candidate it lists, and a TruthFrom on a sourced candidate or naming
-// no input are errors.
-func Build(coverage disposition.Coverage, reference Reference, readings []Reading, candidates []Candidate, placed []Placed) (Manifest, error) {
+// both a sample and a truth or doc file, a reading for a path that is neither an adopted or
+// measured sample nor a file one links, a sourced or generated candidate with no recorded file
+// whose gap isn't covered_by another sample, a recorded file for a gap that has no sourced or
+// generated candidate, a candidate at another file's path, a generated candidate whose input is
+// neither an adopted sample nor a sourced candidate it lists, a TruthFrom on a sourced candidate or
+// naming no input, and a measurement input that is no file of the manifest are errors.
+func Build(coverage disposition.Coverage, reference Reference, readings []Reading, candidates []Candidate, placed []Placed, measurements []disposition.Measurement) (Manifest, error) {
 	byPath := make(map[string]ReferenceFile, len(reference.Files))
 	for _, f := range reference.Files {
 		byPath[f.Path] = f
@@ -188,12 +192,13 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 	linked := map[string]string{}
 	var errs []error
 	for _, s := range coverage.Samples {
-		if s.Disposition != "adopt" {
+		kind, ok := inCorpus[s.Disposition]
+		if !ok {
 			continue
 		}
 		ref, ok := byPath[s.Path]
 		if !ok {
-			errs = append(errs, fmt.Errorf("%s: an adopted sample the reference manifest lacks", s.Path))
+			errs = append(errs, fmt.Errorf("%s: %s sample the reference manifest lacks", s.Path, kind))
 			continue
 		}
 		if ref.Sha256 != s.Sha256 {
@@ -217,7 +222,7 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 	}
 	for path, role := range linked {
 		if _, ok := files[path]; ok {
-			errs = append(errs, fmt.Errorf("%s: both an adopted sample and a %s file", path, role))
+			errs = append(errs, fmt.Errorf("%s: both a sample and a %s file", path, role))
 			continue
 		}
 		ref, ok := byPath[path]
@@ -230,7 +235,7 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 	for _, r := range readings {
 		f, ok := files[r.Path]
 		if !ok {
-			errs = append(errs, fmt.Errorf("%s: a license reading for a path that is neither an adopted sample nor a file one links", r.Path))
+			errs = append(errs, fmt.Errorf("%s: a license reading for a path that is neither an adopted or measured sample nor a file one links", r.Path))
 			continue
 		}
 		f.LicenseURL, f.LicenseRead, f.LicenseStatus = r.LicenseURL, r.LicenseRead, "verified"
@@ -240,6 +245,7 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 		files[r.Path] = f
 	}
 	errs = append(errs, addCandidates(files, coverage.Gaps, candidates, placed)...)
+	errs = append(errs, addMeasures(files, measurements)...)
 	if err := errors.Join(errs...); err != nil {
 		return Manifest{}, err
 	}
@@ -249,6 +255,27 @@ func Build(coverage disposition.Coverage, reference Reference, readings []Readin
 	}
 	slices.SortFunc(m.Files, func(a, b File) int { return strings.Compare(a.Path, b.Path) })
 	return m, nil
+}
+
+var inCorpus = map[string]string{"adopt": "an adopted", "measure": "a measured"}
+
+func addMeasures(files map[string]File, measurements []disposition.Measurement) []error {
+	var errs []error
+	for _, m := range measurements {
+		for _, path := range m.Inputs {
+			f, ok := files[path]
+			if !ok {
+				errs = append(errs, fmt.Errorf("%s: measurement %s reads it, but it is no file of the manifest", path, m.ID))
+				continue
+			}
+			if !slices.Contains(f.Measures, m.ID) {
+				f.Measures = append(f.Measures, m.ID)
+				slices.Sort(f.Measures)
+			}
+			files[path] = f
+		}
+	}
+	return errs
 }
 
 func addCandidates(files map[string]File, gaps []disposition.Gap, candidates []Candidate, placed []Placed) []error {

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Checks the tools/coverage Go module, then the corpus files against MANIFEST.json once it is
 # present, the coverage data, the measurement list against the coverage data, and MANIFEST.json
-# against the coverage data and git, and runs lint-context and lint-references. Writes nothing but Go's caches.
+# against the coverage data, the measurement list, and git, and runs lint-context and
+# lint-references. Writes nothing but Go's caches.
 # See docs/coverage.md
 # See architecture/standards/go-elemental/principles/release-and-ci.md
 set -euo pipefail
@@ -75,13 +76,6 @@ if [ -f MANIFEST.json ]; then
         echo x
       done | grep -q x && fail=1
   fi
-
-  while read -r duplicate; do
-    err "samples share a format and scenarios: $duplicate; trim all but one with mise run dispose, then mise run manifest > MANIFEST.json"
-  done < <(jq -r '
-    [.files[] | select(.role == "sample")
-      | {key: ([.format] + ((.covers // []) | sort) | join(" ")), path}]
-    | group_by(.key)[] | select(length > 1) | map(.path) | join(", ")' MANIFEST.json)
 fi
 
 stop_if_failed() {
@@ -429,10 +423,15 @@ if [ -f MANIFEST.json ]; then
     def covers: (.library + (.traits // []) + (.features // [])) | unique;
     ($coverage[0].vocabulary | [.library, .trait, .feature] | map(keys) | add) as $ids
     | ($coverage[0].samples | map(select(.disposition == "adopt") | {key: .path, value: covers}) | from_entries) as $adopted
+    | ($coverage[0].samples | map(select(.disposition == "measure") | {key: .path, value: covers}) | from_entries) as $measured
+    | ($measurements[0] | map(.id)) as $measurement_ids
+    | ($measurements[0] | map(.id as $id | .inputs | unique[] | {key: ., value: $id}) | group_by(.key)
+        | map({key: .[0].key, value: map(.value) | sort}) | from_entries) as $read_by
     | ($coverage[0].gaps | map({key: .id, value: .}) | from_entries) as $gaps
     | ([$coverage[0].gaps[] | select(.candidate.kind == "generated") | .candidate.inputs[]?]) as $inputs
     | ($tracked | map({key: ., value: true}) | from_entries) as $in_git
     | [.files[] | select(.role == "sample")] as $samples
+    | [$samples[] | select($measured[.path] == null)] as $kept
     | (.files | map({key: .path, value: .}) | from_entries) as $by_path
     | (select(.version != 1)
         | "MANIFEST.json: version is \(.version | tojson), not 1; \($regenerate)"),
@@ -441,7 +440,7 @@ if [ -f MANIFEST.json ]; then
       (.files[] | select(.role != "sample" and .license_status == "reported")
         | "\(.path): a \(.role) file whose license is only reported; read it at its source, add the reading to docs/license-readings.json, and \($regenerate)"),
       ($samples[] | select((has("gap") | not) and ((.license_url // "") == "" or (.license_read // "") == ""))
-        | "\(.path): an adopted sample without license_url and license_read; read its license at its source, add the reading to docs/license-readings.json, and \($regenerate)"),
+        | "\(.path): an adopted or measured sample without license_url and license_read; read its license at its source, add the reading to docs/license-readings.json, and \($regenerate)"),
       (.files[] | select(.role != "sample" and ((.license_url // "") == "" or (.license_read // "") == ""))
         | "\(.path): a \(.role) file without license_url and license_read; read its license at its source, add the reading to docs/license-readings.json, and \($regenerate)"),
       (.files[] | .path as $p | (.covers // [])[] | select(IN($ids[]) | not)
@@ -450,14 +449,29 @@ if [ -f MANIFEST.json ]; then
         | "\(.path): a sample file is tracked by git, but samples are release assets; run git rm --cached -- \(.path | @sh)"),
       (.files[] | select(.role != "sample" and ($in_git[.path] | not))
         | "\(.path): a \(.role) file is not tracked by git; run git add -f -- \(.path | @sh)"),
-      ($samples[] | select(has("gap") | not) | select($adopted[.path] == null)
-        | "\(.path): a sample that is not adopted in docs/coverage.json; \($regenerate)"),
+      ($samples[] | select(has("gap") | not) | select($adopted[.path] == null and $measured[.path] == null)
+        | "\(.path): a sample that is neither adopted nor measured in docs/coverage.json; \($regenerate)"),
       ($samples | map(.path)) as $listed
-      | ($adopted | keys[] | select(IN($listed[]) | not)
-        | "\(.): adopted in docs/coverage.json but not a sample in MANIFEST.json; \($regenerate)"),
-      ($samples[] | select($adopted[.path] != null and ((.covers // []) | unique) != $adopted[.path])
+      | ($adopted + $measured | to_entries[] | select(IN(.key; $listed[]) | not)
+        | "\(.key): \(if $measured[.key] != null then "measured" else "adopted" end) in docs/coverage.json but not a sample in MANIFEST.json; \($regenerate)"),
+      ($samples[] | (($adopted + $measured)[.path]) as $c | select($c != null and ((.covers // []) | unique) != $c)
         | "\(.path): covers differ from docs/coverage.json\u0027s; \($regenerate)"),
-      ($samples[] as $outer | $samples[]
+      ($kept | map({key: ([.format] + ((.covers // []) | sort) | join(" ")), path})
+        | group_by(.key)[] | select(length > 1) | map(.path) | join(", ")
+        | "samples share a format and scenarios: \(.); trim all but one with mise run dispose, then \($regenerate)"),
+      (.files[] | select(has("measures")) | .path as $p | .measures
+        | if type != "array" or . == [] or any(.[]; type != "string") then
+            "\($p).measures: is not a non-empty array of measurement ids; \($regenerate)"
+          elif any(.[]; IN($measurement_ids[]) | not) then
+            "\($p).measures: \(map(select(IN($measurement_ids[]) | not)) | join(", ")) is no measurement in docs/measurements.json; \($regenerate)"
+          elif . != ($read_by[$p] // []) then
+            "\($p).measures: \(join(", ")) differs from the measurements that list it in docs/measurements.json, \($read_by[$p] // [] | join(", ")); \($regenerate)"
+          else empty end),
+      (.files[] | select((has("measures") | not) and $read_by[.path] != null)
+        | "\(.path): read by \($read_by[.path] | join(", ")) in docs/measurements.json, but it has no measures; \($regenerate)"),
+      ($read_by | keys[] | select($by_path[.] == null)
+        | "docs/measurements.json: \(.) is read by \($read_by[.] | join(", ")), but is no file in MANIFEST.json; run mise run dispose, then \($regenerate)"),
+      ($kept[] as $outer | $kept[]
         | select(.path != $outer.path and (((.covers // []) - ($outer.covers // [])) == [])
             and ((.format == $outer.format and ((.covers // []) | unique) == (($outer.covers // []) | unique)) | not)
             and (IN(.path; $inputs[]) | not))
@@ -498,7 +512,7 @@ if [ -f MANIFEST.json ]; then
             .value | keys[] | select(IN($ids[]) | not)
             | "docs/judged.json: \($p): \(.) is not in docs/coverage.json\u0027s vocabulary; judge an ID the vocabulary defines"
           end)
-  ' --slurpfile judged docs/judged.json --slurpfile placed docs/corpus-placement.json MANIFEST.json); then
+  ' --slurpfile judged docs/judged.json --slurpfile placed docs/corpus-placement.json --slurpfile measurements "$measurements" MANIFEST.json); then
     while read -r problem; do
       if [ -n "$problem" ]; then
         err "$problem"

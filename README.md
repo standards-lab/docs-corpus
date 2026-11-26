@@ -14,13 +14,13 @@ truth files, the docs, the coverage, and the check. The repository uses no Git L
 
 ## The manifest
 
-`MANIFEST.json` is the inventory. Its `version`, 1, is the manifest's schema version, not a
-release. It has one entry per corpus file, whose `role` is `sample`, or `truth` or `doc` for a file
-a sample links. Files sit under the format directories `archive/`, `audio/`, `email/`, `exec/`,
-`image/`, `office/`, `onenote/`, `pdf/`, `text/`, and `video/`. An adopted sample keeps the path it
-had in `~/docs`, a sourced gap candidate sits at `<area>/<source>/<name>`, and a generated one at
-the path its command writes, as
-[docs/coverage.md](docs/coverage.md#candidates-in-the-corpus) states.
+`MANIFEST.json` is the inventory. Its `version`, 1, is the manifest's schema version, not a release.
+It has one entry per corpus file, whose `role` is `sample`, or `truth` or `doc` for a file a sample
+links. Files sit under the format directories `archive/`, `audio/`, `email/`, `exec/`, `image/`,
+`office/`, `onenote/`, `pdf/`, `text/`, and `video/`. An adopted or measured sample keeps the path
+it had in `~/docs`, a sourced gap candidate sits at `<area>/<source>/<name>`, and a generated one at
+the path its command writes, as [docs/coverage.md](docs/coverage.md#candidates-in-the-corpus)
+states.
 
 Each entry records the file's `sha256`, `bytes`, and `format`, as `file -b --mime-type` reports
 it, and its provenance: `source`, `url`, `ref`, `license`, `license_url`, `license_read`,
@@ -33,17 +33,22 @@ records it. A sample also records:
 - `docs`: the doc files it links.
 
 A generated file adds `command`, `inputs`, `generator`, and `generator_license`, and a candidate
-adds its `gap`.
+adds its `gap`. A sample or truth file that a measurement reads adds `measures`: the ids, sorted,
+of the measurements in [`docs/measurements.json`](docs/measurements.json) that list it. An entry no
+measurement reads has no `measures`.
 
-The manifest is generated, never edited by hand. `mise run manifest` builds it from three sources
-for the adopted samples and their files:
+The manifest is generated, never edited by hand. `mise run manifest` builds it from four sources
+for the adopted and measured samples and their files:
 
-- the adopted samples in `docs/coverage.json`;
+- the adopted samples in `docs/coverage.json`, and the samples disposed `measure` there, which a
+  targeted acceptance measurement reruns over though another sample covers their scenarios, as
+  [docs/coverage.md](docs/coverage.md#measurements) states;
 - `~/docs`' manifest;
-- [`docs/license-readings.json`](docs/license-readings.json): the license of every adopted
-  sample, truth file, and doc file, read at its source. Each of those entries records its
+- [`docs/license-readings.json`](docs/license-readings.json): the license of every adopted or
+  measured sample, truth file, and doc file, read at its source. Each of those entries records its
   reading's `license_url` and `license_read`, and a reading's `license`, where it has one,
-  replaces the license `~/docs` records.
+  replaces the license `~/docs` records;
+- `docs/measurements.json`, the measurement list, which gives each file it reads its `measures`.
 
 The candidates come from [`docs/candidates.json`](docs/candidates.json), which records what was
 fetched or generated for each gap. A candidate takes its provenance from its gap's candidate and
@@ -54,8 +59,8 @@ candidate's license follows from its inputs'. To regenerate the manifest, run:
 mise run manifest > MANIFEST.json
 ```
 
-With `--copy`, it first copies every adopted file it lists from `~/docs`, or `$DOCS_REFERENCE`,
-into place and checks each copy's size and sha256. `mise run fetch-candidates` places the sourced
+With `--copy`, it first copies every adopted or measured file it lists from `~/docs`, or
+`$DOCS_REFERENCE`, into place and checks each copy's size and sha256. `mise run fetch-candidates` places the sourced
 candidates, and `mise run generate-candidates` makes the generated ones once.
 
 Git ignores the format directories, so sample files are never committed. Truth and doc files are
