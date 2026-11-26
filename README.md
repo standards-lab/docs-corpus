@@ -17,8 +17,9 @@ truth files, the docs, the coverage, and the check. The repository uses no Git L
 `MANIFEST.json` is the inventory. Its `version`, 1, is the manifest's schema version, not a
 release. It has one entry per corpus file, whose `role` is `sample`, or `truth` or `doc` for a file
 a sample links. Files sit under the format directories `archive/`, `audio/`, `email/`, `exec/`,
-`image/`, `office/`, `onenote/`, `pdf/`, `text/`, and `video/`. An adopted sample keeps the path it had in `~/docs`, a sourced gap candidate sits at
-`<area>/<source>/<name>`, and a generated one at the path its command writes, as
+`image/`, `office/`, `onenote/`, `pdf/`, `text/`, and `video/`. An adopted sample keeps the path it
+had in `~/docs`, a sourced gap candidate sits at `<area>/<source>/<name>`, and a generated one at
+the path its command writes, as
 [docs/coverage.md](docs/coverage.md#candidates-in-the-corpus) states.
 
 Each entry records the file's `sha256`, `bytes`, and `format`, as `file -b --mime-type` reports

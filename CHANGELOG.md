@@ -23,3 +23,6 @@ area, which `mise run fetch` downloads and verifies against the manifest before 
 - The scenario vocabulary, `docs/coverage.json`, and the coverage page, `docs/coverage.md`.
 - One `<area>.tar` release asset per format area, written by `mise run pack` and placed by
   `mise run fetch`.
+
+[Unreleased]: https://github.com/standards-lab/docs-corpus/compare/v0.1.0...HEAD
+[v0.1.0]: https://github.com/standards-lab/docs-corpus/releases/tag/v0.1.0
