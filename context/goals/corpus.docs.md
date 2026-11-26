@@ -87,13 +87,17 @@ Two-way: nothing is tagged or published, and the repository stays private.
 
 ## Progress
 
-slices 0/5 committed (slice 1: run reader 5b7b8cb; kind:mpeg-ps and kind:ogg-video uncommitted
-until slices 2–3 re-place the duck-and-cover MPEG-PS and Ogg video) · standards — · spec — ·
-editor —
+slices 1/5 committed, slice 2 in part (93a803b: the standard, `breaks`, lorem-ipsum.epub trimmed
+to new open gap archive-12, archive-11's, email-5's, and office-8's candidates out); slice 1's two
+kinds wait on the re-placement; Large Desktop.one's and LargeData.one's breaks wait on slices 3–4,
+since trimming each brings back a candidate or sample no current run placed (Printout.one,
+OneWithFileData.one) · standards — · spec — · editor —
 - escalation, slice 1: v1.ai.inference's sync (standards-lab #222) added the OneNote timing-section
   removal and the realistic-content standard to docproc-final. Fold both in? yes; trim through a
   recorded standard break dispose reads? yes; docproc's and the onenote spike's edits as pending
   edits? yes; sweep every sample and candidate now? yes. The amended brief was approved.
+- escalation, slice 2: does text/csv/tab-separated.tsv (real city names, random values, gen_text.py)
+  pass the realistic-content standard? yes; office-1, office-2, and pdf-1 stay.
 
 ## Decisions
 
