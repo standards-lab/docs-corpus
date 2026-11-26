@@ -14,6 +14,8 @@
 
 ## Decisions
 
+- snapshot: gb10-2 holds the verified v0.1.0 checkout at `~/docs-corpus` (tag commit `8873b89`),
+  cloned anonymously and fetched from the release; its check ended "All checks passed."
 - snapshot: the release assets are uploaded while private; docs-corpus goes public with its
   history unchanged, then gb10-2 fetches anonymously into `~/docs-corpus`, kept for baseline.
 - docproc-final: docproc's acceptance and the onenote spike's findings stay as they closed; both
