@@ -14,8 +14,8 @@
 
 ## Decisions
 
-- docproc-final: docproc's acceptance stays as it passed; docproc is closed out, so its
-  citations of the timing sections are not edited.
+- docproc-final: docproc's acceptance and the onenote spike's findings stay as they closed; both
+  are closed out, so their citations of the timing sections are not edited.
 - docproc-final: the realistic-content standard admits limit checks whose content is real
   (archive-8, pdf-7, `archive/high-ratio-200mb.zip`, `text/json/deeply-nested-64.json`) and
   `text/csv/tab-separated.tsv` (real city names, random values); it rejects scale, stress, and
@@ -50,5 +50,3 @@
   It says what the corpus holds, how it changes, and how it is shared, and links to docs-corpus's
   README.md (the manifest, and the release tars `mise run fetch` places) and docs/coverage.md
   (the scenarios, gaps, and candidates) rather than restating them.
-- spike-ai-pipeline-onenote · README, bench/findings.rs, scripts/findings.sh, and
-  docs/findings/onenote-cli: remove both timing sections from the sources.
