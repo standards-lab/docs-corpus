@@ -1,8 +1,8 @@
 # goal · corpus.docs
 
-- **State:** brief ready
-- **Task:** baseline
-- **Branch:** baseline
+- **State:** idle
+- **Task:** none
+- **Branch:** none
 
 ## Tasks
 
@@ -14,137 +14,15 @@
 6. [x] truth
 7. [x] sourcing
 8. [x] snapshot-2
-9. [ ] baseline
-
-## Task brief · baseline
-
-**Problem**
-
-The capstone has no baseline over a corpus it can share. docproc's and docinfer's acceptance pages
-still cite runs over ~/docs, a local pool. docs-corpus's tools can't regenerate the manifest without
-~/docs. ai-hosting's bench is built from a ~/docs run. Until docproc and docinfer run over v0.2.0,
-nothing reads the public corpus as the capstone's reference, and neither ~/docs nor the runs built
-from it can be removed.
-
-**Behaviors**
-1. `mise run manifest` prints the committed MANIFEST.json byte for byte with no ~/docs on the
-   machine. It reads committed copies of the ~/docs manifest rows that the corpus's samples, truth
-   files and doc files need. In those rows, dodm-5200-01's url is its issuance PDF, the URL its
-   license reading names.
-2. The check reproduces MANIFEST.json every time, not only when ~/docs exists, and no longer
-   compares the coverage data with ~/docs.
-3. The check fails a manifest url that is empty, is only whitespace, or says "not recorded", and
-   names the fix: record the URL. The committed corpus passes.
-4. place-library and `place-traits` without `--corpus` are gone, with their docs, task descriptions
-   and tests. `place-traits --corpus` remains.
-5. The tests that read ~/docs samples read the corpus checkout's own files at their manifest paths
-   instead. When a file isn't fetched, they skip and name the fetch. In a fetched checkout they run
-   and pass.
-6. docproc v0.9.0 runs over every file in v0.2.0's areas on the laptop, and its raw run is kept in
-   the baseline run directory for v0.2.0.
-7. `place-traits --corpus` reads baseline's v0.2.0 docproc run by default and reproduces the
-   committed corpus placement. The coverage data's corpus placement cites that run. If the
-   placement doesn't reproduce, BUILD escalates.
-8. docinfer runs over that docproc run on the laptop through the gateway's `docinfer` key, at the
-   row caps acceptance left: vision 32, audio 48, embedding 16. Its rerun follows. A run with any
-   request that Azure answered, read from the gateway's request log, is run again. Its raw runs
-   are kept beside docproc's.
-9. docs-corpus's baseline page gains a v0.2.0 section. It holds each run's ID, build, machine,
-   configuration, wall time, and counts by outcome and capability, plus the rerun's time. It names
-   the run directory and is the page the capstone measures against.
-10. ai-hosting's bench builder defaults to baseline's v0.2.0 docproc run. Its dense pages and
-    28–30 s audio windows are rebuilt from that run. The committed page list, input manifest, and
-    the README's page and window counts match the rebuilt inputs, and the builder's check passes.
-11. docproc's acceptance page replaces "The ~/docs run", "Failures by class", and the intro's
-    kept-run paragraph with the v0.2.0 run, citing the tag and run ID. "PDF page text" is rerun
-    over v0.2.0's inputs and cites the tag. The other targeted sections stay, dated to the retired
-    ~/docs pool.
-12. docproc's STANDARDS.md no longer glosses ~/docs as live, and its testdata READMEs give their
-    ~/docs origins in the past tense. sevenzip's testdata README no longer says the integration
-    tier reads ~/docs. The payload measurement is rerun over v0.2.0 and cites the tag.
-13. docinfer commits its acceptance recipes: the run checker, the vision sweep and
-    transcription-eval tools with their scripts and test, and the acceptance run script. Each takes
-    its run directory, input and gateway as arguments, not ~/docs paths, and docinfer's check
-    covers them.
-14. docinfer's acceptance page replaces "What ran", "Run 1 and its rerun" and "The fresh run
-    (runs 3–8)" with the v0.2.0 runs. The earlier runs' Finding/Fix rows become one table, dated to
-    the retired ~/docs runs, with their fix commits and no run paths. "Re-probe at 1,120 image
-    tokens" and "Confirmation" are rerun over v0.2.0's inputs at 4 in flight through the gateway,
-    citing the tag. "Transcription" stays, dated.
-15. Each measurement's `acceptance` heading matches the heading of the section it names, and the
-    check passes.
-16. The goal record's data-intelligence pending edit states v0.2.0's docinfer time and rerun time
-    inline, taken from the baseline page.
-17. A workspace grep finds no live reader of ~/docs or of any run being deleted. Live means code,
-    mise tasks, scripts, tests, and run defaults across every repository, ~/experiments and ~/runs.
-    Only then are these deleted, with no archive:
-    - ~/docs
-    - docproc's final, final-no-synthetic and office-and-mail runs
-    - docs-corpus's docproc-final runs, over both ~/docs and the corpus
-    - docs-corpus's curate runs
-    - docinfer's ~/docs runs, logs, configs and recipe results
-    - ~/docinfer-finding
-
-    Afterwards, every touched repository's check passes on the laptop.
-
-**Test seams**
-- docs-corpus's check, and `place-traits --corpus` and `manifest` compared with their committed files.
-- docproc's, docinfer's and ai-hosting's checks, and the bench builder's check.
-- The baseline run directory and the gateway's request log for the runs.
-- The workspace grep.
-
-**Slices**
-1. **docs-corpus: the corpus stands alone** (behaviors 1–5): manifest rows with dodm-5200-01's url
-   fix; retire place-library, `place-traits` without `--corpus`, and the ~/docs comparisons;
-   repoint the tests; add the placeholder-URL rule; move the marathon pin from 0.24.0 to 0.24.1, a
-   patch with nothing to adapt.
-2. **docs-corpus: baseline's docproc run** (6, 7, 9): run docproc over v0.2.0, repoint the corpus
-   placement, and write the page's v0.2.0 section with docproc's figures.
-3. **ai-hosting: bench inputs from v0.2.0** (10).
-4. **docproc: acceptance over v0.2.0 and its follow-ups** (11, 12).
-5. **docinfer: recipes, run, acceptance** (8, 13, 14): commit the recipes first, then run docinfer
-   and its rerun, and rerun the re-probe and confirmation through them.
-6. **docs-corpus: the docinfer figures and headings** (9, 15, 16): add docinfer's figures to the
-   baseline page and update the measurement headings. The editor writes the times into the pending
-   edit.
-7. **Removal** (17): grep first, and delete only on a clean grep; otherwise escalate.
-
-**Out of scope**
-
-- Reruns of the targeted sections left dated: word error rate, shared gs with Identity, peak
-  memory, office-and-mail, and transcription. The video-interpretation section belongs to the
-  backlog goal.
-- docproc releases after v0.9.0.
-- Upgrading gotenberg, which stays held.
-- Editing the closed spikes.
-- Retuning docinfer's concurrency beyond the row caps.
-- Any release tag.
-- Committing the bench's input files themselves.
-
-**Door**
-
-One-way for the removal: ~/docs and the runs built from it are deleted with no archive, so it is
-the last slice and gated on the grep. Every other slice is two-way.
-
-## Progress
-
-slices 7/7 committed (7 removal: ~/docs and its runs deleted, 17.1 GB; 1 ab8b982, 2 f4715ec, 3 ai-hosting a0dd635, 4 docproc f600c44, 5 docinfer bef66ff b731a2e, 6 docs-corpus 5af6c90 docinfer 36c73e2 docproc b63cf71; docinfer run 01a218e4-ddaa-7101-949b-0c9030a50690 8,330.5 s, rerun 01a21964-5204-75c7-9d78-7f13ce1279db 1.4 s, no Azure fallback; docproc run 01a218c9-8847-7ec5-b98e-cf5803c6a989, 123.5 s, placement reproduced) · standards ✓ (docs-corpus d59582a f4d8bac, docinfer ec74b62 dd9804f) · spec ✓ (1 gap, docproc 9d7ea44, closed) · editor ✓
-- slice 1, decided without the architect: removed `manifest --copy` and `dispose --placement`, whose only inputs were ~/docs and the retired placement mode.
-- slice 6, decided without the architect: `jwz.mbox` stays off `vision-reprobe`; as an adopted gap candidate it is outside the measurement contract (samples and sourced inputs), and it stays in the corpus regardless.
-- order: the reviews and the editor run before slice 7, so the one-way removal comes last; the removal waits on the architect's go-ahead.
-- escalation, slice 7: does the closed, archived spike-ai-pipeline-processing (still reads ~/docs) block the removal? no, exempt as it closed. Delete the list (17.1 GB, no archive)? yes.
+9. [x] baseline
 
 ## Decisions
 
-- baseline: ~/docinfer-finding and docs-corpus's curate runs are deleted with ~/docs's runs.
 - sourcing: DVIDS 882019 is in the corpus as the input of `video-interpretation`, alongside the
   NASA ISS mp4, to measure the interpretation of subtext. Its stock footage and Danica Dora song
   are unflagged by DVIDS and stand under its unqualified release.
 - sourcing: the video's interpretation key is sourced, never authored: a revision adds or rewords
   published readings only, and neither the architect nor a session adds its own interpretation.
-- baseline: deletes ~/docs outright, with no archive, and every run built from it, including
-  `~/runs/docs-corpus/docproc-final/{docs,corpus}`, only after truth merges and a workspace grep
-  finds nothing live reading them; the closed spikes stay as they closed.
 - baseline: held gotenberg at 9.10.1-libreoffice: 9.10.2 changes nothing docproc uses, and
   docproc releases after v0.9.0 go to a later corpus goal.
 - snapshot-2: gb10-2 holds the verified v0.2.0 checkout at `~/docs-corpus` (tag commit
@@ -159,8 +37,6 @@ slices 7/7 committed (7 removal: ~/docs and its runs deleted, 17.1 GB; 1 ab8b982
   that run's release.
 - review: a copyleft fixture, such as onenote-1's AGPL-3.0-or-later test.onepkg from Joplin, is
   acceptable in the public corpus when it ships unmodified with its license.
-- plan: ~/docs is never changed before baseline removes it. It is the reference for a corpus
-  built from scratch in docs-corpus.
 - plan: the corpus has no size cap.
 
 ## Pending edits
