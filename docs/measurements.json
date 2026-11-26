@@ -3,7 +3,7 @@
     "id": "word-error-rate",
     "repository": "docproc",
     "acceptance": "Word error rate",
-    "summary": "Transcript word error rate of the audio stage's tracker windows against silencedetect's, over two long recordings with truth.",
+    "summary": "Transcript word error rate of the audio stage's tracker windows against silencedetect's, over long recordings.",
     "needs_truth": true,
     "inputs": [
       "audio/long/ami-es2002a-mix-headset.wav",
@@ -23,7 +23,7 @@
     "id": "transcription",
     "repository": "docinfer",
     "acceptance": "Transcription",
-    "summary": "Transcription error against references, WER or CER, over 28 single-window clips with truth.",
+    "summary": "Transcription error against references, WER or CER, over single-window clips.",
     "needs_truth": true,
     "inputs": [
       "audio/short/fleurs-ar/fleurs-ar-eg-1730.wav",
