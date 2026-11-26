@@ -37,8 +37,8 @@ adds its `gap`. A sample or truth file that a measurement reads adds `measures`:
 of the measurements in [`docs/measurements.json`](docs/measurements.json) that list it. An entry no
 measurement reads has no `measures`.
 
-The manifest is generated, never edited by hand. `mise run manifest` builds it from five sources
-for the adopted and measured samples and their files:
+The manifest is generated, never edited by hand. `mise run manifest` builds the entries for the
+adopted, measured, and sourced samples and their files from five sources:
 
 - the adopted and measured samples in `docs/coverage.json`. A measured sample is one a targeted
   acceptance measurement reads, though another sample covers its scenarios, as
@@ -49,8 +49,8 @@ for the adopted and measured samples and their files:
   reading's `license_url` and `license_read`, and a reading's `license`, where it has one,
   replaces the license `~/docs` records;
 - `docs/measurements.json`, the measurement list, which gives each file it reads its `measures`;
-- [`docs/sourced.json`](docs/sourced.json): the sourced inputs, the measurement inputs sourced
-  outside `~/docs`, each with its provenance, its license reading, and its truth files, as
+- [`docs/sourced.json`](docs/sourced.json), the sourced input list: each measurement input sourced
+  outside `~/docs`, with its provenance, its license reading, and its truth files, as
   [docs/coverage.md](docs/coverage.md#sourced-inputs) states.
 
 The candidates come from [`docs/candidates.json`](docs/candidates.json), which records what was

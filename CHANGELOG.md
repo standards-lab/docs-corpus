@@ -22,8 +22,8 @@ over, are documented here. The format follows
   measurement reads that come from outside `~/docs`, each with its provenance and reading.
 - The `video-interpretation` measurement over DVIDS 882019, "Ghosts In The Machine", with an
   interpretation key that collects the official account's and three outlets' readings.
-- `STANDARDS.md` says what a reading at the source is, and seeks sourced files first in
-  government publications.
+- `STANDARDS.md` defines a reading at the source, and directs sourcing to government publications
+  first.
 
 ### Changed
 
@@ -35,8 +35,8 @@ over, are documented here. The format follows
   inputs, from the rule that no sample's covers lie inside another's.
 - `mise.toml` sets `activate_aggressive`, so its tasks run mise's pinned tools ahead of older
   host tools.
-- The LibriSpeech, LibriVox, and Bush speech readings are read at their publishers rather than a
-  mirror or aggregator.
+- The LibriSpeech, LibriVox, and Bush speech readings are taken at their publishers rather than at
+  a mirror or aggregator.
 
 ## [v0.1.0] - 2026-11-26
 

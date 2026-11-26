@@ -357,7 +357,7 @@ Nothing regenerates a recorded candidate, and its bytes are never edited, so the
 manifest's sha256 pin what was made. Generation is not byte-reproducible: archives and the mbox
 carry the time they were made.
 
-It runs mise's pinned tools ahead of the host's, as `activate_aggressive` sets: bsdtar from
+It runs mise's pinned tools, which `activate_aggressive` puts ahead of the host's: bsdtar from
 `conda:libarchive`, ffmpeg from `conda:ffmpeg`, magick from ImageMagick, qpdf, and Go. pandoc,
 Ghostscript, LibreOffice, iconv, and coreutils are unpinned and run as the host installs them. The
 candidate's `generator` in `.gaps` records the versions that ran, and the manifest carries it.
@@ -397,11 +397,11 @@ jq '(.samples | group_by(.disposition) | map({(.[0].disposition): length}) | add
 
 [`measurements.json`](measurements.json) is the measurement list: the targeted acceptance
 measurements in docproc and docinfer that rerun over corpus inputs. It is written by hand. A
-measurement input is a `~/docs` sample, or a truth file, that a listed measurement reads, or a
-[sourced input](#sourced-inputs) or one of its truth files. As
-[`STANDARDS.md`](../STANDARDS.md) allows, it stays in the corpus while a measurement lists it, even
-when another sample covers its scenarios. The list is the only way a sample enters the corpus for a
-measurement: `dispose` gives a listed sample it would otherwise trim the `measure` disposition.
+measurement input is a file a listed measurement reads: a `~/docs` sample, a truth file, or a
+[sourced input](#sourced-inputs) or one of its truth files. As [`STANDARDS.md`](../STANDARDS.md)
+allows, it stays in the corpus while a measurement lists it, even when another sample covers its
+scenarios. The list is the only way a `~/docs` sample enters the corpus for a measurement:
+`dispose` gives a listed sample it would otherwise trim the `measure` disposition.
 
 The list is a JSON array, `[]` when it is empty, with one object per measurement:
 
@@ -457,15 +457,15 @@ records each one. It is a JSON array, `[]` when it is empty, with one object per
   [its LICENSE](https://github.com/standards-lab/docs-corpus/blob/main/LICENSE).
 
 A measurement lists a sourced input, and any of its truth files, by path, like any input. `mise run
-manifest` lists the sourced input as a sample with these facts, its covers from
-[`corpus-placement.json`](corpus-placement.json), a verified license, and redistributable, and each
-truth file as a truth file; each names its measurements in `measures`. `place-traits --corpus`
-places it as it places every sample the manifest lists, so its covers come from the docproc run
-over the corpus. Like a measured sample, it is exempt from the covers rules: it may share a format
-and covers with another sample, and its covers may lie inside another's. `docs/coverage.json`
-doesn't list it, so `dispose` gives it no disposition, and it changes no other sample's. Its file
-is a release asset like every sample's, and its truth files are committed. `mise run manifest
---copy` copies neither from `~/docs`.
+manifest` lists the sourced input as a sample with these facts and its covers from
+[`corpus-placement.json`](corpus-placement.json), marks its license verified and redistributable,
+and lists each truth file as a truth file. Each entry names its measurements in `measures`.
+`place-traits --corpus` places it as it places every sample the manifest lists, so its covers come
+from the docproc run over the corpus. Like a measured sample, it is exempt from the covers rules:
+it may share a format and covers with another sample, and its covers may lie inside another's.
+`docs/coverage.json` doesn't list it, so `dispose` gives it no disposition, and it changes no other
+sample's. Its file is a release asset like every sample's, and its truth files are committed. `mise
+run manifest --copy` copies neither from `~/docs`.
 
 `scripts/check.sh` reads `docs/sourced.json`, or the copy the `SOURCED` environment variable
 names, after the coverage data passes and before the measurement list. It fails when:
@@ -513,11 +513,11 @@ fails when:
 - a sourced input or one of its truth files isn't in the manifest, or its entry differs from its
   record in [`sourced.json`](sourced.json);
 - an adopted or measured sample's covers differ from its covers in this data;
-- two samples that aren't measured or sourced inputs share a format and covers;
+- two samples, neither of them measured or a sourced input, share a format and covers;
 - an entry's `measures` isn't a non-empty list of ids in the measurement list, or differs from the
   sorted ids of the measurements that list its path;
 - a file a measurement lists has no `measures`, or isn't in the manifest;
-- a sample that isn't measured or a sourced input has covers that lie inside another such
+- a sample that is neither measured nor a sourced input has covers that lie inside another such
   sample's, whatever the format, unless a generated candidate lists it in its `inputs`, as
   [`STANDARDS.md`](../STANDARDS.md) allows;
 - a candidate's gap has no sourced or generated candidate, or is `covered_by` another sample;

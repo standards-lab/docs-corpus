@@ -8,15 +8,15 @@ versioned corpus in this repository, public from v0.1.0 ([README.md](../README.m
 ## Capability map
 
 - **Inventory** (built): `MANIFEST.json`, schema `version` 1, records each corpus file's source,
-  license, truth, and redistribution flag: the adopted and measured samples, the gap candidates,
-  and the truth and doc files they link, laid out by format directory. A file a measurement reads
-  names the measurements in `measures`. `mise run manifest` generates it,
+  license, truth, and redistribution flag: the adopted, measured, and sourced samples, the gap
+  candidates, and the truth and doc files they link, laid out by format directory. A file a
+  measurement reads names the measurements in `measures`. `mise run manifest` generates it,
   `mise run fetch-candidates` fetches the sourced candidates, and `mise run generate-candidates`
   makes the generated ones once ([README.md](../README.md#the-manifest)).
 - **Scenario index** (built): each sample's `covers` in `MANIFEST.json`, in the coverage
   vocabulary. An adopted sample's equal its covers in `docs/coverage.json`; a candidate's are
   placed from docproc's run over the corpus and contain its gap's covers. No sample's covers lie
-  inside another's, except a generated sample's inputs and a measured sample
+  inside another's, except a generated sample's inputs, a measured sample, and a sourced input
   ([docs/coverage.md](../docs/coverage.md#the-manifest)).
 - **Coverage page** (built): the scenario vocabulary, each `~/docs` sample's disposition and the
   standards it breaks, and each gap's candidate, the open gap a candidate leaves, and the sample
@@ -26,6 +26,9 @@ versioned corpus in this repository, public from v0.1.0 ([README.md](../README.m
   acceptance section by its heading and the inputs it reads. A `~/docs` sample that a measurement
   lists, and that would otherwise be trimmed, is disposed `measure` and stays in the corpus
   ([docs/coverage.md](../docs/coverage.md#measurements)).
+- **Sourced inputs** (built): `docs/sourced.json`, written by hand, records each measurement input
+  sourced outside `~/docs` with its provenance, license reading, and truth files, and the manifest
+  lists each as a sample ([docs/coverage.md](../docs/coverage.md#sourced-inputs)).
 - **Distribution** (built): `mise run pack` writes one uncompressed tar of sample files per format
   area, and `mise run fetch` reads the tars from a release URL or a directory and places the files
   once every one matches the manifest's size and sha256
