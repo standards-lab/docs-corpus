@@ -87,11 +87,10 @@ Two-way: nothing is tagged or published, and the repository stays private.
 
 ## Progress
 
-slices 1/5 committed, slice 2 in part (93a803b: the standard, `breaks`, lorem-ipsum.epub trimmed
-to new open gap archive-12, archive-11's, email-5's, and office-8's candidates out); slice 1's two
-kinds wait on the re-placement; Large Desktop.one's and LargeData.one's breaks wait on slices 3–4,
-since trimming each brings back a candidate or sample no current run placed (Printout.one,
-OneWithFileData.one) · standards — · spec — · editor —
+slices 4/5 committed (6f928ef: slices 3–4 together, as neither passes the check alone; both
+placements at docproc v0.9.0; exec-4-open closed; audio-3 opened by the refresh, its candidate a
+Commons PD speech); slice 5's docs went in with them, its record pin goes to the editor ·
+standards — · spec — · editor —
 - escalation, slice 1: v1.ai.inference's sync (standards-lab #222) added the OneNote timing-section
   removal and the realistic-content standard to docproc-final. Fold both in? yes; trim through a
   recorded standard break dispose reads? yes; docproc's and the onenote spike's edits as pending
